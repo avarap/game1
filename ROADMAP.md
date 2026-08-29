@@ -16,7 +16,7 @@
 
 Validación: workflow `Godot CI` run `33278173612` completado con éxito. Pasaron importación del proyecto, smoke test de `main.tscn` y tests bootstrap.
 
-## Fase 1 — Core / Walking Prototype — VALIDACIÓN FINAL
+## Fase 1 — Core / Walking Prototype — COMPLETADA
 - [x] Arquitectura de escena de mundo
 - [x] Jugador CharacterBody2D
 - [x] Movimiento 8 direcciones
@@ -26,14 +26,16 @@ Validación: workflow `Godot CI` run `33278173612` completado con éxito. Pasaro
 - [x] Interactable base
 - [x] Test de lógica creada
 - [x] Test de aceptación de escenas del walking prototype
-- [ ] CI final de aceptación completado con éxito
+- [x] CI final de aceptación completado con éxito
 
 Implementación principal: commit `b0881d4983997b22f1678904d4cf3417a099f739`.
-Validación de aceptación añadida: commit `ae77e23a190c4cb7824eff0bce8c6cf672fb381f`.
-No avanzar a Fase 2 hasta que el CI de aceptación sea `success`.
+Validación de aceptación: commit `ae77e23a190c4cb7824eff0bce8c6cf672fb381f`.
+Workflow de aceptación: `Godot CI` run `33280758441`, completado con `success`.
 
-## Fase 2 — Items / Resource Loop
+## Fase 2 — Items / Resource Loop — SIGUIENTE
 ItemData, inventario, recursos, herramientas, loot, energía y UI.
+
+Criterio de arranque: analizar primero datos, dependencias y criterios de aceptación antes de implementar el primer bloque.
 
 ## Fase 3 — Crafting / Production Loop
 RecipeData, estaciones, crafting, cofres y StorageNetwork.
