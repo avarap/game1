@@ -3,9 +3,10 @@ extends SceneTree
 func _initialize() -> void:
     var failures: Array[String] = []
     failures.append_array(TestTimeMath.run())
+    failures.append_array(TestPlayerMovement.run())
 
     if failures.is_empty():
-        print("[TEST] All bootstrap tests passed")
+        print("[TEST] All core tests passed")
         quit(0)
         return
 

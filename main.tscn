@@ -1,14 +1,15 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://core/bootstrap/main.gd" id="1_main"]
-[ext_resource type="PackedScene" path="res://ui/debug/debug_panel.tscn" id="2_debug"]
+[ext_resource type="PackedScene" path="res://world/world.tscn" id="2_world"]
+[ext_resource type="PackedScene" path="res://ui/debug/debug_panel.tscn" id="3_debug"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
 
-[node name="World" type="Node2D" parent="."]
+[node name="World" parent="." instance=ExtResource("2_world")]
 
 [node name="DebugLayer" type="CanvasLayer" parent="."]
 layer = 100
 
-[node name="DebugPanel" parent="DebugLayer" instance=ExtResource("2_debug")]
+[node name="DebugPanel" parent="DebugLayer" instance=ExtResource("3_debug")]

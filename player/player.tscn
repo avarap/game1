@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://player/player.gd" id="1_player"]
+
+[sub_resource type="CapsuleShape2D" id="Capsule_player"]
+radius = 10.0
+height = 28.0
+
+[sub_resource type="CircleShape2D" id="Circle_interaction"]
+radius = 42.0
+
+[sub_resource type="Gradient" id="Gradient_player"]
+colors = PackedColorArray(0.73, 0.82, 0.52, 1, 0.32, 0.39, 0.22, 1)
+
+[node name="Player" type="CharacterBody2D"]
+y_sort_enabled = true
+script = ExtResource("1_player")
+
+[node name="Body" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-10, -14, 10, -14, 12, 10, 0, 16, -12, 10)
+color = Color(0.53, 0.68, 0.36, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("Capsule_player")
+
+[node name="InteractionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("Circle_interaction")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+zoom = Vector2(1.5, 1.5)
+limit_left = 0
+limit_top = 0
+limit_right = 1600
+limit_bottom = 1000
