@@ -18,5 +18,8 @@ jobs:
       - name: Import and validate project
         run: godot --headless --path . --editor --quit
 
+      - name: Run main-scene smoke test
+        run: godot --headless --path . --quit-after 3
+
       - name: Run bootstrap tests
         run: godot --headless --path . --script res://tests/run_tests.gd
