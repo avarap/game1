@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/debug/debug_panel.gd" id="1_debug"]
+
+[node name="DebugPanel" type="PanelContainer"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 360.0
+offset_bottom = 190.0
+script = ExtResource("1_debug")
+
+[node name="Margin" type="MarginContainer" parent="."]
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+
+[node name="Title" type="Label" parent="Margin/VBox"]
+text = "DEBUG — Fase 0"
+
+[node name="Status" type="Label" parent="Margin/VBox"]
+text = "Inicializando..."
+
+[node name="AdvanceHour" type="Button" parent="Margin/VBox"]
+text = "+1 hora"
+
+[node name="Save" type="Button" parent="Margin/VBox"]
+text = "Guardar prueba"

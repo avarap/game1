@@ -1,0 +1,13 @@
+# Godot 4
+.godot/
+/export/
+/build/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local runtime data
+*.log
