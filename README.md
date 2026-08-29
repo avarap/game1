@@ -6,17 +6,19 @@ El objetivo actual es un vertical slice original y muy pulido. El desarrollo sig
 
 ## Estado
 
-- Fase activa: **Fase 0 — Bootstrap**
+- Fase completada: **Fase 0 — Bootstrap**
+- Próxima fase: **Fase 1 — Core / Walking Prototype**
 - Godot objetivo de CI: **4.5**
 - Rama principal: `main`
 - Memoria de desarrollo: `DEV_MEMORY.md`
+- CI: importación, ejecución smoke-test de `main.tscn` y tests headless validados correctamente.
 
 ## Ejecutar
 
 1. Instala Godot 4.x.
 2. Clona el repositorio.
 3. Abre `project.godot`.
-4. Ejecuta la escena principal con F6/F5.
+4. Ejecuta la escena principal con F5.
 
 ## Controles base
 
@@ -42,6 +44,7 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 ```bash
 godot --headless --path . --editor --quit
+godot --headless --path . --quit-after 3
 ```
 
 ## Documentación
