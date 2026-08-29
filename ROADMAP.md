@@ -1,6 +1,6 @@
 # ROADMAP
 
-## Fase 0 — Bootstrap — EN CURSO
+## Fase 0 — Bootstrap — COMPLETADA
 - [x] Repositorio inicializado
 - [x] `project.godot`
 - [x] Escena raíz ejecutable
@@ -11,10 +11,12 @@
 - [x] Panel debug mínimo
 - [x] Infraestructura de tests
 - [x] CI headless
-- [ ] Validar CI real en GitHub Actions
-- [ ] Validar apertura/ejecución con Godot tras el commit
+- [x] Validar CI real en GitHub Actions
+- [x] Validar apertura/ejecución headless de la escena principal
 
-## Fase 1 — Core / Walking Prototype
+Validación: workflow `Godot CI` run `33278173612` completado con éxito. Pasaron importación del proyecto, smoke test de `main.tscn` y tests bootstrap.
+
+## Fase 1 — Core / Walking Prototype — SIGUIENTE
 - [ ] Arquitectura de escena de mundo
 - [ ] Jugador CharacterBody2D
 - [ ] Movimiento 8 direcciones
