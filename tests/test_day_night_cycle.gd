@@ -23,11 +23,17 @@ static func _check_reference_colors(failures: Array[String]) -> void:
 
 static func _check_interpolation_and_phases(failures: Array[String]) -> void:
 	var morning := DayNightMath.color_at(9, 0)
-	if morning.is_equal_approx(DayNightMath.DAWN_COLOR) or morning.is_equal_approx(DayNightMath.NOON_COLOR):
+	if (
+		morning.is_equal_approx(DayNightMath.DAWN_COLOR)
+		or morning.is_equal_approx(DayNightMath.NOON_COLOR)
+	):
 		failures.append("Morning color should interpolate between dawn and noon")
 
 	var late_night := DayNightMath.color_at(2, 0)
-	if late_night.is_equal_approx(DayNightMath.NIGHT_COLOR) or late_night.is_equal_approx(DayNightMath.DAWN_COLOR):
+	if (
+		late_night.is_equal_approx(DayNightMath.NIGHT_COLOR)
+		or late_night.is_equal_approx(DayNightMath.DAWN_COLOR)
+	):
 		failures.append("Late-night color should transition gradually toward dawn")
 
 	if DayNightMath.phase_at(6, 0) != &"dawn":
