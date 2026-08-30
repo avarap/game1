@@ -82,6 +82,18 @@ Bloque 1 — tiempo/calendario y sueño:
 - Corrección: `62cb2658bd169270fffcb59c34134493b787f327` con fallback seguro al `SceneTree` principal.
 - Validación final del bloque: `Godot CI` run `33294728470`, `success`.
 
+Hardening transversal antes del bloque 2:
+- [x] `StorageProvider` incorpora `scope_id`; Workbench/Cofre usan `storage_scope = workshop` y el crafting ignora providers de otros scopes.
+- [x] Tests verifican que un storage de otro scope no se consume ni se modifica.
+- [x] Jugador y cofres exponen componentes mediante contratos y resolución por tipo; crafting, recolección y sueño dejan de depender de nombres concretos de hijos.
+- [x] `CemeteryAction` elimina `NodePath` relativo y usa inyección tipada o descubrimiento por grupo `cemetery_controller`.
+- [x] Eliminado `RESULT_ALREADY_OCCUPIED`, que no tenía ningún comportamiento asociado.
+- [x] CI incorpora un job independiente `gdscript-quality` con `gdlint` y `gdformat --check` sobre los scripts endurecidos.
+- [x] El job Godot sigue validando importación, smoke test y suite headless de forma independiente.
+- Implementación principal: `0639a43b16c152bf7a8b9ad3b44e2aa4aa640a8a`, run `33294983254`, `success`.
+- La primera integración de gdtoolkit (`33295018716`) reveló que la imagen Godot no incluye Python; el lint separado detectó después dos reglas (`33295072703`) y el formatter cuatro archivos (`33295142431`). Se corrigieron sin desactivar reglas.
+- Estado final del hardening: `b13d024143b5fb0ff8118a689da079c37916c554`, `Godot CI` run `33295277286`, ambos jobs `gdscript-quality` y `validate-and-test` en `success`.
+
 Próximo bloque: ciclo día/noche observable mediante un controlador local del mundo que reaccione a `TimeManager`, sin introducir todavía NPCs.
 
 No entrar en diálogo, relaciones, quests, economía o tecnologías salvo interfaces estrictamente necesarias para preparar Fase 6.
