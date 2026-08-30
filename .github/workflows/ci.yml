@@ -31,6 +31,9 @@ jobs:
             systems/simulation/day_night_math.gd \
             systems/simulation/npc_data.gd \
             systems/simulation/npc_navigation_math.gd \
+            systems/simulation/npc_state_machine.gd \
+            systems/simulation/schedule_entry_data.gd \
+            systems/simulation/schedule_data.gd \
             world/storage/storage_chest.gd \
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
@@ -41,6 +44,7 @@ jobs:
             world/npcs/npc_controller.gd \
             tests/test_day_night_cycle.gd \
             tests/test_npc_navigation.gd \
+            tests/test_npc_routines.gd \
             tests/run_tests.gd
 
       - name: Check formatting of hardened gameplay scripts
@@ -53,6 +57,9 @@ jobs:
             systems/simulation/day_night_math.gd \
             systems/simulation/npc_data.gd \
             systems/simulation/npc_navigation_math.gd \
+            systems/simulation/npc_state_machine.gd \
+            systems/simulation/schedule_entry_data.gd \
+            systems/simulation/schedule_data.gd \
             world/storage/storage_chest.gd \
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
@@ -63,6 +70,7 @@ jobs:
             world/npcs/npc_controller.gd \
             tests/test_day_night_cycle.gd \
             tests/test_npc_navigation.gd \
+            tests/test_npc_routines.gd \
             tests/run_tests.gd
 
   validate-and-test:
