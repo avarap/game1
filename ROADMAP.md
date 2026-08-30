@@ -74,4 +74,13 @@ Cierre funcional integrado: PR #54, merge `7e281255322b6c7444d4177d85295b353babb
 ## Fase 8 — Polish — ACTIVA
 Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización.
 
-El sub-track visual #25–#31 puede comenzar ahora respetando `ART_DIRECTION.md`, sin reabrir alcance funcional de fases anteriores salvo correcciones críticas.
+### Sub-track visual #25–#31
+- [x] **#25 — Tileset exterior pixel-art original** — atlas `256 x 256`, cuadrícula `8 x 8` de tiles `32 x 32`, PR #56; import, smoke, suite y quality gate verdes en run `33333578933`.
+- [ ] **#26 — Player spritesheet + animaciones de movimiento**.
+- [ ] **#27 — NPC visual base + Brother Aldren animado**.
+- [ ] **#28 — Props, edificios y assets de cementerio**.
+- [ ] **#29 — Integración artística de mapas y sustitución de placeholders** — bloqueada por #25 y #28.
+- [ ] **#30 — Atmósfera: sombras, vegetación, iluminación y partículas** — bloqueada por #29.
+- [ ] **#31 — Aceptación visual del vertical slice** — gate final del sub-track visual; bloqueada por #25–#30.
+
+Fase 8 permanece **ACTIVA**: completar #25 no cierra la fase. Próximo bloque coherente: #26, #27 o #28; por prioridad P0 se toma **#26** en la siguiente ejecución salvo bug crítico.

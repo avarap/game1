@@ -19,6 +19,7 @@
 - **#22 Mina inicial:** entrada/salida, corredor, bifurcación, oclusión y landmark secreto.
 - **#23 Integración de zonas:** `ZoneManager`, `ZoneTransition`, `ZoneContainer` y `WorldLocationProvider` conectan todas las zonas manteniendo Player/controllers persistentes.
 - **#24 Aceptación final:** `TestWorldPhase7Acceptance` agrega los contratos de mapas, recorrido, navegación y rutinas NPC como gate explícito de cierre.
+- **#25 Tileset exterior:** atlas original `256 x 256` con 64 tiles de `32 x 32` para hierba/tierra, caminos/transiciones, cementerio, bosque, pueblo/plaza, bordes y `decoration_low`; incluye documentación estable de celdas.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales sin convertir sistemas RPG en Autoloads.
@@ -30,6 +31,7 @@
 - **Fase 6 — RPG COMPLETADA** tras #6, #8 y #9.
 - **Fase 7 — Mundo COMPLETADA** tras #16/#17/#18–#24.
 - **Fase 8 — Polish pasa a ACTIVA**.
+- #25 mantiene arte de terreno desacoplado de gameplay, colisión, navegación y escenas de mapa; su integración queda reservada a #29.
 
 ### Fixed
 - Inferencias `Variant`, problemas de atomicidad y lifecycle detectados en fases anteriores.
@@ -61,3 +63,4 @@
 - Integración #23: PR #53, merge `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`, run `33331094583`, success.
 - Cierre #24: PR #54, acceptance HEAD `d4489ddae0467afeb262c2994e8b71f0f2afd311`, run `33331207740`, success.
 - Merge funcional #24: `7e281255322b6c7444d4177d85295b353babb38f`.
+- Tileset exterior #25: PR #56, run funcional `33333578933`, `gdlint`, `gdformat --check`, import Godot 4.7.2, smoke y suite headless en `success`.
