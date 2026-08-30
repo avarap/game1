@@ -6,12 +6,12 @@ El objetivo actual es un vertical slice original y muy pulido. El desarrollo sig
 
 ## Estado
 
-- Fase completada: **Fase 0 — Bootstrap**
-- Próxima fase: **Fase 1 — Core / Walking Prototype**
+- Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio**
+- Próxima fase: **Fase 5 — Simulación**
 - Godot objetivo de CI: **4.5**
 - Rama principal: `main`
 - Memoria de desarrollo: `DEV_MEMORY.md`
-- CI: importación, ejecución smoke-test de `main.tscn` y tests headless validados correctamente.
+- Última validación de fase: **Godot CI `33294286014` — success**
 
 ## Ejecutar
 
@@ -30,15 +30,23 @@ El objetivo actual es un vertical slice original y muy pulido. El desarrollo sig
 - Pausa: Esc
 - Panel debug: F12
 
+## Loop jugable disponible
+
+La build técnica actual permite probar movimiento, recolección, inventario, crafting/producción y el loop mínimo de cementerio. En la zona inicial existen interactuables para recibir un cadáver de prueba, prepararlo, enterrarlo y mejorar la tumba con lápida, valla y decoración. El estado del cementerio se integra con el guardado versionado.
+
 ## Arquitectura
 
-Los Autoloads se limitan a servicios globales reales: `EventBus`, `GameManager`, `TimeManager`, `SaveManager` y `AudioManager`. Los sistemas de gameplay permanecerán desacoplados y preferentemente basados en Resources tipados.
+Los Autoloads se limitan a servicios globales reales: `EventBus`, `GameManager`, `TimeManager`, `SaveManager` y `AudioManager`. Los sistemas de gameplay permanecen desacoplados, locales/contextuales cuando corresponde y preferentemente basados en Resources tipados.
+
+`SaveManager` agrega estado persistente de sistemas locales mediante providers del grupo `save_provider`, evitando acoplar el Autoload a implementaciones concretas como cementerio, NPCs o futuros sistemas del mundo.
 
 ## Tests
 
 ```bash
 godot --headless --path . --script res://tests/run_tests.gd
 ```
+
+En CI la suite usa un timeout explícito para evitar bloqueos silenciosos.
 
 ## Validación headless
 
