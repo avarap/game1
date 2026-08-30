@@ -13,6 +13,8 @@ func _initialize() -> void:
     failures.append_array(TestProductionQueue.run())
     failures.append_array(TestCemeteryFoundation.run())
     failures.append_array(TestCemeteryFlow.run())
+    failures.append_array(TestCemeteryPersistence.run())
+    failures.append_array(TestCemeteryGameplay.run())
 
     if failures.is_empty():
         print("[TEST] All core tests passed")

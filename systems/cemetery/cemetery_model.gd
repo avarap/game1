@@ -25,3 +25,14 @@ func snapshot() -> Dictionary:
         "rating": total_rating(),
         "graves": serialized_graves,
     }
+
+static func from_snapshot(config: CemeteryRatingConfig, snapshot_data: Dictionary) -> CemeteryModel:
+    var restored := CemeteryModel.new(config)
+    var grave_entries: Array = snapshot_data.get("graves", [])
+    for grave_value in grave_entries:
+        if typeof(grave_value) != TYPE_DICTIONARY:
+            continue
+        var grave := GraveRecord.from_snapshot(grave_value as Dictionary)
+        if grave != null:
+            restored.add_grave(grave)
+    return restored

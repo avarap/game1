@@ -30,3 +30,15 @@ func snapshot(config: CemeteryRatingConfig) -> Dictionary:
         "decoration_count": decoration_count,
         "rating": contribution(config),
     }
+
+static func from_snapshot(snapshot_data: Dictionary) -> GraveRecord:
+    var corpse_data: Dictionary = snapshot_data.get("corpse", {})
+    var corpse_state := CorpseState.from_snapshot(corpse_data)
+    if corpse_state == null:
+        return null
+
+    var grave := GraveRecord.new(corpse_state)
+    grave.has_headstone = bool(snapshot_data.get("has_headstone", false))
+    grave.has_fence = bool(snapshot_data.get("has_fence", false))
+    grave.decoration_count = maxi(int(snapshot_data.get("decoration_count", 0)), 0)
+    return grave

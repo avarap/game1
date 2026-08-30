@@ -1,10 +1,13 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
 [ext_resource type="PackedScene" path="res://world/resources/tree_resource.tscn" id="3_tree"]
 [ext_resource type="PackedScene" path="res://world/buildings/workbench.tscn" id="4_workbench"]
 [ext_resource type="PackedScene" path="res://world/storage/storage_chest.tscn" id="5_chest"]
+[ext_resource type="Script" path="res://world/cemetery/cemetery_controller.gd" id="6_cemetery_controller"]
+[ext_resource type="Script" path="res://world/cemetery/cemetery_action.gd" id="7_cemetery_action"]
+[ext_resource type="Resource" path="res://data/cemetery/default_rating.tres" id="8_rating"]
 
 [sub_resource type="RectangleShape2D" id="Wall_horizontal"]
 size = Vector2(1600, 32)
@@ -17,6 +20,9 @@ size = Vector2(28, 28)
 
 [sub_resource type="RectangleShape2D" id="Obstacle_shape"]
 size = Vector2(180, 90)
+
+[sub_resource type="RectangleShape2D" id="Cemetery_action_shape"]
+size = Vector2(42, 42)
 
 [node name="World" type="Node2D"]
 y_sort_enabled = true
@@ -37,6 +43,74 @@ position = Vector2(690, 330)
 
 [node name="StorageChest" parent="." instance=ExtResource("5_chest")]
 position = Vector2(750, 330)
+
+[node name="CemeteryController" type="Node" parent="."]
+script = ExtResource("6_cemetery_controller")
+rating_config = ExtResource("8_rating")
+
+[node name="CorpseDelivery" type="Area2D" parent="."]
+position = Vector2(900, 300)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("7_cemetery_action")
+prompt = "Recibir cadáver"
+controller_path = NodePath("../CemeteryController")
+action = 0
+
+[node name="Visual" type="Polygon2D" parent="CorpseDelivery"]
+polygon = PackedVector2Array(-21, -21, 21, -21, 21, 21, -21, 21)
+color = Color(0.42, 0.35, 0.28, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CorpseDelivery"]
+shape = SubResource("Cemetery_action_shape")
+
+[node name="PreparationTable" type="Area2D" parent="."]
+position = Vector2(960, 300)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("7_cemetery_action")
+prompt = "Preparar cadáver"
+controller_path = NodePath("../CemeteryController")
+action = 1
+
+[node name="Visual" type="Polygon2D" parent="PreparationTable"]
+polygon = PackedVector2Array(-21, -21, 21, -21, 21, 21, -21, 21)
+color = Color(0.48, 0.45, 0.4, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PreparationTable"]
+shape = SubResource("Cemetery_action_shape")
+
+[node name="GravePlot" type="Area2D" parent="."]
+position = Vector2(1020, 300)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("7_cemetery_action")
+prompt = "Enterrar cadáver"
+controller_path = NodePath("../CemeteryController")
+action = 2
+
+[node name="Visual" type="Polygon2D" parent="GravePlot"]
+polygon = PackedVector2Array(-21, -21, 21, -21, 21, 21, -21, 21)
+color = Color(0.32, 0.26, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravePlot"]
+shape = SubResource("Cemetery_action_shape")
+
+[node name="GraveUpgrade" type="Area2D" parent="."]
+position = Vector2(1080, 300)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("7_cemetery_action")
+prompt = "Mejorar tumba"
+controller_path = NodePath("../CemeteryController")
+action = 3
+
+[node name="Visual" type="Polygon2D" parent="GraveUpgrade"]
+polygon = PackedVector2Array(-21, -21, 21, -21, 21, 21, -21, 21)
+color = Color(0.38, 0.38, 0.42, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GraveUpgrade"]
+shape = SubResource("Cemetery_action_shape")
 
 [node name="Boundaries" type="Node2D" parent="."]
 

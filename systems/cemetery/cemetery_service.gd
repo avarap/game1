@@ -62,6 +62,17 @@ func add_decoration(grave_index: int, amount: int = 1) -> StringName:
 func total_rating() -> int:
     return model.total_rating() if model != null else 0
 
+func pending_ids() -> Array[StringName]:
+    var ids: Array[StringName] = []
+    for key in pending_corpses.keys():
+        ids.append(StringName(str(key)))
+    ids.sort()
+    return ids
+
+func first_pending_id() -> StringName:
+    var ids := pending_ids()
+    return ids[0] if not ids.is_empty() else &""
+
 func snapshot() -> Dictionary:
     var pending: Array[Dictionary] = []
     for corpse_value in pending_corpses.values():
@@ -72,6 +83,19 @@ func snapshot() -> Dictionary:
         "pending_corpses": pending,
         "cemetery": model.snapshot() if model != null else {},
     }
+
+static func from_snapshot(config: CemeteryRatingConfig, snapshot_data: Dictionary) -> CemeteryService:
+    var cemetery_data: Dictionary = snapshot_data.get("cemetery", {})
+    var restored_model := CemeteryModel.from_snapshot(config, cemetery_data)
+    var restored := CemeteryService.new(restored_model)
+    var pending_entries: Array = snapshot_data.get("pending_corpses", [])
+    for corpse_value in pending_entries:
+        if typeof(corpse_value) != TYPE_DICTIONARY:
+            continue
+        var corpse := CorpseState.from_snapshot(corpse_value as Dictionary)
+        if corpse != null and corpse.data != null and corpse.data.id != &"":
+            restored.pending_corpses[corpse.data.id] = corpse
+    return restored
 
 func _grave_at(index: int) -> GraveRecord:
     if model == null or index < 0 or index >= model.graves.size():
