@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://core/components/inventory_component.gd" id="2_inventory"]
 
 [sub_resource type="CapsuleShape2D" id="Capsule_player"]
 radius = 10.0
@@ -30,6 +31,10 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("Circle_interaction")
+
+[node name="InventoryComponent" type="Node" parent="."]
+script = ExtResource("2_inventory")
+capacity_slots = 20
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true

@@ -5,6 +5,8 @@ func _initialize() -> void:
     failures.append_array(TestTimeMath.run())
     failures.append_array(TestPlayerMovement.run())
     failures.append_array(TestWalkingPrototype.run())
+    failures.append_array(TestInventoryModel.run())
+    failures.append_array(TestItemsFoundation.run())
 
     if failures.is_empty():
         print("[TEST] All core tests passed")
