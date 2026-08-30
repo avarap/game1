@@ -73,7 +73,8 @@ func snapshot() -> Dictionary:
 		unlocked_ids.append(str(technology_id))
 	unlocked_ids.sort()
 	return {
-		&"points": {
+		&"points":
+		{
 			&"red": get_points(PointType.RED),
 			&"green": get_points(PointType.GREEN),
 			&"blue": get_points(PointType.BLUE),
