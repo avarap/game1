@@ -49,28 +49,28 @@
 ## Fase 7 — Mundo — ACTIVA
 Pueblo, bosque, mina, interiores, exploración y secretos.
 
-### Bloques completados / validados
-- [x] **#16 — Foundation técnica `TileMapLayer`** — PR #44. Seis capas contractuales, tile lógico 32 px, bounds estables, colisión tile-based e integración mínima en `world.tscn`.
-- [x] **#18 — Cementerio + taller del jugador** — PR #47. GREEN: run `33316327221`.
-- [x] **#19 — Bosque de recursos** — PR #48. GREEN: run `33316454888`.
-- [x] **#20 — Pueblo de Valdeniebla** — PR #46. GREEN: run `33315626881`.
-- [x] **#21 — Interiores modulares + transiciones** — PR #49. GREEN: run `33318051580`.
-- [x] **#22 — Mina inicial** — PR #50. GREEN: run `33318407597`.
-- [x] **#23 — Integración de zonas + exploración y secretos** — PR #52, implementada y validada; cierre efectivo al merge. GREEN: run `33330995787`.
+### Bloques completados
+- [x] **#16 — Foundation técnica `TileMapLayer`** — PR #44.
+- [x] **#18 — Cementerio + taller del jugador** — PR #47. GREEN: `33316327221`.
+- [x] **#19 — Bosque de recursos** — PR #48. GREEN: `33316454888`.
+- [x] **#20 — Pueblo de Valdeniebla** — PR #46. GREEN: `33315626881`.
+- [x] **#21 — Interiores modulares + transiciones** — PR #49. GREEN: `33318051580`.
+- [x] **#22 — Mina inicial** — PR #50. GREEN: `33318407597`.
+- [x] **#23 — Integración de zonas + exploración y secretos** — PR #53 fusionada como `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`; issue #23 cerrada. GREEN final del PR: `33331094583`.
 
 ### #23 — criterios cubiertos
 - [x] Cementerio/taller, bosque, pueblo, mina y dos interiores conectados desde un shell persistente.
 - [x] Una única instancia lógica de Player y controllers persistentes durante transiciones.
-- [x] Inventario/energía/quests/economía/relaciones/tecnología no se recrean al viajar.
+- [x] Estado RPG/cementerio preservado durante viajes y save/load.
 - [x] Spawns deterministas; viaje inválido conserva zona y posición.
 - [x] Cámara/bounds se adaptan a la zona activa.
 - [x] Aldren conserva identidad y estado persistente; se oculta/pausa fuera de cementerio.
 - [x] Forest resources, secret clearing, merchant spot, interiores y secret landmark de mina cubiertos por aceptación.
-- [x] `WorldLocationProvider` guarda/restaura zona, marker y posición con fallback seguro.
-- [x] `gdlint`, `gdformat --check`, Godot 4.7.2 import, smoke y suite headless verdes en `33330995787`.
+- [x] `WorldLocationProvider` guarda/resta zona, marker y posición con fallback seguro.
+- [x] `gdlint`, `gdformat --check`, Godot 4.7.2 import, smoke y suite headless verdes.
 
 ### Cierre de Fase 7: #24 — SIGUIENTE BLOQUE OBLIGATORIO
-No marcar Fase 7 como completada hasta que #23 esté fusionada y #24 valide conjuntamente:
+No marcar Fase 7 como completada hasta que #24 valide conjuntamente:
 - [ ] todas las zonas cargables y seis `TileMapLayer` contractuales;
 - [ ] recorrido integral sin softlocks y sin cambiar identidad del Player;
 - [ ] navegación/schedule de NPC y Y-sort sin regresiones;
