@@ -101,8 +101,8 @@ static func _validate_transition(failures: Array[String]) -> void:
 	var village_marker := village.get_node("EntryMarkers/exit_main") as Node2D
 	if not moved_village or player.global_position != village_marker.global_position:
 		failures.append("Transition should support safe exit markers across interior scenes")
-	var same_player := player.get_instance_id() == original_id
-	var state_preserved := player.get_meta("state_token") == "preserved"
+	var same_player: bool = player.get_instance_id() == original_id
+	var state_preserved: bool = player.get_meta("state_token") == "preserved"
 	if not same_player or not state_preserved:
 		failures.append("Transition should preserve the same player instance and state")
 
