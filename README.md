@@ -9,6 +9,8 @@ El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_
 - Fases **0–7 completadas**.
 - Fase 7 — Mundo cerrada mediante #24 / PR #54.
 - Fase 8 — Polish está **activa**.
+- Track 8A: descomposición, conservación y agricultura mínima ya integradas; siguiente bloque funcional #61 / 8A.4.
+- Sub-track visual: #25 y #28 integradas; #26/#29 siguen pendientes de integración segura.
 - Godot objetivo de runtime/CI: **4.7.2**.
 - Rama principal: `main`.
 - Contrato visual obligatorio: `ART_DIRECTION.md`.
@@ -33,6 +35,8 @@ El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_
 ## Loop jugable disponible
 
 La build técnica integra movimiento, recolección, inventario, energía, crafting/producción, cementerio, tiempo/día-noche, sueño, NPC con navegación/horarios persistentes, diálogo EN/ES, relaciones, quests, economía/comercio y tecnologías.
+
+El track 8A añade deterioro acelerado de cadáveres, conservación data-driven y agricultura mínima persistente basada en `fodder_turnip_seed`/`fodder_turnip`, con crecimiento gobernado por `TimeManager`, cosecha exactly-once y snapshot/restore determinista.
 
 El mundo modular conecta cementerio/propiedad, bosque, pueblo, interiores y mina mediante `ZoneManager`, conservando una sola instancia lógica del Player y los controllers persistentes. `WorldLocationProvider` guarda/resta zona, marker y posición; la cámara adapta sus bounds a cada zona.
 
@@ -72,8 +76,9 @@ Validaciones recientes:
 
 - Cierre Fase 6: PR #39, run `33308814397`.
 - Godot 4.7.2: PR #41, run `33309144543`.
-- Integración de mundo #23: PR #53, run `33331094583`.
-- Cierre Fase 7 #24: PR #54, acceptance HEAD `d4489ddae0467afeb262c2994e8b71f0f2afd311`, run `33331207740`.
+- Cierre Fase 7 #24: PR #54, run `33331207740`.
+- Props/edificios/cementerio #28: PR #79, main run `33340142216`.
+- Agricultura mínima 8A.3 / #60: PR #76, main run `33342619691`.
 
 ```bash
 godot --headless --path . --script res://tests/run_tests.gd
@@ -88,3 +93,4 @@ godot --headless --path . --script res://tests/run_tests.gd
 - `CHANGELOG.md`: historial técnico relevante.
 - `HISTORIA_PRINCIPAL.md`: dirección narrativa spoiler-light.
 - `LOCALIZATION.md`: política EN/ES.
+- `docs/design/`: biblioteca secundaria de ideas, backlog, orden futuro y prompts; no sustituye el roadmap activo.
