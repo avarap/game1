@@ -7,14 +7,14 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Repositorio: `avarap/game1`.
 - Rama principal: `main`.
 - Runtime/CI objetivo: **Godot 4.7.2**.
-- HEAD integrado de `main` al iniciar #23: `03c583d35a0e32f9a6a16e6225b9fa64969a4e25`.
-- Último CI verde de `main` previo a #23: run `33325706902`.
+- HEAD de integración de #23: `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a` (merge PR #53).
+- CI final del PR #53: run `33331094583`, `success`.
 - Fases 0–6: **COMPLETADAS**.
 - Fase 7 — Mundo: **ACTIVA**.
 - #17 contrato visual y #16 foundation `TileMapLayer`: completadas.
-- Mapas independientes de Fase 7 #18–#22: **integrados en `main`**.
-- **#23 — integración de zonas: IMPLEMENTADA Y VALIDADA en PR #52**, run `33330995787` verde; cierre efectivo al merge.
-- Próximo bloque tras integrar #23: **#24 — aceptación integral de mundo**.
+- Mapas independientes de Fase 7 #18–#22: integrados.
+- **#23 — integración de zonas: COMPLETADA**, PR #53 fusionada; issue #23 cerrada como `completed`.
+- Próximo bloque obligatorio: **#24 — aceptación integral de mundo**.
 - Fase 7 no se considera completada hasta cerrar #24.
 - Fase 8 y su sub-track visual #25–#31 permanecen bloqueados por #24.
 
@@ -68,75 +68,52 @@ No modificar estos sistemas durante Fase 7 salvo corrección estrictamente neces
 ## Fase 7 — Mundo — progreso integrado
 
 ### #16 — Foundation técnica — COMPLETADA
-
-- `world/maps/technical_map.tscn` + `TechnicalMap`.
-- 50x32 tiles, `1600 x 1024` px.
-- Colisión tile-based y seis capas contractuales.
-- `world.tscn` dejó atrás `Ground`, `Boundaries` y `WorkshopBlock` legacy.
-- PR #44; run funcional `33313715794`; CI de merge verde.
+- PR #44; seis capas contractuales, bounds estables y colisión tile-based.
+- GREEN: run funcional `33313715794`.
 
 ### #18 — Cementerio + taller — COMPLETADA
-
-- PR #47.
-- `world/maps/cemetery/cemetery_map.tscn`.
-- Reutiliza workbench, storage, sleep spot y cementerio existentes.
-- Markers estables: player/Aldren, salidas a bosque/pueblo y expansión futura.
-- Navegación y aceptación dedicada.
+- PR #47; mapa, interacciones críticas, markers y navegación.
 - GREEN: run `33316327221`.
 
 ### #19 — Bosque — COMPLETADA
-
-- PR #48.
-- `world/maps/forest/*`.
-- Caminos primario/secundario, límites, navegación, recursos existentes y secret clearing reservado.
+- PR #48; caminos, navegación, recursos y secret clearing reservado.
 - GREEN: run `33316454888`.
 
 ### #20 — Pueblo — COMPLETADA
-
-- PR #46.
-- `world/maps/village/village_map.tscn`.
-- Entrada, plaza, merchant spot, plots y markers de interiores.
+- PR #46; entrada, plaza, merchant spot y markers de interiores.
 - GREEN: run `33315626881`.
 
 ### #21 — Interiores — COMPLETADA
-
-- PR #49.
-- `home_workshop.tscn`, `village_building.tscn` e `InteriorTransition`.
-- Mantiene la misma instancia del player al moverlo entre markers.
+- PR #49; casa/taller, edificio de pueblo y transiciones estables.
 - GREEN: run `33318051580`.
 
 ### #22 — Mina — COMPLETADA
-
-- PR #50.
-- `world/maps/mine/mine_map.tscn`.
-- Entrada/salida, corredor principal, bifurcación, oclusión/foreground y landmark secreto.
-- Reutiliza recursos existentes; no introduce combate/minería avanzada.
+- PR #50; entrada/salida, corredores, oclusión y landmark secreto.
 - GREEN: run `33318407597`.
 
-### #23 — Integración de zonas + exploración — VALIDADA, PENDIENTE DE MERGE
+### #23 — Integración de zonas + exploración — COMPLETADA
 
-- PR #52: `feat/world-zone-integration`.
+- PR #53 fusionada en `main` como `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`.
 - `world/world.tscn` es un shell persistente con un único Player y controllers RPG/cementerio persistentes.
 - `ZoneManager` carga exactamente una zona en `ZoneContainer` y crea transiciones deterministas entre cementerio, bosque, pueblo, dos interiores y mina.
 - Player y controllers conservan `instance_id` durante el recorrido completo.
 - `WorldLocationProvider` persiste `zone_id`, marker y posición y restaura/clampa la ubicación con fallback seguro.
 - Cámara adopta bounds de cada mapa.
 - TradePoint se activa solo en pueblo; Aldren permanece persistente y se oculta/pausa fuera del cementerio.
-- La restauración de ubicación no refresca ni reescribe estado persistente de NPCs; se corrigió una regresión donde `load_game` podía alterar posición/estado de Aldren.
-- Los tests legacy ya no conservan referencias a interactables locales destruidos al reconstruir una zona durante load.
+- La restauración de ubicación no refresca ni reescribe estado persistente de NPCs.
+- Los tests legacy re-resuelven interactables locales después de reconstruir una zona durante load.
 - Aceptación #23 cubre transiciones, identidad persistente, recursos del bosque, secret clearing, merchant spot, interiores, secret landmark de mina, viajes inválidos y save/load de ubicación.
-- GREEN: run `33330995787` — `gdscript-quality`, import Godot 4.7.2, smoke y suite headless completa.
+- GREEN final del PR: run `33331094583` — `gdscript-quality`, import Godot 4.7.2, smoke y suite headless completa.
+- Issue #23 cerrada como `completed`.
 
 ## Errores detectados y decisiones durante #23
 
-- CI detectó que `SleepSpot` quedaba como referencia obsoleta después de que `WorldLocationProvider` reconstruyera la zona al cargar; el test ahora re-resuelve el interactable de la instancia activa.
-- CI detectó que la reconstrucción de zona podía sobreescribir el provider persistente de Aldren; `ZoneManager.travel_to` permite restaurar ubicación sin refrescar actores persistentes.
+- `SleepSpot` quedaba como referencia obsoleta después de que `WorldLocationProvider` reconstruyera la zona al cargar; el test ahora re-resuelve el interactable de la instancia activa.
+- La reconstrucción de zona podía sobreescribir el provider persistente de Aldren; `ZoneManager.travel_to` permite restaurar ubicación sin refrescar actores persistentes.
 - `gdformat` exigía la forma canónica de `ROUTES`; se aplicó el formato exacto y el quality gate global queda verde.
 - No se añadió arte/polish ni contenido de Fase 8.
 
 ## Próximo paso — #24 Aceptación integral de Fase 7
-
-Solo después de integrar/cerrar #23:
 
 1. Revalidar todas las zonas y seis `TileMapLayer` contractuales.
 2. Recorrer todas las rutas sin cambiar la identidad del Player.
