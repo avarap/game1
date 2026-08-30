@@ -5,8 +5,8 @@
 [node name="DebugPanel" type="PanelContainer"]
 offset_left = 16.0
 offset_top = 16.0
-offset_right = 360.0
-offset_bottom = 190.0
+offset_right = 480.0
+offset_bottom = 410.0
 script = ExtResource("1_debug")
 
 [node name="Margin" type="MarginContainer" parent="."]
@@ -18,10 +18,43 @@ theme_override_constants/margin_bottom = 12
 [node name="VBox" type="VBoxContainer" parent="Margin"]
 
 [node name="Title" type="Label" parent="Margin/VBox"]
-text = "DEBUG — Fase 0"
+text = "DEBUG — QA RPG"
 
 [node name="Status" type="Label" parent="Margin/VBox"]
 text = "Inicializando..."
+
+[node name="InventoryLabel" type="Label" parent="Margin/VBox"]
+text = "Inventario"
+
+[node name="InventoryButtons" type="HBoxContainer" parent="Margin/VBox"]
+
+[node name="AddWood" type="Button" parent="Margin/VBox/InventoryButtons"]
+text = "+1 madera"
+
+[node name="AddPlanks" type="Button" parent="Margin/VBox/InventoryButtons"]
+text = "+2 tablones"
+
+[node name="RelationshipLabel" type="Label" parent="Margin/VBox"]
+text = "Relación — Hermano Aldren"
+
+[node name="RelationshipButtons" type="HBoxContainer" parent="Margin/VBox"]
+
+[node name="RelationshipDown" type="Button" parent="Margin/VBox/RelationshipButtons"]
+text = "-5 relación"
+
+[node name="RelationshipUp" type="Button" parent="Margin/VBox/RelationshipButtons"]
+text = "+5 relación"
+
+[node name="QuestLabel" type="Label" parent="Margin/VBox"]
+text = "Quest — Primera tarea de Aldren"
+
+[node name="QuestButtons" type="HBoxContainer" parent="Margin/VBox"]
+
+[node name="StartQuest" type="Button" parent="Margin/VBox/QuestButtons"]
+text = "Iniciar quest"
+
+[node name="TurnInQuest" type="Button" parent="Margin/VBox/QuestButtons"]
+text = "Completar quest"
 
 [node name="AdvanceHour" type="Button" parent="Margin/VBox"]
 text = "+1 hora"
