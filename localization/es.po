@@ -74,3 +74,36 @@ msgstr "Progreso"
 
 msgid "UI_QUEST_JOURNAL_CLOSE"
 msgstr "Cerrar"
+
+msgid "UI_TRADE_PROMPT"
+msgstr "Comerciar"
+
+msgid "UI_TRADE_TITLE"
+msgstr "Comercio"
+
+msgid "UI_TRADE_BUY"
+msgstr "Comprar"
+
+msgid "UI_TRADE_SELL"
+msgstr "Vender"
+
+msgid "UI_TRADE_STOCK"
+msgstr "Stock"
+
+msgid "UI_TRADE_CLOSE"
+msgstr "Cerrar"
+
+msgid "UI_TRADE_SUCCESS"
+msgstr "Operación completada."
+
+msgid "UI_TRADE_INSUFFICIENT_FUNDS"
+msgstr "No tienes suficiente dinero."
+
+msgid "UI_TRADE_OUT_OF_STOCK"
+msgstr "No hay suficiente stock."
+
+msgid "UI_TRADE_INVENTORY_FULL"
+msgstr "El inventario está lleno."
+
+msgid "UI_TRADE_ERROR"
+msgstr "Operación rechazada."

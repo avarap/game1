@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/economy/trade_panel.gd" id="1_trade_panel"]
+
+[node name="TradeLayer" type="CanvasLayer"]
+layer = 25
+script = ExtResource("1_trade_panel")
+
+[node name="Panel" type="PanelContainer" parent="."]
+offset_left = 180.0
+offset_top = 120.0
+offset_right = 1100.0
+offset_bottom = 620.0
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/Margin/VBox"]
+text = "Trade"
+
+[node name="Balance" type="Label" parent="Panel/Margin/VBox"]
+text = "0g 0s 0c"
+
+[node name="Offers" type="VBoxContainer" parent="Panel/Margin/VBox"]
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="Feedback" type="Label" parent="Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 32)
+text = ""
+
+[node name="Close" type="Button" parent="Panel/Margin/VBox"]
+text = "Close"
