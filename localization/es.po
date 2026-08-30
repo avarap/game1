@@ -107,3 +107,9 @@ msgstr "El inventario está lleno."
 
 msgid "UI_TRADE_ERROR"
 msgstr "Operación rechazada."
+
+msgid "UI_HUD_ENERGY"
+msgstr "Energía"
+
+msgid "UI_HUD_STATUS_READY"
+msgstr "Listo"
