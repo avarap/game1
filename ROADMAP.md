@@ -39,7 +39,7 @@
 - [x] Relaciones cambian y desbloquean contenido.
 - [x] Quests pueden iniciarse, progresar y completarse.
 - [x] Las recompensas de quests se conceden una sola vez.
-- [ ] La economía compra y vende correctamente.
+- [x] La economía compra y vende correctamente.
 - [ ] Las tecnologías consumen puntos y desbloquean contenido.
 - [ ] Estado RPG completo persistente compatible con `SaveManager`.
 - [ ] Tests de aceptación del flujo RPG mínimo.
@@ -91,14 +91,29 @@
 - Final funcional: `979b2328cc01c8d5a7a0ae4201deabe58cf9cc38`.
 - Validación: `Godot CI` run `33301533785`, `gdscript-quality` y `validate-and-test` en `success`.
 
-### Próximo bloque — Foundation de economía
-- Unidad monetaria interna: cobre; `100 cobre = 1 plata`, `100 plata = 1 oro`.
-- Servicio puro para saldo, compra, venta, precios y stock.
-- Integración atómica con inventario existente: una operación inválida no modifica dinero ni objetos.
-- Datos de comerciante/precios desacoplados de NPC/UI.
-- Persistencia mediante provider local compatible con `SaveManager`.
+### Bloque 4 — Foundation de economía — COMPLETADO
+- [x] Cobre como unidad monetaria interna; `100 cobre = 1 plata`, `100 plata = 1 oro`.
+- [x] `WalletState`, ofertas, `MerchantData`, `MerchantState`, `EconomyTransaction` y `EconomyService` puros/data-driven.
+- [x] Compra/venta atómica con inventario, validando fondos, stock y capacidad antes del commit.
+- [x] `EconomyController` local + `save_provider`; primer comerciante `yard_supplier` con madera y tablas.
+- [x] Persistencia de saldo, `merchant_id` y stock mediante el contrato genérico de `SaveManager`.
+- [x] Rechazo de transacciones stale y rollback de inventario ante fallo de commit.
+- [x] `test_economy_foundation.gd` + `test_economy_gameplay.gd` cubren lógica pura, integración, atomicidad y snapshot.
+- [x] Quality gate ampliado a economía e inventario tocado.
+- Foundation pura inicial: PR #11, merge `102a1f8fd0d4188677937baa937bd5a8e063e6e4`.
+- Integración gameplay: `c1379f2d65f768b15d39df416fbe95d5f87c3409`.
+- Correcciones quality/formato: `c371147bf0f716c038eeef245ad6f7294421871e` y `91f66bed3621fc8f8577c1553d755d010bc58dff`.
+- Final validado: `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`, run `33304080534`, ambos jobs `success`.
+
+### Próximo bloque — Foundation de tecnologías
+- Puntos de progreso rojo, verde y azul como enteros no negativos.
+- `TechnologyData` data-driven con ID estable, categoría, costes, prerequisitos y unlock IDs mínimos.
+- Servicio puro para validar costes/prerequisitos y adquirir cada tecnología una sola vez.
+- `TechnologyController` local + `save_provider`, sin nuevo Autoload.
+- Integración mínima que demuestre un desbloqueo real por ID estable sin construir todavía árbol/UI completo.
+- Persistencia de puntos y tecnologías desbloqueadas compatible con `SaveManager`.
 - Tests puros + integración mínima + quality gate.
-- No abrir tecnologías ni fluctuaciones económicas hasta validar este bloque.
+- No abrir Fase 7 ni añadir contenido masivo antes de validar esta foundation.
 
 ## Fase 7 — Mundo
 Pueblo, bosque, mina, interiores, exploración y secretos.

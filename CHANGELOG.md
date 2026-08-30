@@ -17,16 +17,22 @@
 - Acciones `START` y `TURN_IN` en opciones de diálogo; `DialogueController` expone `option_committed` sin asumir lógica de quests.
 - Primera quest jugable de Aldren, `aldren_first_duty`, localizada EN/ES: aceptar mediante diálogo, preparar dos tablas y entregar mediante diálogo.
 - `test_quests.gd` y `test_quest_gameplay.gd` para estados, progreso, idempotencia, integración real y persistencia.
+- Representación monetaria entera con cobre como unidad base y conversión determinista a plata/oro.
+- `WalletState`, `MerchantOfferData`, `MerchantData`, `MerchantState`, `EconomyTransaction` y `EconomyService` para economía pura y data-driven.
+- `EconomyController` local con compra/venta integrada con inventario y persistencia mediante `save_provider`.
+- Primer comerciante `yard_supplier`, con ofertas y stock inicial de madera y tablas en `data/economy/yard_supplier.tres`.
+- `test_economy_foundation.gd` y `test_economy_gameplay.gd` para saldo, stock, atomicidad, transacciones stale, gameplay y snapshot.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales y mantiene sistemas de gameplay desacoplados.
-- `world.tscn` incorpora diálogo, relaciones y quests como controllers contextuales.
+- `world.tscn` incorpora diálogo, relaciones, quests y economía como controllers contextuales.
 - El jugador se registra en el grupo `player` para resolución contextual sin rutas rígidas.
 - Los textos se resuelven por claves de traducción; IDs, condiciones, quests y saves son independientes del idioma.
 - `DialogueInteractable` compone snapshots contextuales desde inventario, reloj, relaciones y quests.
 - `HISTORIA_PRINCIPAL.md` es una versión canónica spoiler-light; las quests introducen misterio mediante observaciones, no revelaciones prematuras.
-- El quality gate cubre ahora localización, diálogo, relaciones, condiciones narrativas, quests y sus tests.
-- **Fase 6 sigue activa: diálogo, relaciones y quests están validados; economía es el siguiente bloque.**
+- `InventoryModel` e `InventoryComponent` exponen comprobación de capacidad previa mediante `can_add_item()` para transacciones atómicas.
+- El quality gate cubre ahora localización, diálogo, relaciones, condiciones narrativas, quests, economía y los tests asociados.
+- **Fase 6 sigue activa: diálogo, relaciones, quests y economía están validados; tecnologías es el siguiente bloque.**
 
 ### Fixed
 - Inferencias `Variant` incompatibles con Godot 4.5 y fallos históricos de atomicidad/lifecycle documentados en fases anteriores.
@@ -36,6 +42,9 @@
 - Run `33299203135`: formato pendiente en `DialogueInteractable`, corregido en `fc446609004ea8031903c1c529144743cd963e51`.
 - Run `33301360854`: `test_quest_gameplay.gd` superaba el límite de 100 caracteres; corregido en `6fb3d7de1046433d08e1dd98759c378940ee0ef3`.
 - Runs posteriores de quests detectaron formato no canónico en `QuestData`/`QuestController`; se corrigió simplificando el código en vez de relajar `gdformat`.
+- Run `33303874511`: la integración de economía era funcional y sus tests pasaban, pero `gdlint` detectó exceso de `return` en `EconomyController.buy()`; se extrajeron validación y commits de compra/venta.
+- Runs `33303932566` y `33303999957`: `gdformat` detectó formato no canónico en `EconomyController`; se usó temporalmente `gdformat --diff` en `1dbdd8640ae39de9cd634c172f618319f86c71fa` para identificar la diferencia exacta y después se restauró el gate completo.
+- `91f66bed3621fc8f8577c1553d755d010bc58dff` aplica el formato canónico final sin modificar comportamiento.
 
 ### Validated
 - Fase 0: run `33278173612`, `success`.
@@ -48,3 +57,4 @@
 - Fase 6 relaciones: `fc446609004ea8031903c1c529144743cd963e51`, run `33299277228`, ambos jobs `success`.
 - Condiciones narrativas: `e1a19343e8303d1b28188a2a38c559d788c8087d`, run `33299990183`, ambos jobs `success`.
 - Foundation de quests: implementación inicial `1745b106ff366c6d8c98014b905f9069613ee271`, final funcional `979b2328cc01c8d5a7a0ae4201deabe58cf9cc38`, run `33301533785`, `gdscript-quality` y `validate-and-test` en `success`.
+- Foundation de economía: foundation pura merge `102a1f8fd0d4188677937baa937bd5a8e063e6e4`, integración gameplay `c1379f2d65f768b15d39df416fbe95d5f87c3409`, final validado `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`, run `33304080534`, `gdscript-quality` y `validate-and-test` en `success`.

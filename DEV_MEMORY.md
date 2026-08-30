@@ -8,12 +8,12 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama: `main`
 - Fase completada más reciente: **Fase 5 — Simulación**
 - Fase activa: **Fase 6 — RPG**
-- Estado Fase 6: diálogo bilingüe, relaciones, condiciones narrativas y **foundation de quests** completados y validados; economía y tecnologías siguen pendientes.
+- Estado Fase 6: diálogo bilingüe, relaciones, condiciones narrativas, quests y **economía** completados y validados; tecnologías siguen pendientes.
 - Fuente funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 - Fuente narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**, canónica y spoiler-light.
 - Política de idiomas: `LOCALIZATION.md`.
-- Último bloque funcional: `979b2328cc01c8d5a7a0ae4201deabe58cf9cc38`.
-- Última validación: `Godot CI` run `33301533785`, `success` en `gdscript-quality` y `validate-and-test`.
+- Último bloque funcional: `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`.
+- Última validación: `Godot CI` run `33304080534`, `success` en `gdscript-quality` y `validate-and-test`.
 
 ## Fases completadas
 
@@ -80,6 +80,33 @@ Tiempo/calendario, sueño, día/noche, `NPCData`, navegación, horarios/estados 
 - Final funcional: `979b2328cc01c8d5a7a0ae4201deabe58cf9cc38`.
 - Validación final: `Godot CI` `33301533785`, ambos jobs `success`.
 
+### Bloque 4 — Foundation de economía — COMPLETADO
+
+1. `MoneyMath` usa cobre como unidad base y mantiene conversiones deterministas: `100 cobre = 1 plata`, `100 plata = 1 oro`.
+2. `WalletState` mantiene saldo entero no negativo, validación de fondos, crédito/débito, clonación y aplicación de estado.
+3. `MerchantOfferData` define IDs estables y precios enteros de compra/venta; `MerchantData` agrupa ofertas y stock inicial desacoplados de NPC/UI.
+4. `MerchantState` mantiene stock lógico no negativo por `item_id`.
+5. `EconomyService` es lógica pura: simula compra/venta, valida fondos/stock y produce `EconomyTransaction` antes de aplicar cambios.
+6. Las transacciones rechazan estado obsoleto: una operación simulada no puede aplicarse si wallet o stock cambiaron entre simulación y commit.
+7. `InventoryModel`/`InventoryComponent` exponen `can_add_item()` para validar capacidad antes de mutar una compra.
+8. `EconomyController` es local, pertenece a `economy_controller` y `save_provider`, integra wallet + comerciante + inventario sin nuevo Autoload.
+9. Compra inválida por fondos, stock o capacidad no modifica dinero, stock ni inventario; los fallos durante commit restauran los cambios de inventario.
+10. Venta exige stock real del jugador y actualiza dinero, inventario y stock del comerciante de forma coordinada.
+11. Primer comerciante data-driven: `yard_supplier`, con ofertas de madera y tablas y stock inicial definido en `data/economy/yard_supplier.tres`.
+12. La economía persiste bajo `get_save_key() == "economy"`: saldo, `merchant_id` y stock del comerciante se restauran mediante el contrato genérico de `SaveManager`.
+13. `test_economy_foundation.gd` cubre matemáticas monetarias, invariantes, compra/venta pura, atomicidad y rechazo de transacciones stale.
+14. `test_economy_gameplay.gd` cubre el mundo real: compra, venta, inventario lleno atómico, stock, saldo y snapshot persistente.
+15. `world.tscn` incorpora `EconomyController` contextual; no se implementaron fluctuaciones, múltiples comerciantes ni UI comercial final.
+
+#### Incidencias del bloque
+- PR #11 / merge `102a1f8fd0d4188677937baa937bd5a8e063e6e4`: foundation pura inicial validada, todavía sin inventario/persistencia/world integration.
+- Commit `c1379f2d65f768b15d39df416fbe95d5f87c3409`: integración persistente completa. Run `33303874511`: importación, smoke y tests verdes; `gdlint` detectó exceso de returns en `EconomyController.buy()`.
+- `c371147bf0f716c038eeef245ad6f7294421871e`: refactoriza commit de compra/venta sin alterar comportamiento; `gdlint` pasa y queda pendiente formato.
+- Runs `33303932566` / `33303999957`: `gdformat` detectó formato no canónico; se mantuvo el gate estricto.
+- Commit diagnóstico `1dbdd8640ae39de9cd634c172f618319f86c71fa` usó `gdformat --diff` para aislar la única diferencia restante; el workflow completo se restauró después.
+- Formato final aplicado en `91f66bed3621fc8f8577c1553d755d010bc58dff` y quality gate restaurado en `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`.
+- Validación final: `Godot CI` `33304080534`, `gdscript-quality` y `validate-and-test` en `success`.
+
 ## Dirección narrativa vigente
 
 - `HISTORIA_PRINCIPAL.md` es deliberadamente spoiler-light.
@@ -97,31 +124,33 @@ Tiempo/calendario, sueño, día/noche, `NPCData`, navegación, horarios/estados 
 - UI observa servicios/modelos y emite intents; no posee lógica de negocio.
 - Gameplay data-driven mediante Resources tipados cuando corresponda.
 - Lógica crítica pura y testeable de forma aislada.
-- `SaveManager` agrega providers locales; las quests usan `get_save_key() == "quests"` dentro del estado de mundo agregado.
+- `SaveManager` agrega providers locales; quests y economía usan keys independientes dentro del estado de mundo agregado.
 - Recompensas de quests deben seguir siendo idempotentes cuando se añadan nuevos tipos de recompensa.
-- No abrir tecnologías antes de estabilizar economía.
+- Dinero y precios se representan exclusivamente como enteros en cobre; UI futura solo formatea oro/plata/cobre.
+- Economía dinámica, fluctuaciones de precio y múltiples comerciantes quedan fuera hasta fases posteriores/expansión de alcance.
 - No introducir alcance de Fase 7/8 durante Fase 6.
 
 ## Criterios restantes de Fase 6
 
 1. ~~Quests pueden iniciarse, progresar y completarse.~~ COMPLETADO.
 2. ~~Recompensas se conceden exactamente una vez.~~ COMPLETADO.
-3. Economía compra/vende correctamente.
+3. ~~Economía compra/vende correctamente.~~ COMPLETADO.
 4. Tecnologías consumen puntos y desbloquean contenido.
 5. Estado RPG completo persiste de forma compatible con `SaveManager`.
 6. Aceptación integral de Fase 6 y CI final verdes.
 
 ## Próximo bloque — Fase 6
 
-**Foundation de economía**, sin abrir todavía tecnologías:
+**Foundation de tecnologías**, sin ampliar todavía mundo/UI/polish:
 
-1. Representación monetaria estable usando cobre como unidad base y conversión `100 cobre = 1 plata`, `100 plata = 1 oro`.
-2. Servicio puro para saldo, compra, venta y validación de fondos/stock.
-3. Datos de comerciante/precios desacoplados de UI y NPC controller.
-4. Una integración mínima con inventario existente que sea atómica: una compra/venta inválida no modifica dinero ni inventario.
-5. Persistencia mediante provider local compatible con `SaveManager`.
-6. Tests puros + integración mínima + quality gate.
-7. No implementar fluctuaciones dinámicas ni múltiples comerciantes hasta validar la foundation.
+1. Representar puntos de progreso rojo, verde y azul como enteros no negativos.
+2. `TechnologyData` data-driven con ID estable, categoría, costes, prerequisitos y una lista mínima de unlock IDs.
+3. Servicio puro para validar costes/prerequisitos y comprar una tecnología exactamente una vez.
+4. `TechnologyController` local + `save_provider`; sin nuevo Autoload.
+5. Una integración mínima que demuestre que una tecnología desbloquea contenido existente mediante ID estable, sin construir todavía un árbol/UI completo.
+6. Persistencia de puntos y tecnologías desbloqueadas compatible con `SaveManager`.
+7. Tests puros + integración mínima + quality gate.
+8. No abrir Fase 7 ni añadir categorías/contenido masivo antes de validar esta foundation.
 
 ## Regla de continuidad
 
