@@ -47,7 +47,10 @@ func advance_decomposition(minutes: int) -> int:
 
 
 func set_preservation_modifiers(modifiers: PreservationModifiers) -> void:
-	preservation = modifiers.duplicate_values() if modifiers != null else PreservationModifiers.new()
+	if modifiers == null:
+		preservation = PreservationModifiers.new()
+	else:
+		preservation = modifiers.duplicate_values()
 	_preservation_remainder = 0
 
 
