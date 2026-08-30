@@ -16,16 +16,20 @@
 - Primer diálogo original bilingüe de Hermano Aldren en `data/dialogues/brother_aldren/introduction.tres`.
 - `test_dialogue_foundation.gd` y `test_dialogue_gameplay.gd`.
 - `LOCALIZATION.md` con la política de claves estables y ampliación de idiomas.
+- `RelationshipData`, `RelationshipService` y `RelationshipController` para relaciones runtime 0-100 sin nuevo Autoload.
+- Condición de diálogo `RELATIONSHIP_MIN` y relación data-driven de Hermano Aldren.
+- Opción bilingüe de Aldren desbloqueada al alcanzar relación 10, cubierta por `test_relationships.gd`.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales y mantiene el estado global desacoplado de sistemas concretos.
 - Storage se limita por scope y las dependencias entre escenas prefieren contratos/tipos/grupos.
 - El runner de tests ejecuta suites después de inicializar `SceneTree` para probar lifecycle real.
-- `world.tscn` incorpora la capa de diálogo local.
+- `world.tscn` incorpora la capa de diálogo local y un `RelationshipController` contextual.
 - Hermano Aldren incorpora un `DialogueInteractable` con un recurso de diálogo, sin codificar narrativa en `NPCController`.
+- `DialogueInteractable` incorpora el contexto de relaciones al iniciar el diálogo.
 - Los textos de diálogo se resuelven por claves de traducción; el grafo, condiciones e IDs son independientes del idioma.
-- El quality gate cubre la nueva foundation de localización/diálogo y sus tests.
-- **Fase 5 — Simulación está completada; Fase 6 — RPG está activa y su bloque 1 de diálogo bilingüe queda validado.**
+- El quality gate cubre la foundation de localización/diálogo, relaciones y sus tests.
+- **Fase 5 — Simulación está completada; Fase 6 — RPG sigue activa.**
 
 ### Fixed
 - Inferencias `Variant` incompatibles con Godot 4.5 y fallos históricos de atomicidad/lifecycle documentados en fases anteriores.
@@ -42,3 +46,4 @@
 - Fase 5 cierre: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`, ambos jobs `success`.
 - Fase 6 bloque 1 inicial: `60bc1e7e137fbbad61e8a6604aa52ae872b2415b`; run `33298684332` pasó importación, smoke y suite headless, pero falló únicamente `gdformat --check`.
 - Fase 6 bloque 1 final: `46a37e00c2ad968e91834da5577a6f512a28f0a9`, run `33298737838`, `gdscript-quality` y `validate-and-test` en `success`.
+- Fase 6 bloque 2 relaciones: implementación funcional `6d9eb1d54ab97ea92a8ee533bec1d9523ee2d1a5`; validación CI pendiente de este HEAD documental.
