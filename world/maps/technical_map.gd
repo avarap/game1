@@ -72,7 +72,14 @@ func _build_technical_tileset() -> TileSet:
 
 
 func _configure_layers(tile_set: TileSet) -> void:
-	for layer in [ground, paths, decoration_low, collision, objects_y_sorted, foreground_occlusion]:
+	for layer in [
+		ground,
+		paths,
+		decoration_low,
+		collision,
+		objects_y_sorted,
+		foreground_occlusion,
+	]:
 		layer.tile_set = tile_set
 	ground.collision_enabled = false
 	paths.collision_enabled = false
