@@ -55,19 +55,16 @@ func _build_technical_tileset() -> TileSet:
 	tile_set.add_source(source, SOURCE_ID)
 
 	var collision_data := source.get_tile_data(COLLISION_TILE, 0)
-	collision_data.add_collision_polygon(0)
-	collision_data.set_collision_polygon_points(
-		0,
-		0,
-		PackedVector2Array(
-			[
-				Vector2(-16, -16),
-				Vector2(16, -16),
-				Vector2(16, 16),
-				Vector2(-16, 16),
-			]
-		),
+	var collision_points := PackedVector2Array(
+		[
+			Vector2(-16, -16),
+			Vector2(16, -16),
+			Vector2(16, 16),
+			Vector2(-16, 16),
+		]
 	)
+	collision_data.add_collision_polygon(0)
+	collision_data.set_collision_polygon_points(0, 0, collision_points)
 	return tile_set
 
 
