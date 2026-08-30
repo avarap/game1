@@ -47,7 +47,7 @@ func start_quest(quest_id: StringName) -> bool:
 func turn_in_quest(quest_id: StringName) -> bool:
 	if not service.complete_quest(quest_id):
 		return false
-	service.claim_rewards(quest_id)
+	_apply_rewards(service.claim_rewards(quest_id))
 	return true
 
 
@@ -84,6 +84,17 @@ func get_journal_entries() -> Array[Dictionary]:
 		entry["objectives"] = objectives
 		entries.append(entry)
 	return entries
+
+
+func _apply_rewards(rewards: Array[QuestRewardData]) -> void:
+	if rewards.is_empty():
+		return
+	var technology := get_tree().get_first_node_in_group("technology_controller") as TechnologyController
+	for reward in rewards:
+		if reward == null or reward.reward_type != QuestRewardData.RewardType.TECHNOLOGY_POINTS:
+			continue
+		if technology != null:
+			technology.add_points(reward.red_points, reward.green_points, reward.blue_points)
 
 
 func _resolve_inventory() -> void:
