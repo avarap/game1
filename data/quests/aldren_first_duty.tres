@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="QuestData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://systems/quests/quest_data.gd" id="1_quest"]
 [ext_resource type="Script" path="res://systems/quests/quest_objective_data.gd" id="2_objective"]
@@ -16,6 +16,12 @@ script = ExtResource("3_reward")
 reward_type = 0
 flag_id = &"completed_first_duty"
 
+[sub_resource type="Resource" id="RewardTechnologyPoints"]
+script = ExtResource("3_reward")
+reward_type = 1
+red_points = 2
+green_points = 1
+
 [resource]
 script = ExtResource("1_quest")
 id = &"aldren_first_duty"
@@ -23,4 +29,4 @@ giver_npc_id = &"brother_aldren"
 title_key = &"QUEST_ALDREN_FIRST_DUTY_TITLE"
 description_key = &"QUEST_ALDREN_FIRST_DUTY_DESCRIPTION"
 objectives = Array[ExtResource("2_objective")]([SubResource("ObjectivePlanks")])
-rewards = Array[ExtResource("3_reward")]([SubResource("RewardFirstDuty")])
+rewards = Array[ExtResource("3_reward")]([SubResource("RewardFirstDuty"), SubResource("RewardTechnologyPoints")])
