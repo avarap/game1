@@ -3,65 +3,33 @@
 ## Unreleased
 
 ### Added
-- Inicialización del proyecto Godot 4.x.
-- Escena raíz ejecutable.
-- Autoloads globales mínimos.
-- InputMap base.
-- Logging mínimo.
-- Panel debug de bootstrap.
-- Utilidad pura `TimeMath` y test headless.
-- GitHub Actions para validación y tests.
-- Documentación base y memoria de desarrollo.
-- `world/world.tscn` como composición base del walking prototype.
-- `player/player.tscn` con `CharacterBody2D`, colisión, `InteractionArea` y `Camera2D`.
-- Movimiento 8-direccional con aceleración/desaceleración mediante `PlayerMovement`.
-- Límites de mapa, obstáculo de prueba y Y-sort.
-- Componente base `Interactable` y `DebugSign` funcional.
-- Tests de movimiento del jugador.
-- Test de aceptación `test_walking_prototype.gd` para validar escenas y componentes críticos de Fase 1.
-- `ItemData` tipado y primer item data-driven `data/items/wood.tres`.
-- `InventoryStack` e `InventoryModel` independientes de UI con stacking, capacidad, altas, bajas y consultas.
-- `InventoryComponent` local integrado en el jugador.
-- Tests `test_inventory_model.gd` y `test_items_foundation.gd` para la base de Fase 2.
-- `EnergyComponent` local con gasto/restauración de energía y señales.
-- `ResourceSourceComponent` reutilizable para loot, golpes restantes, coste de energía y herramienta requerida.
-- `ResourceNode` interactuable y `tree_resource.tscn` como primer recurso recolectable real.
-- Requisito mínimo de hacha mediante `equipped_tool_id` del jugador.
-- Feedback local de recolección para éxito, herramienta incorrecta, energía insuficiente, inventario lleno y recurso agotado.
-- Test de aceptación `test_resource_loop.gd` para el loop completo de recolección y sus principales errores.
-- `RecipeIngredient` y `RecipeData` como Resources tipados para crafting data-driven.
-- Item procesado `data/items/plank.tres` y receta `data/recipes/wood_to_plank.tres`.
-- `CraftingService` puro con validación y mutación atómica del inventario.
-- `CraftingStation` contextual y `world/buildings/workbench.tscn` como primera estación funcional.
-- Feedback mínimo de crafting y coste de 2 de energía solo en crafts exitosos.
-- `test_crafting_foundation.gd` para validar receta, atomicidad, errores e interacción jugador + banco.
-- `StorageProvider` y `StorageNetwork` para agregar inventarios compatibles sin acoplar crafting a cofres concretos.
-- `StorageChest` y `world/storage/storage_chest.tscn` como primer contenedor compatible.
-- `test_storage_network.gd` para disponibilidad agregada, fuentes, consumo distribuido y aceptación banco + jugador + cofre.
+- Bootstrap Godot 4.x, escena raíz, cinco Autoloads globales, InputMap, logging, debug, guardado versionado, tests y CI headless.
+- Walking prototype con mundo base, `CharacterBody2D`, movimiento 8 direcciones, cámara, colisiones, Y-sort e interacción reutilizable.
+- Sistema de items/inventario data-driven con `ItemData`, stacks, capacidad e `InventoryComponent` local.
+- `EnergyComponent`, recursos recolectables, herramienta requerida, loot y feedback mínimo.
+- `RecipeIngredient`, `RecipeData`, `CraftingService`, `CraftingStation` y `Workbench`.
+- `StorageProvider`, `StorageNetwork` y `StorageChest` para crafting distribuido desacoplado de cofres concretos.
+- `ProductionJob` y `ProductionQueue` para recetas temporizadas y colas mínimas.
+- Test `test_production_queue.gd` para enqueue, progreso, finalización, almacenamiento bloqueado/reintento e integración con estación.
 
 ### Changed
-- La Fase 2 quedó formalmente iniciada con criterios de aceptación explícitos en `ROADMAP.md`.
-- `tests/run_tests.gd` incluye las pruebas de items/inventario, resource loop, crafting y StorageNetwork.
-- `InventoryModel` usa tipado entero explícito y `mini`/`maxi` para cumplir el modo estricto de CI.
-- El jugador integra ahora `EnergyComponent` además de `InventoryComponent`.
-- `world/world.tscn` incluye un árbol recolectable, un banco de trabajo y un cofre compatible en la zona inicial.
-- La Fase 2 queda completada tras validar el resource loop completo.
-- La Fase 3 queda formalmente activa con criterios explícitos; no se cerrará hasta soporte mínimo de duración/colas y CI final.
-- `CraftingService.craft()` conserva compatibilidad, pero delega en `craft_with_storage()` sobre `StorageNetwork`.
-- `CraftingStation` puede descubrir proveedores por grupo en juego o recibirlos explícitamente para tests/alcances futuros por zona.
+- El crafting instantáneo opera sobre `StorageNetwork` manteniendo compatibilidad con inventario individual.
+- Las estaciones pueden descubrir storage por grupo o recibir providers explícitos para tests/alcances futuros.
+- Las recetas con `duration_seconds > 0` consumen/reservan inputs al encolar y producen outputs al finalizar.
+- `CraftingStation` conserva el flujo instantáneo y añade ejecución temporizada sin introducir nuevos Autoloads.
+- La energía de producción temporizada se cobra una sola vez cuando el trabajo es aceptado.
+- Fase 3 queda completada y Fase 4 — Cementerio pasa a ser la siguiente fase.
 
 ### Fixed
-- Corregidos warnings de inferencia `Variant` tratados como errores por Godot 4.5 en la lógica de inventario.
-- La recolección revierte cualquier loot parcial cuando el inventario no puede aceptar la cantidad completa, evitando consumir energía o dejar estado parcial.
-- El crafting simula consumo y producción antes de aplicar cambios, evitando pérdida de inputs cuando los outputs no caben.
-- Corregido el acceso a `get_tree()` de `CraftingStation` durante tests off-tree; ahora usa `is_inside_tree()` y registro explícito de proveedores.
+- Inferencias `Variant` incompatibles con el modo estricto de Godot 4.5 en inventario.
+- Recolección y crafting evitan pérdida parcial de recursos mediante simulación/atomicidad.
+- `CraftingStation` evita `get_tree()` cuando se ejecuta off-tree en tests.
+- Producción temporizada no pierde outputs si el almacenamiento se llena al completar: el job queda en `awaiting_output` y reintenta el depósito.
 
 ### Validated
-- Fase 0 validada mediante `Godot CI` run `33278173612`.
-- Fase 1 validada mediante `Godot CI` run `33280758441` sobre `ae77e23a190c4cb7824eff0bce8c6cf672fb381f`.
-- El primer intento de Fase 2 (`33283192098`) detectó el problema de tipado estricto en `InventoryModel`.
-- El bloque base corregido en `2412414889c0a5d6e403c9178aede9b31fa045c5` quedó validado mediante `Godot CI` run `33283283684`.
-- El resource loop completo en `c196e3ab5a42adffe97278f0b0daa8960c789e04` quedó validado mediante `Godot CI` run `33285578050`: importación, smoke test y suite headless en `success`.
-- El bloque 1 de crafting en `d284104ab8b9f300362413cd666bdab6b8855fbd` quedó validado mediante `Godot CI` run `33287832451`: importación, smoke test y suite headless en `success`.
-- El primer CI de StorageNetwork (`33290155936`) detectó un fallo de tests por `get_tree()` fuera del árbol; importación y smoke test pasaron.
-- La corrección `9f982b2e79e937449a5707f18287364bdec063b1` quedó validada mediante `Godot CI` run `33290225076`: importación, smoke test y suite headless en `success`.
+- Fase 0: `Godot CI` run `33278173612`, `success`.
+- Fase 1: run `33280758441`, `success`.
+- Fase 2: run `33285578050`, `success`.
+- Fase 3 bloque 1 crafting: run `33287832451`, `success`.
+- Fase 3 StorageNetwork: tras corregir el fallo off-tree detectado en `33290155936`, run `33290225076` finalizó en `success`.
+- Fase 3 producción temporizada/colas: commit `2252fcbd4280acec1e60530c026a8f5dd3365b91`, `Godot CI` run `33292481990`, `success` con importación, smoke test de `main.tscn` y suite headless.
