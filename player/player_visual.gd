@@ -2,6 +2,17 @@ class_name PlayerVisual
 extends AnimatedSprite2D
 
 const MOVE_EPSILON := 1.0
+const DIRECTION_NAMES: Array[StringName] = [
+	&"e",
+	&"se",
+	&"s",
+	&"sw",
+	&"w",
+	&"nw",
+	&"n",
+	&"ne",
+]
+
 var _facing := &"s"
 
 func _process(_delta: float) -> void:
@@ -18,21 +29,5 @@ func _process(_delta: float) -> void:
 func _direction_name(value: Vector2) -> StringName:
 	var angle := value.angle()
 	var octant := int(round(angle / (PI / 4.0)))
-	match octant:
-		-4, 4:
-			return &"w"
-		-3:
-			return &"nw"
-		-2:
-			return &"n"
-		-1:
-			return &"ne"
-		0:
-			return &"e"
-		1:
-			return &"se"
-		2:
-			return &"s"
-		3:
-			return &"sw"
-	return &"s"
+	var direction_index := (octant + DIRECTION_NAMES.size()) % DIRECTION_NAMES.size()
+	return DIRECTION_NAMES[direction_index]
