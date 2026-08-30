@@ -8,9 +8,4 @@ extends Resource
 
 
 func is_valid() -> bool:
-	return (
-		offer_id != &""
-		and item_id != &""
-		and buy_price_copper > 0
-		and sell_price_copper > 0
-	)
+	return offer_id != &"" and item_id != &"" and buy_price_copper > 0 and sell_price_copper > 0

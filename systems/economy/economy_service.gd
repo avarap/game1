@@ -22,10 +22,7 @@ static func get_sell_total(offer: MerchantOfferData, quantity: int) -> int:
 
 
 static func simulate_buy(
-	wallet: WalletState,
-	merchant: MerchantState,
-	offer: MerchantOfferData,
-	quantity: int
+	wallet: WalletState, merchant: MerchantState, offer: MerchantOfferData, quantity: int
 ) -> EconomyTransaction:
 	var validation := _validate_common(wallet, merchant, offer, quantity)
 	if validation != RESULT_OK:
@@ -47,19 +44,12 @@ static func simulate_buy(
 	if not merchant_after.remove_stock(offer.item_id, quantity):
 		return _failure(RESULT_INVALID_STATE)
 	return EconomyTransaction.new(
-		RESULT_OK,
-		wallet_before,
-		merchant_before,
-		wallet_after,
-		merchant_after
+		RESULT_OK, wallet_before, merchant_before, wallet_after, merchant_after
 	)
 
 
 static func simulate_sell(
-	wallet: WalletState,
-	merchant: MerchantState,
-	offer: MerchantOfferData,
-	quantity: int
+	wallet: WalletState, merchant: MerchantState, offer: MerchantOfferData, quantity: int
 ) -> EconomyTransaction:
 	var validation := _validate_common(wallet, merchant, offer, quantity)
 	if validation != RESULT_OK:
@@ -77,18 +67,12 @@ static func simulate_sell(
 	if not merchant_after.add_stock(offer.item_id, quantity):
 		return _failure(RESULT_INVALID_STATE)
 	return EconomyTransaction.new(
-		RESULT_OK,
-		wallet_before,
-		merchant_before,
-		wallet_after,
-		merchant_after
+		RESULT_OK, wallet_before, merchant_before, wallet_after, merchant_after
 	)
 
 
 static func apply_transaction(
-	transaction: EconomyTransaction,
-	wallet: WalletState,
-	merchant: MerchantState
+	transaction: EconomyTransaction, wallet: WalletState, merchant: MerchantState
 ) -> bool:
 	if transaction == null or not transaction.is_success():
 		return false
@@ -111,10 +95,7 @@ static func apply_transaction(
 
 
 static func _validate_common(
-	wallet: WalletState,
-	merchant: MerchantState,
-	offer: MerchantOfferData,
-	quantity: int
+	wallet: WalletState, merchant: MerchantState, offer: MerchantOfferData, quantity: int
 ) -> StringName:
 	if wallet == null or merchant == null or not merchant.is_valid():
 		return RESULT_INVALID_STATE
