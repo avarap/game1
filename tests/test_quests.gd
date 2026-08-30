@@ -125,6 +125,15 @@ static func _test_journal_read_model(quest: QuestData, failures: Array[String]) 
 
 
 static func _test_journal_presentation(quest: QuestData, failures: Array[String]) -> void:
+	var previous_locale := String(LocalizationService.get_locale())
+	LocalizationService.set_locale("en")
+	var english_title := LocalizationService.translate_key(&"UI_QUEST_JOURNAL_TITLE")
+	LocalizationService.set_locale("es")
+	var spanish_title := LocalizationService.translate_key(&"UI_QUEST_JOURNAL_TITLE")
+	LocalizationService.set_locale(previous_locale)
+	if english_title == spanish_title:
+		failures.append("Quest journal generic UI labels should support English and Spanish")
+
 	var journal_path := "res://ui/quests/quest_journal.gd"
 	if not ResourceLoader.exists(journal_path):
 		failures.append("Quest journal UI script should exist")
@@ -155,17 +164,12 @@ static func _test_journal_presentation(quest: QuestData, failures: Array[String]
 			"objectives": [{"id": &"prepare_planks", "current": 2, "required": 2}],
 		},
 	]
-	var previous_locale := String(LocalizationService.get_locale())
 	LocalizationService.set_locale("en")
-	var english_title := LocalizationService.translate_key(&"UI_QUEST_JOURNAL_TITLE")
 	var english_sections: Dictionary = journal.call("build_sections", entries)
 	LocalizationService.set_locale("es")
-	var spanish_title := LocalizationService.translate_key(&"UI_QUEST_JOURNAL_TITLE")
 	var spanish_sections: Dictionary = journal.call("build_sections", entries)
 	LocalizationService.set_locale(previous_locale)
 
-	if english_title == spanish_title:
-		failures.append("Quest journal generic UI labels should support English and Spanish")
 	var english_active: Array = english_sections.get("active", [])
 	var english_completed: Array = english_sections.get("completed", [])
 	var spanish_active: Array = spanish_sections.get("active", [])
