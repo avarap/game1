@@ -54,13 +54,21 @@ static func run() -> Array[String]:
     elif absf(restored_pending.current_decay - 0.39) > 0.001 or restored_pending.current_preparation_level != 1:
         failures.append("Pending corpse should preserve decay and preparation")
 
+    var main_loop := Engine.get_main_loop() as SceneTree
+    var save_manager := main_loop.root.get_node_or_null("SaveManager") if main_loop != null else null
+    if save_manager == null:
+        failures.append("SaveManager autoload should exist for cemetery persistence test")
+        return failures
+
     var save_path := "user://phase4_cemetery_test.json"
     var world_data := {"cemetery": snapshot}
-    if not SaveManager.save_game(save_path, world_data):
+    var save_result: Variant = save_manager.call("save_game", save_path, world_data)
+    if not bool(save_result):
         failures.append("SaveManager should persist cemetery world data")
         return failures
 
-    var payload := SaveManager.load_game(save_path, false)
+    var payload_value: Variant = save_manager.call("load_game", save_path, false)
+    var payload: Dictionary = payload_value if typeof(payload_value) == TYPE_DICTIONARY else {}
     var loaded_world: Dictionary = payload.get("world", {})
     var loaded_cemetery: Dictionary = loaded_world.get("cemetery", {})
     var loaded_service := CemeteryService.from_snapshot(config, loaded_cemetery)
