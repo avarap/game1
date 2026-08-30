@@ -8,17 +8,17 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama principal: `main`.
 - Runtime/CI objetivo: **Godot 4.7.2**.
 - Fases 0–7: **COMPLETADAS**.
-- Fase 7 — Mundo cerrada mediante #24.
-- Integración #23: PR #53, merge `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`.
-- Aceptación #24: PR #54, acceptance HEAD `d4489ddae0467afeb262c2994e8b71f0f2afd311`, run `33331207740`, `success`.
-- Merge funcional de #24 en `main`: `7e281255322b6c7444d4177d85295b353babb38f`.
 - Fase 8 — Polish: **ACTIVA**.
-- #25 — Tileset exterior: implementado en PR #56; atlas original `256 x 256`, 64 celdas de `32 x 32`; run funcional `33333578933`, `success`.
-- Próximo bloque recomendado: **#26 — Player spritesheet + animaciones**, sin iniciar #29 antes de completar también #28.
+- #25 — Tileset exterior: completado en PR #56; run `33333578933`, success.
+- Track **8A — Gameplay Depth & Feel**: diseño aprobado y en implementación.
+- **8A.1 — Descomposición acelerada:** implementado en PR #57; CI funcional `33334955947`, success.
+- Diseño 8A: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
+- Próximo bloque del track de profundidad: **8A.2 — conservación**.
 
 ## Fuentes de verdad
 
 - Funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
+- Diseño jugable: `GAME_DESIGN.md` + spec 8A.
 - Planificación: `ROADMAP.md` + issues activas.
 - Contrato visual: `ART_DIRECTION.md`.
 - Narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**.
@@ -47,71 +47,94 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 ## Contrato de mundo estable tras Fase 7
 
-`ART_DIRECTION.md` + #16 fijan:
+`ART_DIRECTION.md` + #16 fijan proyección 2D ortográfica cenital 3/4, tile lógico `32 x 32 px`, seis `TileMapLayer`, pivote/Y-sort en pies, resolución `1280 x 720`, zoom base `1.5x` y gameplay fuera de tiles.
 
-- proyección 2D ortográfica cenital 3/4;
-- tile lógico `32 x 32 px`;
-- capas `ground`, `paths`, `decoration_low`, `collision`, `objects_y_sorted`, `foreground_occlusion`;
-- pivote/Y-sort en pies;
-- resolución de referencia `1280 x 720`, zoom base `1.5x`;
-- `TileMapLayer` como base de composición;
-- gameplay fuera de los tiles.
+`world/world.tscn` es el shell persistente. `ZoneManager` mantiene una sola zona bajo `ZoneContainer` y conecta cementerio/propiedad, bosque, pueblo, dos interiores y mina. Player, controllers y Brother Aldren preservan identidad lógica durante viajes. `WorldLocationProvider` persiste zona/marker/posición, la cámara adopta bounds de la zona activa y comercio/NPC se activan según zona.
 
-El mundo integrado usa `world/world.tscn` como shell persistente. `ZoneManager` mantiene una sola zona bajo `ZoneContainer` y conecta cementerio/propiedad, bosque, pueblo, dos interiores y mina. Player, controllers RPG/cementerio y Brother Aldren mantienen identidad lógica durante viajes.
+## Fase 8 — visual
 
-`WorldLocationProvider` persiste zona, marker y posición, con fallback/clamp seguro. La cámara adopta bounds de la zona activa. `TradePoint` solo se activa en pueblo y Aldren se oculta/pausa fuera del cementerio sin perder su provider persistente.
+- #25 introdujo el atlas exterior original `256 x 256`, 64 celdas de `32 x 32`, desacoplado de gameplay/colisión/navegación.
+- #26–#31 siguen su propio sub-track visual; pueden avanzar en trabajo independiente siempre que no pisen contratos de gameplay 8A.
+- #29 permanece dependiente de los assets previos definidos en el roadmap.
 
-## Fase 7 — cierre #24
+## Fase 8A — decisiones aprobadas
 
-`TestWorldPhase7Acceptance` agrega explícitamente en un único gate final:
+### Cadáveres
+- Estado canónico: `decay_percent: int` `0..100` y `age_minutes: int`.
+- No existe obligación de compatibilidad con saves legacy porque aún no hay saves de jugadores en circulación.
+- Estados visibles: Fresh `0–24`, Fading `25–49`, Decomposed `50–74`, Rotten `75–100`.
+- Ritmo por edad: 0–24 h lento, 24–48 h medio, 48–72 h rápido, >72 h muy rápido.
+- La implementación 8A.1 usa acumulador privado entero para conservar progreso subporcentual sin persistir floats.
+- Calidad efectiva pierde 0/1/2/3 puntos según estado, con mínimo 0.
+- Grandes saltos de tiempo producen el mismo resultado que avances equivalentes pequeños.
+- Preparar no reduce edad ni descomposición.
+- Objetivo posterior: preparar, enterrar, cremar e investigar con trade-offs distintos.
 
-- foundation de mapas y seis `TileMapLayer`;
-- cementerio/taller;
-- bosque;
-- pueblo;
-- interiores;
-- mina;
-- recorrido completo de zonas y persistencia de Player/controllers;
-- navegación de NPC;
-- rutinas/schedule de Brother Aldren.
+### Conservación — siguiente bloque
+- `effective_rate = age_rate × technology_modifier × facility_modifier × tool_modifier`.
+- Modificadores neutrales por defecto y componibles.
+- Tecnología, utensilios e instalaciones pueden ralentizar el deterioro, nunca rebobinarlo.
+- La rampa de entrega será logística únicamente, sin bonus de conservación.
 
-La suite final valida también save/load de ubicación, camera bounds, colisiones, spawns y transiciones mediante las suites especializadas que agrega. CI `33331207740` pasó `gdlint`, `gdformat --check`, import Godot 4.7.2, smoke y suite headless completa.
+### Servicio funerario
+- Entrega diaria determinista al atardecer; objetivo inicial **18:00**.
+- Cruzar las 18:00 mediante juego normal, sueño o salto de tiempo procesa como máximo una entrega por día.
+- Save/load no puede duplicar entregas.
+- Introducción temporalmente gratuita; tras quest requiere alimento cultivable desde un comedero.
+- Sin alimento suficiente: entrega suspendida, sin inventario negativo.
+- Personaje/animal/quest/textos/assets serán originales.
 
-## Fase 8 — #25 tileset exterior
+### Agricultura y recurso multiuso
+- Stable IDs: `fodder_turnip_seed` y `fodder_turnip`.
+- Loop mínimo: semilla → parcela → crecimiento por TimeManager → cosecha → inventario → persistencia.
+- Usos: alimentar transporte, vender, comprar de emergencia, cocinar y almacenar.
+- Cultivar debe ser más sostenible que comprar continuamente.
+- Cocina reutiliza `RecipeData`/crafting y recupera energía; no introducir hambre.
 
-PR #56 introduce únicamente `art/environment/tilesets/*`, respetando ownership y sin tocar mapas/gameplay:
+### Logística, economía y feedback
+- Inicio: descarga junto al camino; progresión: rampa desbloqueable al área de recepción.
+- Pipeline futuro de precios: base × global × merchant × relationship, neutral `1.0` por defecto; sin supply/demand complejo.
+- Feedback placeholder reutiliza EventBus/AudioManager.
 
-- `exterior_tileset.svg`: atlas original `256 x 256`, cuadrícula `8 x 8`, tile nativo `32 x 32`;
-- familias de hierba/tierra, caminos y transiciones, suelo de cementerio, bosque, plaza/pueblo, bordes de terreno y decoración baja;
-- geometría alineada a píxel entero con `crispEdges` y paleta derivada de `ART_DIRECTION.md`;
-- `README.md` local documenta coordenadas estables del atlas y prohíbe codificar gameplay/colisión/navegación en arte;
-- no se copiaron assets, formas distintivas, paletas propietarias ni composiciones de Graveyard Keeper.
+## Implementación 8A.1
 
-Validación funcional del atlas en run `33333578933`: quality gate global, import Godot 4.7.2, smoke y suite headless completos en verde. La integración del atlas en mapas pertenece a #29 y permanece bloqueada por #28.
+Archivos principales:
+- `systems/cemetery/corpse_data.gd`: `decay_percent` entero 0–100.
+- `systems/cemetery/corpse_state.gd`: `age_minutes`, integración acelerada por bandas, estados, calidad efectiva y snapshot integer.
+- `world/cemetery/cemetery_controller.gd`: demo corpse migrado al nuevo contrato.
+- `tests/test_corpse_decomposition.gd`: contrato específico de aceleración, thresholds, determinismo y persistencia.
+- Tests legacy de cementerio actualizados para validar el nuevo contrato en vez del modelo float lineal eliminado.
 
-## Incidencias relevantes resueltas en Fase 7
+TDD:
+- RED confirmado: el nuevo suite falló únicamente porque faltaba `advance_decomposition` mientras suites anteriores permanecían verdes.
+- GREEN funcional: run `33334955947` pasó quality gate global, Godot 4.7.2 import, smoke y suite headless completa.
+- Se corrigieron únicamente discrepancias mecánicas de `gdlint`/`gdformat`; no se relajó el gate.
 
-- Los tests legacy dejaron de retener referencias a interactables de zonas destruidas durante reconstrucción por load.
-- Restaurar `world_location` ya no sobreescribe el estado persistente de Brother Aldren.
-- `zone_manager.gd` quedó en formato canónico de `gdformat`.
-- El quality gate permanece global y estricto; no se relajaron reglas para cerrar la fase.
-- No se introdujo arte final ni contenido de Fase 8 durante el cierre.
+## Scope fuera de 8A
 
-## Próximo paso — Fase 8
+- Hambre/sed.
+- Estaciones/clima agrícola.
+- Riego/fertilizante complejo.
+- Mercado supply/demand.
+- Combate nuevo.
+- Mapas grandes nuevos.
+- Copiar elementos específicos/protegidos del benchmark.
 
-1. Cerrar/mergear #25 solo con CI final verde del HEAD documentado.
-2. Iniciar **#26 — Player spritesheet + animaciones de movimiento** como siguiente P0 independiente.
-3. Mantener velocidad, colisión e interacción del Player sin cambios; sustituir únicamente presentación según #26 y `ART_DIRECTION.md`.
-4. #27 y #28 siguen independientes; #29 no se inicia hasta que #25 y #28 estén cerradas.
-5. Mantener Godot 4.7.2, quality gate global, import, smoke y suite headless verdes.
+## Próximo paso
+
+1. Integrar PR #57 solo tras CI verde del HEAD documental final.
+2. Verificar CI posterior al merge en `main`.
+3. Empezar **8A.2 — conservación** con TDD: neutralidad, composición, reducción de velocidad y no-rewind.
+4. Mantener independencia con el sub-track visual #26–#31.
+5. No marcar Fase 8 completa al cerrar 8A.1 ni 8A.
 
 ## Regla de continuidad
 
 Al retomar:
-1. Leer `DEV_MEMORY.md`, `ROADMAP.md`, `ART_DIRECTION.md` y la issue activa.
+1. Leer `DEV_MEMORY.md`, `ROADMAP.md`, `GAME_DESIGN.md`, spec 8A, `ART_DIRECTION.md` y la issue/PR activo.
 2. Revisar `main`, PRs abiertos y último CI.
 3. Comprobar dependencias antes de iniciar trabajo nuevo.
-4. Implementar un bloque coherente y pequeño.
+4. Implementar un bloque coherente y pequeño mediante TDD cuando cambie comportamiento.
 5. Ejecutar quality gate, importación, smoke y suite headless.
 6. Corregir errores críticos antes de avanzar.
 7. Actualizar `DEV_MEMORY.md`, `ROADMAP.md` y `CHANGELOG.md`.

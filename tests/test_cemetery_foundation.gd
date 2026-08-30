@@ -11,17 +11,16 @@ static func run() -> Array[String]:
 
 	var corpse_data := CorpseData.new()
 	corpse_data.id = &"test_corpse"
-	corpse_data.decay = 0.10
 	corpse_data.preparation_level = 1
 	corpse_data.burial_value = 2
 
-	var corpse := CorpseState.new(corpse_data, 0.05)
-	var decay_after_two_hours: float = corpse.advance_decay(2.0)
-	if absf(decay_after_two_hours - 0.20) > 0.001:
-		failures.append("Corpse decay should advance deterministically")
-	corpse.advance_decay(100.0)
-	if not corpse.is_fully_decayed() or corpse.current_decay != 1.0:
-		failures.append("Corpse decay should clamp at 1.0")
+	var corpse := CorpseState.new(corpse_data)
+	var decay_after_one_day := corpse.advance_decomposition(24 * 60)
+	if decay_after_one_day != 8:
+		failures.append("Corpse decomposition should advance deterministically by age band")
+	corpse.advance_decomposition(10 * 24 * 60)
+	if not corpse.is_fully_decayed() or corpse.decay_percent != 100:
+		failures.append("Corpse decomposition should clamp at 100 percent")
 
 	var grave := GraveRecord.new(corpse)
 	if grave.contribution(config) != 2:
@@ -41,7 +40,7 @@ static func run() -> Array[String]:
 	var second_data := CorpseData.new()
 	second_data.id = &"second_corpse"
 	second_data.burial_value = 4
-	cemetery.add_grave(GraveRecord.new(CorpseState.new(second_data, 0.0)))
+	cemetery.add_grave(GraveRecord.new(CorpseState.new(second_data)))
 	if cemetery.total_rating() != expected_rating + 4:
 		failures.append("Cemetery rating should aggregate grave contributions")
 

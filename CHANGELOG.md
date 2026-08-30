@@ -12,14 +12,11 @@
 - **#9 Aceptación RPG final:** flujo integral relación→diálogo→quest→recompensa→unlock→compra/venta→save/load.
 - **#17 Contrato visual:** `ART_DIRECTION.md` fija proyección, tiles de 32 px, escala, pivotes/Y-sort, capas, paleta, luz y convenciones.
 - **#16 Foundation `TileMapLayer`:** `technical_map.tscn` + `TechnicalMap`, seis capas, bounds y colisión tile-based.
-- **#18 Cementerio + taller:** mapa, interacciones críticas, markers de conexión y navegación.
-- **#19 Bosque:** caminos, límites, recursos existentes, navegación y secret clearing reservado.
-- **#20 Pueblo:** Valdeniebla con entrada, plaza, merchant spot, plots y markers de interiores.
-- **#21 Interiores:** casa/taller y edificio de pueblo reutilizables, markers estables y transición sin duplicar player.
-- **#22 Mina inicial:** entrada/salida, corredor, bifurcación, oclusión y landmark secreto.
-- **#23 Integración de zonas:** `ZoneManager`, `ZoneTransition`, `ZoneContainer` y `WorldLocationProvider` conectan todas las zonas manteniendo Player/controllers persistentes.
-- **#24 Aceptación final:** `TestWorldPhase7Acceptance` agrega los contratos de mapas, recorrido, navegación y rutinas NPC como gate explícito de cierre.
-- **#25 Tileset exterior:** atlas original `256 x 256` con 64 tiles de `32 x 32` para hierba/tierra, caminos/transiciones, cementerio, bosque, pueblo/plaza, bordes y `decoration_low`; incluye documentación estable de celdas.
+- **#18–#24 Mundo:** cementerio/taller, bosque, pueblo, interiores, mina, integración de zonas y aceptación integral.
+- **#25 Tileset exterior:** atlas original `256 x 256` con 64 tiles de `32 x 32` y documentación estable de celdas.
+- **8A.1 Descomposición acelerada:** `CorpseState` incorpora edad en minutos enteros, deterioro entero 0–100, cuatro estados legibles, aceleración por edad, calidad efectiva y persistencia determinista.
+- `TestCorpseDecomposition` valida bandas 0–24/24–48/48–72/>72 h, equivalencia entre saltos grandes y pequeños, thresholds y round-trip integer.
+- Spec detallado de Phase 8A para conservación, agricultura/nabo multiuso, servicio funerario a las 18:00, comedero, rampa, cremación/investigación y aceptación integral.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales sin convertir sistemas RPG en Autoloads.
@@ -30,8 +27,23 @@
 - Brother Aldren permanece persistente y se oculta/pausa fuera del cementerio; `TradePoint` se activa solo en pueblo.
 - **Fase 6 — RPG COMPLETADA** tras #6, #8 y #9.
 - **Fase 7 — Mundo COMPLETADA** tras #16/#17/#18–#24.
-- **Fase 8 — Polish pasa a ACTIVA**.
+- **Fase 8 — Polish ACTIVA**.
 - #25 mantiene arte de terreno desacoplado de gameplay, colisión, navegación y escenas de mapa; su integración queda reservada a #29.
+- El contrato legacy de descomposición float lineal (`current_decay`/`decay_rate_per_hour`) se sustituye por `decay_percent: int` y `age_minutes: int`.
+- `CorpseData` usa `decay_percent` entero 0–100; los tests históricos de cementerio se migran al nuevo comportamiento.
+- No se implementa migración de saves legacy: no existen saves de jugadores que conservar.
+
+### Design Decisions — Phase 8A
+- Descomposición híbrida: almacenamiento integer 0–100, estados Fresh/Fading/Decomposed/Rotten y aceleración con la edad.
+- Un acumulador privado entero conserva progreso subporcentual y evita depender de floats persistentes.
+- Conservación futura mediante multiplicadores de tecnología, utensilios e instalaciones; nunca rejuvenece.
+- Transporte funerario original al atardecer, objetivo 18:00; tras quest requiere alimento cultivable y debe ser exactly-once con sueño/time-jump/save-load.
+- Descarga inicial junto al camino; rampa desbloqueable dirige entregas al depósito sin bonus de conservación.
+- `fodder_turnip` será cultivable, comprable, vendible, almacenable y utilizable en cocina; cultivar es la estrategia sostenible y comprar una salida de emergencia.
+- Cocina reutiliza crafting y recupera energía; no se añade hambre.
+- Cremar e investigar se añaden como decisiones distintas a enterrar; investigar consume tiempo mientras continúa el deterioro.
+- Economía preparada para modificadores multiplicativos neutrales por defecto; no se añade supply/demand complejo.
+- Feedback placeholder reutiliza EventBus/AudioManager; arte/audio final permanece en el sub-track visual.
 
 ### Fixed
 - Inferencias `Variant`, problemas de atomicidad y lifecycle detectados en fases anteriores.
@@ -41,6 +53,7 @@
 - Tests legacy ya no retienen `SleepSpot` de una zona destruida durante load.
 - Restaurar `world_location` no sobreescribe el estado persistente de Brother Aldren.
 - `zone_manager.gd` quedó normalizado por `gdformat` sin relajar el gate global.
+- Durante 8A.1 se corrigieron únicamente discrepancias mecánicas de longitud/formato detectadas por el gate antes de aceptar el bloque.
 
 ### Validated
 - Fase 0: run `33278173612`, success.
@@ -60,7 +73,7 @@
 - Pueblo #20: PR #46, run `33315626881`, success.
 - Interiores #21: PR #49, run `33318051580`, success.
 - Mina #22: PR #50, run `33318407597`, success.
-- Integración #23: PR #53, merge `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`, run `33331094583`, success.
-- Cierre #24: PR #54, acceptance HEAD `d4489ddae0467afeb262c2994e8b71f0f2afd311`, run `33331207740`, success.
-- Merge funcional #24: `7e281255322b6c7444d4177d85295b353babb38f`.
-- Tileset exterior #25: PR #56, run funcional `33333578933`, `gdlint`, `gdformat --check`, import Godot 4.7.2, smoke y suite headless en `success`.
+- Integración #23: PR #53, run `33331094583`, success.
+- Cierre #24: PR #54, run `33331207740`, success.
+- Tileset exterior #25: PR #56, run `33333578933`, success.
+- **8A.1 descomposición integer:** PR #57, run funcional `33334955947`: `gdlint`, `gdformat --check`, Godot 4.7.2 import, main-scene smoke y suite headless completa en success.

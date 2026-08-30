@@ -41,10 +41,10 @@ func receive_demo_corpse() -> StringName:
 	var data := CorpseData.new()
 	data.id = &"demo_corpse_001"
 	data.quality = 2
-	data.decay = 0.05
+	data.decay_percent = 5
 	data.preparation_level = 0
 	data.burial_value = 2
-	return service.receive_corpse(CorpseState.new(data, 0.01))
+	return service.receive_corpse(CorpseState.new(data))
 
 
 func prepare_first_pending() -> StringName:

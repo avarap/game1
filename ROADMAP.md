@@ -57,30 +57,35 @@ Pueblo, bosque, mina, interiores, exploración y secretos.
 - [x] **#21 — Interiores modulares + transiciones** — PR #49, run `33318051580`.
 - [x] **#22 — Mina inicial** — PR #50, run `33318407597`.
 - [x] **#23 — Integración de zonas + exploración** — PR #53, merge `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`.
-- [x] **#24 — Aceptación integral de mundo** — PR #54, acceptance HEAD `d4489ddae0467afeb262c2994e8b71f0f2afd311`, run `33331207740`.
-
-### Criterios de cierre #24
-- [x] Todas las zonas cargables y seis `TileMapLayer` contractuales.
-- [x] Recorrido integral sin softlocks y sin cambiar identidad del Player.
-- [x] Navegación/schedule de NPC y Y-sort sin regresiones.
-- [x] Save/load conserva estado y ubicación válida.
-- [x] Camera bounds, colisiones, spawns y transiciones correctas.
-- [x] `gdlint` + `gdformat --check` globales.
-- [x] Godot 4.7.2 import, smoke y suite completa verdes.
-- [x] Aceptación conjunta registrada mediante `TestWorldPhase7Acceptance`.
+- [x] **#24 — Aceptación integral de mundo** — PR #54, run `33331207740`.
 
 Cierre funcional integrado: PR #54, merge `7e281255322b6c7444d4177d85295b353babb38f`.
 
 ## Fase 8 — Polish — ACTIVA
-Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización.
+Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización. El polish incluye profundizar el núcleo jugable antes de escalar arte final cuando `GAME_DESIGN.md` lo exige.
+
+### Track 8A — Gameplay Depth & Feel
+Fuente: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
+
+- [x] **8A.1 — Descomposición acelerada:** `decay_percent: int` 0–100, `age_minutes: int`, estados Fresh/Fading/Decomposed/Rotten, pérdida de calidad efectiva y tasas crecientes 0–24 / 24–48 / 48–72 / >72 h. Grandes saltos de tiempo son deterministas. PR #57, CI final pre-merge `33335150259` verde.
+- [ ] **8A.2 — Conservación:** modificadores data-driven de tecnología, utensilios e instalaciones; nunca rejuvenecen el cadáver.
+- [ ] **8A.3 — Agricultura mínima:** `fodder_turnip_seed` → plantar → crecimiento por `TimeManager` → cosecha → persistencia.
+- [ ] **8A.4 — Recurso multiuso:** nabo forrajero comprable/vendible, almacenamiento y cocina reutilizando crafting; cultivar debe ser la estrategia sostenible.
+- [ ] **8A.5 — Servicio funerario:** entrega determinista al atardecer, objetivo 18:00; intro gratuita y después consumo de nabo desde comedero; exactamente una entrega por día incluso con sueño/time-jump/save-load.
+- [ ] **8A.6 — Logística progresiva:** descarga inicial junto al camino y rampa desbloqueable al área de recepción sin bonus de conservación.
+- [ ] **8A.7 — Decisiones de cadáver:** preparar/enterrar existentes + cremar/investigar con costes/recompensas distintos.
+- [ ] **8A.8 — Feedback mínimo:** hooks EventBus/AudioManager para entrega y acciones permanentes.
+- [ ] **8A.9 — Aceptación integral:** farming→comedero→18:00→cadáver→deterioro/conservación→decisión→save/load, con quality/import/smoke/suite verdes.
+
+Decisiones de alcance 8A: sin hambre, estaciones/clima agrícola, riego/fertilizante complejo ni supply/demand. El transporte, animal/personaje, alimento, quest, textos y assets serán originales.
 
 ### Sub-track visual #25–#31
-- [x] **#25 — Tileset exterior pixel-art original** — atlas `256 x 256`, cuadrícula `8 x 8` de tiles `32 x 32`, PR #56; import, smoke, suite y quality gate verdes en run `33333578933`.
+- [x] **#25 — Tileset exterior pixel-art original** — atlas `256 x 256`, cuadrícula `8 x 8` de tiles `32 x 32`, PR #56; run `33333578933` verde.
 - [ ] **#26 — Player spritesheet + animaciones de movimiento**.
 - [ ] **#27 — NPC visual base + Brother Aldren animado**.
 - [ ] **#28 — Props, edificios y assets de cementerio**.
 - [ ] **#29 — Integración artística de mapas y sustitución de placeholders** — bloqueada por #25 y #28.
 - [ ] **#30 — Atmósfera: sombras, vegetación, iluminación y partículas** — bloqueada por #29.
-- [ ] **#31 — Aceptación visual del vertical slice** — gate final del sub-track visual; bloqueada por #25–#30.
+- [ ] **#31 — Aceptación visual del vertical slice** — bloqueada por #25–#30.
 
-Fase 8 permanece **ACTIVA**: completar #25 no cierra la fase. Próximo bloque coherente: #26, #27 o #28; por prioridad P0 se toma **#26** en la siguiente ejecución salvo bug crítico.
+Fase 8 permanece **ACTIVA**. El siguiente bloque del track de profundidad es **8A.2 — conservación**; el sub-track visual puede avanzar en tareas independientes sin pisar sistemas de gameplay.
