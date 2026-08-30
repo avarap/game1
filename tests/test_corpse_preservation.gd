@@ -42,12 +42,19 @@ static func run() -> Array[String]:
 		failures.append("Combined preservation sources should compose multiplicatively")
 
 	var no_rewind := _make_corpse()
-	no_rewind.advance_decomposition(2 * DAY_MINUTES)
+	var fractional_modifiers: RefCounted = modifiers_script.new()
+	fractional_modifiers.set("technology_bp", 3333)
+	no_rewind.call("set_preservation_modifiers", fractional_modifiers)
+	no_rewind.advance_decomposition(1)
 	var decay_before := no_rewind.decay_percent
 	var age_before := no_rewind.age_minutes
+	var remainder_before := int(no_rewind.snapshot().get("preservation_remainder", 0))
 	no_rewind.call("set_preservation_modifiers", combined_modifiers)
+	var remainder_after := int(no_rewind.snapshot().get("preservation_remainder", 0))
 	if no_rewind.decay_percent != decay_before or no_rewind.age_minutes != age_before:
 		failures.append("Changing preservation should never rewind corpse state")
+	if remainder_before <= 0 or remainder_after != remainder_before:
+		failures.append("Changing preservation should preserve fractional decomposition progress")
 
 	var one_jump := _make_corpse()
 	var many_steps := _make_corpse()
