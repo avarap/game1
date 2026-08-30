@@ -8,13 +8,7 @@ var planted_total_minutes: int = 0
 var harvestable: bool = false
 
 
-func plant(
-	new_crop: CropData,
-	inventory: InventoryModel,
-	day: int,
-	hour: int,
-	minute: int
-) -> bool:
+func plant(new_crop: CropData, inventory: InventoryModel, day: int, hour: int, minute: int) -> bool:
 	if crop != null or new_crop == null or not new_crop.is_valid() or inventory == null:
 		return false
 	if not inventory.has_item(new_crop.seed_item_id, 1):
