@@ -6,6 +6,9 @@ extends Interactable
 
 var last_result: StringName = &"idle"
 var linked_storage_providers: Array[StorageProvider] = []
+var production_queue: ProductionQueue = ProductionQueue.new()
+var production_storage: StorageNetwork
+var production_inventory_component: InventoryComponent
 
 func register_storage_provider(provider: StorageProvider) -> void:
     if provider == null or not provider.is_valid():
@@ -14,6 +17,21 @@ func register_storage_provider(provider: StorageProvider) -> void:
 
 func clear_registered_storage_providers() -> void:
     linked_storage_providers.clear()
+
+func _process(delta: float) -> void:
+    if production_queue.is_empty() or production_storage == null:
+        return
+    process_production(delta)
+
+func process_production(delta: float) -> StringName:
+    if production_storage == null:
+        return ProductionQueue.RESULT_IDLE
+    var result := production_queue.advance(delta, production_storage)
+    if result == ProductionQueue.RESULT_COMPLETED and production_inventory_component != null:
+        production_inventory_component.inventory_changed.emit()
+    if result != ProductionQueue.RESULT_PROCESSING:
+        _set_result(result)
+    return result
 
 func _on_interact(actor: Node) -> void:
     var inventory := actor.get_node_or_null("InventoryComponent") as InventoryComponent
@@ -27,6 +45,19 @@ func _on_interact(actor: Node) -> void:
 
     inventory._ensure_model()
     var storage := _build_storage_network(actor, inventory)
+
+    if recipe.duration_seconds > 0.0:
+        var queue_result := production_queue.enqueue(recipe, station_id, storage)
+        if queue_result != ProductionQueue.RESULT_QUEUED:
+            _set_result(queue_result)
+            return
+        energy.spend(recipe.energy_cost)
+        production_storage = storage
+        production_inventory_component = inventory
+        inventory.inventory_changed.emit()
+        _set_result(queue_result)
+        return
+
     var result := CraftingService.craft_with_storage(recipe, station_id, storage)
     if result != CraftingService.RESULT_OK:
         _set_result(result)
@@ -64,8 +95,12 @@ func _set_result(result: StringName) -> void:
             label.text = "Fabricado: %s" % recipe.display_name
         CraftingService.RESULT_MISSING_INPUTS:
             label.text = "Faltan materiales"
-        CraftingService.RESULT_INVENTORY_FULL:
+        CraftingService.RESULT_INVENTORY_FULL, ProductionQueue.RESULT_OUTPUT_BLOCKED:
             label.text = "Almacenamiento lleno"
+        ProductionQueue.RESULT_QUEUED:
+            label.text = "En cola: %s" % recipe.display_name
+        ProductionQueue.RESULT_COMPLETED:
+            label.text = "Producción completada: %s" % recipe.display_name
         &"insufficient_energy":
             label.text = "Sin energía suficiente"
         _:
