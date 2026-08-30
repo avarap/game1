@@ -21,6 +21,7 @@ func _ready() -> void:
 	if data == null:
 		push_warning("NPCController requires NPCData")
 		return
+	add_to_group("save_provider")
 	_resolve_time_dependencies()
 	if schedule != null and _time_manager != null:
 		apply_current_schedule()
@@ -95,6 +96,65 @@ func get_current_state() -> StringName:
 	return state_machine.current_state
 
 
+func get_save_key() -> String:
+	if data == null or data.id.is_empty():
+		return "npc:unknown"
+	return "npc:%s" % str(data.id)
+
+
+func get_save_data() -> Dictionary:
+	var npc_id: String = ""
+	if data != null:
+		npc_id = str(data.id)
+	var result := {
+		"id": npc_id,
+		"position": _vector_to_data(global_position),
+		"current_state": str(state_machine.current_state),
+		"pending_state": str(state_machine.pending_state),
+		"navigation_started": navigation_started,
+	}
+	var agent := get_navigation_agent()
+	if navigation_started and agent != null:
+		result["target_position"] = _vector_to_data(agent.target_position)
+	return result
+
+
+func apply_save_data(save_data: Dictionary) -> void:
+	if data == null:
+		return
+	var saved_id := StringName(str(save_data.get("id", "")))
+	if saved_id != data.id:
+		return
+
+	var position_value: Variant = save_data.get("position", {})
+	var position_data: Dictionary = (
+		position_value if typeof(position_value) == TYPE_DICTIONARY else {}
+	)
+	if not position_data.is_empty():
+		global_position = _vector_from_data(position_data)
+
+	var previous_state := state_machine.current_state
+	state_machine.apply_snapshot(save_data)
+	navigation_started = false
+	velocity = Vector2.ZERO
+
+	var target_value: Variant = save_data.get("target_position", {})
+	var target_data: Dictionary = target_value if typeof(target_value) == TYPE_DICTIONARY else {}
+	var should_resume_navigation := (
+		state_machine.current_state == NPCStateMachine.WALKING
+		and bool(save_data.get("navigation_started", false))
+		and not target_data.is_empty()
+	)
+	if should_resume_navigation:
+		set_destination(_vector_from_data(target_data))
+		if not navigation_started:
+			state_machine.arrive()
+	elif state_machine.current_state == NPCStateMachine.WALKING:
+		state_machine.arrive()
+
+	_emit_state_change(previous_state)
+
+
 func _resolve_time_dependencies() -> void:
 	_time_manager = get_node_or_null("/root/TimeManager")
 	_event_bus = get_node_or_null("/root/EventBus")
@@ -136,3 +196,11 @@ func _stop_navigation() -> void:
 func _emit_state_change(previous_state: StringName) -> void:
 	if previous_state != state_machine.current_state:
 		state_changed.emit(state_machine.current_state)
+
+
+func _vector_to_data(value: Vector2) -> Dictionary:
+	return {"x": value.x, "y": value.y}
+
+
+func _vector_from_data(value: Dictionary) -> Vector2:
+	return Vector2(float(value.get("x", 0.0)), float(value.get("y", 0.0)))

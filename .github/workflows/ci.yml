@@ -45,6 +45,7 @@ jobs:
             tests/test_day_night_cycle.gd \
             tests/test_npc_navigation.gd \
             tests/test_npc_routines.gd \
+            tests/test_simulation_acceptance.gd \
             tests/run_tests.gd
 
       - name: Check formatting of hardened gameplay scripts
@@ -71,6 +72,7 @@ jobs:
             tests/test_day_night_cycle.gd \
             tests/test_npc_navigation.gd \
             tests/test_npc_routines.gd \
+            tests/test_simulation_acceptance.gd \
             tests/run_tests.gd
 
   validate-and-test:
