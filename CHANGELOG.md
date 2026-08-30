@@ -9,34 +9,36 @@
 - `gdscript-quality` independiente con `gdlint` y `gdformat --check`.
 - `LocalizationService` sobre `TranslationServer`, con idiomas iniciales `en` y `es` y fallback inglés.
 - Catálogos `localization/en.po` y `localization/es.po` registrados en `project.godot`.
-- `DialogueConditionData`, `DialogueOptionData`, `DialogueNodeData` y `DialogueData` para diálogos data-driven.
-- `DialogueService` puro para resolver condiciones, opciones y navegación por el grafo.
-- `DialogueController` local con UI mínima y selector técnico ES/EN en runtime.
-- `DialogueInteractable` reutilizando el contrato `Interactable`.
-- Primer diálogo original bilingüe de Hermano Aldren en `data/dialogues/brother_aldren/introduction.tres`.
-- `test_dialogue_foundation.gd` y `test_dialogue_gameplay.gd`.
+- Foundation de diálogo data-driven con `DialogueConditionData`, `DialogueOptionData`, `DialogueNodeData`, `DialogueData`, `DialogueService`, UI local y `DialogueInteractable`.
+- Primer diálogo original bilingüe de Hermano Aldren.
 - `LOCALIZATION.md` con la política de claves estables y ampliación de idiomas.
 - `RelationshipData`, `RelationshipService` y `RelationshipController` para relaciones runtime 0-100 sin nuevo Autoload.
-- Condición de diálogo `RELATIONSHIP_MIN` y relación data-driven de Hermano Aldren.
-- Opción bilingüe de Aldren desbloqueada al alcanzar relación 10, cubierta por `test_relationships.gd`.
+- Condición `RELATIONSHIP_MIN`, relación data-driven de Hermano Aldren y opción desbloqueada a relación 10.
+- `HISTORIA_PRINCIPAL.md` con la propuesta narrativa completa **El Cementerio de Valdeniebla**.
+- Condiciones narrativas `HAS_ITEM`, `TIME_OF_DAY` y `QUEST_FLAG` en `DialogueConditionData`.
+- Contexto de diálogo derivado del inventario relevante del actor, `TimeManager`, relaciones y futuro `quest_controller`.
+- Opción nocturna bilingüe de Aldren disponible entre 22:00 y 06:00.
+- `test_dialogue_conditions.gd` para inventario, horarios, cruce de medianoche, flags de quest e integración del diálogo nocturno.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales y mantiene el estado global desacoplado de sistemas concretos.
 - Storage se limita por scope y las dependencias entre escenas prefieren contratos/tipos/grupos.
 - El runner de tests ejecuta suites después de inicializar `SceneTree` para probar lifecycle real.
-- `world.tscn` incorpora la capa de diálogo local y un `RelationshipController` contextual.
-- Hermano Aldren incorpora un `DialogueInteractable` con un recurso de diálogo, sin codificar narrativa en `NPCController`.
-- `DialogueInteractable` incorpora el contexto de relaciones al iniciar el diálogo.
-- Los textos de diálogo se resuelven por claves de traducción; el grafo, condiciones e IDs son independientes del idioma.
-- El quality gate cubre la foundation de localización/diálogo, relaciones y sus tests.
-- **Fase 5 — Simulación está completada; Fase 6 — RPG sigue activa con diálogo y relaciones validados.**
+- `world.tscn` incorpora diálogo y relaciones como sistemas contextuales.
+- Hermano Aldren obtiene narrativa desde Resources de diálogo, sin codificarla en `NPCController`.
+- Los textos de diálogo se resuelven por claves de traducción; grafo, condiciones e IDs son independientes del idioma.
+- `DialogueInteractable` compone un snapshot contextual en vez de acoplar `DialogueService` a inventario, reloj, relaciones o quests.
+- `TIME_OF_DAY` utiliza inicio inclusivo/final exclusivo y soporta ventanas que cruzan medianoche.
+- `ROADMAP.md` prioriza el Acto 1 de Valdeniebla durante Fase 6; Actos 2/3 no adelantan alcance de fases posteriores.
+- El quality gate cubre localización, diálogo, relaciones, condiciones narrativas y sus tests.
+- **Fase 6 sigue activa: diálogo, ES/EN, relaciones y condiciones narrativas están validados; quests es el siguiente bloque.**
 
 ### Fixed
 - Inferencias `Variant` incompatibles con Godot 4.5 y fallos históricos de atomicidad/lifecycle documentados en fases anteriores.
 - `ScheduleEntryData` dejó de comparar el `Dictionary` de `TimeMath.normalize_total_minutes()` con enteros.
 - El test integral de simulación dejó de producir falsos negativos por ejecutarse dentro de `SceneTree._initialize()`.
-- Run `33298684332` detectó que `test_dialogue_foundation.gd` no cumplía `gdformat`; se corrigió sin relajar el gate.
-- Run `33299203135` detectó formato pendiente en `DialogueInteractable`; importación, smoke y tests ya estaban verdes y el formato se corrigió en `fc446609004ea8031903c1c529144743cd963e51`.
+- Run `33298684332` detectó formato pendiente en `test_dialogue_foundation.gd`; se corrigió sin relajar el gate.
+- Run `33299203135` detectó formato pendiente en `DialogueInteractable`; se corrigió en `fc446609004ea8031903c1c529144743cd963e51`.
 
 ### Validated
 - Fase 0: run `33278173612`, `success`.
@@ -45,7 +47,7 @@
 - Fase 3: `2252fcbd4280acec1e60530c026a8f5dd3365b91`, run `33292481990`, `success`.
 - Fase 4: `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`, `success`.
 - Fase 5 cierre: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`, ambos jobs `success`.
-- Fase 6 bloque 1 inicial: `60bc1e7e137fbbad61e8a6604aa52ae872b2415b`; run `33298684332` pasó importación, smoke y suite headless, pero falló únicamente `gdformat --check`.
-- Fase 6 bloque 1 final: `46a37e00c2ad968e91834da5577a6f512a28f0a9`, run `33298737838`, `gdscript-quality` y `validate-and-test` en `success`.
-- Fase 6 bloque 2 inicial: `6d9eb1d54ab97ea92a8ee533bec1d9523ee2d1a5`; run `33299203135` pasó importación, smoke y suite headless y falló únicamente `gdformat --check`.
-- Fase 6 bloque 2 final: `fc446609004ea8031903c1c529144743cd963e51`, run `33299277228`, `gdscript-quality` y `validate-and-test` en `success`.
+- Fase 6 bloque 1 final: `46a37e00c2ad968e91834da5577a6f512a28f0a9`, run `33298737838`, ambos jobs `success`.
+- Fase 6 bloque 2 final: `fc446609004ea8031903c1c529144743cd963e51`, run `33299277228`, ambos jobs `success`.
+- Integración narrativa: `cf1e6fbaa6f562ca4d3a005496354ac996168ace` añade `HISTORIA_PRINCIPAL.md`.
+- Condiciones narrativas: `e1a19343e8303d1b28188a2a38c559d788c8087d`, run `33299990183`, `gdscript-quality` y `validate-and-test` en `success`.

@@ -66,6 +66,11 @@ Cierre funcional: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`,
 - IDs, condiciones, progreso y saves nunca dependen de texto traducido.
 - Ver `LOCALIZATION.md`.
 
+### Fuente narrativa
+- `HISTORIA_PRINCIPAL.md` define la propuesta narrativa de **El Cementerio de Valdeniebla**, su tono, personajes, tres actos y conexiones con gameplay.
+- Durante Fase 6 se prioriza el **Acto 1 — El Trabajo Absurdo** para no ampliar contenido antes de estabilizar quests/economía/tecnologías.
+- María, Gregorio y Elvira se consideran candidatos al objetivo final de 8–10 NPCs; no sustituyen automáticamente la lista inicial del master hasta integrarse y validarse.
+
 ### Bloque 1 — Foundation de diálogo bilingüe — COMPLETADO
 - [x] `DialogueConditionData`, `DialogueOptionData`, `DialogueNodeData` y `DialogueData` tipados.
 - [x] `DialogueService` puro/testeable para iniciar, filtrar opciones y navegar por IDs.
@@ -96,8 +101,19 @@ Cierre funcional: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`,
 - Corrección: `fc446609004ea8031903c1c529144743cd963e51`.
 - Validación: `Godot CI` run `33299277228`, `gdscript-quality` y `validate-and-test` en `success`.
 
+### Bloque 2B — Integración narrativa y condiciones contextuales — COMPLETADO
+- [x] `HISTORIA_PRINCIPAL.md` incorporado como diseño narrativo de Valdeniebla.
+- [x] `DialogueConditionData` soporta `HAS_ITEM`, `TIME_OF_DAY` y `QUEST_FLAG`, además de flags y relaciones.
+- [x] `TIME_OF_DAY` soporta rangos que cruzan medianoche.
+- [x] `DialogueInteractable` construye contexto desde inventario relevante, `TimeManager`, relaciones y futuro `quest_controller`.
+- [x] Aldren ofrece una opción nocturna entre 22:00 y 06:00 con texto ES/EN procedente del diseño narrativo.
+- [x] `test_dialogue_conditions.gd` cubre inventario, hora, flags de quest y opción nocturna.
+- Implementación narrativa: `cf1e6fbaa6f562ca4d3a005496354ac996168ace`.
+- Implementación funcional: `e1a19343e8303d1b28188a2a38c559d788c8087d`.
+- Validación: `Godot CI` run `33299990183`, `gdscript-quality` y `validate-and-test` en `success`.
+
 ### Próximo bloque
-Foundation de quests: Resources/estado data-driven, servicio puro con transiciones `unavailable` → `active` → `completed`, primera quest mínima de Hermano Aldren y tests. Las recompensas deben diseñarse idempotentes; no abrir economía ni tecnologías antes de validar el bloque.
+Foundation de quests basada en el Acto 1 de Valdeniebla: Resources/estado data-driven, servicio puro con transiciones `unavailable` → `active` → `completed`, primera quest mínima de Hermano Aldren y tests. Las recompensas deben ser idempotentes; no abrir economía ni tecnologías antes de validar el bloque.
 
 ## Fase 7 — Mundo
 Pueblo, bosque, mina, interiores, exploración y secretos.

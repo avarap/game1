@@ -8,11 +8,12 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama: `main`
 - Fase completada más reciente: **Fase 5 — Simulación**
 - Fase activa: **Fase 6 — RPG**
-- Estado Fase 6: **Bloques 1 (diálogo bilingüe) y 2 (relaciones) completados y validados**; quests, economía y tecnologías siguen pendientes.
-- Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
+- Estado Fase 6: **diálogo bilingüe, relaciones y condiciones narrativas contextuales completados y validados**; quests, economía y tecnologías siguen pendientes.
+- Fuente de verdad funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
+- Fuente narrativa de Fase 6: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**.
 - Política concreta de idiomas: `LOCALIZATION.md`.
-- Último bloque funcional: `fc446609004ea8031903c1c529144743cd963e51`.
-- Última validación funcional y de calidad: `Godot CI` run `33299277228`, `success` en `gdscript-quality` y `validate-and-test`.
+- Último bloque funcional: `e1a19343e8303d1b28188a2a38c559d788c8087d`.
+- Última validación funcional y de calidad: `Godot CI` run `33299990183`, `success` en `gdscript-quality` y `validate-and-test`.
 
 ## Fases completadas
 
@@ -51,52 +52,57 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 ### Bloque 1 — Foundation de diálogo + localización ES/EN
 
-1. El master ya contemplaba localización y diálogos data-driven; se concreta el vertical slice en **inglés (`en`) y español (`es`)**, con fallback inglés.
-2. `LocalizationService` encapsula locales soportados y `TranslationServer`; no se añade ningún Autoload.
-3. `project.godot` registra `localization/en.po` y `localization/es.po`.
-4. IDs, condiciones, saves y progreso nunca dependen de texto localizado. Los datos almacenan claves estables y la UI traduce al presentar.
-5. Se añadieron Resources tipados: `DialogueConditionData`, `DialogueOptionData`, `DialogueNodeData` y `DialogueData`.
-6. `DialogueService` mantiene el grafo/estado runtime como lógica pura, resuelve opciones disponibles y avanza por IDs estables.
-7. `DialogueController` es UI local; usa el servicio y ofrece un selector técnico ES/EN en runtime. La UI no posee la lógica del grafo.
-8. `DialogueInteractable` reutiliza `Interactable` y descubre el controller mediante el grupo semántico `dialogue_controller`.
-9. Hermano Aldren tiene un primer diálogo original data-driven en `data/dialogues/brother_aldren/introduction.tres`.
-10. El mismo grafo sirve para ambos idiomas; cambiar ES/EN actualiza nombre, texto y opciones sin mutar el estado del diálogo.
-11. `test_dialogue_foundation.gd` cubre traducciones, locales soportados, condiciones, grafo/opciones y estabilidad del estado al cambiar idioma.
-12. `test_dialogue_gameplay.gd` carga `world.tscn`, interactúa realmente con Aldren, valida texto español, selecciona una opción y cambia a inglés durante el diálogo.
-13. El quality gate incluye todos los scripts y tests nuevos.
-14. Implementación inicial: `60bc1e7e137fbbad61e8a6604aa52ae872b2415b`.
-15. Run `33298684332`: importación, smoke test y suite headless en `success`; `gdformat --check` detectó únicamente formato en `test_dialogue_foundation.gd`.
-16. Corrección de formato: `46a37e00c2ad968e91834da5577a6f512a28f0a9`.
-17. Validación final del bloque: `Godot CI` run `33298737838`, ambos jobs `success`.
-18. Documento de política: `LOCALIZATION.md`.
+1. Idiomas iniciales oficiales: inglés (`en`) y español (`es`), fallback inglés.
+2. `LocalizationService` encapsula `TranslationServer`; no se añade Autoload.
+3. `DialogueConditionData`, `DialogueOptionData`, `DialogueNodeData` y `DialogueData` son Resources tipados.
+4. `DialogueService` mantiene el grafo/estado runtime como lógica pura.
+5. `DialogueController` es UI local y permite cambio ES/EN sin mutar el grafo activo.
+6. Hermano Aldren tiene un primer diálogo original data-driven.
+7. Tests de foundation y gameplay real en `world.tscn`.
+8. Implementación final: `46a37e00c2ad968e91834da5577a6f512a28f0a9`.
+9. Validación: run `33298737838`, ambos jobs `success`.
 
 ### Bloque 2 — Foundation de relaciones
 
-1. `RelationshipData` define relaciones data-driven con ID estable y valor inicial dentro del rango 0-100.
-2. `RelationshipService` mantiene el estado runtime, aplica cambios y clampa siempre entre 0 y 100; permanece como lógica pura y testeable.
-3. `RelationshipController` es local/contextual en `world.tscn`; no se añade ningún Autoload y se mantiene el límite de cinco globales.
-4. Hermano Aldren dispone de `data/relationships/brother_aldren.tres` con valor inicial 0.
-5. `DialogueConditionData` amplía sus condiciones con `RELATIONSHIP_MIN` sin depender de texto localizado.
-6. `DialogueInteractable` pasa al diálogo un contexto de relaciones obtenido del controller local.
-7. El diálogo de Aldren incorpora una opción bilingüe adicional bloqueada hasta alcanzar relación 10.
-8. `test_relationships.gd` cubre registro, valor inicial, clamp 0-100 y bloqueo/desbloqueo de la opción condicionada.
-9. La importación de Godot, smoke test y suite headless validan además la integración real de `RelationshipController` en `world.tscn`.
-10. El quality gate incluye scripts y tests de relaciones.
-11. Implementación base: `6d9eb1d54ab97ea92a8ee533bec1d9523ee2d1a5`.
-12. Run `33299203135`: `validate-and-test` fue `success`; `gdscript-quality` falló únicamente porque `DialogueInteractable` requería formato de `gdformat`.
-13. Corrección de formato: `fc446609004ea8031903c1c529144743cd963e51`.
-14. Validación final: `Godot CI` run `33299277228`, ambos jobs `success`.
+1. `RelationshipData` define relaciones por ID estable y rango 0-100.
+2. `RelationshipService` es puro, aplica cambios y clampa 0-100.
+3. `RelationshipController` es local/contextual en `world.tscn`.
+4. Hermano Aldren dispone de relación data-driven inicial 0.
+5. `RELATIONSHIP_MIN` desbloquea contenido de diálogo sin depender de texto.
+6. `test_relationships.gd` cubre rango, clamp y desbloqueo.
+7. Implementación final: `fc446609004ea8031903c1c529144743cd963e51`.
+8. Validación: run `33299277228`, ambos jobs `success`.
+
+### Bloque 2B — Valdeniebla y condiciones contextuales
+
+1. `HISTORIA_PRINCIPAL.md` incorpora la propuesta narrativa **El Cementerio de Valdeniebla**, con comedia negra, misterio progresivo, Aldren, María, Gregorio, Elvira, Morvan, Sociedad del Velo y El Cuervo.
+2. La implementación inmediata se limita al **Acto 1 — El Trabajo Absurdo**; los actos 2 y 3 permanecen como diseño narrativo y no fuerzan sistemas de fases posteriores.
+3. Los nuevos aldeanos del documento no sustituyen automáticamente a Mara Vell, Oren Brask y Silas Crow del master; se evaluarán dentro del objetivo final de 8–10 NPCs.
+4. `DialogueConditionData` soporta ahora `FLAG`, `RELATIONSHIP_MIN`, `HAS_ITEM`, `TIME_OF_DAY` y `QUEST_FLAG`.
+5. `TIME_OF_DAY` usa inicio inclusivo/final exclusivo y soporta rangos que cruzan medianoche.
+6. `HAS_ITEM` evalúa cantidades desde un snapshot de inventario contextual.
+7. `QUEST_FLAG` consume `context["quest_flags"]`, preparado para el futuro `quest_controller` sin acoplar la foundation de diálogo a quests.
+8. `DialogueInteractable` construye contexto desde relaciones, inventario del actor, `TimeManager` y un futuro controller de quests si existe.
+9. El diálogo de Aldren añade una opción nocturna 22:00–06:00. La respuesta española procede del diseño narrativo: «No te quedes despierto. Lo que sale de noche no es amable.»; inglés usa su traducción equivalente.
+10. `test_dialogue_conditions.gd` cubre `HAS_ITEM`, `TIME_OF_DAY`, cruce de medianoche, `QUEST_FLAG` y la opción nocturna real de Aldren.
+11. `gdscript-quality` incluye el test nuevo y todos los scripts modificados.
+12. Documento narrativo: `cf1e6fbaa6f562ca4d3a005496354ac996168ace`.
+13. Implementación funcional: `e1a19343e8303d1b28188a2a38c559d788c8087d`.
+14. Validación: `Godot CI` run `33299990183`, ambos jobs `success`.
 
 ## Decisiones vigentes
 
 - Mantener exactamente cinco Autoloads globales.
 - `TimeManager` es la única fuente de reloj/calendario.
-- NPCs, diálogo, relaciones y otros sistemas de gameplay permanecen locales/contextuales.
-- `TranslationServer` es la autoridad runtime de idioma; `LocalizationService` es un wrapper estático, no un Autoload.
-- Idiomas iniciales oficiales del vertical slice: inglés y español; fallback inglés.
-- Los Resources de diálogo contienen **claves de traducción**, nunca texto localizado usado como identidad o condición.
+- NPCs, diálogo, relaciones, quests y otros sistemas RPG permanecen locales/contextuales.
+- `TranslationServer` es la autoridad runtime de idioma; `LocalizationService` es wrapper estático, no Autoload.
+- Idiomas iniciales: inglés y español; fallback inglés.
+- Los Resources de diálogo contienen claves de traducción, nunca texto localizado usado como identidad o condición.
 - Cambiar idioma no puede alterar grafo, quest IDs, relaciones, saves ni progreso.
-- Relaciones usan IDs estables y rango 0-100; el diálogo consume un snapshot contextual, no referencias directas al controller.
+- Relaciones usan IDs estables y rango 0-100.
+- Condiciones narrativas consumen snapshots/contextos; no mantienen referencias directas a inventario, tiempo, relaciones o quests.
+- `HISTORIA_PRINCIPAL.md` define contenido narrativo; `ROADMAP.md` sigue siendo la autoridad del orden de implementación.
+- Durante el siguiente bloque se implementará solo una quest mínima del Acto 1 con Aldren; no añadir todavía los tres nuevos aldeanos ni eventos de Actos 2/3.
 - La UI observa modelos/servicios y no posee estado de negocio.
 - Datos de gameplay deben ser Resources tipados cuando corresponda.
 - Lógica pura debe ser testeable de forma aislada siempre que sea posible.
@@ -114,16 +120,18 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 ## Próximo bloque — Fase 6
 
-1. Implementar foundation de quests data-driven con IDs estables y estados mínimos `unavailable`, `active` y `completed`.
-2. Crear un servicio puro/testeable para iniciar y progresar quests sin acoplarlo a UI, traducciones ni NPC controllers.
-3. Integrar una quest mínima de Hermano Aldren que pueda iniciarse desde contenido ya desbloqueado y progresar mediante un objetivo simple existente.
-4. Añadir tests de transiciones e integración y ampliar quality gate.
-5. Mantener las recompensas idempotentes como criterio obligatorio del sistema de quests, sin abrir aún economía ni tecnologías.
+1. Crear `QuestData`, objetivos/estado runtime y un `QuestService` puro con estados `unavailable`, `active`, `completed`.
+2. Usar IDs estables y texto por claves de traducción; la quest no debe depender de idioma.
+3. Integrar una primera quest de Hermano Aldren basada en el Acto 1 de Valdeniebla.
+4. Diseñar recompensas idempotentes desde el principio: una recompensa no puede reclamarse/aplicarse dos veces.
+5. Exponer `quest_flags` al contexto de diálogo mediante un controller local, aprovechando `QUEST_FLAG` ya implementado.
+6. Añadir tests puros + integración y ampliar quality gate.
+7. No abrir economía ni tecnologías hasta validar la foundation de quests.
 
 ## Regla de continuidad
 
 Al retomar:
-1. Leer `DEV_MEMORY.md`, `ROADMAP.md` y `LOCALIZATION.md`.
+1. Leer `DEV_MEMORY.md`, `ROADMAP.md`, `HISTORIA_PRINCIPAL.md` y `LOCALIZATION.md`.
 2. Consultar la fase activa en el master spec.
 3. Revisar el último CI de `main`.
 4. Implementar un bloque coherente y pequeño.
