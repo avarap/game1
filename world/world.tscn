@@ -141,7 +141,6 @@ shape = SubResource("Cemetery_action_shape")
 
 [node name="BrotherAldren" parent="." instance=ExtResource("12_aldren")]
 position = Vector2(1180, 650)
-initial_target = Vector2(1280, 650)
 
 [node name="Boundaries" type="Node2D" parent="."]
 
