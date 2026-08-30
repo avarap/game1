@@ -64,12 +64,17 @@ func _resolve_inventory() -> void:
 	if player == null or not player.has_method("get_inventory_component"):
 		return
 	_inventory = player.call("get_inventory_component") as InventoryComponent
-	if _inventory != null and not _inventory.inventory_changed.is_connected(_on_inventory_changed):
+	if (
+		_inventory != null
+		and not _inventory.inventory_changed.is_connected(_on_inventory_changed)
+	):
 		_inventory.inventory_changed.connect(_on_inventory_changed)
 
 
 func _connect_dialogue() -> void:
-	var controller := get_tree().get_first_node_in_group("dialogue_controller") as DialogueController
+	var controller := (
+		get_tree().get_first_node_in_group("dialogue_controller") as DialogueController
+	)
 	if controller == null:
 		return
 	if not controller.option_committed.is_connected(_on_dialogue_option_committed):
@@ -89,7 +94,9 @@ func _sync_active_item_objectives() -> void:
 		for objective in quest.objectives:
 			if objective.objective_type != QuestObjectiveData.ObjectiveType.ITEM_COUNT:
 				continue
-			service.update_item_count(objective.item_id, _inventory.count_item(objective.item_id))
+			service.update_item_count(
+				objective.item_id, _inventory.count_item(objective.item_id)
+			)
 
 
 func _on_dialogue_option_committed(option: DialogueOptionData) -> void:
