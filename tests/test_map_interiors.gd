@@ -54,9 +54,8 @@ static func _validate_interior(scene_path: String, failures: Array[String]) -> v
 		if collision != null:
 			var cell := collision.local_to_map(marker.position)
 			if collision.get_cell_source_id(cell) != -1:
-				failures.append(
-					"Interior marker '%s' should be collision-free" % marker_path
-				)
+				var message := "Interior marker '%s' should be collision-free" % marker_path
+				failures.append(message)
 
 	if not interior.has_method("get_world_rect"):
 		failures.append("Interior should expose stable camera bounds")
@@ -65,9 +64,8 @@ static func _validate_interior(scene_path: String, failures: Array[String]) -> v
 		for marker_path in REQUIRED_MARKERS:
 			var marker := interior.get_node_or_null(marker_path) as Node2D
 			if marker != null and not bounds.has_point(marker.position):
-				failures.append(
-					"Interior marker '%s' should stay inside camera bounds" % marker_path
-				)
+				var message := "Interior marker '%s' should stay inside camera bounds" % marker_path
+				failures.append(message)
 
 	interior.free()
 
@@ -76,13 +74,13 @@ static func _validate_transition(failures: Array[String]) -> void:
 	if not ResourceLoader.exists(TRANSITION_PATH):
 		failures.append("Reusable interior transition should exist")
 		return
-	if (
-		not ResourceLoader.exists(HOME_INTERIOR_PATH)
-		or not ResourceLoader.exists(VILLAGE_INTERIOR_PATH)
-	):
+	var home_exists := ResourceLoader.exists(HOME_INTERIOR_PATH)
+	var village_exists := ResourceLoader.exists(VILLAGE_INTERIOR_PATH)
+	if not home_exists or not village_exists:
 		return
 
 	var transition_script := load(TRANSITION_PATH) as Script
+	var transition := Callable(transition_script, "move_body_to_marker")
 	var home := (load(HOME_INTERIOR_PATH) as PackedScene).instantiate()
 	var village := (load(VILLAGE_INTERIOR_PATH) as PackedScene).instantiate()
 	var player := Node2D.new()
@@ -94,20 +92,18 @@ static func _validate_transition(failures: Array[String]) -> void:
 	tree.root.add_child(village)
 	tree.root.add_child(player)
 
-	var moved_home := transition_script.call(
-		"move_body_to_marker", player, home, &"entry_main"
-	) as bool
+	var moved_home := transition.call(player, home, &"entry_main") as bool
 	var home_marker := home.get_node("EntryMarkers/entry_main") as Node2D
 	if not moved_home or player.global_position != home_marker.global_position:
 		failures.append("Transition should move the existing player to a stable entry marker")
 
-	var moved_village := transition_script.call(
-		"move_body_to_marker", player, village, &"exit_main"
-	) as bool
+	var moved_village := transition.call(player, village, &"exit_main") as bool
 	var village_marker := village.get_node("EntryMarkers/exit_main") as Node2D
 	if not moved_village or player.global_position != village_marker.global_position:
 		failures.append("Transition should support safe exit markers across interior scenes")
-	if player.get_instance_id() != original_id or player.get_meta("state_token") != "preserved":
+	var same_player := player.get_instance_id() == original_id
+	var state_preserved := player.get_meta("state_token") == "preserved"
+	if not same_player or not state_preserved:
 		failures.append("Transition should preserve the same player instance and state")
 
 	player.free()
