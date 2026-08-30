@@ -64,11 +64,13 @@ static func _test_journal_read_model(quest: QuestData, failures: Array[String]) 
 
 	if not controller.has_method("get_journal_entries"):
 		failures.append("QuestController should expose read-only journal entries")
+		controller.free()
 		return
 
 	var active_entries: Array = controller.call("get_journal_entries")
 	if active_entries.size() != 1:
 		failures.append("Journal should expose one active quest")
+		controller.free()
 		return
 	var active_entry: Dictionary = active_entries[0]
 	if active_entry.get("id") != quest.id:
@@ -96,6 +98,7 @@ static func _test_journal_read_model(quest: QuestData, failures: Array[String]) 
 	var completed_entries: Array = controller.call("get_journal_entries")
 	if completed_entries.size() != 1:
 		failures.append("Journal should retain completed quests")
+		controller.free()
 		return
 	var completed_entry: Dictionary = completed_entries[0]
 	if completed_entry.get("status") != QuestService.STATUS_COMPLETED:
@@ -111,12 +114,14 @@ static func _test_journal_read_model(quest: QuestData, failures: Array[String]) 
 	LocalizationService.set_locale(previous_locale)
 	if after_locale_entries.is_empty():
 		failures.append("Journal entries should remain available after a locale change")
+		controller.free()
 		return
 	var after_locale_change: Dictionary = after_locale_entries[0]
 	if before_locale_change.get("id") != after_locale_change.get("id"):
 		failures.append("Changing locale should not alter quest ids")
 	if before_locale_change.get("objectives") != after_locale_change.get("objectives"):
 		failures.append("Changing locale should not alter quest progress")
+	controller.free()
 
 
 static func _test_journal_presentation(quest: QuestData, failures: Array[String]) -> void:
@@ -125,6 +130,9 @@ static func _test_journal_presentation(quest: QuestData, failures: Array[String]
 		failures.append("Quest journal UI script should exist")
 		return
 	var journal_script := load(journal_path) as GDScript
+	if journal_script == null:
+		failures.append("Quest journal UI script should load")
+		return
 	var journal: Node = journal_script.new()
 	if not journal.has_method("build_sections"):
 		failures.append("Quest journal UI should expose a pure presentation builder")
@@ -149,11 +157,15 @@ static func _test_journal_presentation(quest: QuestData, failures: Array[String]
 	]
 	var previous_locale := String(LocalizationService.get_locale())
 	LocalizationService.set_locale("en")
+	var english_title := LocalizationService.translate_key(&"UI_QUEST_JOURNAL_TITLE")
 	var english_sections: Dictionary = journal.call("build_sections", entries)
 	LocalizationService.set_locale("es")
+	var spanish_title := LocalizationService.translate_key(&"UI_QUEST_JOURNAL_TITLE")
 	var spanish_sections: Dictionary = journal.call("build_sections", entries)
 	LocalizationService.set_locale(previous_locale)
 
+	if english_title == spanish_title:
+		failures.append("Quest journal generic UI labels should support English and Spanish")
 	var english_active: Array = english_sections.get("active", [])
 	var english_completed: Array = english_sections.get("completed", [])
 	var spanish_active: Array = spanish_sections.get("active", [])
