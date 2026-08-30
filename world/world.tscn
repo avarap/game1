@@ -76,5 +76,7 @@ position = Vector2(1216, 640)
 
 [node name="ZoneContainer" type="Node2D" parent="."]
 
+[node name="TransitionContainer" type="Node2D" parent="."]
+
 [node name="ZoneManager" type="Node" parent="."]
 script = ExtResource("17_zone_manager")
