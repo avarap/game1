@@ -1,7 +1,6 @@
 class_name TestCorpseDecomposition
 extends RefCounted
 
-
 const MINUTES_PER_HOUR := 60
 
 
