@@ -152,4 +152,8 @@ func _set_feedback(result: StringName) -> void:
 
 func _format_money(amount_copper: int) -> String:
 	var parts := MoneyMath.breakdown(maxi(amount_copper, 0))
-	return "%dg %ds %dc" % [parts.get(&"gold", 0), parts.get(&"silver", 0), parts.get(&"copper", 0)]
+	return "%dg %ds %dc" % [
+		parts.get(&"gold", 0),
+		parts.get(&"silver", 0),
+		parts.get(&"copper", 0),
+	]
