@@ -19,6 +19,8 @@
 - **8A.2 Conservación:** `PreservationModifiers` añade factores data-driven en basis points enteros para tecnología, instalación y utensilio, neutrales por defecto y multiplicativos.
 - `CorpseState` aplica conservación solo al deterioro futuro y persiste modificadores y resto fraccional; `TestCorpsePreservation` cubre neutralidad, reducción, composición, no-rewind, determinismo y round-trip.
 - Spec detallado de Phase 8A para conservación, agricultura/nabo multiuso, servicio funerario a las 18:00, comedero, rampa, cremación/investigación y aceptación integral.
+- **Post-MVP economía local por profesión:** todo item vendible debe tener comprador compatible; comerciantes opt-in por NPC y `MerchantProfile` data-driven basado en tags/categorías, con afinidad de precio, cupos y validación de items sin salida económica.
+- **Post-MVP automatización:** trabajadores originales con tareas `HARVEST`, `MINE`, `CHOP`, `TRANSPORT` y `PROCESS`, dependientes de infraestructura y cadenas productivas.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales sin convertir sistemas RPG en Autoloads.
@@ -47,6 +49,13 @@
 - Cremar e investigar se añaden como decisiones distintas a enterrar; investigar consume tiempo mientras continúa el deterioro.
 - Economía preparada para modificadores multiplicativos neutrales por defecto; no se añade supply/demand complejo.
 - Feedback placeholder reutiliza EventBus/AudioManager; arte/audio final permanece en el sub-track visual.
+
+### Design Decisions — Post-MVP
+- Todo producto vendible debe tener al menos un `MerchantProfile` compatible salvo `quest_only`, `key_item` o `non_sellable`.
+- No todos los aldeanos comercian; los comerciantes aceptan familias de recursos según profesión mediante tags/categorías.
+- El herrero es el caso de referencia: acepta `iron`, `ore`, `metal_part` y `tool`, pero no productos agrícolas o madera no relacionada.
+- Un comerciante general puede actuar como salida de seguridad con peores precios; la afinidad profesional y los cupos evitan que todos los NPCs sean equivalentes.
+- Añadir o modificar recursos/comerciantes debe ser data-driven y validable, sin lógica específica dispersa por item.
 
 ### Fixed
 - Inferencias `Variant`, problemas de atomicidad y lifecycle detectados en fases anteriores.
