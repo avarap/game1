@@ -51,7 +51,6 @@ func set_preservation_modifiers(modifiers: PreservationModifiers) -> void:
 		preservation = PreservationModifiers.new()
 	else:
 		preservation = modifiers.duplicate_values()
-	_preservation_remainder = 0
 
 
 func get_preservation_factor_basis_points() -> int:
