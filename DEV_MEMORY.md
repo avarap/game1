@@ -8,10 +8,10 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama: `main`
 - Fase completada más reciente: **Fase 3 — Crafting / Production Loop**
 - Fase activa: **Fase 4 — Cementerio**
-- Estado Fase 4: foundation pura/testeable implementada y validada; falta flujo contextual de preparación/entierro, mejoras jugables y persistencia antes de cerrar.
+- Estado Fase 4: foundation y flujo lógico recibir/preparar/enterrar/mejorar implementados y validados; faltan persistencia versionada e integración contextual/interactuable antes de cerrar.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
-- Último bloque funcional: `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`.
-- Última validación funcional: `Godot CI` run `33293105681`, `success`.
+- Último bloque funcional: `c94bacac772f8f5a0075b972c56baeb86b37afa0`.
+- Última validación funcional: `Godot CI` run `33293544721`, `success`.
 
 ## Fases completadas
 
@@ -48,9 +48,20 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 5. Se creó `GraveRecord` independiente de escenas/UI. La contribución base del cadáver usa `burial_value`; lápida, valla y decoraciones añaden puntos definidos en `CemeteryRatingConfig`.
 6. Se creó `CemeteryModel` como agregador puro de tumbas con cálculo de rating y snapshot serializable.
 7. Se añadió `test_cemetery_foundation.gd` para carga de configuración, decay, clamp, contribución de cadáver, mejoras, agregación y snapshot.
+8. Commit funcional: `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`.
+9. `Godot CI` run `33293105681` terminó con `success`.
+
+### Bloque 2 — Preparación, entierro y mejoras
+1. `CorpseState` mantiene ahora `current_preparation_level` como estado de instancia; preparar un cadáver no muta el `CorpseData` compartido.
+2. Se añadió `CorpseState.prepare(amount)` y el snapshot usa el nivel de preparación actual.
+3. Se creó `CemeteryService` local/contextual, sin Autoload, para recibir cadáveres pendientes, evitar ids duplicados, preparar, enterrar y aplicar mejoras.
+4. `bury_corpse()` crea un `GraveRecord`, lo registra en `CemeteryModel` y elimina el cadáver de pendientes.
+5. `install_headstone()`, `install_fence()` y `add_decoration()` alteran exclusivamente el estado de `GraveRecord`; el rating continúa calculándose mediante `CemeteryRatingConfig`.
+6. Se añadió `test_cemetery_flow.gd` para el flujo completo lógico: recibir -> preparar -> decay -> enterrar -> lápida -> valla -> decoración -> rating -> snapshot.
+7. El test verifica además que la preparación no muta el Resource compartido, que ids duplicados se rechazan y que índices de tumba inválidos no mutan estado.
 8. `tests/run_tests.gd` ejecuta la nueva suite.
-9. Commit funcional del bloque: `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`.
-10. `Godot CI` run `33293105681` terminó con `success`: importación, smoke test de `main.tscn`, suite headless y limpieza.
+9. Commit funcional del bloque: `c94bacac772f8f5a0075b972c56baeb86b37afa0`.
+10. `Godot CI` run `33293544721` terminó con `success`: importación, smoke test de `main.tscn`, tests headless y limpieza.
 
 ## Decisiones vigentes
 
@@ -60,17 +71,17 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Items, recetas y datos de cementerio se representan mediante Resources tipados/data-driven.
 - La lógica pura se mantiene fuera de `Node` cuando sea posible y debe tener tests headless.
 - Operaciones que consumen recursos deben ser atómicas o conservar un estado recuperable explícito.
+- `CorpseData` es configuración compartida; estado mutable como decay y preparación vive en `CorpseState`.
 - `CorpseData.burial_value` representa la contribución base del cadáver; las mejoras de tumba usan configuración independiente. No introducir todavía fórmulas complejas de calidad/preparación sin gameplay que las justifique.
 - No entrar en NPCs/calendario/quests/economía antes de sus fases salvo dependencias mínimas inevitables.
 
 ## Próximo bloque — Fase 4 Cementerio
 
-1. Crear una operación contextual para preparar un cadáver sin introducir NPCs/calendario.
-2. Crear un plot/tumba interactuable o servicio local que permita enterrar un `CorpseState` y registrarlo en `CemeteryModel`.
-3. Añadir mejoras básicas de lápida y valla mediante datos/estado, evitando lógica dispersa en escenas.
-4. Probar el flujo preparar -> enterrar -> mejorar -> recalcular rating.
-5. Después integrar persistencia mínima compatible con el guardado versionado.
-6. Mantener Fase 4 abierta hasta test de aceptación completo y CI final verde.
+1. Integrar snapshot/restauración de `CemeteryService` con persistencia versionada sin convertir cementerio en Autoload.
+2. Añadir reconstrucción de cadáveres/tumbas desde datos persistidos con un catálogo explícito de `CorpseData`.
+3. Añadir un componente o escena contextual mínima para exponer preparación, parcela de entierro y mejoras mediante interacción.
+4. Añadir test de guardado -> carga -> recuperación de rating, cadáveres pendientes, preparación y mejoras.
+5. Ejecutar CI final de Fase 4 y cerrarla solo si toda la aceptación queda cubierta.
 
 ## Regla de continuidad
 
