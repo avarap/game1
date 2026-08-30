@@ -7,7 +7,8 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 - Repositorio: `avarap/game1`
 - Rama: `main`
 - Fase completada más reciente: **Fase 2 — Items / Resource Loop**
-- Próxima fase: **Fase 3 — Crafting / Production Loop**
+- Fase activa: **Fase 3 — Crafting / Production Loop**
+- Estado Fase 3: bloque 1 de crafting instantáneo implementado; falta StorageNetwork/cofres/colas antes de cerrar la fase.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 
 ## Trabajo realizado — Fase 0
@@ -26,66 +27,66 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 6. Validación de aceptación: `ae77e23a190c4cb7824eff0bce8c6cf672fb381f`.
 7. `Godot CI` run `33280758441` completó con `success`.
 
-## Trabajo realizado — Fase 2, bloque 1
+## Trabajo realizado — Fase 2
 
-1. Se definieron criterios de aceptación explícitos en `ROADMAP.md`.
-2. Se creó `ItemData` como `Resource` tipado.
-3. Se creó `InventoryStack` y `InventoryModel` independientes de UI.
-4. Se creó `InventoryComponent` local al jugador con 20 slots.
-5. Se añadió `data/items/wood.tres`.
-6. Se añadieron tests de inventario e integración.
-7. Commit base: `f6d346a298910900785f19943bbf0680f33fde76`.
-8. El primer CI detectó warnings de inferencia `Variant` tratados como errores.
-9. Se corrigió con tipado explícito y `mini`/`maxi` en `2412414889c0a5d6e403c9178aede9b31fa045c5`.
-10. `Godot CI` run `33283283684` pasó completo.
+1. `ItemData`, `InventoryStack`, `InventoryModel` e `InventoryComponent` local.
+2. `EnergyComponent` y `ResourceSourceComponent` reutilizables.
+3. `ResourceNode`, árbol recolectable, loot de madera y coste de energía.
+4. Recolección atómica ante herramienta incorrecta, energía insuficiente o inventario lleno.
+5. Tests de inventario e integración del resource loop.
+6. Commit funcional final: `c196e3ab5a42adffe97278f0b0daa8960c789e04`.
+7. `Godot CI` run `33285578050` completó con `success`.
+8. Fase 2 cerrada tras cumplir todos sus criterios.
 
-## Trabajo realizado — Fase 2, bloque 2
+## Trabajo realizado — Fase 3, bloque 1
 
-1. Se creó `EnergyComponent` local y reutilizable con gasto, restauración y señales.
-2. Se creó `ResourceSourceComponent` como componente reutilizable para vida/cantidad, loot, coste de energía y herramienta requerida.
-3. La recolección es atómica: si falta herramienta, energía o espacio de inventario no se consume energía ni se concede loot parcial.
-4. Se añadió requisito mínimo de herramienta mediante `equipped_tool_id`; el jugador equipa `axe` como herramienta inicial de prueba.
-5. Se añadió `ResourceNode` como `Interactable` que delega la lógica al componente de recurso.
-6. Se añadió `world/resources/tree_resource.tscn` con loot `wood.tres`, 3 golpes, 2 unidades de madera por golpe y coste de 4 de energía.
-7. El árbol se integró en `world/world.tscn` dentro del radio inicial de interacción del jugador.
-8. Se añadió feedback local mediante `FeedbackLabel` para éxito, herramienta incorrecta, energía insuficiente, inventario lleno y agotamiento.
-9. Se añadió `tests/test_resource_loop.gd` para validar el loop `harvest -> loot -> energy`, además de fallos por herramienta, energía e inventario lleno.
-10. `tests/run_tests.gd` incluye el nuevo test de aceptación.
-11. Commit funcional: `c196e3ab5a42adffe97278f0b0daa8960c789e04`.
-12. `Godot CI` run `33285578050` completó con `success`: importación, smoke test de `main.tscn`, suite headless y limpieza.
-13. Con todos los criterios de aceptación cumplidos, la **Fase 2 queda completada**.
+1. Se revisaron las secciones 19 (Crafting), 20 (StorageNetwork) y 23 (Energía) del master spec antes de implementar.
+2. `ROADMAP.md` contiene criterios completos de Fase 3 y mantiene la fase abierta hasta StorageNetwork/colas/CI final.
+3. Se creó `RecipeIngredient` como Resource tipado para representar item + cantidad.
+4. Se creó `RecipeData` con id, estación, inputs, outputs, duración y coste de energía.
+5. Se añadió `data/items/plank.tres` como primer recurso procesado.
+6. Se añadió `data/recipes/wood_to_plank.tres`: 2 madera -> 1 tabla en `workbench`, coste 2 de energía.
+7. Se creó `CraftingService` como lógica pura y testeable sin `Node`.
+8. El crafting simula primero sobre una copia de `InventoryModel`; solo reemplaza el estado real cuando inputs y outputs caben completamente.
+9. Se cubren rechazos atómicos por receta inválida, estación incorrecta, inputs insuficientes e inventario sin espacio.
+10. Se creó `CraftingStation` contextual heredando de `Interactable`; no se añadió ningún Autoload nuevo.
+11. Se creó `world/buildings/workbench.tscn` con feedback mínimo y se integró en `world/world.tscn`.
+12. El coste de energía se cobra solo después de que `CraftingService` confirme éxito.
+13. Se añadió `tests/test_crafting_foundation.gd`, incluyendo receta data-driven, atomicidad, estación incorrecta, inputs insuficientes, inventario lleno e interacción real jugador + banco.
+14. `tests/run_tests.gd` ejecuta el test de crafting.
+15. Commit funcional del bloque: `d284104ab8b9f300362413cd666bdab6b8855fbd`.
+16. CI del bloque funcional: `Godot CI` run `33287832451` lanzado; validar su resultado antes de considerar este bloque confirmado.
 
 ## Decisiones tomadas
 
 - Mantener solo cinco Autoloads globales.
-- Inventario, energía, recursos, crafting, quests, cementerio y economía permanecen como sistemas locales/contextuales.
-- `ItemData` usa `Resource` tipado y los items concretos viven como `.tres`.
+- Inventario, energía, recursos, crafting, quests, cementerio y economía permanecen locales/contextuales.
+- Datos de items y recetas viven como Resources `.tres` tipados.
 - La UI no posee estado de gameplay.
-- `InventoryModel` es reutilizable sin depender de `Node`.
-- `ResourceSourceComponent` contiene la lógica de recolección; `ResourceNode` solo adapta interacción/feedback de escena.
-- El requisito de herramienta de Fase 2 es deliberadamente mínimo; durabilidad, niveles y herramientas avanzadas se posponen hasta que su fase lo requiera.
-- Mantener tipado explícito en lógica aritmética cuando Godot pueda inferir `Variant`.
-- No implementar crafting dentro de Fase 2.
+- `CraftingService` es lógica pura y no conoce escenas ni UI.
+- La atomicidad de crafting se garantiza simulando sobre un inventario clon antes de mutar el real.
+- `CraftingStation` conoce la abstracción de crafting/inventario, no implementaciones futuras de cofres.
+- StorageNetwork se implementará en el siguiente bloque para evitar acoplar el banco a un cofre concreto.
+- Producción temporizada/colas se pospone al siguiente bloque arquitectónico; no se implementa automatización compleja.
+- No entrar en Fase 4 mientras Fase 3 no cumpla todos sus criterios.
 
 ## Validaciones confirmadas
 
 - Fases 0, 1 y 2 permanecen validadas en CI.
-- `main.tscn` arranca en smoke test headless con el árbol recolectable presente.
-- El jugador dispone localmente de `InventoryComponent` y `EnergyComponent`.
-- La madera se concede al inventario y la energía baja de 100 a 96 en una recolección válida.
-- Herramienta incorrecta, energía insuficiente e inventario lleno no alteran indebidamente inventario/energía.
-- `Godot CI` run `33285578050` pasó sobre `c196e3ab5a42adffe97278f0b0daa8960c789e04`.
+- El último CI previo a Fase 3 (`33285670732`) sobre el commit de documentación de Fase 2 terminó en `success`.
+- La implementación de Fase 3 bloque 1 está persistida en `main`.
+- Falta confirmar el resultado final del run `33287832451`; no marcar el bloque ni la fase como validados hasta que sea verde.
 
 ## Próximo bloque de trabajo — Fase 3
 
-1. Leer la sección de crafting y `StorageNetwork` del master spec antes de escribir código.
-2. Definir criterios de aceptación completos de Fase 3 en `ROADMAP.md`.
-3. Crear `RecipeData` tipado y al menos una receta `.tres` mínima.
-4. Diseñar lógica pura de crafting que valide inputs y outputs de forma atómica.
-5. Crear una estación mínima contextual, sin Autoload.
-6. Integrar la estación con inventarios compatibles sin acoplarla a UI.
-7. Añadir tests unitarios y un test de aceptación del primer loop completo de crafting.
-8. Mantener Fase 3 abierta hasta cumplir todos sus criterios y tener CI verde final.
+1. Revisar primero el resultado del `Godot CI` run `33287832451` y corregir cualquier fallo crítico.
+2. Diseñar una interfaz/abstracción `StorageProvider` pequeña y testeable para inventarios compatibles.
+3. Crear `StorageNetwork` contextual con `has_item`, `get_available_amount`, `consume`, `deposit` y `find_sources`.
+4. Crear un cofre mínimo que exponga inventario mediante la misma abstracción.
+5. Refactorizar `CraftingService`/estación para consumir inputs y depositar outputs mediante StorageNetwork sin conocer cofres concretos.
+6. Añadir soporte de estado mínimo para duración/cola sin implementar automatización compleja.
+7. Añadir tests unitarios y aceptación de estación + jugador + cofre.
+8. Ejecutar CI final y mantener Fase 3 abierta hasta cumplir todos los criterios.
 
 ## Regla de continuidad
 
