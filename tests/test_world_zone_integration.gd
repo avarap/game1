@@ -58,6 +58,7 @@ static func run() -> Array[String]:
 		failures.append("World integration should expose exactly one cemetery controller")
 	_assert_zone_shell_state(world, &"cemetery", failures)
 	_assert_zone_transitions(world, &"cemetery", failures)
+	_assert_zone_content(zone_manager.call("get_active_zone") as Node, &"cemetery", failures)
 
 	for destination in ROUTE:
 		var zone_id := destination[0] as StringName
@@ -71,6 +72,7 @@ static func run() -> Array[String]:
 		_assert_persistent_ids(world, ids, failures)
 		_assert_zone_shell_state(world, zone_id, failures)
 		_assert_zone_transitions(world, zone_id, failures)
+		_assert_zone_content(zone_manager.call("get_active_zone") as Node, zone_id, failures)
 
 	var player := world.get_node_or_null("Player") as Node2D
 	if player != null:
@@ -149,6 +151,33 @@ static func _assert_zone_transitions(
 	for target in expected:
 		if not actual_targets.has(target):
 			failures.append("Zone %s should expose travel to %s" % [zone_id, target])
+
+
+static func _assert_zone_content(
+	active_zone: Node, zone_id: StringName, failures: Array[String]
+) -> void:
+	if active_zone == null:
+		failures.append("Active zone %s should exist" % zone_id)
+		return
+	match zone_id:
+		&"cemetery":
+			if active_zone.find_child("Workbench", true, false) == null:
+				failures.append("Cemetery/property should keep the workshop reachable")
+		&"forest":
+			var resources := active_zone.get_node_or_null("Resources")
+			if resources == null or resources.get_child_count() == 0:
+				failures.append("Forest route should expose reachable reusable resources")
+			if active_zone.get_node_or_null("Markers/SecretClearing") == null:
+				failures.append("Forest should expose its secondary secret clearing marker")
+		&"village":
+			if active_zone.find_child("MerchantSpot", true, false) == null:
+				failures.append("Village route should expose the commercial marker")
+		&"village_interior", &"home_interior":
+			if active_zone.find_child("exit_main", true, false) == null:
+				failures.append("Interior route should expose a deterministic exit marker")
+		&"mine":
+			if active_zone.find_child("SecretLandmark", true, false) == null:
+				failures.append("Mine route should expose its secondary secret landmark")
 
 
 static func _check_location_persistence(
