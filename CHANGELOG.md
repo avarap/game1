@@ -15,7 +15,12 @@
 - `SleepSpot` interactuable: dormir avanza al amanecer del día siguiente y restaura completamente la energía.
 - `DayNightMath` para fases e interpolación gradual entre amanecer, mediodía, atardecer y noche.
 - `DayNightController` local basado en `CanvasModulate`, sincronizado con `TimeManager` mediante `time_changed`.
-- `test_day_night_cycle.gd` para referencias horarias, interpolación, fases e integración del ciclo visual en el mundo.
+- `NPCData` tipado para identidad, rol y velocidad de movimiento de NPCs.
+- Primer NPC data-driven: `Brother Aldren` / Hermano Aldren como sacerdote excéntrico.
+- `NPCNavigationMath` para dirección/llegada testeables fuera de escena.
+- `WorldNavigationRegion` local con geometría mínima navegable.
+- `NPCController` sobre `CharacterBody2D` + `NavigationAgent2D` y escena `brother_aldren.tscn`.
+- `test_npc_navigation.gd` para datos, navegación pura e integración del primer NPC.
 - Instrumentación de suites headless y timeout de 30 segundos en CI para evitar bloqueos silenciosos.
 - Job `gdscript-quality` independiente con Python + `gdtoolkit`, `gdlint` y `gdformat --check` para los scripts endurecidos.
 
@@ -29,7 +34,8 @@
 - Jugador y cofres exponen/resuelven `InventoryComponent` y `EnergyComponent` por contrato y tipo; crafting, recolección y sueño dejan de conocer nombres internos de nodo.
 - `CemeteryAction` sustituye el `NodePath` relativo al controller por inyección tipada o descubrimiento mediante grupo `cemetery_controller`.
 - El mundo incorpora `DayNightCycle`, cuyo color deriva del reloj global sin almacenar una copia local de hora/día.
-- El quality gate incluye incrementalmente la lógica, controller y tests del ciclo día/noche.
+- `world/world.tscn` incorpora `NavigationRegion` y `BrotherAldren` con un destino inicial explícito.
+- El quality gate incluye incrementalmente lógica, controllers y tests del ciclo día/noche y navegación NPC.
 - Fase 4 — Cementerio queda completada; Fase 5 — Simulación está activa.
 
 ### Fixed
@@ -42,9 +48,10 @@
 - `SleepSpot` ya no asume que el actor está montado en `SceneTree`; usa el árbol propio y fallback headless seguro.
 - Se elimina `CemeteryService.RESULT_ALREADY_OCCUPIED`, código muerto sin comportamiento asociado.
 - El crafting ya no puede consumir automáticamente materiales de cofres pertenecientes a otro `storage_scope`.
-- Se corrigieron los problemas detectados por `gdlint` (`max-returns` y longitud de línea) y los archivos señalados por `gdformat` sin desactivar reglas.
+- Se corrigieron los problemas detectados por `gdlint` y los archivos señalados por `gdformat` sin desactivar reglas.
 - `DayNightController` resuelve `EventBus`/`TimeManager` desde `/root` para compilar y funcionar también bajo tests `--script`.
 - La transición visual nocturna atraviesa medianoche de forma continua hasta las 06:00.
+- `NPCController` respeta el orden de definiciones exigido por el quality gate.
 
 ### Validated
 - Fase 0: run `33278173612`, `success`.
@@ -55,4 +62,5 @@
 - Fase 5 bloque 1 tiempo/calendario + sueño: corrección `62cb2658bd169270fffcb59c34134493b787f327`, run `33294728470`, `success`.
 - Hardening funcional de storage/dependencias: commit `0639a43b16c152bf7a8b9ad3b44e2aa4aa640a8a`, run `33294983254`, `success`.
 - Desacoplamiento final de componentes por tipo: commit `b13d024143b5fb0ff8118a689da079c37916c554`, run `33295277286`, ambos jobs `success`.
-- Fase 5 bloque 2 ciclo día/noche: implementación `5ea87dda3ce3b4dda9d09d8dadebcddd7d6a0a26`; run `33295708310` detectó longitud de línea; `f0c014bdebb13135428be1857e035ea8f6d70525` + run `33295738329` detectaron formato y resolución de Autoload bajo `--script`; corrección final `5c6467c5aad04b1d44c48cceef2280af5d049bf8`, run `33295805020`, `gdscript-quality` y `validate-and-test` en `success`.
+- Fase 5 bloque 2 ciclo día/noche: corrección final `5c6467c5aad04b1d44c48cceef2280af5d049bf8`, run `33295805020`, `gdscript-quality` y `validate-and-test` en `success`.
+- Fase 5 bloque 3 NPCData/navegación: run `33296112250` detectó `class-definitions-order`; corrección final `03986401968c83b79527d15f47217f090de43ab2`, run `33296131085`, `gdscript-quality` y `validate-and-test` en `success`.
