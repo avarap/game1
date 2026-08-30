@@ -2,18 +2,18 @@
 
 RPG 2D de gestión, crafting, exploración y simulación construido con **Godot 4.x + GDScript**.
 
-El objetivo actual es un vertical slice original y muy pulido. El desarrollo sigue `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md` y avanza fase por fase, manteniendo el proyecto ejecutable tras cada cambio importante.
+El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md` y avanza fase por fase, manteniendo el proyecto ejecutable y validado por CI.
 
 ## Estado
 
-- Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio**
-- Fase activa: **5 — Simulación**
-- Estado Fase 5: reloj/calendario, sueño, ciclo día/noche, `NPCData`, `NavigationAgent2D` y rutinas/horarios con estados `Idle`/`Walking`/`Working`/`Sleeping` implementados y validados.
-- Pendiente para cerrar Fase 5: persistencia mínima de NPCs y test de aceptación integral.
+- Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio, 5 — Simulación**
+- Fase activa: **6 — RPG**
+- Fase 5 cerrada con reloj/calendario, sueño, ciclo día/noche, `NPCData`, `NavigationAgent2D`, rutinas/horarios y persistencia NPC mediante `SaveManager`.
+- Próximo bloque: foundation de diálogo data-driven con opciones/condiciones tipadas y una integración mínima original con Hermano Aldren.
 - Godot objetivo de CI: **4.5**
 - Rama principal: `main`
 - Memoria de desarrollo: `DEV_MEMORY.md`
-- Última validación completa: **Godot CI `33296755499` — success**
+- Última validación funcional de fase: **Godot CI `33297774458` — success**
 
 ## Ejecutar
 
@@ -34,28 +34,32 @@ El objetivo actual es un vertical slice original y muy pulido. El desarrollo sig
 
 ## Loop jugable disponible
 
-La build técnica actual permite probar movimiento, recolección, inventario, crafting/producción y el loop mínimo de cementerio. En la zona inicial existen interactuables para recibir un cadáver de prueba, prepararlo, enterrarlo y mejorar la tumba con lápida, valla y decoración. El estado del cementerio se integra con el guardado versionado.
+La build técnica permite probar movimiento, recolección, inventario, crafting/producción y el loop mínimo de cementerio: recibir un cadáver, prepararlo, enterrarlo y mejorar la tumba con lápida, valla y decoración. El estado del cementerio se integra con el guardado versionado.
 
-La simulación añade reloj/calendario centralizado, dormir hasta el siguiente amanecer con recuperación de energía, ciclo día/noche observable y Hermano Aldren como primer NPC data-driven. Aldren navega mediante `NavigationAgent2D` y selecciona destinos/estados desde `ScheduleData` según `TimeManager`, incluyendo `Idle`, `Walking`, `Working` y `Sleeping`.
+La simulación incluye reloj/calendario centralizado, dormir hasta el siguiente amanecer con recuperación de energía, ciclo día/noche gradual y Hermano Aldren como primer NPC data-driven. Aldren navega con `NavigationAgent2D`, selecciona destinos/estados desde `ScheduleData` y usa `Idle`, `Walking`, `Working` y `Sleeping`.
+
+El estado de Aldren participa como `save_provider` local: el save/load restaura posición, estado actual/pendiente y ruta en curso cuando corresponde. El test integral de Fase 5 verifica además que, después de restaurar, los cambios posteriores de `TimeManager` vuelven a gobernar su rutina y que dormir actualiza NPC, energía y ciclo visual.
 
 ## Arquitectura
 
-Los Autoloads se limitan a servicios globales reales: `EventBus`, `GameManager`, `TimeManager`, `SaveManager` y `AudioManager`. Los sistemas de gameplay permanecen desacoplados, locales/contextuales cuando corresponde y preferentemente basados en Resources tipados.
+Los Autoloads se limitan a cinco servicios globales: `EventBus`, `GameManager`, `TimeManager`, `SaveManager` y `AudioManager`. Los sistemas de gameplay permanecen locales/contextuales y preferentemente basados en Resources tipados.
 
-`SaveManager` agrega estado persistente de sistemas locales mediante providers del grupo `save_provider`, evitando acoplar el Autoload a implementaciones concretas como cementerio, NPCs o futuros sistemas del mundo.
+`SaveManager` agrega estado persistente mediante providers del grupo `save_provider`, evitando acoplar el Autoload a implementaciones concretas como cementerio o NPCs.
+
+`TimeManager` es la única fuente de reloj/calendario. Los sistemas visuales y NPCs observan sus señales en vez de duplicar estado temporal.
 
 ## Calidad y tests
 
 El CI ejecuta dos gates independientes:
 
-- `gdscript-quality`: `gdlint` + `gdformat --check` sobre los scripts incorporados al hardening.
+- `gdscript-quality`: `gdlint` + `gdformat --check`.
 - `validate-and-test`: importación Godot 4.5, smoke test de la escena principal y suite headless.
 
 ```bash
 godot --headless --path . --script res://tests/run_tests.gd
 ```
 
-En CI la suite usa un timeout explícito para evitar bloqueos silenciosos.
+La suite se inicia de forma diferida una vez que `SceneTree` está operativo, de modo que los tests integrales pueden observar el lifecycle real de las escenas. En CI se mantiene un timeout explícito para evitar bloqueos silenciosos.
 
 ## Validación headless
 

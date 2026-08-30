@@ -6,22 +6,22 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 - Repositorio: `avarap/game1`
 - Rama: `main`
-- Fase completada más reciente: **Fase 4 — Cementerio**
-- Fase activa: **Fase 5 — Simulación**
-- Estado Fase 5: tiempo/calendario, sueño, ciclo día/noche, `NPCData`, navegación y rutinas/horarios implementados y validados; falta persistencia mínima de NPCs y aceptación final antes de cerrar.
+- Fase completada más reciente: **Fase 5 — Simulación**
+- Fase activa: **Fase 6 — RPG**
+- Estado Fase 5: **COMPLETADA**. Reloj/calendario, sueño, ciclo día/noche, `NPCData`, navegación, rutinas/horarios y persistencia NPC están implementados y validados.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
-- Último bloque funcional: `82f5ccee1e109e2ad702532b7301922124548c7b`.
-- Última validación funcional y de calidad: `Godot CI` run `33296648630`, `success` en `gdscript-quality` y `validate-and-test`.
+- Último bloque funcional de Fase 5: `f0290951a27d5e66581da2532151d957ec35075e`.
+- Última validación funcional de Fase 5: `Godot CI` run `33297774458`, `success` en `gdscript-quality` y `validate-and-test`.
 
 ## Fases completadas
 
 ### Fase 0 — Bootstrap
 - Godot 4.x, escena raíz, cinco Autoloads: `EventBus`, `GameManager`, `TimeManager`, `SaveManager`, `AudioManager`.
-- InputMap, logging, panel debug, guardado versionado, tests y CI headless.
+- InputMap, logging, debug, guardado versionado, tests y CI headless.
 - Validación: run `33278173612`, `success`.
 
 ### Fase 1 — Core / Walking Prototype
-- `world/world.tscn`, jugador `CharacterBody2D`, movimiento 8 direcciones, cámara, colisiones, Y-sort, `InteractionArea` e `Interactable`.
+- Mundo base, jugador `CharacterBody2D`, movimiento 8 direcciones, cámara, colisiones, Y-sort e interacción reusable.
 - Validación final: run `33280758441`, `success`.
 
 ### Fase 2 — Items / Resource Loop
@@ -35,104 +35,99 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 ### Fase 4 — Cementerio
 - `CorpseData`, `CorpseState`, `GraveRecord`, `CemeteryModel`, rating data-driven y `CemeteryService`.
-- `CemeteryController` local con interactuables de recepción, preparación, entierro y mejora.
-- Persistencia por snapshots y providers locales de `SaveManager`.
-- Tests de foundation, flujo, gameplay y persistencia.
+- Gameplay contextual de recepción, preparación, entierro y mejoras.
+- Persistencia por providers locales de `SaveManager`.
 - Validación final: corrección `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`, `success`.
 
-## Fase 5 — Simulación
+### Fase 5 — Simulación
 
-### Bloque 1 — Tiempo, calendario y sueño
-1. `TimeManager` continúa siendo la única fuente global de tiempo y expone snapshot/restauración, avance de día y semana ficticia de seis días.
-2. `SleepSpot` avanza al siguiente día a las 06:00 y restaura toda la energía del jugador.
-3. `test_simulation_time.gd` cubre calendario, rollover, sueño y persistencia del tiempo.
-4. Implementación inicial: `57d9cfdc010398cf5b34764131c7859dd7221084`.
-5. Corrección headless: `62cb2658bd169270fffcb59c34134493b787f327`.
-6. Validación final: run `33294728470`, `success`.
+#### Bloque 1 — Tiempo, calendario y sueño
+1. `TimeManager` es la única fuente global de reloj/calendario y expone snapshot/restauración, avance de día y semana ficticia de seis días.
+2. `SleepSpot` avanza al siguiente día a las 06:00 y restaura la energía del jugador.
+3. `test_simulation_time.gd` cubre calendario, rollover, sueño y persistencia temporal.
+4. Corrección final: `62cb2658bd169270fffcb59c34134493b787f327`.
+5. Validación: run `33294728470`, `success`.
 
-### Hardening transversal previo al bloque 2
-1. `StorageProvider.scope_id` y `storage_scope` limitan redes de almacenamiento por contexto.
-2. Jugador y cofres exponen componentes por contrato/tipo; crafting, recolección y sueño no dependen de nombres internos.
-3. `CemeteryAction` usa inyección tipada o grupo `cemetery_controller` en lugar de `NodePath` relativo.
-4. Se eliminó código muerto de cementerio.
-5. Se añadió `gdscript-quality` con `gdlint` y `gdformat --check`, manteniendo el job Godot separado.
-6. Implementación principal: `0639a43b16c152bf7a8b9ad3b44e2aa4aa640a8a`.
-7. Desacoplamiento final: `b13d024143b5fb0ff8118a689da079c37916c554`.
-8. Validación final: run `33295277286`, ambos jobs `success`.
+#### Hardening transversal
+1. Storage limitado por `scope_id`/`storage_scope`.
+2. Dependencias entre escenas endurecidas mediante contratos/tipos/grupos en vez de nombres o `NodePath` frágiles.
+3. Código muerto de cementerio eliminado.
+4. `gdscript-quality` con `gdlint` y `gdformat --check`.
+5. Estado final: `b13d024143b5fb0ff8118a689da079c37916c554`, run `33295277286`, ambos jobs `success`.
 
-### Bloque 2 — Ciclo día/noche observable
-1. `DayNightMath` encapsula normalización, fases e interpolación gradual.
+#### Bloque 2 — Ciclo día/noche
+1. `DayNightMath` encapsula fases e interpolación gradual.
 2. Referencias: 06:00 amanecer, 12:00 mediodía, 18:00 atardecer y 22:00 noche.
-3. La transición nocturna cruza medianoche sin salto visual.
-4. `DayNightController` local usa `CanvasModulate`, observa `time_changed` y deriva su estado de `TimeManager`.
-5. `world/world.tscn` incorpora `DayNightCycle`; no se añade ningún Autoload.
-6. `test_day_night_cycle.gd` cubre referencias, interpolación, fases e integración.
-7. Implementación inicial: `5ea87dda3ce3b4dda9d09d8dadebcddd7d6a0a26`.
-8. `f0c014bdebb13135428be1857e035ea8f6d70525` corrigió lint; el siguiente CI detectó formato y resolución de Autoload bajo `--script`.
-9. Corrección final: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`.
-10. Validación final: run `33295805020`, ambos jobs `success`.
+3. `DayNightController` local usa `CanvasModulate` y observa `TimeManager` vía `EventBus`.
+4. Corrección final: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`.
+5. Validación: run `33295805020`, ambos jobs `success`.
 
-### Bloque 3 — NPCData y navegación básica
-1. Se releyó la sección 25 del master spec: datos NPC desacoplados, uso obligatorio de `NavigationAgent2D` y estados/rutinas como bloque posterior.
-2. Se creó `NPCData` como `Resource` tipado con `id`, `display_name`, `role` y `move_speed`, además de validación mínima.
-3. Se añadió `data/npcs/brother_aldren.tres` para el primer NPC original: Hermano Aldren, sacerdote excéntrico.
-4. Se creó `NPCNavigationMath`, lógica pura para velocidad direccional y comprobación de llegada.
-5. Se creó `WorldNavigationRegion`, `NavigationRegion2D` local que genera la geometría navegable mínima del mapa sin nuevo Autoload.
-6. Se creó `NPCController` sobre `CharacterBody2D` con `NavigationAgent2D`, movimiento frame-independent mediante `move_and_slide()` y señal de llegada.
-7. `world/npcs/brother_aldren.tscn` encapsula visual provisional, colisión y agente de navegación.
-8. `world/world.tscn` integra `NavigationRegion` y una instancia de `BrotherAldren`.
-9. `test_npc_navigation.gd` valida `NPCData`, matemática de navegación, geometría de navegación, presencia del NPC y `NavigationAgent2D`.
-10. La suite principal y `gdscript-quality` incluyen los nuevos scripts/tests.
-11. Run `33296112250` detectó `class-definitions-order` en `NPCController`; no se relajó la regla.
-12. Corrección final: `03986401968c83b79527d15f47217f090de43ab2`.
-13. Validación final: `Godot CI` run `33296131085`, `success` en lint, format-check, importación, smoke test y suite headless.
-14. Quedan cumplidos los criterios `NPCData data-driven y primer NPC de prueba` y `NavigationAgent2D y navegación básica`.
+#### Bloque 3 — NPCData y navegación
+1. `NPCData` tipado y primer NPC original: Hermano Aldren.
+2. `NPCNavigationMath` para lógica pura de dirección/llegada.
+3. `WorldNavigationRegion` local y `NPCController` sobre `CharacterBody2D` + `NavigationAgent2D`.
+4. Run `33296112250` detectó `class-definitions-order`; se corrigió sin relajar reglas.
+5. Corrección final: `03986401968c83b79527d15f47217f090de43ab2`.
+6. Validación: run `33296131085`, ambos jobs `success`.
 
-### Bloque 4 — ScheduleData y rutinas NPC
-1. Se revisó el HEAD externo `e2d1351d31576407caed9c983457c09c0a1e93c3`: solo añadió documentación/configuración auxiliar y su CI estaba verde; no alteró gameplay.
-2. Se añadieron `ScheduleEntryData` y `ScheduleData` tipados. Las franjas soportan máscara de los seis días, rangos horarios normales o cruzando medianoche, estado de actividad y destino.
-3. Se añadió `NPCStateMachine` con estados explícitos mínimos `Idle`, `Walking`, `Working` y `Sleeping`; `Walking` es transitorio mientras el agente navega al estado programado.
-4. `brother_aldren_schedule.tres` define una rutina mínima completa: mañana idle, trabajo diurno, descanso vespertino y sueño nocturno.
-5. `NPCController` observa `TimeManager` mediante `EventBus`, selecciona la franja correspondiente sin duplicar reloj y mantiene `NavigationAgent2D` como mecanismo de movimiento.
-6. El destino inicial ad hoc de Aldren se eliminó del mundo; sus destinos pasan a ser propiedad de los datos de horario.
-7. `test_npc_routines.gd` cubre resolución horaria, rango nocturno que cruza medianoche, transiciones `Walking -> Working`, `Sleeping` e integración del horario en escena.
-8. `test_npc_navigation.gd` se actualizó para exigir un `ScheduleData` válido en lugar del antiguo `initial_target`.
-9. `gdscript-quality` cubre todos los nuevos scripts y tests.
-10. Run `33296549903` dejó lint/formato verdes pero detectó un error real: `ScheduleEntryData` comparaba el `Dictionary` devuelto por `TimeMath.normalize_total_minutes()` con enteros, degradando además los subresources de horario a `Resource`.
-11. La corrección `82f5ccee1e109e2ad702532b7301922124548c7b` normaliza minutos como entero con `posmod()` y mantiene los Resources tipados operativos.
-12. Validación final del bloque: `Godot CI` run `33296648630`, `success` en lint, format-check, importación, smoke test y suite headless completa.
-13. Durante la revisión se detectó que el archivo subido como `editorconfig` no era reconocido por EditorConfig; se renombró correctamente a `.editorconfig`.
-14. Queda cumplido el criterio `Rutinas/horarios con estados mínimos Idle/Walking/Working/Sleeping`.
-15. Fase 5 permanece abierta.
+#### Bloque 4 — ScheduleData y rutinas
+1. `ScheduleEntryData` y `ScheduleData` tipados con máscara de seis días, rangos que cruzan medianoche, actividad y destino.
+2. `NPCStateMachine` con `Idle`, `Walking`, `Working` y `Sleeping`.
+3. Hermano Aldren usa horario data-driven; `Walking` es transitorio hasta llegar a la actividad programada.
+4. `test_npc_routines.gd` cubre resolución horaria, medianoche, transiciones e integración.
+5. Run `33296549903` detectó comparación inválida `Dictionary`/`int` en `ScheduleEntryData`.
+6. Corrección final: `82f5ccee1e109e2ad702532b7301922124548c7b`.
+7. Validación: run `33296648630`, ambos jobs `success`.
+8. `editorconfig` fue corregido a `.editorconfig`.
+
+#### Bloque 5 — Persistencia NPC y cierre de Fase 5
+1. `NPCStateMachine` soporta snapshot/restauración de estado actual y pendiente, preservando la invariante de `Walking`.
+2. `NPCController` participa como `save_provider` local con clave estable `npc:<NPCData.id>`.
+3. El snapshot NPC guarda `id`, posición, estado actual, estado pendiente, navegación activa y target solo cuando aplica.
+4. `apply_save_data()` restaura posición/estado y reanuda una ruta en curso; las señales futuras de `TimeManager` vuelven a gobernar la rutina.
+5. `test_simulation_acceptance.gd` ejecuta el flujo integrado de Fase 5: horario de Aldren, día/noche, save/load real mediante `SaveManager`, restauración NPC, cambio horario posterior y dormir hasta el amanecer con recuperación de energía.
+6. Implementación inicial: `b8bd10cb2f014c64e4a9a5dbb30e6e041862d6be`.
+7. Run `33297598359`: importación/smoke/quality verdes, pero 12 fallos en aceptación. El mundo se añadía al árbol desde `SceneTree._initialize()` antes del lifecycle normal.
+8. `79670b23b1306031e21bf2a3403a90ced5edc383` movió contratos que deben existir al entrar al árbol (`save_provider` y conexiones de simulación) a `_enter_tree()`; run `33297716722` mantuvo los mismos 12 fallos y confirmó que el problema restante estaba en el harness.
+9. `f0290951a27d5e66581da2532151d957ec35075e` difiere la ejecución de suites hasta después de la inicialización de `SceneTree`, permitiendo probar lifecycle real sin invocar manualmente `_ready()`.
+10. Validación final: `Godot CI` run `33297774458`, `success` en lint, formato, importación, smoke test y suite headless completa.
+11. Todos los criterios de aceptación de Fase 5 quedan cumplidos. **Fase 5 COMPLETADA**.
 
 ## Decisiones vigentes
 
-- Mantener solo cinco Autoloads globales.
-- `TimeManager` es la única fuente de reloj/calendario; otros sistemas observan o invocan su API.
-- Ciclo visual y NPCs son sistemas locales/contextuales.
-- `NPCData` contiene identidad/configuración estable; `ScheduleData` contiene horarios/destinos y `NPCStateMachine` contiene el estado runtime.
-- `Walking` es un estado transitorio: al llegar, el NPC adopta el estado de actividad programado (`Idle`, `Working` o `Sleeping`).
-- El primer NPC usa `NavigationAgent2D`; no sustituir navegación por movimiento directo ad hoc.
-- El `NavigationRegion2D` actual es geometría mínima de validación. Obstáculos/baking complejo pertenecen al crecimiento del mundo, no a esta fase.
-- No introducir diálogo, relaciones, quests, economía ni tecnologías antes de Fase 6.
-- `StorageProvider.scope_id` limita redes de almacenamiento por contexto/zona.
-- Dependencias entre escenas deben preferir inyección tipada, contratos o grupos con semántica explícita frente a `NodePath` frágiles.
-- La UI observa modelos/servicios; no posee estado de gameplay.
+- Mantener exactamente cinco Autoloads globales.
+- `TimeManager` es la única fuente de reloj/calendario.
+- Ciclo visual, NPCs y otros sistemas de gameplay permanecen locales/contextuales.
+- `NPCData` contiene identidad/configuración estable; `ScheduleData` contiene horarios/destinos; `NPCStateMachine` contiene estado runtime.
+- `NPCController` persiste mediante `save_provider` con clave estable derivada del ID, sin crear un manager global de NPCs.
+- `Walking` es transitorio y conserva la actividad pendiente al persistir/restaurar.
+- `NavigationAgent2D` sigue siendo el mecanismo de navegación; no sustituirlo por movimiento directo ad hoc.
+- La UI observa modelos/servicios y no posee estado de gameplay.
 - Datos de gameplay deben ser Resources tipados cuando corresponda.
-- La lógica pura debe ser testeable de forma aislada siempre que sea posible.
-- El estado local persistente usa providers `save_provider`.
-- `gdscript-quality` es un gate adicional; la autoridad funcional continúa siendo importación/smoke/tests de Godot.
-- Ampliar cobertura de gdtoolkit incrementalmente con cada bloque nuevo.
+- Lógica pura debe ser testeable de forma aislada siempre que sea posible.
+- Las suites se lanzan de forma diferida tras inicializar `SceneTree` para que tests integrales observen lifecycle real.
+- `gdscript-quality` es un gate adicional; la autoridad funcional sigue siendo importación/smoke/tests de Godot.
+- No introducir sistemas de Fase 7/8 durante Fase 6.
 
-## Próximo bloque — Fase 5
+## Fase 6 — RPG — ACTIVA
 
-1. Añadir snapshot/restauración mínima de NPC (`id`, posición, estado actual/pending y destino cuando aplique) sin almacenar datos derivados innecesarios.
-2. Integrar el NPC como `save_provider` local compatible con `SaveManager`, sin añadir Autoloads.
-3. Probar save/load de posición y estado y que, tras restaurar, las futuras señales de `TimeManager` vuelven a gobernar la rutina.
-4. Ejecutar test de aceptación final de Fase 5: reloj + día/noche + sueño + navegación + rutina + persistencia NPC.
-5. Validar `gdscript-quality`, importación, smoke test y suite headless.
-6. Solo si todos los criterios quedan en `[x]`, sincronizar `README.md`, `ROADMAP.md`, `DEV_MEMORY.md` y `CHANGELOG.md` y cerrar Fase 5.
-7. No entrar en diálogo, relaciones, quests, economía ni tecnologías hasta abrir Fase 6.
+Criterios derivados del master spec que deberán cumplirse antes de cerrar:
+1. Diálogos, condiciones y opciones funcionan desde datos.
+2. Relaciones cambian y desbloquean contenido.
+3. Quests pueden iniciarse, progresar y completarse.
+4. Recompensas se conceden una sola vez.
+5. Economía compra/vende correctamente.
+6. Tecnologías consumen puntos y desbloquean contenido.
+7. Estado persistente compatible con `SaveManager` y tests de aceptación/CI completos.
+
+## Próximo bloque — Fase 6
+
+1. Releer las secciones de diálogo, relaciones y quests del master spec antes de diseñar APIs.
+2. Crear la foundation de diálogo data-driven con Resources tipados para nodos/opciones/condiciones mínimas.
+3. Mantener la evaluación de condiciones como lógica pura y testeable; la UI solo presentará datos.
+4. Integrar un diálogo mínimo original con Hermano Aldren solo para demostrar el flujo, sin adelantar quest/economía/tecnologías en el mismo bloque.
+5. Añadir tests, ampliar `gdscript-quality` y validar CI completo.
+6. Actualizar documentación tras el bloque; no marcar Fase 6 como completada hasta cumplir todos sus criterios.
 
 ## Regla de continuidad
 
@@ -144,5 +139,5 @@ Al retomar:
 5. Implementar un bloque coherente y pequeño.
 6. Ejecutar/verificar quality gate, importación, smoke test y tests.
 7. Corregir errores críticos antes de avanzar.
-8. Actualizar `DEV_MEMORY.md`, `ROADMAP.md` y `CHANGELOG.md`.
+8. Actualizar `DEV_MEMORY.md`, `ROADMAP.md`, `CHANGELOG.md` y `README.md` cuando cambie el estado de fase.
 9. No marcar una fase como completada hasta cumplir todos sus criterios.

@@ -3,76 +3,63 @@
 ## Unreleased
 
 ### Added
-- Bootstrap Godot 4.x, escena raíz, cinco Autoloads globales, InputMap, logging, debug, guardado versionado, tests y CI headless.
-- Walking prototype con mundo base, `CharacterBody2D`, movimiento 8 direcciones, cámara, colisiones, Y-sort e interacción reutilizable.
-- Sistema de items/inventario data-driven con `ItemData`, stacks, capacidad e `InventoryComponent` local.
-- `EnergyComponent`, recursos recolectables, herramienta requerida, loot y feedback mínimo.
-- `RecipeIngredient`, `RecipeData`, `CraftingService`, `CraftingStation` y `Workbench`.
-- `StorageProvider`, `StorageNetwork` y `StorageChest` para crafting distribuido desacoplado de cofres concretos.
-- `ProductionJob` y `ProductionQueue` para recetas temporizadas y colas mínimas.
-- Sistema de cementerio con cadáveres, tumbas, rating data-driven, controller local, interactuables y persistencia.
-- `TimeManager` ampliado con semana ficticia de seis días, snapshot/restauración y transición explícita al siguiente día.
-- `SleepSpot` interactuable: dormir avanza al amanecer del día siguiente y restaura completamente la energía.
-- `DayNightMath` para fases e interpolación gradual entre amanecer, mediodía, atardecer y noche.
-- `DayNightController` local basado en `CanvasModulate`, sincronizado con `TimeManager` mediante `time_changed`.
-- `NPCData` tipado para identidad, rol y velocidad de movimiento de NPCs.
-- Primer NPC data-driven: `Brother Aldren` / Hermano Aldren como sacerdote excéntrico.
-- `NPCNavigationMath` para dirección/llegada testeables fuera de escena.
-- `WorldNavigationRegion` local con geometría mínima navegable.
-- `NPCController` sobre `CharacterBody2D` + `NavigationAgent2D` y escena `brother_aldren.tscn`.
-- `ScheduleEntryData` y `ScheduleData` para horarios NPC data-driven con soporte de los seis días y rangos que cruzan medianoche.
-- `NPCStateMachine` con estados explícitos `Idle`, `Walking`, `Working` y `Sleeping`.
-- `brother_aldren_schedule.tres` con rutina mínima completa para Hermano Aldren.
-- `test_npc_navigation.gd` para datos, navegación pura e integración del primer NPC.
-- `test_npc_routines.gd` para horarios, medianoche, transiciones de estado e integración de escena.
-- Instrumentación de suites headless y timeout de 30 segundos en CI para evitar bloqueos silenciosos.
-- Job `gdscript-quality` independiente con Python + `gdtoolkit`, `gdlint` y `gdformat --check` para los scripts endurecidos.
-- `.editorconfig` activo para normalizar tabulación GDScript y whitespace en archivos del proyecto.
+- Bootstrap Godot 4.x, cinco Autoloads globales, InputMap, logging, debug, guardado versionado, tests y CI headless.
+- Walking prototype con mundo base, movimiento 8 direcciones, cámara, colisiones, Y-sort e interacción reutilizable.
+- Sistema de items/inventario data-driven, energía, recursos recolectables, herramientas y loot.
+- Crafting data-driven, `StorageNetwork`, cofres y producción temporizada con colas recuperables.
+- Sistema de cementerio con cadáveres, tumbas, rating data-driven, interactuables y persistencia.
+- `TimeManager` ampliado con calendario de seis días, snapshot/restauración y avance al siguiente día.
+- `SleepSpot`: dormir avanza al amanecer y restaura energía.
+- `DayNightMath` + `DayNightController` para ciclo día/noche gradual sincronizado con `TimeManager`.
+- `NPCData`, primer NPC Hermano Aldren, `NPCNavigationMath`, `WorldNavigationRegion` y `NPCController` con `NavigationAgent2D`.
+- `ScheduleEntryData` y `ScheduleData` para horarios data-driven con rangos que pueden cruzar medianoche.
+- `NPCStateMachine` con `Idle`, `Walking`, `Working` y `Sleeping`.
+- Horario real `brother_aldren_schedule.tres`.
+- Persistencia runtime de NPCs mediante provider local con clave estable `npc:<NPCData.id>`.
+- Snapshot NPC de `id`, posición, estado actual/pending, navegación activa y target cuando aplica.
+- `test_npc_navigation.gd`, `test_npc_routines.gd` y `test_simulation_acceptance.gd`.
+- `gdscript-quality` independiente con `gdlint` y `gdformat --check`.
+- `.editorconfig` activo para tabulación/whitespace consistentes.
 
 ### Changed
-- El crafting instantáneo opera sobre `StorageNetwork` manteniendo compatibilidad con inventario individual.
-- Las estaciones pueden descubrir storage por grupo o recibir providers explícitos para tests/alcances futuros.
-- `StorageProvider` incorpora `scope_id`; Workbench y cofres declaran `storage_scope` y solo se conectan a providers del mismo scope.
-- Las recetas con `duration_seconds > 0` consumen/reservan inputs al encolar y producen outputs al finalizar.
-- La energía de producción temporizada se cobra una sola vez cuando el trabajo es aceptado.
-- `SaveManager` mantiene `SAVE_VERSION = 1`, agrega/aplica providers locales y persiste/restaura el reloj mediante `TimeManager.snapshot()`/`apply_snapshot()`.
-- Jugador y cofres exponen/resuelven `InventoryComponent` y `EnergyComponent` por contrato y tipo; crafting, recolección y sueño dejan de conocer nombres internos de nodo.
-- `CemeteryAction` sustituye el `NodePath` relativo al controller por inyección tipada o descubrimiento mediante grupo `cemetery_controller`.
-- El mundo incorpora `DayNightCycle`, cuyo color deriva del reloj global sin almacenar una copia local de hora/día.
-- `world/world.tscn` incorpora `NavigationRegion` y `BrotherAldren`.
-- `NPCController` selecciona rutina desde `ScheduleData` observando `TimeManager`/`EventBus`; los destinos iniciales ad hoc se sustituyen por destinos de horario.
-- `Walking` pasa a ser estado transitorio: al llegar, el NPC adopta la actividad programada (`Idle`, `Working` o `Sleeping`).
-- El quality gate incluye incrementalmente lógica, controllers y tests del ciclo día/noche, navegación y rutinas NPC.
-- Fase 4 — Cementerio queda completada; Fase 5 — Simulación está activa.
+- `SaveManager` agrega/aplica providers locales y mantiene el estado global desacoplado de sistemas concretos.
+- `StorageProvider.scope_id` limita redes de almacenamiento por contexto.
+- Dependencias entre escenas prefieren contratos/tipos/grupos sobre nombres internos o `NodePath` relativos.
+- El mundo deriva el ciclo visual del reloj global sin almacenar una copia de la hora.
+- Hermano Aldren selecciona destinos y estados desde `ScheduleData` gobernado por `TimeManager`/`EventBus`.
+- `Walking` es transitorio y conserva la actividad pendiente mientras el NPC navega.
+- `NPCController.apply_save_data()` puede restaurar una ruta en curso; posteriores cambios de tiempo vuelven a gobernar la rutina.
+- Los contratos de simulación que deben estar disponibles al entrar al árbol se activan desde `_enter_tree()`.
+- El runner de tests difiere la ejecución de suites hasta después de inicializar `SceneTree`, permitiendo probar lifecycle real de escenas sin invocar manualmente callbacks.
+- **Fase 5 — Simulación queda completada; Fase 6 — RPG pasa a estar activa.**
 
 ### Fixed
-- Inferencias `Variant` incompatibles con el modo estricto de Godot 4.5 en inventario.
-- Recolección y crafting evitan pérdida parcial de recursos mediante simulación/atomicidad.
-- `CraftingStation` evita `get_tree()` cuando se ejecuta off-tree en tests.
-- Producción temporizada conserva outputs pendientes cuando el almacenamiento está lleno.
-- Preparar un cadáver no modifica accidentalmente `CorpseData` compartido.
-- Test de persistencia de cementerio resuelve el Autoload desde `/root/SaveManager` bajo ejecución `--script`.
-- `SleepSpot` ya no asume que el actor está montado en `SceneTree`; usa el árbol propio y fallback headless seguro.
-- Se elimina `CemeteryService.RESULT_ALREADY_OCCUPIED`, código muerto sin comportamiento asociado.
-- El crafting ya no puede consumir automáticamente materiales de cofres pertenecientes a otro `storage_scope`.
-- Se corrigieron los problemas detectados por `gdlint` y los archivos señalados por `gdformat` sin desactivar reglas.
-- `DayNightController` resuelve `EventBus`/`TimeManager` desde `/root` para compilar y funcionar también bajo tests `--script`.
-- La transición visual nocturna atraviesa medianoche de forma continua hasta las 06:00.
-- `NPCController` respeta el orden de definiciones exigido por el quality gate.
-- Los tests NPC ya no dependen del antiguo `initial_target`; validan el `ScheduleData` que realmente gobierna los destinos.
-- `NPCController` resuelve `NavigationAgent2D` también fuera de `_ready()`, permitiendo pruebas off-tree sin falsear el lifecycle del juego.
-- `ScheduleEntryData` usa minutos normalizados enteros; se eliminó la comparación inválida entre el `Dictionary` de `TimeMath.normalize_total_minutes()` y enteros.
-- El archivo auxiliar `editorconfig` se renombró a `.editorconfig`, nombre efectivo del estándar EditorConfig.
+- Inferencias `Variant` incompatibles con el modo estricto de Godot 4.5.
+- Recolección/crafting evitan pérdidas parciales mediante operaciones atómicas.
+- Producción temporizada conserva outputs pendientes cuando storage está lleno.
+- Preparación de cadáveres no muta `CorpseData` compartido.
+- Persistencia de cementerio funciona bajo ejecución `--script` resolviendo Autoload desde `/root`.
+- `SleepSpot`, crafting y componentes endurecidos contra ejecución off-tree.
+- Código muerto `CemeteryService.RESULT_ALREADY_OCCUPIED` eliminado.
+- Storage de scopes ajenos ya no participa automáticamente en crafting.
+- Transición nocturna visual continua a través de medianoche.
+- `DayNightController` resuelve dependencias globales de forma compatible con headless.
+- Tests NPC ya no dependen del antiguo `initial_target`; validan `ScheduleData` real.
+- `ScheduleEntryData` dejó de comparar el `Dictionary` de `TimeMath.normalize_total_minutes()` con enteros.
+- `editorconfig` fue corregido a `.editorconfig`.
+- El test integral de simulación dejó de producir falsos negativos por ejecutarse dentro de `SceneTree._initialize()`.
 
 ### Validated
 - Fase 0: run `33278173612`, `success`.
 - Fase 1: run `33280758441`, `success`.
 - Fase 2: run `33285578050`, `success`.
-- Fase 3 producción temporizada/colas: commit `2252fcbd4280acec1e60530c026a8f5dd3365b91`, run `33292481990`, `success`.
-- Fase 4 cierre gameplay/persistencia: corrección `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`, `success`.
-- Fase 5 bloque 1 tiempo/calendario + sueño: corrección `62cb2658bd169270fffcb59c34134493b787f327`, run `33294728470`, `success`.
-- Hardening funcional de storage/dependencias: commit `0639a43b16c152bf7a8b9ad3b44e2aa4aa640a8a`, run `33294983254`, `success`.
-- Desacoplamiento final de componentes por tipo: commit `b13d024143b5fb0ff8118a689da079c37916c554`, run `33295277286`, ambos jobs `success`.
-- Fase 5 bloque 2 ciclo día/noche: corrección final `5c6467c5aad04b1d44c48cceef2280af5d049bf8`, run `33295805020`, `gdscript-quality` y `validate-and-test` en `success`.
-- Fase 5 bloque 3 NPCData/navegación: run `33296112250` detectó `class-definitions-order`; corrección final `03986401968c83b79527d15f47217f090de43ab2`, run `33296131085`, ambos jobs `success`.
-- Fase 5 bloque 4 rutinas: run `33296549903` detectó comparación `Dictionary`/`int` en horarios; corrección final `82f5ccee1e109e2ad702532b7301922124548c7b`, run `33296648630`, `gdscript-quality` y `validate-and-test` en `success`.
+- Fase 3: `2252fcbd4280acec1e60530c026a8f5dd3365b91`, run `33292481990`, `success`.
+- Fase 4: `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`, `success`.
+- Fase 5 bloque 1: `62cb2658bd169270fffcb59c34134493b787f327`, run `33294728470`, `success`.
+- Hardening: `b13d024143b5fb0ff8118a689da079c37916c554`, run `33295277286`, ambos jobs `success`.
+- Fase 5 bloque 2: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`, run `33295805020`, ambos jobs `success`.
+- Fase 5 bloque 3: run `33296112250` detectó `class-definitions-order`; `03986401968c83b79527d15f47217f090de43ab2`, run `33296131085`, ambos jobs `success`.
+- Fase 5 bloque 4: run `33296549903` detectó comparación `Dictionary`/`int`; `82f5ccee1e109e2ad702532b7301922124548c7b`, run `33296648630`, ambos jobs `success`.
+- Fase 5 bloque 5, implementación inicial `b8bd10cb2f014c64e4a9a5dbb30e6e041862d6be`: run `33297598359` falló aceptación integral por lifecycle prematuro del harness.
+- `79670b23b1306031e21bf2a3403a90ced5edc383`: run `33297716722` mantuvo los 12 fallos y permitió aislar el problema al runner.
+- Cierre Fase 5: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`, `gdscript-quality` y `validate-and-test` completamente en `success`.

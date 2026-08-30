@@ -10,12 +10,11 @@ Validación: `Godot CI` run `33278173612`, `success`.
 - [x] Mundo base, `CharacterBody2D`, movimiento 8 direcciones, cámara, colisiones y Y-sort.
 - [x] `Interactable` reutilizable y aceptación de escenas.
 
-Implementación: `b0881d4983997b22f1678904d4cf3417a099f739`.
 Validación: `Godot CI` run `33280758441`, `success`.
 
 ## Fase 2 — Items / Resource Loop — COMPLETADA
 - [x] `ItemData`, inventario data-driven, stacks/capacidad y `InventoryComponent` local.
-- [x] `EnergyComponent`, recursos recolectables, herramienta requerida, loot y atomicidad.
+- [x] `EnergyComponent`, recursos recolectables, herramientas, loot y atomicidad.
 - [x] Tests del loop completo y CI final.
 
 Implementación final: `c196e3ab5a42adffe97278f0b0daa8960c789e04`.
@@ -23,119 +22,115 @@ Validación: `Godot CI` run `33285578050`, `success`.
 
 ## Fase 3 — Crafting / Production Loop — COMPLETADA
 
-Criterios de aceptación:
-- [x] `RecipeData` y `RecipeIngredient` tipados y data-driven.
-- [x] Primera receta real `.tres` (`wood_to_plank`).
-- [x] Crafting instantáneo con consumo/producción atómicos.
-- [x] Rechazo sin mutación por estación incorrecta, inputs insuficientes o falta de espacio.
-- [x] Estación local interactuable (`Workbench`) sin Autoload.
-- [x] Coste de energía aplicado solo a crafting aceptado/exitoso.
-- [x] `StorageProvider` y `StorageNetwork` desacoplados de cofres concretos.
-- [x] Cofre compatible y crafting distribuido entre inventarios.
-- [x] Producción temporizada y cola mínima mediante `ProductionJob`/`ProductionQueue`.
-- [x] Inputs reservados atómicamente al encolar y progreso determinista.
-- [x] Outputs bloqueados permanecen pendientes y pueden reintentarse sin perder materiales.
-- [x] Crafting instantáneo permanece operativo sin regresiones.
-- [x] Tests de cola, progreso, finalización, almacenamiento lleno e integración con estación.
-- [x] CI final verde antes de cerrar la fase.
+Criterios principales:
+- [x] Recetas tipadas/data-driven y primera receta real.
+- [x] Crafting atómico, estación local, coste de energía correcto.
+- [x] `StorageProvider`/`StorageNetwork` y crafting distribuido.
+- [x] Producción temporizada y colas recuperables.
+- [x] Outputs bloqueados reintentables sin perder materiales.
+- [x] Tests y CI final verdes.
 
-Bloque 1: `d284104ab8b9f300362413cd666bdab6b8855fbd` — run `33287832451`, `success`.
-Bloque 2 StorageNetwork: `9f982b2e79e937449a5707f18287364bdec063b1` — run `33290225076`, `success`.
-Bloque 3 producción temporizada: `2252fcbd4280acec1e60530c026a8f5dd3365b91` — run `33292481990`, `success`.
+Cierre: `2252fcbd4280acec1e60530c026a8f5dd3365b91`, run `33292481990`, `success`.
 
 ## Fase 4 — Cementerio — COMPLETADA
 
-Criterios de aceptación derivados del master spec:
-- [x] `CorpseData` tipado con calidad, decay, preparación y valor de entierro.
-- [x] Modelo de tumba/cementerio independiente de UI y escenas visuales.
-- [x] Fórmula de rating encapsulada y configurable, no dispersa por escenas.
-- [x] Flujo mínimo: recibir/preparar cadáver -> enterrar -> calcular contribución de tumba.
-- [x] Lápida y valla como mejoras jugables que alteran el rating mediante datos.
-- [x] Descomposición progresiva testeable.
-- [x] Persistencia mínima del estado de tumbas/cadáveres compatible con el guardado versionado.
-- [x] Test de aceptación del loop mínimo de cementerio.
-- [x] CI final verde antes de cerrar la fase.
+Criterios de aceptación:
+- [x] `CorpseData`, estado de cadáver y descomposición progresiva.
+- [x] Modelo de tumba/cementerio independiente de UI.
+- [x] Rating encapsulado y configurable.
+- [x] Recibir/preparar -> enterrar -> calcular contribución.
+- [x] Lápida, valla y decoración alteran rating mediante datos.
+- [x] Persistencia de tumbas/cadáveres con guardado versionado.
+- [x] Tests de aceptación y CI final verdes.
 
-Bloque 1 — foundation: `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`, run `33293105681`, `success`.
-Bloque 2 — flujo lógico: `c94bacac772f8f5a0075b972c56baeb86b37afa0`, run `33293544721`, `success`.
-Bloque 3 — cierre gameplay/persistencia: implementación `73e968a097c8b0107292d2958f7d61b7b5af21ff`; corrección final `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`, `success`.
+Cierre: `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`, `success`.
 
-## Fase 5 — Simulación — ACTIVA
+## Fase 5 — Simulación — COMPLETADA
 
 ### Criterios de aceptación
-- [x] Consolidar reloj, días y calendario sobre `TimeManager` sin duplicar estado.
-- [x] Ciclo día/noche observable por el mundo.
-- [x] Dormir: avance al siguiente día y restauración de energía.
+- [x] Reloj, días y calendario consolidados sobre `TimeManager` sin duplicar estado.
+- [x] Ciclo día/noche gradual observable por el mundo.
+- [x] Dormir avanza al siguiente día y restaura energía.
 - [x] `NPCData` data-driven y primer NPC de prueba.
-- [x] `NavigationAgent2D` y navegación básica.
-- [x] Rutinas/horarios con estados mínimos Idle/Walking/Working/Sleeping.
-- [ ] Persistencia mínima de posición/estado de NPCs.
-- [ ] Test de aceptación lógico del flujo completo de simulación.
-- [x] `gdscript-quality` (lint + format) verde sobre los archivos tocados hasta este bloque.
-- [ ] CI final (`validate-and-test`) verde sobre el HEAD que cierre la fase.
+- [x] `NavigationAgent2D` y navegación básica sin bloquear gameplay.
+- [x] Rutinas/horarios con estados `Idle`/`Walking`/`Working`/`Sleeping`.
+- [x] Persistencia de posición/estado/ruta relevante de NPCs mediante `SaveManager`.
+- [x] El estado temporal y de NPCs sobrevive save/load.
+- [x] Test de aceptación lógico del flujo completo de simulación.
+- [x] `gdscript-quality` verde sobre los scripts tocados.
+- [x] CI final verde antes de cerrar la fase.
 
-### Bloque 1 — tiempo/calendario y sueño
-- `TimeManager` centraliza snapshot/restauración, avance de día, semana ficticia de seis días y transición al amanecer.
-- `SleepSpot` avanza al día siguiente a las 06:00 y restaura la energía.
-- Validación final: `62cb2658bd169270fffcb59c34134493b787f327`, run `33294728470`, `success`.
+### Bloque 1 — Tiempo/calendario y sueño
+- `TimeManager` centraliza snapshot/restauración, semana ficticia de seis días y transición al amanecer.
+- `SleepSpot` avanza al siguiente día a las 06:00 y restaura energía.
+- Corrección final: `62cb2658bd169270fffcb59c34134493b787f327`.
+- Validación: run `33294728470`, `success`.
 
-### Hardening transversal antes del bloque 2
-- [x] Storage limitado por `scope_id`/`storage_scope`.
-- [x] Componentes de jugador/cofres resueltos por contrato/tipo.
-- [x] `CemeteryAction` sin `NodePath` relativo frágil.
+### Hardening transversal
+- [x] Storage limitado por scope.
+- [x] Dependencias frágiles por nombres/NodePath reducidas.
 - [x] Código muerto eliminado.
-- [x] Job `gdscript-quality` con `gdlint` y `gdformat --check`.
+- [x] `gdlint` + `gdformat --check` añadidos como quality gate.
 - Estado final: `b13d024143b5fb0ff8118a689da079c37916c554`, run `33295277286`, ambos jobs `success`.
 
-### Bloque 2 — ciclo día/noche
-- [x] `DayNightMath` encapsula fases e interpolación pura.
-- [x] Referencias horarias: 06:00 amanecer, 12:00 mediodía, 18:00 atardecer, 22:00 noche.
-- [x] Transición nocturna continua a través de medianoche.
-- [x] `DayNightController` local basado en `CanvasModulate`, sin nuevo Autoload.
-- [x] El controller observa `time_changed` y deriva todo el estado visual de `TimeManager`.
-- [x] `world/world.tscn` contiene `DayNightCycle`.
-- [x] Tests cubren referencias, interpolación, fases e integración de escena.
-- [x] Nuevos scripts/tests incorporados al quality gate.
-- Corrección final: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`.
-- Validación final: `Godot CI` run `33295805020`, ambos jobs `success`.
+### Bloque 2 — Ciclo día/noche
+- [x] `DayNightMath` e interpolación pura.
+- [x] 06:00 amanecer, 12:00 mediodía, 18:00 atardecer, 22:00 noche.
+- [x] Transición continua a través de medianoche.
+- [x] `DayNightController` local y sincronizado con `TimeManager`.
+- [x] Tests e integración de escena.
+- Cierre: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`, run `33295805020`, `success`.
 
-### Bloque 3 — NPCData y navegación básica
-- [x] `NPCData` tipado con identidad, rol y velocidad de movimiento.
-- [x] Primer recurso real `brother_aldren.tres`.
-- [x] `NPCNavigationMath` separa la lógica pura de dirección/llegada.
-- [x] `WorldNavigationRegion` proporciona geometría navegable mínima local.
-- [x] `NPCController` usa `CharacterBody2D` + `NavigationAgent2D`.
-- [x] `BrotherAldren` está integrado en `world/world.tscn`.
-- [x] `test_npc_navigation.gd` cubre datos, matemática, región, agente y escena.
-- [x] Quality gate ampliado a scripts/tests NPC.
-- Run `33296112250` detectó `class-definitions-order` en `NPCController`; se corrigió sin desactivar reglas.
-- Corrección final: `03986401968c83b79527d15f47217f090de43ab2`.
-- Validación final: `Godot CI` run `33296131085`, ambos jobs `success`.
+### Bloque 3 — NPCData y navegación
+- [x] `NPCData` tipado y recurso real de Hermano Aldren.
+- [x] `NPCNavigationMath` puro.
+- [x] Región navegable local y `NPCController` con `NavigationAgent2D`.
+- [x] Tests de datos/navegación/escena.
+- Run `33296112250` detectó `class-definitions-order`; corregido sin relajar reglas.
+- Cierre: `03986401968c83b79527d15f47217f090de43ab2`, run `33296131085`, `success`.
 
-### Bloque 4 — ScheduleData y rutinas NPC
-- [x] `ScheduleEntryData` y `ScheduleData` tipados, con máscara de seis días y rangos que pueden cruzar medianoche.
-- [x] `NPCStateMachine` con `Idle`, `Walking`, `Working` y `Sleeping`.
-- [x] Horario real data-driven para Hermano Aldren.
-- [x] El NPC observa `TimeManager`/`EventBus`; no duplica tiempo.
-- [x] Los destinos pertenecen al horario y el movimiento continúa delegado en `NavigationAgent2D`.
-- [x] `test_npc_routines.gd` cubre resolución horaria, medianoche y transiciones de estado.
-- [x] `test_npc_navigation.gd` actualizado para la arquitectura basada en horarios.
-- [x] Nuevos scripts/tests incluidos en `gdscript-quality`.
-- Run `33296549903`: lint/formato verdes; `validate-and-test` detectó comparación `Dictionary`/`int` en `ScheduleEntryData` y subresources degradados a `Resource`.
-- Corrección final: `82f5ccee1e109e2ad702532b7301922124548c7b`.
-- Validación del bloque: `Godot CI` run `33296648630`, ambos jobs `success`.
-- Revisión auxiliar: el archivo `editorconfig` subido manualmente fue corregido a `.editorconfig` para que EditorConfig lo reconozca.
+### Bloque 4 — Horarios y estados NPC
+- [x] `ScheduleEntryData`/`ScheduleData` tipados, seis días y rangos que cruzan medianoche.
+- [x] `NPCStateMachine` con `Idle`, `Walking`, `Working`, `Sleeping`.
+- [x] Hermano Aldren usa un horario real data-driven.
+- [x] `TimeManager`/`EventBus` gobiernan la rutina; destinos pertenecen al horario.
+- [x] Tests de rutina e integración.
+- Run `33296549903` detectó comparación `Dictionary`/`int`; corregida en `82f5ccee1e109e2ad702532b7301922124548c7b`.
+- Validación: run `33296648630`, `success`.
+
+### Bloque 5 — Persistencia NPC y aceptación final
+- [x] `NPCStateMachine` serializa/restaura estado actual y pendiente.
+- [x] `NPCController` es `save_provider` local con clave estable `npc:<id>`.
+- [x] Se guardan `id`, posición, estado actual/pending, navegación activa y target cuando aplica.
+- [x] Save/load restaura una ruta en curso y futuras señales de `TimeManager` vuelven a gobernar la rutina.
+- [x] `test_simulation_acceptance.gd` cubre horario, día/noche, persistencia real, navegación restaurada y sueño/energía.
+- Implementación inicial: `b8bd10cb2f014c64e4a9a5dbb30e6e041862d6be`.
+- Run `33297598359`: 12 fallos de aceptación por ejecutar escenas dentro de `SceneTree._initialize()`.
+- `79670b23b1306031e21bf2a3403a90ced5edc383`: contratos de simulación activados al entrar al árbol; run `33297716722` mantuvo los 12 fallos y confirmó que el harness seguía siendo la causa.
+- Corrección final: `f0290951a27d5e66581da2532151d957ec35075e`, suites diferidas hasta que el `SceneTree` está operativo.
+- Validación final: `Godot CI` run `33297774458`, `gdscript-quality` y `validate-and-test` en `success`.
+
+**Fase 5 cerrada: todos los criterios están cumplidos.**
+
+## Fase 6 — RPG — ACTIVA
+
+### Criterios de aceptación derivados del master spec
+- [ ] Diálogos, condiciones y opciones funcionan desde datos.
+- [ ] Relaciones cambian y desbloquean contenido.
+- [ ] Quests pueden iniciarse, progresar y completarse.
+- [ ] Las recompensas de quests se conceden una sola vez.
+- [ ] La economía compra y vende correctamente.
+- [ ] Las tecnologías consumen puntos y desbloquean contenido.
+- [ ] Estado RPG persistente compatible con `SaveManager`, cuando aplique.
+- [ ] Tests de aceptación del flujo RPG mínimo.
+- [ ] `gdscript-quality` verde sobre los archivos tocados.
+- [ ] CI final verde antes de cerrar la fase.
 
 ### Próximo bloque
-Persistencia mínima de NPCs (`id`, posición, estado/pending y destino cuando aplique) mediante provider local de `SaveManager`, seguida del test de aceptación completo y cierre de Fase 5 solo si todos los criterios quedan verdes.
-
-No implementar todavía diálogo, quests, economía o relaciones.
-
-## Fase 6 — RPG
-Diálogo, relaciones, quests, economía y tecnologías.
+Foundation de diálogo data-driven: Resources tipados para diálogo/opciones/condiciones, evaluación pura/testeable y una integración mínima original con Hermano Aldren. No adelantar relaciones, quests, economía y tecnologías hasta que la foundation esté validada.
 
 ## Fase 7 — Mundo
 Pueblo, bosque, mina, interiores, exploración y secretos.
 
 ## Fase 8 — Polish
-Arte, animaciones, shaders, partículas, audio, UX y optimización.
+Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización.
