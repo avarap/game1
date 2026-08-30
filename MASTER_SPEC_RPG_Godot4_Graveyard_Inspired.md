@@ -206,7 +206,7 @@ res://
   tests/
 ```
 # 9. Arquitectura basada en datos
-Preferir Resources tipados para datos internos de gameplay. JSON se reserva principalmente para guardados, configuraciones externas o contenido que resulte más natural de editar fuera de Godot. CSV es adecuado para localización o importación masiva.
+Preferir Resources tipados para datos internos de gameplay. JSON se reserva principalmente para guardados, configuraciones externas o contenido que resulte más natural de editar fuera de Godot. Los catálogos de localización del runtime deben usar el sistema nativo de Godot (`TranslationServer`) y archivos `.po`; CSV puede utilizarse como formato auxiliar de importación o edición masiva.
 
 | Tipo de información | Formato preferido |
 | --- | --- |
@@ -219,7 +219,7 @@ Preferir Resources tipados para datos internos de gameplay. JSON se reserva prin
 | Schedules | Resource tipado |
 | Configuración | Resource tipado |
 | Saves | JSON o binario versionado |
-| Localización | CSV |
+| Localización | .po / TranslationServer (CSV opcional para importación) |
 | Datos masivos | CSV importado/convertido a Resource |
 
 ```text
@@ -469,6 +469,9 @@ Sistema desacoplado con soporte para:
 - Variables.
 - Reputación.
 - Triggers de quests.
+- Localización inicial en inglés (`en`) y español (`es`) mediante claves de traducción estables.
+
+El mismo grafo de diálogo debe servir para todos los idiomas: no duplicar árboles por idioma. IDs, condiciones, relaciones, quests, progreso y persistencia nunca deben depender del texto traducido. La UI resuelve las claves mediante `TranslationServer` al presentar el contenido. El fallback inicial es inglés.
 # 28. Misiones
 Cada misión debe contener id, NPC, objetivos, requisitos, recompensas, estado y dependencias.
 Tipos iniciales:
@@ -701,7 +704,7 @@ cadáveres · tumbas · preparación · entierro · rating · mejoras
 ## Fase 5 — Simulación
 tiempo · día/noche · calendario · NPCs · rutinas · navegación
 ## Fase 6 — RPG
-diálogo · relaciones · quests · economía · tecnologías
+diálogo · localización EN/ES · relaciones · quests · economía · tecnologías
 ## Fase 7 — Mundo
 pueblo · bosque · mina · interiores · exploración · secretos
 ## Fase 8 — Polish
@@ -762,6 +765,7 @@ arte · animaciones · shaders · partículas · audio · feedback · UI final �
 - El estado temporal y de NPCs sobrevive save/load.
 ## 44.7 Fase 6 — RPG
 - Diálogos, condiciones y opciones funcionan desde datos.
+- El mismo grafo de diálogo funciona en inglés y español mediante claves de traducción, y cambiar idioma no altera IDs, condiciones ni estado del diálogo.
 - Relaciones cambian y desbloquean contenido.
 - Las quests pueden iniciarse, progresar y completarse.
 - Las recompensas se conceden una sola vez.
