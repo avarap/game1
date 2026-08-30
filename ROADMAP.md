@@ -56,25 +56,35 @@ Criterios de aceptación derivados del master spec:
 - [x] Test de aceptación del loop mínimo de cementerio.
 - [x] CI final verde antes de cerrar la fase.
 
-Bloque 1 — foundation: `CorpseData`, `CorpseState`, `GraveRecord`, `CemeteryModel` y `CemeteryRatingConfig`. Commit `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`, run `33293105681`, `success`.
+Bloque 1 — foundation: `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`, run `33293105681`, `success`.
+Bloque 2 — flujo lógico: `c94bacac772f8f5a0075b972c56baeb86b37afa0`, run `33293544721`, `success`.
+Bloque 3 — cierre gameplay/persistencia: implementación `73e968a097c8b0107292d2958f7d61b7b5af21ff`; corrección final `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`, `success`.
 
-Bloque 2 — flujo lógico: `CemeteryService`, preparación por instancia, entierro y mejoras. Commit `c94bacac772f8f5a0075b972c56baeb86b37afa0`, run `33293544721`, `success`.
+## Fase 5 — Simulación — ACTIVA
 
-Bloque 3 — cierre: reconstrucción desde snapshots, integración genérica con `SaveManager`, `CemeteryController`, cuatro interactuables en `world.tscn`, tests de persistencia y gameplay. Implementación `73e968a097c8b0107292d2958f7d61b7b5af21ff`. El run diagnóstico `33294190219` detectó el acceso directo al nombre del Autoload desde el test; corregido en `dc9b4adc2710a18f182bd4a04f676a3afc74c198`. Validación final: `Godot CI` run `33294286014`, `success`.
-
-## Fase 5 — Simulación — SIGUIENTE
-
-Objetivos iniciales:
-- [ ] Consolidar reloj, días y calendario sobre `TimeManager` sin duplicar estado.
+Criterios de aceptación:
+- [x] Consolidar reloj, días y calendario sobre `TimeManager` sin duplicar estado.
 - [ ] Ciclo día/noche observable por el mundo.
-- [ ] Dormir: avance al siguiente día y restauración de energía.
+- [x] Dormir: avance al siguiente día y restauración de energía.
 - [ ] `NPCData` data-driven y primer NPC de prueba.
 - [ ] `NavigationAgent2D` y navegación básica.
 - [ ] Rutinas/horarios con estados mínimos Idle/Walking/Working/Sleeping.
 - [ ] Persistencia mínima de posición/estado de NPCs.
 - [ ] Tests de aceptación y CI verde antes de cerrar.
 
-No entrar todavía en diálogo, relaciones, quests, economía o tecnologías salvo interfaces estrictamente necesarias para preparar Fase 6.
+Bloque 1 — tiempo/calendario y sueño:
+- `TimeManager` centraliza snapshot/restauración, avance de día, semana ficticia de seis días y transición al amanecer.
+- `SaveManager` persiste/restaura el tiempo exclusivamente mediante la API de `TimeManager`, conservando `save_version = 1`.
+- `SleepSpot` es un `Interactable` del mundo que avanza al día siguiente a las 06:00 y restaura completamente la energía.
+- `test_simulation_time.gd` cubre rollover de medianoche, semana ficticia, sueño y round-trip de guardado temporal.
+- Implementación inicial: `57d9cfdc010398cf5b34764131c7859dd7221084`.
+- Run `33294671978` detectó que `SleepSpot` asumía que el actor estaba dentro del árbol durante tests headless; importación y smoke test pasaron.
+- Corrección: `62cb2658bd169270fffcb59c34134493b787f327` con fallback seguro al `SceneTree` principal.
+- Validación final del bloque: `Godot CI` run `33294728470`, `success`.
+
+Próximo bloque: ciclo día/noche observable mediante un controlador local del mundo que reaccione a `TimeManager`, sin introducir todavía NPCs.
+
+No entrar en diálogo, relaciones, quests, economía o tecnologías salvo interfaces estrictamente necesarias para preparar Fase 6.
 
 ## Fase 6 — RPG
 Diálogo, relaciones, quests, economía y tecnologías.
