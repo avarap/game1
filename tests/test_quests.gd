@@ -35,12 +35,12 @@ static func run() -> Array[String]:
 
 	var first_rewards := service.claim_rewards(quest.id)
 	var second_rewards := service.claim_rewards(quest.id)
-	if first_rewards.size() != 1 or not second_rewards.is_empty():
-		failures.append("Quest rewards should be claimable exactly once")
+	if first_rewards.size() != 2 or not second_rewards.is_empty():
+		failures.append("All quest rewards should be claimable exactly once")
 	var context: Dictionary = service.build_dialogue_context()
 	var flags: Dictionary = context.get(&"quest_flags", {})
 	if not bool(flags.get(&"completed_first_duty", false)):
-		failures.append("Quest reward flag should be granted on first claim")
+		failures.append("QUEST_FLAG reward should remain compatible with additional reward types")
 
 	var restored := QuestService.new()
 	restored.register(quest)
