@@ -18,6 +18,9 @@ msgstr "What should I do first?"
 msgid "DIALOGUE_ALDREN_OPTION_IDENTITY"
 msgstr "Who are you?"
 
+msgid "DIALOGUE_ALDREN_OPTION_TRUSTED"
+msgstr "You seem less suspicious of me now. Anything else I should know?"
+
 msgid "DIALOGUE_ALDREN_OPTION_GOODBYE"
 msgstr "I should get back to work."
 
@@ -26,6 +29,9 @@ msgstr "Start with the graves. The dead complain less when the fences are straig
 
 msgid "DIALOGUE_ALDREN_IDENTITY_RESPONSE"
 msgstr "Brother Aldren. I keep the chapel, the records, and occasionally my patience."
+
+msgid "DIALOGUE_ALDREN_TRUSTED_RESPONSE"
+msgstr "Perhaps. Trust makes old doors easier to open, and old records harder to ignore."
 
 msgid "DIALOGUE_ALDREN_GOODBYE_RESPONSE"
 msgstr "Try not to dig anywhere that whispers back."

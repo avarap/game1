@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="RelationshipData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/reputation/relationship_data.gd" id="1_relationship"]
+
+[resource]
+script = ExtResource("1_relationship")
+id = &"brother_aldren"
+default_value = 0

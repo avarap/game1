@@ -15,6 +15,7 @@ func _run_all_tests() -> void:
 	_run_suite("SimulationAcceptance", TestSimulationAcceptance.run(), failures)
 	_run_suite("DialogueFoundation", TestDialogueFoundation.run(), failures)
 	_run_suite("DialogueGameplay", TestDialogueGameplay.run(), failures)
+	_run_suite("Relationships", TestRelationships.run(), failures)
 	_run_suite("PlayerMovement", TestPlayerMovement.run(), failures)
 	_run_suite("WalkingPrototype", TestWalkingPrototype.run(), failures)
 	_run_suite("InventoryModel", TestInventoryModel.run(), failures)

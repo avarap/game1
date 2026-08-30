@@ -40,6 +40,9 @@ jobs:
             systems/dialogue/dialogue_node_data.gd \
             systems/dialogue/dialogue_data.gd \
             systems/dialogue/dialogue_service.gd \
+            systems/reputation/relationship_data.gd \
+            systems/reputation/relationship_service.gd \
+            systems/reputation/relationship_controller.gd \
             world/storage/storage_chest.gd \
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
@@ -56,6 +59,7 @@ jobs:
             tests/test_simulation_acceptance.gd \
             tests/test_dialogue_foundation.gd \
             tests/test_dialogue_gameplay.gd \
+            tests/test_relationships.gd \
             tests/run_tests.gd
 
       - name: Check formatting of hardened gameplay scripts
@@ -77,6 +81,9 @@ jobs:
             systems/dialogue/dialogue_node_data.gd \
             systems/dialogue/dialogue_data.gd \
             systems/dialogue/dialogue_service.gd \
+            systems/reputation/relationship_data.gd \
+            systems/reputation/relationship_service.gd \
+            systems/reputation/relationship_controller.gd \
             world/storage/storage_chest.gd \
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
@@ -93,6 +100,7 @@ jobs:
             tests/test_simulation_acceptance.gd \
             tests/test_dialogue_foundation.gd \
             tests/test_dialogue_gameplay.gd \
+            tests/test_relationships.gd \
             tests/run_tests.gd
 
   validate-and-test:
