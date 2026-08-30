@@ -89,7 +89,8 @@ func get_journal_entries() -> Array[Dictionary]:
 func _apply_rewards(rewards: Array[QuestRewardData]) -> void:
 	if rewards.is_empty():
 		return
-	var technology := get_tree().get_first_node_in_group("technology_controller") as TechnologyController
+	var technology_node := get_tree().get_first_node_in_group("technology_controller")
+	var technology := technology_node as TechnologyController
 	for reward in rewards:
 		if reward == null or reward.reward_type != QuestRewardData.RewardType.TECHNOLOGY_POINTS:
 			continue
