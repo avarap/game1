@@ -85,6 +85,7 @@ jobs:
             tests/test_economy_gameplay.gd \
             tests/test_technology_foundation.gd \
             tests/test_technology_gameplay.gd \
+            tests/test_rpg_acceptance.gd \
             tests/run_tests.gd
 
       - name: Check formatting of hardened gameplay scripts
@@ -151,6 +152,7 @@ jobs:
             tests/test_economy_gameplay.gd \
             tests/test_technology_foundation.gd \
             tests/test_technology_gameplay.gd \
+            tests/test_rpg_acceptance.gd \
             tests/run_tests.gd
 
   validate-and-test:
