@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://world/simulation/day_night_controller.gd" id="10_day_night"]
 [ext_resource type="Script" path="res://world/navigation/world_navigation_region.gd" id="11_navigation"]
 [ext_resource type="PackedScene" path="res://world/npcs/brother_aldren.tscn" id="12_aldren"]
+[ext_resource type="PackedScene" path="res://ui/dialogue/dialogue_layer.tscn" id="13_dialogue"]
 
 [sub_resource type="RectangleShape2D" id="Wall_horizontal"]
 size = Vector2(1600, 32)
@@ -41,6 +42,8 @@ z_index = -10
 
 [node name="DayNightCycle" type="CanvasModulate" parent="."]
 script = ExtResource("10_day_night")
+
+[node name="DialogueLayer" parent="." instance=ExtResource("13_dialogue")]
 
 [node name="NavigationRegion" type="NavigationRegion2D" parent="."]
 script = ExtResource("11_navigation")

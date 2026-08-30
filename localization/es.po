@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: game1\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "NPC_BROTHER_ALDREN_NAME"
+msgstr "Hermano Aldren"
+
+msgid "DIALOGUE_ALDREN_INTRO"
+msgstr "Ah, el nuevo cuidador. El cementerio ha estado más tranquilo de lo que esperaba. Eso suele ser mala señal."
+
+msgid "DIALOGUE_ALDREN_OPTION_FIRST_TASK"
+msgstr "¿Qué debería hacer primero?"
+
+msgid "DIALOGUE_ALDREN_OPTION_IDENTITY"
+msgstr "¿Quién eres?"
+
+msgid "DIALOGUE_ALDREN_OPTION_GOODBYE"
+msgstr "Debería volver al trabajo."
+
+msgid "DIALOGUE_ALDREN_FIRST_TASK_RESPONSE"
+msgstr "Empieza por las tumbas. Los muertos se quejan menos cuando las vallas están rectas."
+
+msgid "DIALOGUE_ALDREN_IDENTITY_RESPONSE"
+msgstr "Hermano Aldren. Me ocupo de la capilla, de los registros y, de vez en cuando, de mi paciencia."
+
+msgid "DIALOGUE_ALDREN_GOODBYE_RESPONSE"
+msgstr "Procura no cavar en ningún sitio que te susurre de vuelta."
+
+msgid "UI_DIALOGUE_CONTINUE"
+msgstr "Continuar"
+
+msgid "UI_DIALOGUE_CLOSE"
+msgstr "Cerrar"

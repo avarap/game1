@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: game1\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "NPC_BROTHER_ALDREN_NAME"
+msgstr "Brother Aldren"
+
+msgid "DIALOGUE_ALDREN_INTRO"
+msgstr "Ah, the new keeper. The cemetery has been quieter than I expected. That's usually a bad sign."
+
+msgid "DIALOGUE_ALDREN_OPTION_FIRST_TASK"
+msgstr "What should I do first?"
+
+msgid "DIALOGUE_ALDREN_OPTION_IDENTITY"
+msgstr "Who are you?"
+
+msgid "DIALOGUE_ALDREN_OPTION_GOODBYE"
+msgstr "I should get back to work."
+
+msgid "DIALOGUE_ALDREN_FIRST_TASK_RESPONSE"
+msgstr "Start with the graves. The dead complain less when the fences are straight."
+
+msgid "DIALOGUE_ALDREN_IDENTITY_RESPONSE"
+msgstr "Brother Aldren. I keep the chapel, the records, and occasionally my patience."
+
+msgid "DIALOGUE_ALDREN_GOODBYE_RESPONSE"
+msgstr "Try not to dig anywhere that whispers back."
+
+msgid "UI_DIALOGUE_CONTINUE"
+msgstr "Continue"
+
+msgid "UI_DIALOGUE_CLOSE"
+msgstr "Close"

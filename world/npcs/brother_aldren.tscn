@@ -1,12 +1,17 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://world/npcs/npc_controller.gd" id="1_controller"]
 [ext_resource type="Resource" path="res://data/npcs/brother_aldren.tres" id="2_data"]
 [ext_resource type="Resource" path="res://data/npcs/brother_aldren_schedule.tres" id="3_schedule"]
+[ext_resource type="Script" path="res://world/interactables/dialogue_interactable.gd" id="4_dialogue_interactable"]
+[ext_resource type="Resource" path="res://data/dialogues/brother_aldren/introduction.tres" id="5_dialogue"]
 
 [sub_resource type="CapsuleShape2D" id="NPC_shape"]
 radius = 10.0
 height = 28.0
+
+[sub_resource type="CircleShape2D" id="Dialogue_shape"]
+radius = 28.0
 
 [node name="BrotherAldren" type="CharacterBody2D"]
 collision_layer = 4
@@ -27,3 +32,13 @@ path_desired_distance = 6.0
 target_desired_distance = 8.0
 radius = 10.0
 avoidance_enabled = false
+
+[node name="DialogueInteractable" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("4_dialogue_interactable")
+prompt = "Talk"
+dialogue = ExtResource("5_dialogue")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DialogueInteractable"]
+shape = SubResource("Dialogue_shape")
