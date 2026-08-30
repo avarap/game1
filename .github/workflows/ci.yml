@@ -83,7 +83,65 @@ jobs:
             tests/run_tests.gd
 
       - name: Check formatting of hardened gameplay scripts
-        run: gdformat --diff world/economy/economy_controller.gd
+        run: |
+          gdformat --check \
+            player/player.gd \
+            core/components/inventory_component.gd \
+            core/components/resource_source_component.gd \
+            systems/inventory/inventory_model.gd \
+            systems/storage/storage_provider.gd \
+            systems/cemetery/cemetery_service.gd \
+            systems/economy/money_math.gd \
+            systems/economy/wallet_state.gd \
+            systems/economy/merchant_offer_data.gd \
+            systems/economy/merchant_data.gd \
+            systems/economy/merchant_state.gd \
+            systems/economy/economy_transaction.gd \
+            systems/economy/economy_service.gd \
+            systems/simulation/day_night_math.gd \
+            systems/simulation/npc_data.gd \
+            systems/simulation/npc_navigation_math.gd \
+            systems/simulation/npc_state_machine.gd \
+            systems/simulation/schedule_entry_data.gd \
+            systems/simulation/schedule_data.gd \
+            systems/localization/localization_service.gd \
+            systems/dialogue/dialogue_condition_data.gd \
+            systems/dialogue/dialogue_option_data.gd \
+            systems/dialogue/dialogue_node_data.gd \
+            systems/dialogue/dialogue_data.gd \
+            systems/dialogue/dialogue_service.gd \
+            systems/reputation/relationship_data.gd \
+            systems/reputation/relationship_service.gd \
+            systems/reputation/relationship_controller.gd \
+            systems/quests/quest_objective_data.gd \
+            systems/quests/quest_reward_data.gd \
+            systems/quests/quest_data.gd \
+            systems/quests/quest_service.gd \
+            systems/quests/quest_controller.gd \
+            world/storage/storage_chest.gd \
+            world/buildings/crafting_station.gd \
+            world/cemetery/cemetery_controller.gd \
+            world/cemetery/cemetery_action.gd \
+            world/economy/economy_controller.gd \
+            world/interactables/sleep_spot.gd \
+            world/interactables/dialogue_interactable.gd \
+            world/simulation/day_night_controller.gd \
+            world/navigation/world_navigation_region.gd \
+            world/npcs/npc_controller.gd \
+            ui/dialogue/dialogue_controller.gd \
+            tests/test_day_night_cycle.gd \
+            tests/test_npc_navigation.gd \
+            tests/test_npc_routines.gd \
+            tests/test_simulation_acceptance.gd \
+            tests/test_dialogue_foundation.gd \
+            tests/test_dialogue_gameplay.gd \
+            tests/test_dialogue_conditions.gd \
+            tests/test_relationships.gd \
+            tests/test_quests.gd \
+            tests/test_quest_gameplay.gd \
+            tests/test_economy_foundation.gd \
+            tests/test_economy_gameplay.gd \
+            tests/run_tests.gd
 
   validate-and-test:
     runs-on: ubuntu-24.04
