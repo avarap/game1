@@ -8,11 +8,11 @@ const ZONE_SCENES := {
 	&"forest": "res://world/maps/forest/forest_map.tscn",
 }
 
-@onready var zone_container: Node = get_node("../ZoneContainer")
-@onready var player: Node2D = get_node("../Player") as Node2D
-
 var _active_zone_id: StringName = &""
 var _active_zone: Node2D
+
+@onready var zone_container: Node = get_node("../ZoneContainer")
+@onready var player: Node2D = get_node("../Player") as Node2D
 
 
 func _ready() -> void:
