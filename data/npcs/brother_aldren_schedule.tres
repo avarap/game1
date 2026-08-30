@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="ScheduleData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://systems/simulation/schedule_data.gd" id="1_schedule"]
+[ext_resource type="Script" path="res://systems/simulation/schedule_entry_data.gd" id="2_entry"]
+
+[sub_resource type="Resource" id="MorningIdle"]
+script = ExtResource("2_entry")
+start_hour = 6
+end_hour = 8
+activity_state = &"Idle"
+target_position = Vector2(1180, 650)
+
+[sub_resource type="Resource" id="DayWork"]
+script = ExtResource("2_entry")
+start_hour = 8
+end_hour = 18
+activity_state = &"Working"
+target_position = Vector2(1280, 650)
+
+[sub_resource type="Resource" id="EveningIdle"]
+script = ExtResource("2_entry")
+start_hour = 18
+end_hour = 22
+activity_state = &"Idle"
+target_position = Vector2(1180, 650)
+
+[sub_resource type="Resource" id="NightSleep"]
+script = ExtResource("2_entry")
+start_hour = 22
+end_hour = 6
+activity_state = &"Sleeping"
+target_position = Vector2(1180, 720)
+
+[resource]
+script = ExtResource("1_schedule")
+entries = Array[ExtResource("2_entry")]([SubResource("MorningIdle"), SubResource("DayWork"), SubResource("EveningIdle"), SubResource("NightSleep")])
