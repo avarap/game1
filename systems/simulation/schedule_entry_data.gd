@@ -3,7 +3,15 @@ extends Resource
 
 const ALL_WEEKDAYS_MASK := 0b111111
 
-@export_flags("Día del Sol", "Día de la Luna", "Día del Hierro", "Día del Bosque", "Día del Espíritu", "Día del Comercio") var weekday_mask: int = ALL_WEEKDAYS_MASK
+@export_flags(
+	"Día del Sol",
+	"Día de la Luna",
+	"Día del Hierro",
+	"Día del Bosque",
+	"Día del Espíritu",
+	"Día del Comercio"
+)
+var weekday_mask: int = ALL_WEEKDAYS_MASK
 @export_range(0, 23, 1) var start_hour: int = 6
 @export_range(0, 59, 1) var start_minute: int = 0
 @export_range(0, 23, 1) var end_hour: int = 8
