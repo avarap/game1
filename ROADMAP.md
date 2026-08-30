@@ -66,15 +66,14 @@ Criterios de aceptación:
 - [x] Consolidar reloj, días y calendario sobre `TimeManager` sin duplicar estado.
 - [x] Ciclo día/noche observable por el mundo.
 - [x] Dormir: avance al siguiente día y restauración de energía.
-- [ ] `NPCData` data-driven y primer NPC de prueba.
-- [ ] `NavigationAgent2D` y navegación básica.
+- [x] `NPCData` data-driven y primer NPC de prueba.
+- [x] `NavigationAgent2D` y navegación básica.
 - [ ] Rutinas/horarios con estados mínimos Idle/Walking/Working/Sleeping.
 - [ ] Persistencia mínima de posición/estado de NPCs.
 - [ ] Tests de aceptación y CI verde antes de cerrar.
 
 Bloque 1 — tiempo/calendario y sueño:
 - `TimeManager` centraliza snapshot/restauración, avance de día, semana ficticia de seis días y transición al amanecer.
-- `SaveManager` persiste/restaura el tiempo exclusivamente mediante la API de `TimeManager`, conservando `save_version = 1`.
 - `SleepSpot` avanza al día siguiente a las 06:00 y restaura la energía.
 - Validación final: `62cb2658bd169270fffcb59c34134493b787f327`, run `33294728470`, `success`.
 
@@ -95,13 +94,25 @@ Bloque 2 — ciclo día/noche:
 - [x] `world/world.tscn` contiene `DayNightCycle`.
 - [x] Tests cubren referencias, interpolación, fases e integración de escena.
 - [x] Nuevos scripts/tests incorporados al quality gate.
-- Implementación inicial: `5ea87dda3ce3b4dda9d09d8dadebcddd7d6a0a26`.
-- Run `33295708310`: detectó dos líneas >100 caracteres en el test.
-- `f0c014bdebb13135428be1857e035ea8f6d70525`, run `33295738329`: lint verde; detectó formato de `DayNightMath` y resolución de Autoload no compatible con `--script`.
 - Corrección final: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`.
-- Validación final: `Godot CI` run `33295805020`, `gdscript-quality` y `validate-and-test` en `success`.
+- Validación final: `Godot CI` run `33295805020`, ambos jobs `success`.
 
-Próximo bloque: `NPCData` data-driven + primer NPC de prueba con `NavigationAgent2D` y navegación básica. No implementar todavía diálogo, quests, economía o relaciones.
+Bloque 3 — NPCData y navegación básica:
+- [x] `NPCData` tipado con identidad, rol y velocidad de movimiento.
+- [x] Primer recurso real `brother_aldren.tres`.
+- [x] `NPCNavigationMath` separa la lógica pura de dirección/llegada.
+- [x] `WorldNavigationRegion` proporciona geometría navegable mínima local.
+- [x] `NPCController` usa `CharacterBody2D` + `NavigationAgent2D` y destinos explícitos.
+- [x] `BrotherAldren` está integrado en `world/world.tscn` con navegación inicial.
+- [x] `test_npc_navigation.gd` cubre datos, matemática, región, agente y escena.
+- [x] Quality gate ampliado a scripts/tests NPC.
+- Run `33296112250` detectó `class-definitions-order` en `NPCController`; se corrigió sin desactivar reglas.
+- Corrección final: `03986401968c83b79527d15f47217f090de43ab2`.
+- Validación final: `Godot CI` run `33296131085`, `gdscript-quality` y `validate-and-test` en `success`.
+
+Próximo bloque: `ScheduleData` + estados mínimos Idle/Walking/Working/Sleeping y selección de rutina según `TimeManager`. Después, persistencia mínima de NPCs y aceptación final de Fase 5.
+
+No implementar todavía diálogo, quests, economía o relaciones.
 
 ## Fase 6 — RPG
 Diálogo, relaciones, quests, economía y tecnologías.
