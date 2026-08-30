@@ -8,6 +8,7 @@ var service := RelationshipService.new()
 
 func _enter_tree() -> void:
 	add_to_group("relationship_controller")
+	add_to_group("save_provider")
 
 
 func _ready() -> void:
@@ -17,6 +18,18 @@ func _ready() -> void:
 
 func get_dialogue_context() -> Dictionary:
 	return service.build_dialogue_context()
+
+
+func get_save_key() -> StringName:
+	return &"relationships"
+
+
+func get_save_data() -> Dictionary:
+	return service.snapshot()
+
+
+func apply_save_data(data: Dictionary) -> void:
+	service.apply_snapshot(data)
 
 
 func get_relationship(id: StringName) -> int:
