@@ -105,11 +105,14 @@ func _render_section(container: VBoxContainer, entries: Array) -> void:
 			var objective: Dictionary = objective_value
 			var progress := Label.new()
 			var progress_text := LocalizationService.translate_key(&"UI_QUEST_JOURNAL_PROGRESS")
-			progress.text = "%s: %d/%d" % [
-				progress_text,
-				int(objective.get("current", 0)),
-				int(objective.get("required", 0)),
-			]
+			progress.text = (
+				"%s: %d/%d"
+				% [
+					progress_text,
+					int(objective.get("current", 0)),
+					int(objective.get("required", 0)),
+				]
+			)
 			content.add_child(progress)
 		panel.add_child(content)
 		container.add_child(panel)
