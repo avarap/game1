@@ -3,6 +3,7 @@ extends Resource
 
 @export var offer_id: StringName = &""
 @export var item_id: StringName = &""
+@export var item: ItemData
 @export var buy_price_copper: int = 0
 @export var sell_price_copper: int = 0
 

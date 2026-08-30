@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=26 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
@@ -17,6 +17,8 @@
 [ext_resource type="Resource" path="res://data/relationships/brother_aldren.tres" id="15_aldren_relationship"]
 [ext_resource type="Script" path="res://systems/quests/quest_controller.gd" id="16_quest_controller"]
 [ext_resource type="Resource" path="res://data/quests/aldren_first_duty.tres" id="17_first_quest"]
+[ext_resource type="Script" path="res://world/economy/economy_controller.gd" id="18_economy_controller"]
+[ext_resource type="Resource" path="res://data/economy/yard_supplier.tres" id="19_merchant_data"]
 
 [sub_resource type="RectangleShape2D" id="Wall_horizontal"]
 size = Vector2(1600, 32)
@@ -62,6 +64,11 @@ position = Vector2(640, 360)
 [node name="QuestController" type="Node" parent="."]
 script = ExtResource("16_quest_controller")
 quest_data = Array[ExtResource("17_first_quest")]([ExtResource("17_first_quest")])
+
+[node name="EconomyController" type="Node" parent="."]
+script = ExtResource("18_economy_controller")
+merchant_data = ExtResource("19_merchant_data")
+starting_balance_copper = 500
 
 [node name="TreeResource" parent="." instance=ExtResource("3_tree")]
 position = Vector2(610, 300)

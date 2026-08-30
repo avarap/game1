@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="MerchantData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://systems/economy/merchant_data.gd" id="1_merchant"]
+[ext_resource type="Script" path="res://systems/economy/merchant_offer_data.gd" id="2_offer"]
+[ext_resource type="Resource" path="res://data/items/wood.tres" id="3_wood"]
+[ext_resource type="Resource" path="res://data/items/plank.tres" id="4_plank"]
+
+[sub_resource type="Resource" id="OfferWood"]
+script = ExtResource("2_offer")
+offer_id = &"yard_wood"
+item_id = &"wood"
+item = ExtResource("3_wood")
+buy_price_copper = 8
+sell_price_copper = 4
+
+[sub_resource type="Resource" id="OfferPlank"]
+script = ExtResource("2_offer")
+offer_id = &"yard_plank"
+item_id = &"plank"
+item = ExtResource("4_plank")
+buy_price_copper = 20
+sell_price_copper = 10
+
+[resource]
+script = ExtResource("1_merchant")
+merchant_id = &"yard_supplier"
+offers = Array[ExtResource("2_offer")]([SubResource("OfferWood"), SubResource("OfferPlank")])
+starting_stock = {
+"plank": 6,
+"wood": 12
+}

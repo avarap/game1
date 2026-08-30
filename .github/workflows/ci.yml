@@ -25,12 +25,15 @@ jobs:
         run: |
           gdlint \
             player/player.gd \
+            core/components/inventory_component.gd \
             core/components/resource_source_component.gd \
+            systems/inventory/inventory_model.gd \
             systems/storage/storage_provider.gd \
             systems/cemetery/cemetery_service.gd \
             systems/economy/money_math.gd \
             systems/economy/wallet_state.gd \
             systems/economy/merchant_offer_data.gd \
+            systems/economy/merchant_data.gd \
             systems/economy/merchant_state.gd \
             systems/economy/economy_transaction.gd \
             systems/economy/economy_service.gd \
@@ -58,6 +61,7 @@ jobs:
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
             world/cemetery/cemetery_action.gd \
+            world/economy/economy_controller.gd \
             world/interactables/sleep_spot.gd \
             world/interactables/dialogue_interactable.gd \
             world/simulation/day_night_controller.gd \
@@ -82,12 +86,15 @@ jobs:
         run: |
           gdformat --check \
             player/player.gd \
+            core/components/inventory_component.gd \
             core/components/resource_source_component.gd \
+            systems/inventory/inventory_model.gd \
             systems/storage/storage_provider.gd \
             systems/cemetery/cemetery_service.gd \
             systems/economy/money_math.gd \
             systems/economy/wallet_state.gd \
             systems/economy/merchant_offer_data.gd \
+            systems/economy/merchant_data.gd \
             systems/economy/merchant_state.gd \
             systems/economy/economy_transaction.gd \
             systems/economy/economy_service.gd \
@@ -115,6 +122,7 @@ jobs:
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
             world/cemetery/cemetery_action.gd \
+            world/economy/economy_controller.gd \
             world/interactables/sleep_spot.gd \
             world/interactables/dialogue_interactable.gd \
             world/simulation/day_night_controller.gd \
