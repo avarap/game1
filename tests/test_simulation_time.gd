@@ -43,13 +43,19 @@ static func run() -> Array[String]:
 	var world := world_scene.instantiate()
 	tree.root.add_child(world)
 	var player := world.get_node_or_null("Player")
-	var sleep_spot := world.get_node_or_null("SleepSpot")
+	var zone_manager := world.get_node_or_null("ZoneManager")
+	var active_zone: Node = null
+	if zone_manager != null:
+		active_zone = zone_manager.call("get_active_zone") as Node
+	var sleep_spot: Node = null
+	if active_zone != null:
+		sleep_spot = active_zone.find_child("SleepSpot", true, false)
 	var energy: EnergyComponent = null
 	if player != null:
 		energy = player.get_node_or_null("EnergyComponent") as EnergyComponent
 
 	if not sleep_spot is SleepSpot:
-		failures.append("World should expose a SleepSpot interactable")
+		failures.append("Active cemetery zone should expose a SleepSpot interactable")
 	if energy == null:
 		failures.append("Player should expose EnergyComponent for sleep recovery")
 	else:
