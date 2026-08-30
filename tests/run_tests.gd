@@ -2,6 +2,10 @@ extends SceneTree
 
 
 func _initialize() -> void:
+	call_deferred("_run_all_tests")
+
+
+func _run_all_tests() -> void:
 	var failures: Array[String] = []
 	_run_suite("TimeMath", TestTimeMath.run(), failures)
 	_run_suite("SimulationTime", TestSimulationTime.run(), failures)
