@@ -27,9 +27,13 @@
 ### Changed
 - La Fase 2 queda formalmente iniciada con criterios de aceptación explícitos en `ROADMAP.md`.
 - `tests/run_tests.gd` incluye las pruebas de items/inventario.
+- `InventoryModel` usa tipado entero explícito y `mini`/`maxi` para cumplir el modo estricto de CI.
+
+### Fixed
+- Corregidos warnings de inferencia `Variant` tratados como errores por Godot 4.5 en la lógica de inventario.
 
 ### Validated
 - Fase 0 validada mediante `Godot CI` run `33278173612`.
 - Fase 1 validada mediante `Godot CI` run `33280758441` sobre `ae77e23a190c4cb7824eff0bce8c6cf672fb381f`.
-- El último CI previo a Fase 2 (`33280827024`) completó con `success`.
-- El bloque inicial de Fase 2 (`f6d346a298910900785f19943bbf0680f33fde76`) lanzó `Godot CI` run `33283192098`; su validación debe revisarse antes del siguiente bloque.
+- El primer intento de Fase 2 (`33283192098`) detectó el problema de tipado estricto en `InventoryModel`.
+- El bloque base corregido en `2412414889c0a5d6e403c9178aede9b31fa045c5` quedó validado mediante `Godot CI` run `33283283684`: importación, smoke test y suite headless en `success`.

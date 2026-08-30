@@ -14,7 +14,7 @@
 - [x] Validar CI real en GitHub Actions
 - [x] Validar apertura/ejecución headless de la escena principal
 
-Validación: workflow `Godot CI` run `33278173612` completado con éxito. Pasaron importación del proyecto, smoke test de `main.tscn` y tests bootstrap.
+Validación: workflow `Godot CI` run `33278173612` completado con éxito.
 
 ## Fase 1 — Core / Walking Prototype — COMPLETADA
 - [x] Arquitectura de escena de mundo
@@ -28,9 +28,9 @@ Validación: workflow `Godot CI` run `33278173612` completado con éxito. Pasaro
 - [x] Test de aceptación de escenas del walking prototype
 - [x] CI final de aceptación completado con éxito
 
-Implementación principal: commit `b0881d4983997b22f1678904d4cf3417a099f739`.
-Validación de aceptación: commit `ae77e23a190c4cb7824eff0bce8c6cf672fb381f`.
-Workflow de aceptación: `Godot CI` run `33280758441`, completado con `success`.
+Implementación principal: `b0881d4983997b22f1678904d4cf3417a099f739`.
+Validación de aceptación: `ae77e23a190c4cb7824eff0bce8c6cf672fb381f`.
+Workflow: `33280758441`, `success`.
 
 ## Fase 2 — Items / Resource Loop — EN PROGRESO
 
@@ -41,6 +41,7 @@ Criterios de aceptación de fase:
 - [x] `InventoryComponent` local integrado en el jugador, sin Autoload.
 - [x] Al menos un item real definido como `.tres`.
 - [x] Tests unitarios de la lógica de inventario.
+- [x] CI verde para el bloque base de items/inventario.
 - [ ] Recurso recolectable reutilizable mediante componente.
 - [ ] Loot conectado al inventario del jugador.
 - [ ] Herramienta/requisito mínimo para recolección donde aplique.
@@ -49,8 +50,9 @@ Criterios de aceptación de fase:
 - [ ] Test de aceptación del loop completo de recursos.
 - [ ] CI final de aceptación completado con éxito.
 
-Primer bloque implementado en `f6d346a298910900785f19943bbf0680f33fde76`.
-`Godot CI` run `33283192098` fue lanzado para validar este bloque; no cerrar la fase hasta completar el loop y confirmar el CI de aceptación final.
+Bloque base: `f6d346a298910900785f19943bbf0680f33fde76`.
+Corrección de tipado estricto: `2412414889c0a5d6e403c9178aede9b31fa045c5`.
+Validación del bloque: `Godot CI` run `33283283684`, `success` (importación, smoke test y tests).
 
 ## Fase 3 — Crafting / Production Loop
 RecipeData, estaciones, crafting, cofres y StorageNetwork.
