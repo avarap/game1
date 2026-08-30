@@ -7,10 +7,11 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Repositorio: `avarap/game1`
 - Rama: `main`
 - Fase completada más reciente: **Fase 3 — Crafting / Production Loop**
-- Próxima fase: **Fase 4 — Cementerio**
+- Fase activa: **Fase 4 — Cementerio**
+- Estado Fase 4: foundation pura/testeable implementada y validada; falta flujo contextual de preparación/entierro, mejoras jugables y persistencia antes de cerrar.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
-- Último bloque funcional: `2252fcbd4280acec1e60530c026a8f5dd3365b91`.
-- Última validación funcional: `Godot CI` run `33292481990`, `success`.
+- Último bloque funcional: `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`.
+- Última validación funcional: `Godot CI` run `33293105681`, `success`.
 
 ## Fases completadas
 
@@ -32,58 +33,44 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Validación: run `33285578050`, `success`.
 
 ### Fase 3 — Crafting / Production Loop
+- `RecipeIngredient`, `RecipeData`, `CraftingService`, `CraftingStation` y banco de trabajo.
+- `StorageProvider`, `StorageNetwork`, `StorageChest` y crafting distribuido.
+- `ProductionJob`/`ProductionQueue` para producción temporizada, colas y output pendiente recuperable.
+- Validación final: commit `2252fcbd4280acec1e60530c026a8f5dd3365b91`, run `33292481990`, `success`.
 
-#### Bloque 1 — Crafting instantáneo
-- `RecipeIngredient` y `RecipeData` como Resources tipados.
-- `plank.tres` y receta `wood_to_plank.tres`.
-- `CraftingService` puro y crafting atómico.
-- `CraftingStation`/`Workbench` local, feedback y coste de energía.
-- Commit: `d284104ab8b9f300362413cd666bdab6b8855fbd`.
-- Validación: run `33287832451`, `success`.
+## Fase 4 — Cementerio
 
-#### Bloque 2 — StorageNetwork
-- `StorageProvider` y `StorageNetwork` con disponibilidad, consumo, depósito y búsqueda de fuentes.
-- `StorageChest` compatible; estación desacoplada de cofres concretos.
-- Crafting distribuido mantiene atomicidad clonando la red antes de aplicar cambios.
-- Primer CI `33290155936` falló porque `CraftingStation` llamó `get_tree()` fuera del árbol durante tests.
-- Corrección mediante `is_inside_tree()` y registro explícito de providers: `9f982b2e79e937449a5707f18287364bdec063b1`.
-- Validación: run `33290225076`, `success`.
-
-#### Bloque 3 — Producción temporizada y colas
-- Se revisó el master spec: las estaciones deben soportar producción instantánea, temporizada y colas, dejando automatización compleja para futuro.
-- Se creó `ProductionJob` con estado, tiempo transcurrido y progreso normalizado.
-- Se creó `ProductionQueue` como lógica pura, sin `Node` ni UI.
-- Al encolar una receta temporizada se validan y consumen/reservan los inputs de forma atómica.
-- La salida no se produce hasta completar `duration_seconds`.
-- Si al completar no hay espacio, el job pasa a `awaiting_output`; permanece en cola y puede reintentar el depósito sin perder materiales.
-- `CraftingStation` soporta recetas instantáneas y temporizadas; la energía se cobra una sola vez cuando el job es aceptado.
-- Se mantiene `StorageNetwork` como única abstracción de almacenamiento para inputs y outputs.
-- Se añadió `test_production_queue.gd`: enqueue, progreso, finalización, inputs insuficientes, output bloqueado/reintento e integración jugador + banco.
-- `tests/run_tests.gd` incluye la nueva suite.
-- Commit funcional: `2252fcbd4280acec1e60530c026a8f5dd3365b91`.
-- `Godot CI` run `33292481990` completó con `success`: inicialización, checkout, importación, smoke test de `main.tscn`, tests headless y limpieza.
-- Con esto se cumplen todos los criterios de aceptación de Fase 3.
+### Bloque 1 — Foundation pura y rating
+1. Se releyeron las secciones de Cementerio y Cadáveres del master spec antes de implementar.
+2. Se creó `CorpseData` como `Resource` tipado con `id`, `quality`, `decay`, `preparation_level` y `burial_value`.
+3. Se creó `CorpseState` como lógica pura (`RefCounted`) con descomposición progresiva determinista, clamp 0..1 y snapshot serializable.
+4. Se creó `CemeteryRatingConfig` como Resource tipado y `data/cemetery/default_rating.tres` con valores configurables de lápida, valla y decoración.
+5. Se creó `GraveRecord` independiente de escenas/UI. La contribución base del cadáver usa `burial_value`; lápida, valla y decoraciones añaden puntos definidos en `CemeteryRatingConfig`.
+6. Se creó `CemeteryModel` como agregador puro de tumbas con cálculo de rating y snapshot serializable.
+7. Se añadió `test_cemetery_foundation.gd` para carga de configuración, decay, clamp, contribución de cadáver, mejoras, agregación y snapshot.
+8. `tests/run_tests.gd` ejecuta la nueva suite.
+9. Commit funcional del bloque: `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`.
+10. `Godot CI` run `33293105681` terminó con `success`: importación, smoke test de `main.tscn`, suite headless y limpieza.
 
 ## Decisiones vigentes
 
 - Mantener solo cinco Autoloads globales.
 - Inventario, energía, recursos, crafting, storage y cementerio deben ser locales/contextuales salvo necesidad demostrada.
 - La UI observa modelos/servicios; no posee estado de gameplay.
-- Items, recetas y futuros datos de cementerio deben ser Resources tipados/data-driven.
+- Items, recetas y datos de cementerio se representan mediante Resources tipados/data-driven.
 - La lógica pura se mantiene fuera de `Node` cuando sea posible y debe tener tests headless.
 - Operaciones que consumen recursos deben ser atómicas o conservar un estado recuperable explícito.
-- No implementar automatización compleja de producción en el vertical slice inicial.
+- `CorpseData.burial_value` representa la contribución base del cadáver; las mejoras de tumba usan configuración independiente. No introducir todavía fórmulas complejas de calidad/preparación sin gameplay que las justifique.
 - No entrar en NPCs/calendario/quests/economía antes de sus fases salvo dependencias mínimas inevitables.
 
 ## Próximo bloque — Fase 4 Cementerio
 
-1. Releer secciones 15 y 16 del master spec antes de escribir código.
-2. Crear `CorpseData` tipado con `quality`, `decay`, `preparation_level` y `burial_value`.
-3. Crear lógica pura mínima para decay y cálculo de contribución/valor de una tumba.
-4. Encapsular rating del cementerio en un modelo/servicio configurable mediante datos.
-5. Añadir tests unitarios antes de integrar escenas.
-6. No implementar aún NPCs, calendario, quests, economía ni mapas adicionales.
-7. Mantener Fase 4 abierta hasta completar entierro, mejoras básicas, persistencia mínima, aceptación y CI final.
+1. Crear una operación contextual para preparar un cadáver sin introducir NPCs/calendario.
+2. Crear un plot/tumba interactuable o servicio local que permita enterrar un `CorpseState` y registrarlo en `CemeteryModel`.
+3. Añadir mejoras básicas de lápida y valla mediante datos/estado, evitando lógica dispersa en escenas.
+4. Probar el flujo preparar -> enterrar -> mejorar -> recalcular rating.
+5. Después integrar persistencia mínima compatible con el guardado versionado.
+6. Mantener Fase 4 abierta hasta test de aceptación completo y CI final verde.
 
 ## Regla de continuidad
 
