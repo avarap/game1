@@ -9,11 +9,14 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Fase completada más reciente: **Fase 6 — RPG**
 - Fase activa: **Fase 7 — Mundo**
 - Estado Fase 6: **COMPLETADA**. Diálogo bilingüe, relaciones, condiciones narrativas, quests, economía, tecnologías y persistencia RPG integral están validados conjuntamente.
+- Estado Fase 7: **ACTIVA**. Bloque 1 de foundation de zonas/tránsito completado y validado; no cerrar la fase hasta cubrir pueblo, bosque, mina, interiores, exploración/secretos y aceptación integral sin softlocks.
 - Fuente funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 - Fuente narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**, canónica y spoiler-light.
 - Política de idiomas: `LOCALIZATION.md`.
 - Último bloque funcional de Fase 6: `cc1351048609a474cedd524543f6c4370c46bea4`.
 - Última validación funcional de Fase 6: `Godot CI` run `33305899447`, `success` en `gdscript-quality` y `validate-and-test`.
+- Último bloque funcional de Fase 7: PR #32, foundation `Homestead` + `ForestEdge` + tránsito reversible.
+- Última validación funcional de Fase 7: `Godot CI` run `33306538328`, `success` en quality, importación, smoke y suite headless.
 
 ## Fases completadas
 
@@ -180,18 +183,41 @@ Diálogo/localización, relaciones, condiciones narrativas, quests, economía, t
 - Prerequisitos tecnológicos, árbol visual y contenido masivo no forman parte de la foundation mínima ya cerrada; solo introducirlos si una fase futura los exige.
 - Economía dinámica, fluctuaciones de precio y múltiples comerciantes quedan fuera hasta fases posteriores/expansión de alcance.
 - No introducir alcance de Fase 8 durante Fase 7.
+- Las zonas de Fase 7 se organizan bajo `world.tscn/Zones` con las seis capas `TileMapLayer` del master; la lógica de gameplay no se incrusta en esas capas.
+- El tránsito entre zonas del mismo mapa usa `ZoneTransition`/`Interactable` y posiciones objetivo, evitando recargar la escena y preservando controllers contextuales.
+- No mover los controllers ya estabilizados bajo nodos de zona salvo necesidad demostrada; minimizar regresiones de rutas y persistencia.
 
 ## Fase 7 — Mundo — ACTIVA
 
 Objetivo de alto nivel según `ROADMAP.md`: pueblo, bosque, mina, interiores, exploración y secretos.
 
+### Bloque 1 — Foundation de zonas y tránsito — COMPLETADO
+
+1. Se introducen `Zones/Homestead` y `Zones/ForestEdge` dentro de `world.tscn`.
+2. Ambas zonas exponen `Ground`, `Terrain`, `Decoration`, `Collision`, `Foreground` y `Navigation` como `TileMapLayer`, tal como exige la sección Mundo del master.
+3. Las capas son estructura de mapa; la lógica queda fuera de `TileMapLayer`.
+4. `ZoneTransition` extiende `Interactable` y traslada un `Node2D` a una posición objetivo, permitiendo tránsito reversible sin cambiar de escena.
+5. `ForestGate` lleva desde la propiedad a `Vector2(2050, 500)` y `HomesteadGate` devuelve a `Vector2(1450, 500)`.
+6. `ForestEdge` dispone de representación física mínima y un `tree_resource` real para que no sea una zona vacía de gameplay.
+7. El ancho del mundo, paredes horizontales, límite derecho, cámara y polígono de navegación pasan de 1600 a 2600 píxeles; la altura permanece en 1000.
+8. Se mantienen `Player`, quests, relaciones, economía, tecnología y demás controllers en sus rutas existentes para no reabrir Fase 6.
+9. `test_world_zones.gd` valida las seis capas por zona y el tránsito reversible real del jugador.
+10. `.github/workflows/ci.yml` incluye el nuevo script y test en `gdlint`/`gdformat`.
+
+#### Validación e incidencias del bloque
+- RED TDD: run `33306375660`. Importación y smoke verdes; todas las suites previas en 0 fallos; `WorldZones` falla exactamente por Homestead ausente, ForestEdge ausente y transiciones ausentes.
+- GREEN: run `33306538328`. `gdscript-quality`, importación, smoke y suite headless completos en `success`.
+- No hubo regresiones funcionales ni fue necesario relajar ningún gate.
+- El warning de `fontconfig` del contenedor Godot sigue siendo no fatal y preexistente.
+
 ## Próximo bloque — Fase 7
 
-1. Releer la sección de Mundo del master spec antes de implementar.
-2. Elegir el primer bloque mínimo y coherente de expansión del mundo que pueda validarse de extremo a extremo.
-3. Mantener reutilizables los sistemas ya cerrados; no reabrir Fase 6 salvo regresión demostrada.
-4. No adelantar arte/polish de Fase 8.
-5. Añadir criterios y tests específicos del bloque antes de marcar progreso de Fase 7.
+1. Completar `ForestEdge` como bosque jugable compacto, no como mapa enorme.
+2. Añadir navegación/colisiones útiles, densidad de recursos e interacciones verificables.
+3. Introducir una progresión explícita hacia la siguiente zona sin implementar todavía el contenido completo de pueblo o mina.
+4. Mantener reutilizables los sistemas ya cerrados; no reabrir Fase 6 salvo regresión demostrada.
+5. No adelantar arte, audio, partículas, UI final ni optimización de Fase 8.
+6. Añadir tests específicos del bosque y validar ausencia de softlocks antes de avanzar.
 
 ## Regla de continuidad
 
