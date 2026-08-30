@@ -12,7 +12,11 @@ func _on_interact(actor: Node) -> void:
     if energy == null:
         return
 
-    var tree := actor.get_tree()
+    var tree: SceneTree = null
+    if is_inside_tree():
+        tree = get_tree()
+    else:
+        tree = Engine.get_main_loop() as SceneTree
     if tree == null:
         return
 
