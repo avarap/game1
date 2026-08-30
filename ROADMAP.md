@@ -43,20 +43,22 @@ Bloque 1: `d284104ab8b9f300362413cd666bdab6b8855fbd` — run `33287832451`, `suc
 Bloque 2 StorageNetwork: `9f982b2e79e937449a5707f18287364bdec063b1` — run `33290225076`, `success`.
 Bloque 3 producción temporizada: `2252fcbd4280acec1e60530c026a8f5dd3365b91` — run `33292481990`, `success`.
 
-## Fase 4 — Cementerio — SIGUIENTE
+## Fase 4 — Cementerio — ACTIVA
 
-Criterios iniciales de aceptación derivados del master spec:
-- [ ] `CorpseData` tipado con calidad, decay, preparación y valor de entierro.
-- [ ] Modelo de tumba/cementerio independiente de UI y escenas visuales.
-- [ ] Fórmula de rating encapsulada y configurable, no dispersa por escenas.
+Criterios de aceptación derivados del master spec:
+- [x] `CorpseData` tipado con calidad, decay, preparación y valor de entierro.
+- [x] Modelo de tumba/cementerio independiente de UI y escenas visuales.
+- [x] Fórmula de rating encapsulada y configurable, no dispersa por escenas.
 - [ ] Flujo mínimo: recibir/preparar cadáver -> enterrar -> calcular contribución de tumba.
-- [ ] Lápida y valla como mejoras que alteran el rating mediante datos.
-- [ ] Descomposición progresiva testeable.
+- [ ] Lápida y valla como mejoras jugables que alteran el rating mediante datos.
+- [x] Descomposición progresiva testeable.
 - [ ] Persistencia mínima del estado de tumbas/cadáveres compatible con el guardado versionado.
 - [ ] Test de aceptación del loop mínimo de cementerio.
 - [ ] CI final verde antes de cerrar la fase.
 
-No ampliar todavía a NPCs, calendario, quests o economía salvo la interfaz estrictamente necesaria para Fase 4.
+Bloque 1 — foundation: `CorpseData`, `CorpseState`, `GraveRecord`, `CemeteryModel` y `CemeteryRatingConfig` data-driven. Validación: commit `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`, `Godot CI` run `33293105681`, `success`.
+
+Próximo bloque: preparación/entierro contextual, mejoras básicas de tumba y test del flujo sin introducir NPCs ni calendario.
 
 ## Fase 5 — Simulación
 Tiempo, día/noche, calendario, NPCs, navegación y rutinas.
