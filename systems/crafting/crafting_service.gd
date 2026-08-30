@@ -8,33 +8,34 @@ const RESULT_MISSING_INPUTS: StringName = &"missing_inputs"
 const RESULT_INVENTORY_FULL: StringName = &"inventory_full"
 
 static func craft(recipe: RecipeData, station_id: StringName, inventory: InventoryModel) -> StringName:
-    if recipe == null or inventory == null or not recipe.is_valid():
+    if inventory == null:
+        return RESULT_INVALID_RECIPE
+    var network := StorageNetwork.new()
+    network.add_provider(StorageProvider.new(&"inventory", inventory))
+    return craft_with_storage(recipe, station_id, network)
+
+static func craft_with_storage(recipe: RecipeData, station_id: StringName, storage: StorageNetwork) -> StringName:
+    if recipe == null or storage == null or not recipe.is_valid():
         return RESULT_INVALID_RECIPE
     if recipe.station != station_id:
         return RESULT_WRONG_STATION
-    if not _has_inputs(recipe, inventory):
+    if not _has_inputs(recipe, storage):
         return RESULT_MISSING_INPUTS
 
-    var simulated := _clone_inventory(inventory)
+    var simulated := storage.clone_network()
     for ingredient in recipe.inputs:
-        simulated.remove_item(ingredient.item.id, ingredient.amount)
+        simulated.consume(ingredient.item.id, ingredient.amount)
     for ingredient in recipe.outputs:
-        var remainder: int = simulated.add_item(ingredient.item, ingredient.amount)
+        var remainder: int = simulated.deposit(ingredient.item, ingredient.amount)
         if remainder > 0:
             return RESULT_INVENTORY_FULL
 
-    inventory.capacity_slots = simulated.capacity_slots
-    inventory.stacks = simulated.stacks
+    if not storage.apply_from(simulated):
+        return RESULT_INVALID_RECIPE
     return RESULT_OK
 
-static func _has_inputs(recipe: RecipeData, inventory: InventoryModel) -> bool:
+static func _has_inputs(recipe: RecipeData, storage: StorageNetwork) -> bool:
     for ingredient in recipe.inputs:
-        if not inventory.has_item(ingredient.item.id, ingredient.amount):
+        if not storage.has_item(ingredient.item.id, ingredient.amount):
             return false
     return true
-
-static func _clone_inventory(source: InventoryModel) -> InventoryModel:
-    var copy := InventoryModel.new(source.capacity_slots)
-    for stack in source.stacks:
-        copy.add_item(stack.item, stack.amount)
-    return copy

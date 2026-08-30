@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://world/storage/storage_chest.gd" id="1_chest"]
+[ext_resource type="Script" path="res://core/components/inventory_component.gd" id="2_inventory"]
+
+[sub_resource type="RectangleShape2D" id="Chest_shape"]
+size = Vector2(42, 30)
+
+[node name="StorageChest" type="Area2D" groups=["storage_provider"]]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_chest")
+
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-21, -15, 21, -15, 21, 15, -21, 15)
+color = Color(0.42, 0.25, 0.11, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("Chest_shape")
+
+[node name="InventoryComponent" type="Node" parent="."]
+script = ExtResource("2_inventory")
+capacity_slots = 12
+
+[node name="FeedbackLabel" type="Label" parent="."]
+offset_left = -52.0
+offset_top = -44.0
+offset_right = 52.0
+offset_bottom = -20.0
+text = "Cofre"
+horizontal_alignment = 1

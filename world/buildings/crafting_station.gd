@@ -16,7 +16,9 @@ func _on_interact(actor: Node) -> void:
         _set_result(&"insufficient_energy")
         return
 
-    var result := CraftingService.craft(recipe, station_id, inventory.model)
+    inventory._ensure_model()
+    var storage := _build_storage_network(actor, inventory)
+    var result := CraftingService.craft_with_storage(recipe, station_id, storage)
     if result != CraftingService.RESULT_OK:
         _set_result(result)
         return
@@ -24,6 +26,22 @@ func _on_interact(actor: Node) -> void:
     energy.spend(recipe.energy_cost)
     inventory.inventory_changed.emit()
     _set_result(CraftingService.RESULT_OK)
+
+func _build_storage_network(actor: Node, inventory: InventoryComponent) -> StorageNetwork:
+    var storage := StorageNetwork.new()
+    storage.add_provider(StorageProvider.new(&"player", inventory.model))
+
+    var tree := get_tree()
+    if tree == null:
+        return storage
+
+    for node in tree.get_nodes_in_group("storage_provider"):
+        if node == actor or not node.has_method("get_storage_provider"):
+            continue
+        var provider := node.call("get_storage_provider") as StorageProvider
+        if provider != null:
+            storage.add_provider(provider)
+    return storage
 
 func _set_result(result: StringName) -> void:
     last_result = result
@@ -36,7 +54,7 @@ func _set_result(result: StringName) -> void:
         CraftingService.RESULT_MISSING_INPUTS:
             label.text = "Faltan materiales"
         CraftingService.RESULT_INVENTORY_FULL:
-            label.text = "Inventario lleno"
+            label.text = "Almacenamiento lleno"
         &"insufficient_energy":
             label.text = "Sin energía suficiente"
         _:
