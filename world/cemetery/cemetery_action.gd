@@ -15,6 +15,7 @@ const RESULT_MISSING_CONTROLLER := &"missing_controller"
 
 var last_result: StringName = &""
 
+
 func _on_interact(_actor: Node) -> void:
 	var resolved_controller := _resolve_controller()
 	if resolved_controller == null:
@@ -30,6 +31,7 @@ func _on_interact(_actor: Node) -> void:
 			last_result = resolved_controller.bury_first_pending()
 		Action.UPGRADE:
 			last_result = resolved_controller.upgrade_first_grave()
+
 
 func _resolve_controller() -> CemeteryController:
 	if controller != null:

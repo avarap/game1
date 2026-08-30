@@ -12,12 +12,7 @@ extends CharacterBody2D
 func _physics_process(delta: float) -> void:
 	var direction := PlayerMovement.input_direction()
 	velocity = PlayerMovement.next_velocity(
-		velocity,
-		direction,
-		max_speed,
-		acceleration,
-		deceleration,
-		delta,
+		velocity, direction, max_speed, acceleration, deceleration, delta
 	)
 	move_and_slide()
 

@@ -4,6 +4,7 @@ extends Interactable
 @export var wake_hour: int = 6
 @export var wake_minute: int = 0
 
+
 func _on_interact(actor: Node) -> void:
 	if actor == null or not actor.has_method("get_energy_component"):
 		return

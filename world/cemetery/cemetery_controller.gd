@@ -5,12 +5,15 @@ extends Node
 
 var service: CemeteryService
 
+
 func _enter_tree() -> void:
 	add_to_group("cemetery_controller")
+
 
 func _ready() -> void:
 	initialize()
 	add_to_group("save_provider")
+
 
 func initialize() -> void:
 	if rating_config == null:
@@ -18,16 +21,20 @@ func initialize() -> void:
 	if service == null:
 		service = CemeteryService.new(CemeteryModel.new(rating_config))
 
+
 func get_save_key() -> StringName:
 	return &"cemetery"
+
 
 func get_save_data() -> Dictionary:
 	initialize()
 	return service.snapshot()
 
+
 func apply_save_data(data: Dictionary) -> void:
 	initialize()
 	service = CemeteryService.from_snapshot(rating_config, data)
+
 
 func receive_demo_corpse() -> StringName:
 	initialize()
@@ -39,12 +46,14 @@ func receive_demo_corpse() -> StringName:
 	data.burial_value = 2
 	return service.receive_corpse(CorpseState.new(data, 0.01))
 
+
 func prepare_first_pending() -> StringName:
 	initialize()
 	var corpse_id := service.first_pending_id()
 	if corpse_id == &"":
 		return CemeteryService.RESULT_NOT_FOUND
 	return service.prepare_corpse(corpse_id, 1)
+
 
 func bury_first_pending() -> StringName:
 	initialize()
@@ -53,6 +62,7 @@ func bury_first_pending() -> StringName:
 		return CemeteryService.RESULT_NOT_FOUND
 	var grave := service.bury_corpse(corpse_id)
 	return CemeteryService.RESULT_OK if grave != null else CemeteryService.RESULT_NOT_FOUND
+
 
 func upgrade_first_grave() -> StringName:
 	initialize()
@@ -64,6 +74,7 @@ func upgrade_first_grave() -> StringName:
 	if not grave.has_fence:
 		return service.install_fence(0)
 	return service.add_decoration(0, 1)
+
 
 func total_rating() -> int:
 	initialize()
