@@ -50,30 +50,30 @@ static func run() -> Array[String]:
         failures.append("Player, workbench and storage chest scenes should load")
         return failures
 
-    var root := (Engine.get_main_loop() as SceneTree).root
     var player := player_scene.instantiate() as PlayerController
     var station := station_scene.instantiate() as CraftingStation
     var chest := chest_scene.instantiate() as StorageChest
-    root.add_child(player)
-    root.add_child(station)
-    root.add_child(chest)
-
     var actor_inventory := player.get_node("InventoryComponent") as InventoryComponent
+    var energy := player.get_node("EnergyComponent") as EnergyComponent
     var chest_component := chest.get_node("InventoryComponent") as InventoryComponent
+    actor_inventory._ready()
+    energy._ready()
+    chest_component._ready()
+
     actor_inventory.add_item(wood, 1)
     chest_component.add_item(wood, 1)
+    station.register_storage_provider(chest.get_storage_provider())
     station.interact(player)
 
     if station.last_result != CraftingService.RESULT_OK:
-        failures.append("Workbench should discover compatible storage providers by abstraction")
+        failures.append("Workbench should consume from a compatible registered storage provider")
     if actor_inventory.count_item(&"plank") != 1:
-        failures.append("Workbench should deposit output through its discovered StorageNetwork")
+        failures.append("Workbench should deposit output through its StorageNetwork")
     if chest_component.count_item(&"wood") != 0:
         failures.append("Workbench should consume required input from compatible chest storage")
+    if energy.current_energy != 98:
+        failures.append("Distributed crafting should preserve the configured energy cost")
 
-    root.remove_child(chest)
-    root.remove_child(station)
-    root.remove_child(player)
     chest.free()
     station.free()
     player.free()

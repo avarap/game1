@@ -5,6 +5,15 @@ extends Interactable
 @export var recipe: RecipeData
 
 var last_result: StringName = &"idle"
+var linked_storage_providers: Array[StorageProvider] = []
+
+func register_storage_provider(provider: StorageProvider) -> void:
+    if provider == null or not provider.is_valid():
+        return
+    linked_storage_providers.append(provider)
+
+func clear_registered_storage_providers() -> void:
+    linked_storage_providers.clear()
 
 func _on_interact(actor: Node) -> void:
     var inventory := actor.get_node_or_null("InventoryComponent") as InventoryComponent
@@ -31,11 +40,13 @@ func _build_storage_network(actor: Node, inventory: InventoryComponent) -> Stora
     var storage := StorageNetwork.new()
     storage.add_provider(StorageProvider.new(&"player", inventory.model))
 
-    var tree := get_tree()
-    if tree == null:
+    for provider in linked_storage_providers:
+        storage.add_provider(provider)
+
+    if not is_inside_tree():
         return storage
 
-    for node in tree.get_nodes_in_group("storage_provider"):
+    for node in get_tree().get_nodes_in_group("storage_provider"):
         if node == actor or not node.has_method("get_storage_provider"):
             continue
         var provider := node.call("get_storage_provider") as StorageProvider
