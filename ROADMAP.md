@@ -67,6 +67,7 @@ Criterios de aceptación de fase:
 - [x] Estación local interactuable (`Workbench`) sin Autoload.
 - [x] Coste de energía aplicado solo a crafting exitoso.
 - [x] Test unitario/aceptación del primer loop de crafting.
+- [x] CI verde del bloque 1 de crafting.
 - [ ] Abstracción `StorageProvider` para inventarios compatibles.
 - [ ] `StorageNetwork` con `has_item`, `get_available_amount`, `consume`, `deposit` y `find_sources`.
 - [ ] Cofre/contenedor compatible con la misma abstracción.
@@ -76,6 +77,7 @@ Criterios de aceptación de fase:
 - [ ] CI final verde antes de cerrar la fase.
 
 Bloque 1 de crafting: `d284104ab8b9f300362413cd666bdab6b8855fbd`.
+Validación bloque 1: `Godot CI` run `33287832451`, `success`.
 La fase permanece abierta hasta completar StorageNetwork y validación final.
 
 ## Fase 4 — Cementerio
