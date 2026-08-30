@@ -15,6 +15,8 @@
 - `GraveRecord`, `CemeteryModel` y `CemeteryRatingConfig` para rating encapsulado/data-driven.
 - `data/cemetery/default_rating.tres` con valores iniciales de lápida, valla y decoración.
 - `test_cemetery_foundation.gd` para decay, rating, mejoras, agregación y snapshot.
+- `CemeteryService` para recepción, preparación, entierro y mejoras sin introducir un nuevo Autoload.
+- `test_cemetery_flow.gd` como aceptación lógica del flujo recibir -> preparar -> enterrar -> mejorar -> recalcular rating.
 
 ### Changed
 - El crafting instantáneo opera sobre `StorageNetwork` manteniendo compatibilidad con inventario individual.
@@ -24,12 +26,15 @@
 - La energía de producción temporizada se cobra una sola vez cuando el trabajo es aceptado.
 - Fase 3 queda completada y Fase 4 — Cementerio pasa a estar activa.
 - La contribución base de una tumba usa `CorpseData.burial_value`; las mejoras se calculan con configuración separada.
+- La preparación mutable vive ahora en `CorpseState.current_preparation_level`, evitando modificar `CorpseData` compartido.
+- `CemeteryService` centraliza el flujo lógico de cadáveres pendientes y tumbas mientras `CemeteryModel` sigue siendo el agregador puro del rating.
 
 ### Fixed
 - Inferencias `Variant` incompatibles con el modo estricto de Godot 4.5 en inventario.
 - Recolección y crafting evitan pérdida parcial de recursos mediante simulación/atomicidad.
 - `CraftingStation` evita `get_tree()` cuando se ejecuta off-tree en tests.
 - Producción temporizada no pierde outputs si el almacenamiento se llena al completar: el job queda en `awaiting_output` y reintenta el depósito.
+- Se evita que preparar un cadáver modifique accidentalmente el `CorpseData` compartido por otras instancias.
 
 ### Validated
 - Fase 0: `Godot CI` run `33278173612`, `success`.
@@ -39,3 +44,4 @@
 - Fase 3 StorageNetwork: tras corregir el fallo off-tree detectado en `33290155936`, run `33290225076` finalizó en `success`.
 - Fase 3 producción temporizada/colas: commit `2252fcbd4280acec1e60530c026a8f5dd3365b91`, `Godot CI` run `33292481990`, `success` con importación, smoke test de `main.tscn` y suite headless.
 - Fase 4 foundation: commit `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`, `Godot CI` run `33293105681`, `success` con importación, smoke test y suite headless.
+- Fase 4 flujo lógico: commit `c94bacac772f8f5a0075b972c56baeb86b37afa0`, `Godot CI` run `33293544721`, `success` con importación, smoke test y suite headless.
