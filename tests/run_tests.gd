@@ -32,6 +32,7 @@ func _run_all_tests() -> void:
 	_run_suite("CemeteryPersistence", TestCemeteryPersistence.run(), failures)
 	_run_suite("CemeteryGameplay", TestCemeteryGameplay.run(), failures)
 	_run_suite("EconomyFoundation", TestEconomyFoundation.run(), failures)
+	_run_suite("EconomyGameplay", TestEconomyGameplay.run(), failures)
 
 	if failures.is_empty():
 		print("[TEST] All core tests passed")
