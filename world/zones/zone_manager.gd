@@ -111,7 +111,9 @@ func get_active_zone() -> Node2D:
 	return _active_zone
 
 
-func travel_to(zone_id: StringName, marker_id: StringName) -> bool:
+func travel_to(
+	zone_id: StringName, marker_id: StringName, refresh_persistent_actors: bool = true
+) -> bool:
 	var scene_path := String(ZONE_SCENES.get(zone_id, ""))
 	if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
 		return false
@@ -133,7 +135,7 @@ func travel_to(zone_id: StringName, marker_id: StringName) -> bool:
 	_active_zone_id = zone_id
 	_active_marker_id = marker_id
 	player.global_position = marker.global_position
-	_configure_persistent_shell(zone_id, candidate)
+	_configure_persistent_shell(zone_id, candidate, refresh_persistent_actors)
 	_build_transitions(zone_id, candidate)
 	return true
 
@@ -145,25 +147,23 @@ func _resolve_marker(root: Node, marker_id: StringName) -> Node2D:
 	return root.find_child(String(marker_id), true, false) as Node2D
 
 
-func _configure_persistent_shell(zone_id: StringName, zone: Node2D) -> void:
-	_configure_aldren(zone_id, zone)
+func _configure_persistent_shell(
+	zone_id: StringName, zone: Node2D, refresh_persistent_actors: bool
+) -> void:
+	_configure_aldren(zone_id, refresh_persistent_actors)
 	_configure_trade_point(zone_id, zone)
 	_configure_camera(zone)
 
 
-func _configure_aldren(zone_id: StringName, zone: Node2D) -> void:
+func _configure_aldren(zone_id: StringName, refresh_persistent_actor: bool) -> void:
 	if aldren == null:
 		return
 	var is_cemetery := zone_id == &"cemetery"
 	aldren.visible = is_cemetery
 	aldren.collision_layer = 4 if is_cemetery else 0
 	aldren.process_mode = (Node.PROCESS_MODE_INHERIT if is_cemetery else Node.PROCESS_MODE_DISABLED)
-	if not is_cemetery:
-		return
-	var marker := _resolve_marker(zone, &"AldrenSpawn")
-	if marker != null:
-		aldren.global_position = marker.global_position
-	aldren.call_deferred("apply_current_schedule")
+	if is_cemetery and refresh_persistent_actor:
+		aldren.apply_current_schedule()
 
 
 func _configure_trade_point(zone_id: StringName, zone: Node2D) -> void:
