@@ -48,7 +48,7 @@ La fase se cierra solo después de #6, #8 y #9 y de comprobar el flujo integral 
 - [x] Providers RPG persisten conjuntamente mediante `SaveManager`.
 - [x] **#9** Aceptación integral final: relación/diálogo, quest, recompensa única, puntos tecnológicos, unlock, compra + venta, reconstrucción de providers y save/load idempotente.
 - [x] `gdscript-quality` global verde.
-- [x] `validate-and-test` verde con importación Godot 4.5, smoke y suite headless.
+- [x] `validate-and-test` verde con importación Godot 4.7.2, smoke y suite headless.
 - [x] Documentación e issues sincronizadas para el cierre.
 
 ### Bloques validados
@@ -62,6 +62,7 @@ La fase se cierra solo después de #6, #8 y #9 y de comprobar el flujo integral 
 - Tecnología ↔ quests #8: merge `8cd26c98e3e43d982218ccf97869ab0c6a0830b3`; validación global posterior en `main` run `33308014015`.
 - Quality gate global #38: merge `cb4c14351abbee84f3162197cdf4ba794ab9846f`, run `33308014015`; todos los `*.gd` se descubren dinámicamente.
 - Cierre integral #9: HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, PR #39, run `33308814397`; ambos jobs `success`.
+- Upgrade Godot 4.7.2: PR #41, merge `1b4ff623b45c465bfb9bd57f2b96b6ecec88a2ad`, run `33309144543`; ambos jobs `success`.
 
 ### Política de localización
 - Idiomas iniciales: `en` y `es`; fallback `en`.
@@ -74,17 +75,29 @@ La fase se cierra solo después de #6, #8 y #9 y de comprobar el flujo integral 
 - El documento y la implementación son deliberadamente spoiler-light.
 - Los flags narrativos describen hechos observados, no interpretaciones verdaderas.
 
-## Transición pre-Fase 7 — ACTIVA
+## Transición pre-Fase 7 — COMPLETADA
 
 ### Orden obligatorio
-1. **#17 — Contrato visual**: escala, tiles, paleta, perspectiva, footprints, cámara, Y-sort y convenciones de assets.
-2. **#16 — TileMapLayer foundation**, solo después de cerrar #17.
-3. Producción posterior de Fase 7 (#18/#19/#20/#21/#22) según dependencias.
+1. [x] **#17 — Contrato visual**: `ART_DIRECTION.md` fija perspectiva, tile 32 px, escala/footprints, cámara, pivotes/Y-sort, capas, paleta, luz y convenciones de assets.
+2. [ ] **#16 — TileMapLayer foundation**: siguiente bloque activo.
+3. [ ] Producción posterior de Fase 7 (#18/#19/#20/#21/#22), solo según dependencias.
 
-No producir mapas/assets definitivos ni mergear PR #32 antes de cerrar #17.
+#17 se considera resuelta al cumplir sus criterios documentales y pasar CI sin modificar gameplay. El contrato visual es obligatorio para #16 y para toda producción de assets posterior.
 
-## Fase 7 — Mundo — BLOQUEADA POR #17
+## Fase 7 — Mundo — ACTIVA
 Pueblo, bosque, mina, interiores, exploración y secretos.
+
+### Siguiente bloque: #16 — Foundation técnica de mapas con TileMapLayer
+- [ ] Crear al menos un mapa técnico cargable basado en `TileMapLayer`.
+- [ ] Implementar las capas contractuales `ground`, `paths`, `decoration_low`, `collision`, `objects_y_sorted`, `foreground_occlusion`.
+- [ ] Mantener movimiento y colisión del player.
+- [ ] Mantener `NavigationRegion2D`/`NavigationAgent2D` funcionando.
+- [ ] Mantener Y-sort/occlusion sin regresiones.
+- [ ] Derivar o configurar camera bounds de forma estable.
+- [ ] Smoke test + suite headless + quality gate verdes.
+- [ ] No producir arte final ni ampliar todavía a #18/#19/#20/#21/#22.
+
+PR #32 debe reevaluarse contra `ART_DIRECTION.md` y #16; no se fusiona por antigüedad ni se toma como cierre de esta foundation.
 
 ## Fase 8 — Polish
 Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización.

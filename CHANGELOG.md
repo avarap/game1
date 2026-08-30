@@ -11,6 +11,7 @@
 - **#6 Comercio UI:** `TradeLayer`/`TradePanel`, `TradeInteractable` reutilizable, punto de comercio integrado, prompts/textos EN/ES y `test_trading_ui.gd`.
 - **#8 Tecnología ↔ quests:** `QuestRewardData` admite recompensa tipada `TECHNOLOGY_POINTS`; `aldren_first_duty` concede 2 puntos rojos y 1 verde además de su `QUEST_FLAG`, con idempotencia tras save/load.
 - **#9 Aceptación RPG final:** `test_rpg_acceptance.gd` cubre relación→diálogo, quest, recompensa única, puntos tecnológicos, unlock, compra + venta, guardado, reconstrucción del mundo, restore de providers e idempotencia post-load.
+- **#17 Contrato visual pre-Fase 7:** `ART_DIRECTION.md` fija una dirección original y numérica: proyección 2D ortográfica cenital 3/4, tiles de 32 px, personajes 32x48 px, footprint de referencia 20x28 px, pivotes/Y-sort en pies, seis capas de mapa, paleta base, rangos de valor por zona, dirección de luz/sombras y convenciones de assets/spritesheets.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales sin convertir sistemas RPG en Autoloads.
@@ -19,7 +20,9 @@
 - El quality gate dejó de mantener una whitelist manual: ahora descubre todos los `*.gd` del repositorio y ejecuta `gdlint` + `gdformat --check` globalmente.
 - 39 scripts legacy fueron migrados al formato canónico de `gdformat`; `TimeManager.get_weekday_name()` quedó con un único return sin cambiar comportamiento.
 - **Fase 6 — RPG queda COMPLETADA** tras cerrar #6, #8 y validar #9.
-- El siguiente bloque obligatorio es **#17 — contrato visual pre-Fase 7**; #16 y la producción de mundo siguen bloqueados hasta cerrarlo.
+- CI/runtime objetivo actualizado de Godot 4.5 a **Godot 4.7.2** mediante PR #41.
+- **#17 queda resuelta** sin cambios de gameplay; Fase 7 pasa a activa y el siguiente bloque obligatorio es **#16 — foundation técnica de mapas con `TileMapLayer`**.
+- PR #32 debe reevaluarse contra `ART_DIRECTION.md` y #16 antes de cualquier posible integración.
 
 ### Fixed
 - Inferencias `Variant`, problemas de atomicidad y lifecycle detectados en fases anteriores.
@@ -31,6 +34,7 @@
 - #6: se aplicó el formato canónico exigido por `gdformat` en `TradePanel` manteniendo el gate estricto.
 - #8 estaba implementada en `main` pero permanecía abierta/documentada como pendiente; se cerró con evidencia antes de ejecutar #9.
 - El cierre integral previo no verificaba explícitamente relación→diálogo, venta, origen de puntos desde quest ni reconstrucción real de providers; `test_rpg_acceptance.gd` ahora cubre esos huecos.
+- Se corrigieron referencias documentales todavía ancladas a Godot 4.5 tras el upgrade a 4.7.2.
 
 ### Validated
 - Fase 0: run `33278173612`, success.
@@ -49,3 +53,5 @@
 - Tecnología ↔ quests #8: merge `8cd26c98e3e43d982218ccf97869ab0c6a0830b3`; regresión incluida en CI global posterior.
 - Quality gate global #38: merge `cb4c14351abbee84f3162197cdf4ba794ab9846f`, run `33308014015`, ambos jobs success sobre 109 scripts GDScript.
 - Cierre RPG #9: acceptance HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, PR #39, run `33308814397`: `gdscript-quality` y `validate-and-test` success.
+- Godot 4.7.2: PR #41, merge `1b4ff623b45c465bfb9bd57f2b96b6ecec88a2ad`, run `33309144543`, ambos jobs success.
+- Contrato visual #17: PR #42, primer CI documental `33310931349`, ambos jobs success; tras sincronizar documentación se requiere CI final del HEAD antes de merge.
