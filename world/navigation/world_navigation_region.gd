@@ -2,7 +2,7 @@ class_name WorldNavigationRegion
 extends NavigationRegion2D
 
 const NAVIGATION_MARGIN := 48.0
-const WORLD_SIZE := Vector2(1600.0, 1000.0)
+const WORLD_SIZE := Vector2(2600.0, 1000.0)
 
 
 func _ready() -> void:
