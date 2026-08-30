@@ -7,59 +7,56 @@
 - Walking prototype, items/inventario, energía, recursos, crafting, `StorageNetwork`, producción temporizada y cementerio persistente.
 - Simulación: reloj/calendario, sueño, ciclo día/noche, `NPCData`, navegación, horarios/estados y persistencia NPC.
 - Localización EN/ES, diálogo data-driven, relaciones, quests, economía y tecnologías como sistemas locales/contextuales.
-- Primera quest jugable de Aldren, primer comerciante data-driven `yard_supplier` y primera tecnología `sturdy_joinery`.
 - **#6 Comercio UI:** `TradeLayer`/`TradePanel`, `TradeInteractable` reutilizable, punto de comercio integrado, prompts/textos EN/ES y `test_trading_ui.gd`.
-- **#8 Tecnología ↔ quests:** `QuestRewardData` admite recompensa tipada `TECHNOLOGY_POINTS`; `aldren_first_duty` concede 2 puntos rojos y 1 verde además de su `QUEST_FLAG`, con idempotencia tras save/load.
-- **#9 Aceptación RPG final:** `test_rpg_acceptance.gd` cubre relación→diálogo, quest, recompensa única, puntos tecnológicos, unlock, compra + venta, guardado, reconstrucción del mundo, restore de providers e idempotencia post-load.
-- **#17 Contrato visual pre-Fase 7:** `ART_DIRECTION.md` fija una dirección original y numérica: proyección 2D ortográfica cenital 3/4, tiles de 32 px, personajes 32x48 px, footprint de referencia 20x28 px, pivotes/Y-sort en pies, seis capas de mapa, paleta base, rangos de valor por zona, dirección de luz/sombras y convenciones de assets/spritesheets.
-- **#16 Foundation `TileMapLayer`:** `world/maps/technical_map.tscn` + `TechnicalMap` crean un mapa técnico de 50x32 tiles con las seis capas contractuales, bounds estables, tiles de diagnóstico y colisión tile-based.
-- `test_map_foundation.gd` valida composición, tile size, bounds, physics layer, Y-sort/occlusion, integración en `world.tscn`, cámara y navegación.
+- **#8 Tecnología ↔ quests:** recompensa tipada `TECHNOLOGY_POINTS`, compatibilidad `QUEST_FLAG` e idempotencia tras save/load.
+- **#9 Aceptación RPG final:** flujo integral relación→diálogo→quest→recompensa→unlock→compra/venta→save/load.
+- **#17 Contrato visual:** `ART_DIRECTION.md` fija proyección, tiles de 32 px, escala, pivotes/Y-sort, capas, paleta, luz y convenciones.
+- **#16 Foundation `TileMapLayer`:** `technical_map.tscn` + `TechnicalMap`, seis capas, bounds y colisión tile-based.
+- **#18 Cementerio + taller:** `world/maps/cemetery/cemetery_map.tscn`, interacciones críticas, markers de conexión y navegación.
+- **#19 Bosque:** mapa compacto con caminos, límites, recursos existentes, navegación y secret clearing reservado.
+- **#20 Pueblo:** mapa de Valdeniebla con entrada, plaza, merchant spot, plots y markers de interiores.
+- **#21 Interiores:** casa/taller y edificio de pueblo reutilizables, markers estables e `InteriorTransition` sin duplicar player.
+- **#22 Mina inicial:** entrada/salida, corredor principal, bifurcación, oclusión y landmark secreto usando sistemas de recursos existentes.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales sin convertir sistemas RPG en Autoloads.
-- Dinero y precios usan cobre entero como unidad base; tecnologías usan puntos rojo/verde/azul enteros no negativos.
-- La UI de comercio presenta saldo/precios como oro/plata/cobre, pero ejecuta compra/venta exclusivamente mediante las APIs atómicas existentes de `EconomyController`.
-- El quality gate dejó de mantener una whitelist manual: ahora descubre todos los `*.gd` del repositorio y ejecuta `gdlint` + `gdformat --check` globalmente.
-- 39 scripts legacy fueron migrados al formato canónico de `gdformat`; `TimeManager.get_weekday_name()` quedó con un único return sin cambiar comportamiento.
-- **Fase 6 — RPG queda COMPLETADA** tras cerrar #6, #8 y validar #9.
-- CI/runtime objetivo actualizado de Godot 4.5 a **Godot 4.7.2** mediante PR #41.
-- **#17 queda resuelta** sin cambios de gameplay; Fase 7 pasa a activa.
-- **#16 queda validada**: `world.tscn` sustituye `Ground`, `Boundaries` y `WorkshopBlock` del blockout legacy por `TechnicalMap`; player, interacciones, cámara, navegación y sistemas RPG se conservan.
-- `test_walking_prototype.gd` deja de exigir el nodo legacy `Boundaries` y valida la nueva capa `TechnicalMap/collision` sin rebajar cobertura.
-- El siguiente bloque P0 de Fase 7 pasa a ser **#18 — cementerio + taller del jugador**; #19 queda disponible como P1 después de #16/#17.
-- PR #32 queda cerrado sin merge como superseded; no debe reutilizarse como foundation de Fase 7.
+- Dinero y precios usan cobre entero; tecnologías usan puntos rojo/verde/azul enteros no negativos.
+- UI de comercio usa exclusivamente APIs atómicas de `EconomyController`.
+- Quality gate global descubre todos los `*.gd` y ejecuta `gdlint` + `gdformat --check`.
+- 39 scripts legacy fueron migrados al formato canónico de `gdformat`.
+- **Fase 6 — RPG COMPLETADA** tras #6, #8 y #9.
+- Runtime/CI objetivo actualizado a **Godot 4.7.2**.
+- **Fase 7 — Mundo permanece ACTIVA**, pero #18–#22 ya están integrados.
+- El siguiente bloque cambia de #18 a **#23 — integración de zonas + exploración y secretos**.
+- Fase 8 permanece bloqueada por **#24 — aceptación final de Fase 7**.
 
 ### Fixed
 - Inferencias `Variant`, problemas de atomicidad y lifecycle detectados en fases anteriores.
 - `ScheduleEntryData` dejó de comparar resultados normalizados de tiempo con enteros incorrectamente.
-- Correcciones de `gdlint`/`gdformat` en diálogo, quests, economía, tecnología y aceptación RPG sin relajar gates.
-- Run `33305708696`: el test integral pasó a resolver `/root/SaveManager` desde el runner `--script`.
-- Se corrigió la desincronización entre `ROADMAP.md`, `DEV_MEMORY.md`, `README.md`, backlog e inicio prematuro de Fase 7.
-- #6: el prompt del punto de comercio ahora se localiza con `UI_TRADE_PROMPT` y se actualiza al cambiar idioma.
-- #6: se aplicó el formato canónico exigido por `gdformat` en `TradePanel` manteniendo el gate estricto.
-- #8 estaba implementada en `main` pero permanecía abierta/documentada como pendiente; se cerró con evidencia antes de ejecutar #9.
-- El cierre integral previo no verificaba explícitamente relación→diálogo, venta, origen de puntos desde quest ni reconstrucción real de providers; `test_rpg_acceptance.gd` ahora cubre esos huecos.
-- Se corrigieron referencias documentales todavía ancladas a Godot 4.5 tras el upgrade a 4.7.2.
-- #16: el collision polygon del TileSet técnico se configuraba antes de registrar el `TileSetAtlasSource`, causando `physics.size() = 0`; ahora el atlas se registra antes de crear la geometría de colisión.
-- #16: se resolvió el único `gdformat` pendiente de `technical_map.gd` y se restauró el workflow estricto tras usar un run diagnóstico temporal para obtener el formato canónico.
+- El prompt del comercio se localiza con `UI_TRADE_PROMPT` y responde a cambio de idioma.
+- El cierre RPG se reforzó para comprobar diálogo condicionado, venta, origen de puntos tecnológicos y reconstrucción real de providers.
+- #16 corrigió el orden de registro del atlas antes de crear geometría de colisión.
+- Se eliminó la dependencia del test legacy respecto al nodo `Boundaries` sustituido por `TechnicalMap/collision`.
+- **Backlog sincronizado:** #5 y #7 de Fase 6 se cerraron como `completed` al confirmar que su alcance ya estaba implementado y validado.
+- **Backlog Fase 7 sincronizado:** #21 y #22 se cerraron como `completed` después de confirmar que PR #49/#50 estaban merged y verdes.
+- `ROADMAP.md` y `DEV_MEMORY.md` dejaron de indicar #18 como siguiente tarea después de que #18–#22 ya hubieran sido fusionadas.
 
 ### Validated
 - Fase 0: run `33278173612`, success.
 - Fase 1: run `33280758441`, success.
 - Fase 2: run `33285578050`, success.
-- Fase 3: `2252fcbd4280acec1e60530c026a8f5dd3365b91`, run `33292481990`, success.
-- Fase 4: `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`, success.
-- Fase 5: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`, ambos jobs success.
-- Diálogo: `46a37e00c2ad968e91834da5577a6f512a28f0a9`, run `33298737838`.
-- Relaciones: `fc446609004ea8031903c1c529144743cd963e51`, run `33299277228`.
-- Condiciones narrativas: `e1a19343e8303d1b28188a2a38c559d788c8087d`, run `33299990183`.
-- Quests foundation: `979b2328cc01c8d5a7a0ae4201deabe58cf9cc38`, run `33301533785`.
-- Economía foundation: `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`, run `33304080534`.
-- Tecnología foundation: `444fc2995ab14b293188aba54a0f4099dc3c36b3`, run `33305211363`.
-- Comercio UI #6: merge `3d6252e840ae32e5445f454170d0856909bf6a2b`, run `33307358527`, ambos jobs success.
-- Tecnología ↔ quests #8: merge `8cd26c98e3e43d982218ccf97869ab0c6a0830b3`; regresión incluida en CI global posterior.
-- Quality gate global #38: merge `cb4c14351abbee84f3162197cdf4ba794ab9846f`, run `33308014015`, ambos jobs success sobre 109 scripts GDScript.
-- Cierre RPG #9: acceptance HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, PR #39, run `33308814397`: `gdscript-quality` y `validate-and-test` success.
-- Godot 4.7.2: PR #41, merge `1b4ff623b45c465bfb9bd57f2b96b6ecec88a2ad`, run `33309144543`, ambos jobs success.
-- Contrato visual #17: PR #42, HEAD `2e05a9f945244fe2e2a7fa2f6a16a9d2877ae055`, run `33311594061`, ambos jobs success; merge `fc45840c8be48e82380d8bded841dce5f46e0e73`.
-- Foundation `TileMapLayer` #16: TDD RED `33313004010` y `33313174308`; HEAD funcional `00264c1e3ff920a46bad908182a8a89fbbb20263`, run `33313715794`, `gdscript-quality` + importación + smoke + suite headless completa `success` en Godot 4.7.2.
+- Fase 3: run `33292481990`, success.
+- Fase 4: run `33294286014`, success.
+- Fase 5: run `33297774458`, success.
+- Comercio UI #6: run `33307358527`, success.
+- Quality gate global #38: run `33308014015`, success.
+- Cierre RPG #9: run `33308814397`, success.
+- Godot 4.7.2: PR #41, run `33309144543`, success.
+- Contrato visual #17: run `33311594061`, success.
+- Foundation `TileMapLayer` #16: run funcional `33313715794`, success.
+- Cementerio/taller #18: PR #47, run `33316327221`, success.
+- Bosque #19: PR #48, run `33316454888`, success.
+- Pueblo #20: PR #46, run `33315626881`, success.
+- Interiores #21: PR #49, run `33318051580`, success.
+- Mina #22: PR #50, run `33318407597`, success.
+- Estado integrado actual de `main`: `725529b9b5f9091853b1e78d8031d6dafcd2277a`; Godot CI run `33325342447`, success.
