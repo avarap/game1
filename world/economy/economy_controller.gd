@@ -22,34 +22,24 @@ func _ready() -> void:
 func buy(offer_id: StringName, quantity: int, inventory: InventoryComponent) -> StringName:
 	_ensure_state()
 	var offer := _get_offer(offer_id)
-	if inventory == null or wallet == null or merchant == null:
-		return EconomyService.RESULT_INVALID_STATE
-	if offer == null or offer.item == null:
-		return EconomyService.RESULT_INVALID_OFFER
+	var validation := _validate_trade_context(offer, inventory)
+	if validation != EconomyService.RESULT_OK:
+		return validation
 
 	var transaction := EconomyService.simulate_buy(wallet, merchant, offer, quantity)
 	if not transaction.is_success():
 		return transaction.result
 	if not inventory.can_add_item(offer.item, quantity):
 		return RESULT_INVENTORY_FULL
-
-	var remainder := inventory.add_item(offer.item, quantity)
-	if remainder != 0:
-		_rollback_added_items(inventory, offer.item_id, quantity - remainder)
-		return EconomyService.RESULT_INVALID_STATE
-	if not EconomyService.apply_transaction(transaction, wallet, merchant):
-		_rollback_added_items(inventory, offer.item_id, quantity)
-		return EconomyService.RESULT_INVALID_STATE
-	return EconomyService.RESULT_OK
+	return _commit_buy(transaction, offer, quantity, inventory)
 
 
 func sell(offer_id: StringName, quantity: int, inventory: InventoryComponent) -> StringName:
 	_ensure_state()
 	var offer := _get_offer(offer_id)
-	if inventory == null or wallet == null or merchant == null:
-		return EconomyService.RESULT_INVALID_STATE
-	if offer == null or offer.item == null:
-		return EconomyService.RESULT_INVALID_OFFER
+	var validation := _validate_trade_context(offer, inventory)
+	if validation != EconomyService.RESULT_OK:
+		return validation
 
 	var seller_stock := inventory.count_item(offer.item_id)
 	var transaction := EconomyService.simulate_sell(
@@ -57,15 +47,7 @@ func sell(offer_id: StringName, quantity: int, inventory: InventoryComponent) ->
 	)
 	if not transaction.is_success():
 		return transaction.result
-
-	var removed := inventory.remove_item(offer.item_id, quantity)
-	if removed != quantity:
-		_rollback_removed_items(inventory, offer.item, removed)
-		return EconomyService.RESULT_INVALID_STATE
-	if not EconomyService.apply_transaction(transaction, wallet, merchant):
-		_rollback_removed_items(inventory, offer.item, removed)
-		return EconomyService.RESULT_INVALID_STATE
-	return EconomyService.RESULT_OK
+	return _commit_sell(transaction, offer, quantity, inventory)
 
 
 func get_balance_copper() -> int:
@@ -122,6 +104,48 @@ func apply_save_data(data: Dictionary) -> void:
 	if not wallet.apply_from(wallet_candidate):
 		return
 	merchant.apply_from(candidate)
+
+
+func _validate_trade_context(
+	offer: MerchantOfferData, inventory: InventoryComponent
+) -> StringName:
+	if inventory == null or wallet == null or merchant == null:
+		return EconomyService.RESULT_INVALID_STATE
+	if offer == null or offer.item == null:
+		return EconomyService.RESULT_INVALID_OFFER
+	return EconomyService.RESULT_OK
+
+
+func _commit_buy(
+	transaction: EconomyTransaction,
+	offer: MerchantOfferData,
+	quantity: int,
+	inventory: InventoryComponent
+) -> StringName:
+	var remainder := inventory.add_item(offer.item, quantity)
+	if remainder != 0:
+		_rollback_added_items(inventory, offer.item_id, quantity - remainder)
+		return EconomyService.RESULT_INVALID_STATE
+	if not EconomyService.apply_transaction(transaction, wallet, merchant):
+		_rollback_added_items(inventory, offer.item_id, quantity)
+		return EconomyService.RESULT_INVALID_STATE
+	return EconomyService.RESULT_OK
+
+
+func _commit_sell(
+	transaction: EconomyTransaction,
+	offer: MerchantOfferData,
+	quantity: int,
+	inventory: InventoryComponent
+) -> StringName:
+	var removed := inventory.remove_item(offer.item_id, quantity)
+	if removed != quantity:
+		_rollback_removed_items(inventory, offer.item, removed)
+		return EconomyService.RESULT_INVALID_STATE
+	if not EconomyService.apply_transaction(transaction, wallet, merchant):
+		_rollback_removed_items(inventory, offer.item, removed)
+		return EconomyService.RESULT_INVALID_STATE
+	return EconomyService.RESULT_OK
 
 
 func _ensure_state() -> void:
