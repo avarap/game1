@@ -31,7 +31,13 @@ static func run() -> Array[String]:
 	root.add_child(world)
 	var aldren := world.get_node_or_null("BrotherAldren") as NPCController
 	var day_night := world.get_node_or_null("DayNightCycle") as DayNightController
-	var sleep_spot := world.get_node_or_null("SleepSpot") as SleepSpot
+	var zone_manager := world.get_node_or_null("ZoneManager")
+	var active_zone: Node = null
+	if zone_manager != null:
+		active_zone = zone_manager.call("get_active_zone") as Node
+	var sleep_spot: SleepSpot = null
+	if active_zone != null:
+		sleep_spot = active_zone.find_child("SleepSpot", true, false) as SleepSpot
 	var player := world.get_node_or_null("Player")
 	if aldren == null or day_night == null or sleep_spot == null or player == null:
 		failures.append("World should expose all Phase 5 simulation actors")
