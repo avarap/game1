@@ -20,7 +20,12 @@ static func run() -> Array[String]:
 	var interactable: DialogueInteractable
 	if aldren != null:
 		interactable = aldren.get_node_or_null("DialogueInteractable") as DialogueInteractable
-	if player == null or quest_controller == null or dialogue_controller == null or interactable == null:
+	if (
+		player == null
+		or quest_controller == null
+		or dialogue_controller == null
+		or interactable == null
+	):
 		failures.append("World should expose player, quest controller, dialogue and Aldren")
 		world.free()
 		return failures
