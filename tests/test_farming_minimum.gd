@@ -4,9 +4,18 @@ extends RefCounted
 
 static func run() -> Array[String]:
 	var failures: Array[String] = []
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		failures.append("Farming test requires a SceneTree")
+		return failures
+	var time_manager := tree.root.get_node_or_null("TimeManager")
+	if time_manager == null:
+		failures.append("Farming growth requires the TimeManager autoload")
+		return failures
+
 	var crop_script := load("res://systems/farming/crop_data.gd")
 	var plot_script := load("res://systems/farming/farm_plot_state.gd")
-	var seed: ItemData = load("res://data/farming/fodder_turnip_seed.tres")
+	var seed := load("res://data/farming/fodder_turnip_seed.tres") as ItemData
 	if crop_script == null or plot_script == null:
 		failures.append("Phase 8A.3 farming scripts should exist")
 		return failures
@@ -24,34 +33,25 @@ static func run() -> Array[String]:
 	var harvest := _item(&"fodder_turnip")
 	var inventory := InventoryModel.new(4)
 	inventory.add_item(seed, 2)
-	var original_time := TimeManager.snapshot()
-	TimeManager.set_day(1)
-	TimeManager.set_time(6, 0)
+	var original_time: Dictionary = time_manager.call("snapshot")
+	time_manager.call("apply_snapshot", {"day": 1, "hour": 6, "minute": 0})
 
 	var plot: RefCounted = plot_script.new()
-	if not bool(
-		plot.call(
-			"plant", crop, inventory, TimeManager.day, TimeManager.hour, TimeManager.minute
-		)
-	):
+	if not _plant_at_current_time(plot, crop, inventory, time_manager):
 		failures.append("Planting should consume one seed on an empty plot")
 	if inventory.count_item(&"fodder_turnip_seed") != 1:
 		failures.append("Successful planting should consume exactly one seed")
-	if bool(
-		plot.call(
-			"plant", crop, inventory, TimeManager.day, TimeManager.hour, TimeManager.minute
-		)
-	):
+	if _plant_at_current_time(plot, crop, inventory, time_manager):
 		failures.append("An occupied plot should reject planting")
 	if inventory.count_item(&"fodder_turnip_seed") != 1:
 		failures.append("Rejected planting must not consume a seed")
 
-	TimeManager.add_minutes(119)
-	plot.call("refresh_from_time", TimeManager.day, TimeManager.hour, TimeManager.minute)
+	time_manager.call("add_minutes", 119)
+	_refresh_from_manager(plot, time_manager)
 	if bool(plot.call("is_harvestable")):
 		failures.append("Crop should not mature before its growth duration")
-	TimeManager.add_minutes(1)
-	plot.call("refresh_from_time", TimeManager.day, TimeManager.hour, TimeManager.minute)
+	time_manager.call("add_minutes", 1)
+	_refresh_from_manager(plot, time_manager)
 	if not bool(plot.call("is_harvestable")):
 		failures.append("Crop should mature from TimeManager time")
 
@@ -82,8 +82,32 @@ static func run() -> Array[String]:
 	if jump_plot.call("snapshot") != step_plot.call("snapshot"):
 		failures.append("Large time jumps and smaller refreshes should be deterministic")
 
-	TimeManager.apply_snapshot(original_time)
+	time_manager.call("apply_snapshot", original_time)
 	return failures
+
+
+static func _plant_at_current_time(
+	plot: RefCounted, crop: Resource, inventory: InventoryModel, time_manager: Node
+) -> bool:
+	return bool(
+		plot.call(
+			"plant",
+			crop,
+			inventory,
+			int(time_manager.get("day")),
+			int(time_manager.get("hour")),
+			int(time_manager.get("minute"))
+		)
+	)
+
+
+static func _refresh_from_manager(plot: RefCounted, time_manager: Node) -> void:
+	plot.call(
+		"refresh_from_time",
+		int(time_manager.get("day")),
+		int(time_manager.get("hour")),
+		int(time_manager.get("minute"))
+	)
 
 
 static func _item(id: StringName) -> ItemData:
