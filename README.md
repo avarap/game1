@@ -6,15 +6,15 @@ El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_
 
 ## Estado
 
-- Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio, 5 — Simulación**
-- Fase activa: **6 — RPG**
-- Bloques validados: diálogo bilingüe EN/ES, relaciones 0-100, condiciones narrativas contextuales, quests, economía y **foundation de tecnologías**.
+- Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio, 5 — Simulación, 6 — RPG**
+- Fase activa: **7 — Mundo**
+- Fase 6 validada: diálogo bilingüe EN/ES, relaciones, condiciones narrativas, quests, economía, tecnologías y persistencia RPG integral.
 - Fuente narrativa: **`HISTORIA_PRINCIPAL.md` — El Cementerio de Valdeniebla**, en versión spoiler-light.
-- Próximo bloque: **aceptación/persistencia integral y cierre de Fase 6**.
+- Próximo bloque: **primer bloque mínimo coherente de Fase 7 — Mundo**, sin adelantar polish.
 - Godot objetivo de CI: **4.5**
 - Rama principal: `main`
 - Memoria de desarrollo: `DEV_MEMORY.md`
-- Última validación funcional: **Godot CI `33305211363` — success**
+- Última validación funcional de Fase 6: **Godot CI `33305899447` — success**
 
 ## Ejecutar
 
@@ -51,6 +51,8 @@ La **primera quest jugable** ya está integrada: se acepta hablando con Aldren, 
 
 La foundation de **economía** permite compra/venta atómica con inventario, saldo en cobre, precios y stock data-driven, con persistencia del wallet y del comerciante. La foundation de **tecnologías** añade puntos rojo/verde/azul y un desbloqueo persistente: `sturdy_joinery` consume 2 puntos rojos + 1 verde y habilita el ID `recipe_reinforced_fence`.
 
+La aceptación integral de Fase 6 guarda y restaura conjuntamente relaciones, quests, economía y tecnología mediante `SaveManager`. Después del load se verifica además que las recompensas ya reclamadas y los desbloqueos tecnológicos continúan siendo idempotentes.
+
 ## Arquitectura
 
 Los Autoloads se limitan a cinco servicios globales: `EventBus`, `GameManager`, `TimeManager`, `SaveManager` y `AudioManager`.
@@ -66,7 +68,7 @@ El CI ejecuta dos gates independientes:
 - `gdscript-quality`: `gdlint` + `gdformat --check`.
 - `validate-and-test`: importación Godot 4.5, smoke test y suite headless.
 
-La suite cubre el flujo real de quests **diálogo → activar quest → progreso de inventario → entregar → recompensa única → restauración**, además de compra/venta atómica y persistencia de economía, y costes/idempotencia/snapshot de tecnologías.
+La suite cubre el flujo real de quests **diálogo → activar quest → progreso de inventario → entregar → recompensa única → restauración**, compra/venta atómica y persistencia de economía, costes/idempotencia/snapshot de tecnologías y un roundtrip RPG conjunto con `SaveManager`.
 
 ```bash
 godot --headless --path . --script res://tests/run_tests.gd
