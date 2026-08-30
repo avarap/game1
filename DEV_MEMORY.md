@@ -8,7 +8,7 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 - Rama: `main`
 - Fase completada más reciente: **Fase 2 — Items / Resource Loop**
 - Fase activa: **Fase 3 — Crafting / Production Loop**
-- Estado Fase 3: bloque 1 de crafting instantáneo implementado; falta StorageNetwork/cofres/colas antes de cerrar la fase.
+- Estado Fase 3: bloque 1 de crafting instantáneo implementado y validado; falta StorageNetwork/cofres/colas antes de cerrar la fase.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 
 ## Trabajo realizado — Fase 0
@@ -55,7 +55,7 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 13. Se añadió `tests/test_crafting_foundation.gd`, incluyendo receta data-driven, atomicidad, estación incorrecta, inputs insuficientes, inventario lleno e interacción real jugador + banco.
 14. `tests/run_tests.gd` ejecuta el test de crafting.
 15. Commit funcional del bloque: `d284104ab8b9f300362413cd666bdab6b8855fbd`.
-16. CI del bloque funcional: `Godot CI` run `33287832451` lanzado; validar su resultado antes de considerar este bloque confirmado.
+16. `Godot CI` run `33287832451` completó con `success`: importación, smoke test de `main.tscn`, suite headless y limpieza.
 
 ## Decisiones tomadas
 
@@ -74,19 +74,19 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 
 - Fases 0, 1 y 2 permanecen validadas en CI.
 - El último CI previo a Fase 3 (`33285670732`) sobre el commit de documentación de Fase 2 terminó en `success`.
-- La implementación de Fase 3 bloque 1 está persistida en `main`.
-- Falta confirmar el resultado final del run `33287832451`; no marcar el bloque ni la fase como validados hasta que sea verde.
+- El bloque 1 de Fase 3 está persistido y validado por `Godot CI` run `33287832451`.
+- Importación, smoke test de `main.tscn` y todos los tests headless pasan con la receta y el banco integrados.
+- Fase 3 permanece abierta deliberadamente: StorageNetwork, cofre compatible y soporte mínimo de colas siguen pendientes.
 
 ## Próximo bloque de trabajo — Fase 3
 
-1. Revisar primero el resultado del `Godot CI` run `33287832451` y corregir cualquier fallo crítico.
-2. Diseñar una interfaz/abstracción `StorageProvider` pequeña y testeable para inventarios compatibles.
-3. Crear `StorageNetwork` contextual con `has_item`, `get_available_amount`, `consume`, `deposit` y `find_sources`.
-4. Crear un cofre mínimo que exponga inventario mediante la misma abstracción.
-5. Refactorizar `CraftingService`/estación para consumir inputs y depositar outputs mediante StorageNetwork sin conocer cofres concretos.
-6. Añadir soporte de estado mínimo para duración/cola sin implementar automatización compleja.
-7. Añadir tests unitarios y aceptación de estación + jugador + cofre.
-8. Ejecutar CI final y mantener Fase 3 abierta hasta cumplir todos los criterios.
+1. Diseñar una interfaz/abstracción `StorageProvider` pequeña y testeable para inventarios compatibles.
+2. Crear `StorageNetwork` contextual con `has_item`, `get_available_amount`, `consume`, `deposit` y `find_sources`.
+3. Crear un cofre mínimo que exponga inventario mediante la misma abstracción.
+4. Refactorizar `CraftingService`/estación para consumir inputs y depositar outputs mediante StorageNetwork sin conocer cofres concretos.
+5. Añadir soporte de estado mínimo para duración/cola sin implementar automatización compleja.
+6. Añadir tests unitarios y aceptación de estación + jugador + cofre.
+7. Ejecutar CI final y mantener Fase 3 abierta hasta cumplir todos los criterios.
 
 ## Regla de continuidad
 
