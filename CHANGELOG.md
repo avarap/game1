@@ -35,20 +35,26 @@
 - `CraftingStation` contextual y `world/buildings/workbench.tscn` como primera estación funcional.
 - Feedback mínimo de crafting y coste de 2 de energía solo en crafts exitosos.
 - `test_crafting_foundation.gd` para validar receta, atomicidad, errores e interacción jugador + banco.
+- `StorageProvider` y `StorageNetwork` para agregar inventarios compatibles sin acoplar crafting a cofres concretos.
+- `StorageChest` y `world/storage/storage_chest.tscn` como primer contenedor compatible.
+- `test_storage_network.gd` para disponibilidad agregada, fuentes, consumo distribuido y aceptación banco + jugador + cofre.
 
 ### Changed
 - La Fase 2 quedó formalmente iniciada con criterios de aceptación explícitos en `ROADMAP.md`.
-- `tests/run_tests.gd` incluye las pruebas de items/inventario, resource loop y crafting.
+- `tests/run_tests.gd` incluye las pruebas de items/inventario, resource loop, crafting y StorageNetwork.
 - `InventoryModel` usa tipado entero explícito y `mini`/`maxi` para cumplir el modo estricto de CI.
 - El jugador integra ahora `EnergyComponent` además de `InventoryComponent`.
-- `world/world.tscn` incluye un árbol recolectable y un banco de trabajo en la zona inicial.
+- `world/world.tscn` incluye un árbol recolectable, un banco de trabajo y un cofre compatible en la zona inicial.
 - La Fase 2 queda completada tras validar el resource loop completo.
-- La Fase 3 queda formalmente activa con criterios explícitos; no se cerrará hasta StorageNetwork/cofres/colas y CI final.
+- La Fase 3 queda formalmente activa con criterios explícitos; no se cerrará hasta soporte mínimo de duración/colas y CI final.
+- `CraftingService.craft()` conserva compatibilidad, pero delega en `craft_with_storage()` sobre `StorageNetwork`.
+- `CraftingStation` puede descubrir proveedores por grupo en juego o recibirlos explícitamente para tests/alcances futuros por zona.
 
 ### Fixed
 - Corregidos warnings de inferencia `Variant` tratados como errores por Godot 4.5 en la lógica de inventario.
 - La recolección revierte cualquier loot parcial cuando el inventario no puede aceptar la cantidad completa, evitando consumir energía o dejar estado parcial.
 - El crafting simula consumo y producción antes de aplicar cambios, evitando pérdida de inputs cuando los outputs no caben.
+- Corregido el acceso a `get_tree()` de `CraftingStation` durante tests off-tree; ahora usa `is_inside_tree()` y registro explícito de proveedores.
 
 ### Validated
 - Fase 0 validada mediante `Godot CI` run `33278173612`.
@@ -57,3 +63,5 @@
 - El bloque base corregido en `2412414889c0a5d6e403c9178aede9b31fa045c5` quedó validado mediante `Godot CI` run `33283283684`.
 - El resource loop completo en `c196e3ab5a42adffe97278f0b0daa8960c789e04` quedó validado mediante `Godot CI` run `33285578050`: importación, smoke test y suite headless en `success`.
 - El bloque 1 de crafting en `d284104ab8b9f300362413cd666bdab6b8855fbd` quedó validado mediante `Godot CI` run `33287832451`: importación, smoke test y suite headless en `success`.
+- El primer CI de StorageNetwork (`33290155936`) detectó un fallo de tests por `get_tree()` fuera del árbol; importación y smoke test pasaron.
+- La corrección `9f982b2e79e937449a5707f18287364bdec063b1` quedó validada mediante `Godot CI` run `33290225076`: importación, smoke test y suite headless en `success`.

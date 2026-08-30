@@ -8,7 +8,7 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 - Rama: `main`
 - Fase completada más reciente: **Fase 2 — Items / Resource Loop**
 - Fase activa: **Fase 3 — Crafting / Production Loop**
-- Estado Fase 3: bloque 1 de crafting instantáneo implementado y validado; falta StorageNetwork/cofres/colas antes de cerrar la fase.
+- Estado Fase 3: crafting instantáneo y StorageNetwork/cofre implementados y validados; falta soporte mínimo de duración/cola antes de cerrar la fase.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 
 ## Trabajo realizado — Fase 0
@@ -57,36 +57,55 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 15. Commit funcional del bloque: `d284104ab8b9f300362413cd666bdab6b8855fbd`.
 16. `Godot CI` run `33287832451` completó con `success`: importación, smoke test de `main.tscn`, suite headless y limpieza.
 
+## Trabajo realizado — Fase 3, bloque 2
+
+1. Se creó `StorageProvider` como adaptador pequeño sobre `InventoryModel`, con disponibilidad, consumo, depósito, clonación y aplicación de estado.
+2. Se creó `StorageNetwork` contextual con `has_item`, `get_available_amount`, `consume`, `deposit`, `find_sources`, clonación y commit de estado.
+3. `CraftingService` mantiene el método previo `craft()` por compatibilidad, pero internamente delega en `craft_with_storage()` y trabaja contra `StorageNetwork`.
+4. El crafting distribuido mantiene atomicidad clonando toda la red antes de consumir inputs y depositar outputs.
+5. Se creó `StorageChest` con `InventoryComponent` local y `get_storage_provider()`, sin convertir almacenamiento en Autoload.
+6. Se creó `world/storage/storage_chest.tscn`, marcado con grupo `storage_provider`, y se integró un cofre en `world/world.tscn` junto al banco.
+7. `CraftingStation` construye una red con el inventario del actor y proveedores compatibles; en juego descubre nodos del grupo mediante la abstracción `get_storage_provider()` y no conoce la clase concreta del cofre.
+8. Se añadió registro explícito de `StorageProvider` en `CraftingStation` para tests y futuros alcances por zona/distancia sin requerir árbol de escenas.
+9. Se añadió `tests/test_storage_network.gd` con agregación de disponibilidad, `find_sources`, consumo distribuido, rechazo sin mutación e integración banco + jugador + cofre.
+10. `tests/run_tests.gd` incluye el nuevo test.
+11. Commit funcional inicial: `c7c3696a0fef2b1b3d4fee62027c9f85f0fe0ba3`.
+12. Primer CI del bloque: `33290155936` falló únicamente en tests porque `CraftingStation` llamaba `get_tree()` estando fuera del árbol durante tests; importación y smoke test sí pasaron.
+13. Se corrigió el fallo usando `is_inside_tree()` y proveedores registrados explícitamente para ejecución off-tree.
+14. Commit de corrección: `9f982b2e79e937449a5707f18287364bdec063b1`.
+15. `Godot CI` run `33290225076` completó con `success`: importación, smoke test y suite headless pasan.
+
 ## Decisiones tomadas
 
 - Mantener solo cinco Autoloads globales.
-- Inventario, energía, recursos, crafting, quests, cementerio y economía permanecen locales/contextuales.
+- Inventario, energía, recursos, crafting, storage, quests, cementerio y economía permanecen locales/contextuales.
 - Datos de items y recetas viven como Resources `.tres` tipados.
 - La UI no posee estado de gameplay.
 - `CraftingService` es lógica pura y no conoce escenas ni UI.
-- La atomicidad de crafting se garantiza simulando sobre un inventario clon antes de mutar el real.
-- `CraftingStation` conoce la abstracción de crafting/inventario, no implementaciones futuras de cofres.
-- StorageNetwork se implementará en el siguiente bloque para evitar acoplar el banco a un cofre concreto.
-- Producción temporizada/colas se pospone al siguiente bloque arquitectónico; no se implementa automatización compleja.
+- La atomicidad de crafting se garantiza simulando sobre una copia antes de mutar el estado real.
+- `CraftingStation` conoce `StorageNetwork`/`StorageProvider`, no implementaciones concretas de cofres.
+- Los proveedores de almacenamiento pueden descubrirse por grupo cuando la estación está en el árbol o registrarse explícitamente; esto deja abierto alcance por zona/distancia sin acoplamiento.
+- Producción temporizada/colas se mantiene como último bloque de Fase 3; no implementar automatización compleja.
 - No entrar en Fase 4 mientras Fase 3 no cumpla todos sus criterios.
 
 ## Validaciones confirmadas
 
 - Fases 0, 1 y 2 permanecen validadas en CI.
-- El último CI previo a Fase 3 (`33285670732`) sobre el commit de documentación de Fase 2 terminó en `success`.
-- El bloque 1 de Fase 3 está persistido y validado por `Godot CI` run `33287832451`.
-- Importación, smoke test de `main.tscn` y todos los tests headless pasan con la receta y el banco integrados.
-- Fase 3 permanece abierta deliberadamente: StorageNetwork, cofre compatible y soporte mínimo de colas siguen pendientes.
+- Bloque 1 de Fase 3 validado por `Godot CI` run `33287832451`.
+- Bloque 2 de StorageNetwork validado por `Godot CI` run `33290225076` sobre `9f982b2e79e937449a5707f18287364bdec063b1`.
+- Importación, smoke test de `main.tscn` y todos los tests headless pasan con cofre y crafting distribuido integrados.
+- El fallo de `33290155936` quedó identificado y corregido; no quedan errores críticos conocidos de este bloque.
+- Fase 3 permanece abierta deliberadamente: soporte mínimo de duración/cola y CI final siguen pendientes.
 
 ## Próximo bloque de trabajo — Fase 3
 
-1. Diseñar una interfaz/abstracción `StorageProvider` pequeña y testeable para inventarios compatibles.
-2. Crear `StorageNetwork` contextual con `has_item`, `get_available_amount`, `consume`, `deposit` y `find_sources`.
-3. Crear un cofre mínimo que exponga inventario mediante la misma abstracción.
-4. Refactorizar `CraftingService`/estación para consumir inputs y depositar outputs mediante StorageNetwork sin conocer cofres concretos.
-5. Añadir soporte de estado mínimo para duración/cola sin implementar automatización compleja.
-6. Añadir tests unitarios y aceptación de estación + jugador + cofre.
-7. Ejecutar CI final y mantener Fase 3 abierta hasta cumplir todos los criterios.
+1. Definir un estado de trabajo/cola pequeño y testeable para recetas con `duration > 0`.
+2. Permitir encolar una receta validando y reservando/consumiendo inputs de forma atómica sin crear automatización compleja.
+3. Exponer progreso/estado suficiente para que una estación pueda completar una tarea temporizada y depositar outputs mediante `StorageNetwork`.
+4. Mantener crafting instantáneo (`duration <= 0`) funcionando sin regresiones.
+5. Añadir tests de cola, progreso, finalización y casos de almacenamiento lleno.
+6. Ejecutar CI final de Fase 3.
+7. Solo si todos los criterios quedan verdes, marcar Fase 3 como completada y habilitar Fase 4.
 
 ## Regla de continuidad
 

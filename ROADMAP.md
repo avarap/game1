@@ -68,17 +68,20 @@ Criterios de aceptación de fase:
 - [x] Coste de energía aplicado solo a crafting exitoso.
 - [x] Test unitario/aceptación del primer loop de crafting.
 - [x] CI verde del bloque 1 de crafting.
-- [ ] Abstracción `StorageProvider` para inventarios compatibles.
-- [ ] `StorageNetwork` con `has_item`, `get_available_amount`, `consume`, `deposit` y `find_sources`.
-- [ ] Cofre/contenedor compatible con la misma abstracción.
-- [ ] Crafting de estación capaz de consumir desde fuentes compatibles sin acoplarse a cofres concretos.
+- [x] Abstracción `StorageProvider` para inventarios compatibles.
+- [x] `StorageNetwork` con `has_item`, `get_available_amount`, `consume`, `deposit` y `find_sources`.
+- [x] Cofre/contenedor compatible con la misma abstracción.
+- [x] Crafting de estación capaz de consumir desde fuentes compatibles sin acoplarse a cofres concretos.
 - [ ] Soporte arquitectónico para recetas temporizadas/cola sin implementar automatización compleja.
-- [ ] Test de aceptación del loop estación + StorageNetwork.
+- [x] Test de aceptación del loop estación + StorageNetwork.
 - [ ] CI final verde antes de cerrar la fase.
 
 Bloque 1 de crafting: `d284104ab8b9f300362413cd666bdab6b8855fbd`.
 Validación bloque 1: `Godot CI` run `33287832451`, `success`.
-La fase permanece abierta hasta completar StorageNetwork y validación final.
+Bloque 2 StorageNetwork: `c7c3696a0fef2b1b3d4fee62027c9f85f0fe0ba3`.
+Corrección del test off-tree: `9f982b2e79e937449a5707f18287364bdec063b1`.
+Validación bloque 2: `Godot CI` run `33290225076`, `success`.
+La fase permanece abierta hasta añadir soporte mínimo de duración/cola y ejecutar la validación final.
 
 ## Fase 4 — Cementerio
 Cadáveres, tumbas, preparación, entierro, rating y persistencia.
