@@ -15,6 +15,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install GDScript quality tools
+        run: python3 -m pip install --quiet "gdtoolkit>=4.3,<5"
+
+      - name: Lint and format-check hardened gameplay scripts
+        run: |
+          gdlint \
+            player/player.gd \
+            core/components/resource_source_component.gd \
+            systems/storage/storage_provider.gd \
+            systems/cemetery/cemetery_service.gd \
+            world/storage/storage_chest.gd \
+            world/buildings/crafting_station.gd \
+            world/cemetery/cemetery_controller.gd \
+            world/cemetery/cemetery_action.gd \
+            world/interactables/sleep_spot.gd
+          gdformat --check \
+            player/player.gd \
+            core/components/resource_source_component.gd \
+            systems/storage/storage_provider.gd \
+            systems/cemetery/cemetery_service.gd \
+            world/storage/storage_chest.gd \
+            world/buildings/crafting_station.gd \
+            world/cemetery/cemetery_controller.gd \
+            world/cemetery/cemetery_action.gd \
+            world/interactables/sleep_spot.gd
+
       - name: Import and validate project
         run: godot --headless --path . --editor --quit
 
