@@ -31,19 +31,14 @@ const EXPECTED_TILE_SIZE := Vector2i(32, 32)
 
 static func run() -> Array[String]:
 	var failures: Array[String] = []
-	_check_scene_contract(failures)
-	return failures
-
-
-static func _check_scene_contract(failures: Array[String]) -> void:
 	if not ResourceLoader.exists(CEMETERY_MAP_PATH):
 		failures.append("Cemetery yard map should exist")
-		return
+		return failures
 
 	var map_scene := load(CEMETERY_MAP_PATH) as PackedScene
 	if map_scene == null:
 		failures.append("Cemetery yard map scene should load")
-		return
+		return failures
 
 	var map := map_scene.instantiate()
 	var tree := Engine.get_main_loop() as SceneTree
@@ -60,21 +55,33 @@ static func _check_scene_contract(failures: Array[String]) -> void:
 	var collision := map.get_node_or_null("collision") as TileMapLayer
 	if collision == null:
 		map.free()
-		return
+		return failures
 
 	for node_path in REQUIRED_INTERACTIONS:
 		var interaction := map.get_node_or_null(node_path) as Node2D
 		if interaction == null:
 			failures.append("Cemetery map should preserve interaction '%s'" % node_path)
 			continue
-		_check_accessible_position(map, collision, interaction, node_path, failures)
+		if map.has_method("get_world_rect") and not map.get_world_rect().has_point(
+			interaction.global_position
+		):
+			failures.append("%s should stay inside cemetery map bounds" % node_path)
+		var cell := collision.local_to_map(collision.to_local(interaction.global_position))
+		if collision.get_cell_source_id(cell) != -1:
+			failures.append("%s should not spawn inside tile collision" % node_path)
 
 	for marker_path in REQUIRED_MARKERS:
 		var marker := map.get_node_or_null(marker_path) as Marker2D
 		if marker == null:
 			failures.append("Cemetery map should expose marker '%s'" % marker_path)
 			continue
-		_check_accessible_position(map, collision, marker, marker_path, failures)
+		if map.has_method("get_world_rect") and not map.get_world_rect().has_point(
+			marker.global_position
+		):
+			failures.append("%s should stay inside cemetery map bounds" % marker_path)
+		var cell := collision.local_to_map(collision.to_local(marker.global_position))
+		if collision.get_cell_source_id(cell) != -1:
+			failures.append("%s should not spawn inside tile collision" % marker_path)
 
 	var controller := map.get_node_or_null("CemeteryArea/CemeteryController") as CemeteryController
 	if controller == null:
@@ -93,14 +100,4 @@ static func _check_scene_contract(failures: Array[String]) -> void:
 		failures.append("Cemetery map should contain readable paths")
 
 	map.free()
-
-
-static func _check_accessible_position(
-	map: Node2D, collision: TileMapLayer, node: Node2D, label: String, failures: Array[String]
-) -> void:
-	if map.has_method("get_world_rect") and not map.get_world_rect().has_point(node.global_position):
-		failures.append("%s should stay inside cemetery map bounds" % label)
-		return
-	var cell := collision.local_to_map(collision.to_local(node.global_position))
-	if collision.get_cell_source_id(cell) != -1:
-		failures.append("%s should not spawn inside tile collision" % label)
+	return failures
