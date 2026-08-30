@@ -1,6 +1,7 @@
 class_name TestStorageNetwork
 extends RefCounted
 
+
 static func run() -> Array[String]:
 	var failures: Array[String] = []
 	var recipe := load("res://data/recipes/wood_to_plank.tres") as RecipeData

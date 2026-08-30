@@ -9,5 +9,6 @@ extends Resource
 @export_range(0, 999999, 1) var value: int = 0
 @export var icon: Texture2D
 
+
 func is_valid() -> bool:
-    return not id.is_empty() and max_stack > 0
+	return not id.is_empty() and max_stack > 0

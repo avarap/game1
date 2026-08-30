@@ -109,18 +109,17 @@ func _get_quest_controller() -> QuestController:
 
 
 func _get_relationship_controller() -> RelationshipController:
-	return (
-		get_tree().get_first_node_in_group("relationship_controller") as RelationshipController
-	)
+	return get_tree().get_first_node_in_group("relationship_controller") as RelationshipController
 
 
 func _refresh_status(_arg1 = null, _arg2 = null) -> void:
 	var inventory := _get_inventory()
 	var inventory_text := "N/D"
 	if inventory != null:
-		inventory_text = "madera %d | tablones %d" % [
-			inventory.count_item(WOOD_ITEM.id), inventory.count_item(PLANK_ITEM.id)
-		]
+		inventory_text = (
+			"madera %d | tablones %d"
+			% [inventory.count_item(WOOD_ITEM.id), inventory.count_item(PLANK_ITEM.id)]
+		)
 
 	var relationship_controller := _get_relationship_controller()
 	var relationship_text := "N/D"
