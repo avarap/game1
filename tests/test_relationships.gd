@@ -5,6 +5,7 @@ extends RefCounted
 static func run() -> Array[String]:
 	var failures: Array[String] = []
 	_test_service(failures)
+	_test_snapshot_round_trip(failures)
 	_test_dialogue_unlock(failures)
 	return failures
 
@@ -25,6 +26,30 @@ static func _test_service(failures: Array[String]) -> void:
 	service.change_value(&"brother_aldren", -300)
 	if service.get_value(&"brother_aldren") != 0:
 		failures.append("Relationship values should clamp to 0")
+
+
+static func _test_snapshot_round_trip(failures: Array[String]) -> void:
+	var data := RelationshipData.new()
+	data.id = &"brother_aldren"
+	data.default_value = 5
+	var source := RelationshipService.new()
+	source.register(data)
+	source.change_value(&"brother_aldren", 37)
+	if not source.has_method("snapshot"):
+		failures.append("RelationshipService should expose snapshot()")
+		return
+	var saved: Variant = source.call("snapshot")
+	if typeof(saved) != TYPE_DICTIONARY:
+		failures.append("Relationship snapshot should be a dictionary")
+		return
+	var restored := RelationshipService.new()
+	restored.register(data)
+	if not restored.has_method("apply_snapshot"):
+		failures.append("RelationshipService should expose apply_snapshot()")
+		return
+	restored.call("apply_snapshot", saved)
+	if restored.get_value(&"brother_aldren") != 42:
+		failures.append("Relationship snapshot restore should preserve the saved value")
 
 
 static func _test_dialogue_unlock(failures: Array[String]) -> void:
