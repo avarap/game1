@@ -17,6 +17,8 @@
 - **#20 Pueblo:** mapa de Valdeniebla con entrada, plaza, merchant spot, plots y markers de interiores.
 - **#21 Interiores:** casa/taller y edificio de pueblo reutilizables, markers estables e `InteriorTransition` sin duplicar player.
 - **#22 Mina inicial:** entrada/salida, corredor principal, bifurcación, oclusión y landmark secreto usando sistemas de recursos existentes.
+- **#23 Integración de zonas:** `ZoneManager`, `ZoneTransition`, `ZoneContainer` y `WorldLocationProvider` conectan cementerio, bosque, pueblo, interiores y mina manteniendo una única instancia del Player y controllers persistentes.
+- **#23 Aceptación de exploración:** cobertura de recursos del bosque, secret clearing, comercio/pueblo, interiores, secret landmark de mina, viajes inválidos, camera bounds y save/load de ubicación.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales sin convertir sistemas RPG en Autoloads.
@@ -26,9 +28,11 @@
 - 39 scripts legacy fueron migrados al formato canónico de `gdformat`.
 - **Fase 6 — RPG COMPLETADA** tras #6, #8 y #9.
 - Runtime/CI objetivo actualizado a **Godot 4.7.2**.
-- **Fase 7 — Mundo permanece ACTIVA**, pero #18–#22 ya están integrados.
-- El siguiente bloque cambia de #18 a **#23 — integración de zonas + exploración y secretos**.
-- Fase 8 permanece bloqueada por **#24 — aceptación final de Fase 7**.
+- `world/world.tscn` pasa a ser un shell persistente: el mapa activo vive bajo `ZoneContainer`; Player, UI y controllers RPG/cementerio sobreviven a los cambios de zona.
+- Brother Aldren se mantiene persistente y se oculta/pausa fuera del cementerio; `TradePoint` se activa solo en pueblo.
+- **Fase 7 — Mundo permanece ACTIVA**: #23 está implementada/validada, pero #24 sigue siendo el gate obligatorio de cierre.
+- El siguiente bloque tras fusionar #23 es **#24 — aceptación final de Fase 7**.
+- Fase 8 permanece bloqueada por #24.
 
 ### Fixed
 - Inferencias `Variant`, problemas de atomicidad y lifecycle detectados en fases anteriores.
@@ -40,6 +44,9 @@
 - **Backlog sincronizado:** #5 y #7 de Fase 6 se cerraron como `completed` al confirmar que su alcance ya estaba implementado y validado.
 - **Backlog Fase 7 sincronizado:** #21 y #22 se cerraron como `completed` después de confirmar que PR #49/#50 estaban merged y verdes.
 - `ROADMAP.md` y `DEV_MEMORY.md` dejaron de indicar #18 como siguiente tarea después de que #18–#22 ya hubieran sido fusionadas.
+- **#23 lifecycle de zonas:** los tests ya no retienen `SleepSpot` de una instancia destruida cuando `load_game` reconstruye la zona activa.
+- **#23 persistencia NPC:** restaurar `world_location` no vuelve a posicionar ni recalcular a Aldren, evitando que el provider de ubicación sobreescriba su posición/estado/navegación guardados.
+- `zone_manager.gd` se normalizó con el formato canónico exigido por `gdformat`.
 
 ### Validated
 - Fase 0: run `33278173612`, success.
@@ -59,4 +66,5 @@
 - Pueblo #20: PR #46, run `33315626881`, success.
 - Interiores #21: PR #49, run `33318051580`, success.
 - Mina #22: PR #50, run `33318407597`, success.
-- Estado integrado actual de `main`: `725529b9b5f9091853b1e78d8031d6dafcd2277a`; Godot CI run `33325342447`, success.
+- `main` previo a #23: `03c583d35a0e32f9a6a16e6225b9fa64969a4e25`; Godot CI `33325706902`, success.
+- Integración de zonas #23: PR #52, acceptance HEAD `ea6d85480b68ce7af658200b0b7e353a0e9b3cb6`, run `33330995787`, success (`gdscript-quality`, import, smoke y suite headless completa).
