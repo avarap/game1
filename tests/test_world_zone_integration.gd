@@ -2,6 +2,26 @@ class_name TestWorldZoneIntegration
 extends RefCounted
 
 const WORLD_PATH := "res://world/world.tscn"
+const ROUTE := [
+	[&"forest", &"CemeteryEntrance"],
+	[&"cemetery", &"ForestExit"],
+	[&"village", &"Entrance"],
+	[&"village_interior", &"entry_main"],
+	[&"village", &"InteriorAccess/Workshop"],
+	[&"mine", &"Entrance"],
+	[&"cemetery", &"FutureExpansion"],
+	[&"home_interior", &"entry_main"],
+	[&"cemetery", &"PlayerSpawn"],
+]
+const PERSISTENT_NODES := [
+	"Player",
+	"RelationshipController",
+	"QuestController",
+	"EconomyController",
+	"TechnologyController",
+	"CemeteryController",
+	"BrotherAldren",
+]
 
 
 static func run() -> Array[String]:
@@ -14,33 +34,56 @@ static func run() -> Array[String]:
 	var world := packed.instantiate()
 	var tree := Engine.get_main_loop() as SceneTree
 	tree.root.add_child(world)
-
-	var player := world.get_node_or_null("Player") as Node2D
 	var zone_manager := world.get_node_or_null("ZoneManager")
-	if player == null:
-		failures.append("World integration should keep a persistent Player")
 	if zone_manager == null:
 		failures.append("World integration should expose a local ZoneManager")
 		world.free()
 		return failures
 
-	if not zone_manager.has_method("get_active_zone_id"):
-		failures.append("ZoneManager should expose get_active_zone_id")
-	elif zone_manager.call("get_active_zone_id") != &"cemetery":
+	var ids := _capture_persistent_ids(world, failures)
+	if zone_manager.call("get_active_zone_id") != &"cemetery":
 		failures.append("World should start in the cemetery/property zone")
 
+	for destination in ROUTE:
+		var zone_id := destination[0] as StringName
+		var marker_id := destination[1] as StringName
+		var travelled := zone_manager.call("travel_to", zone_id, marker_id) as bool
+		if not travelled:
+			failures.append("World should travel to %s/%s" % [zone_id, marker_id])
+			continue
+		if zone_manager.call("get_active_zone_id") != zone_id:
+			failures.append("ZoneManager should report active zone %s" % zone_id)
+		_assert_persistent_ids(world, ids, failures)
+
+	var player := world.get_node_or_null("Player") as Node2D
 	if player != null:
-		var original_id := player.get_instance_id()
-		if not zone_manager.has_method("travel_to"):
-			failures.append("ZoneManager should expose travel_to")
-		else:
-			var travelled := zone_manager.call("travel_to", &"forest", &"CemeteryEntrance") as bool
-			if not travelled:
-				failures.append("ZoneManager should travel from cemetery to forest")
-			if player.get_instance_id() != original_id:
-				failures.append("Zone travel should preserve the same Player instance")
-			if zone_manager.call("get_active_zone_id") != &"forest":
-				failures.append("ZoneManager should report forest after travel")
+		var zone_before := zone_manager.call("get_active_zone_id") as StringName
+		var position_before := player.global_position
+		var invalid := zone_manager.call("travel_to", &"missing_zone", &"missing") as bool
+		if invalid:
+			failures.append("Invalid travel should be rejected")
+		if zone_manager.call("get_active_zone_id") != zone_before:
+			failures.append("Invalid travel should preserve active zone")
+		if player.global_position != position_before:
+			failures.append("Invalid travel should preserve Player position")
 
 	world.free()
 	return failures
+
+
+static func _capture_persistent_ids(world: Node, failures: Array[String]) -> Dictionary:
+	var result: Dictionary = {}
+	for node_name in PERSISTENT_NODES:
+		var node := world.get_node_or_null(node_name)
+		if node == null:
+			failures.append("Persistent world shell should expose %s" % node_name)
+			continue
+		result[node_name] = node.get_instance_id()
+	return result
+
+
+static func _assert_persistent_ids(world: Node, ids: Dictionary, failures: Array[String]) -> void:
+	for node_name in ids:
+		var node := world.get_node_or_null(node_name)
+		if node == null or node.get_instance_id() != ids[node_name]:
+			failures.append("Zone travel should preserve persistent node %s" % node_name)
