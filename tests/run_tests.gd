@@ -44,6 +44,7 @@ func _run_all_tests() -> void:
 	_run_suite("MapVillage", TestMapVillage.run(), failures)
 	_run_suite("MapMine", TestMapMine.run(), failures)
 	_run_suite("MapInteriors", TestMapInteriors.run(), failures)
+	_run_suite("WorldZoneIntegration", TestWorldZoneIntegration.run(), failures)
 
 	if failures.is_empty():
 		print("[TEST] All core tests passed")
