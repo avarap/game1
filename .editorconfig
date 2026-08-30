@@ -1,0 +1,27 @@
+# EditorConfig helps unify indentation/whitespace across editors and
+# contributors. See https://editorconfig.org
+#
+# Godot's `gdformat` (gdtoolkit) defaults to TAB indentation for .gd files.
+# This project has both tab-indented "hardened" scripts and older
+# space-indented ones (pre-hardening). This file makes TAB the target for
+# all GDScript going forward so new/edited files stop drifting further,
+# and gives editors a hint for the migration.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.gd]
+indent_style = tab
+indent_size = 4
+
+[*.{tscn,tres,godot,cfg,import}]
+indent_style = tab
+
+[*.{md,yml,yaml,json}]
+indent_style = space
+indent_size = 2
