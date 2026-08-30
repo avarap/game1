@@ -15,6 +15,7 @@ const DIRECTION_NAMES: Array[StringName] = [
 
 var _facing := &"s"
 
+
 func _process(_delta: float) -> void:
 	var actor := get_parent() as CharacterBody2D
 	if actor == null:
@@ -25,6 +26,7 @@ func _process(_delta: float) -> void:
 	var target := StringName("%s_%s" % ["walk" if moving else "idle", _facing])
 	if animation != target:
 		play(target)
+
 
 func _direction_name(value: Vector2) -> StringName:
 	var angle := value.angle()
