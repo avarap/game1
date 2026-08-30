@@ -71,22 +71,18 @@ func get_journal_entries() -> Array[Dictionary]:
 		for objective in quest.objectives:
 			if objective == null:
 				continue
-			objectives.append(
-				{
-					"id": objective.id,
-					"current": service.get_progress(quest.id, objective.id),
-					"required": objective.required_amount,
-				}
-			)
-		entries.append(
-			{
-				"id": quest.id,
-				"status": status,
-				"title_key": quest.title_key,
-				"description_key": quest.description_key,
-				"objectives": objectives,
-			}
-		)
+			var objective_entry: Dictionary = {}
+			objective_entry["id"] = objective.id
+			objective_entry["current"] = service.get_progress(quest.id, objective.id)
+			objective_entry["required"] = objective.required_amount
+			objectives.append(objective_entry)
+		var entry: Dictionary = {}
+		entry["id"] = quest.id
+		entry["status"] = status
+		entry["title_key"] = quest.title_key
+		entry["description_key"] = quest.description_key
+		entry["objectives"] = objectives
+		entries.append(entry)
 	return entries
 
 
