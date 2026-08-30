@@ -21,12 +21,16 @@ jobs:
       - name: Install GDScript quality tools
         run: python -m pip install --quiet "gdtoolkit>=4.3,<5"
 
-      - name: Show canonical formatting diff
+      - name: Discover GDScript files
         run: |
-          cp world/maps/technical_map.gd /tmp/technical_map.gd.before
-          gdformat world/maps/technical_map.gd
-          diff -u /tmp/technical_map.gd.before world/maps/technical_map.gd || true
-          exit 1
+          find . -type f -name '*.gd' -not -path './.git/*' -print | sort
+          echo "GDScript files: $(find . -type f -name '*.gd' -not -path './.git/*' | wc -l)"
+
+      - name: Lint all GDScript files
+        run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
+
+      - name: Check formatting of all GDScript files
+        run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat --check
 
   validate-and-test:
     runs-on: ubuntu-24.04
