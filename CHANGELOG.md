@@ -19,6 +19,10 @@
 - **8A.2 Conservación:** `PreservationModifiers` añade factores data-driven en basis points enteros para tecnología, instalación y utensilio, neutrales por defecto y multiplicativos.
 - `CorpseState` aplica conservación solo al deterioro futuro y persiste modificadores y resto fraccional; `TestCorpsePreservation` cubre neutralidad, reducción, composición, no-rewind, determinismo y round-trip.
 - Spec detallado de Phase 8A para conservación, agricultura/nabo multiuso, servicio funerario a las 18:00, comedero, rampa, cremación/investigación y aceptación integral.
+- **Post-MVP economía local por profesión:** todo item vendible debe tener comprador compatible; comerciantes opt-in por NPC y `MerchantProfile` data-driven basado en tags/categorías, con afinidad de precio, cupos y validación de items sin salida económica.
+- **Post-MVP automatización:** trabajadores originales con tareas `HARVEST`, `MINE`, `CHOP`, `TRANSPORT` y `PROCESS`, dependientes de infraestructura y cadenas productivas.
+- **Biblioteca `docs/design/`:** documentación categorizada de visión, orden de ejecución, loops, mundo, recursos, crafting, tecnología, construcción, economía, farming, NPCs, cementerio, tiempo/clima, exploración, automatización, UI, arte, progresión y arquitectura data-driven.
+- **Backlog y prompts de diseño:** `19_IDEA_BACKLOG.md` clasifica ideas por MVP/post-MVP/expansión y `20_IMPLEMENTATION_PROMPTS.md` añade prompts reutilizables para elaborar e implementar bloques futuros sin saltar fases.
 
 ### Changed
 - `SaveManager` agrega/aplica providers locales sin convertir sistemas RPG en Autoloads.
@@ -35,6 +39,7 @@
 - `CorpseData` usa `decay_percent` entero 0–100; los tests históricos de cementerio se migran al nuevo comportamiento.
 - No se implementa migración de saves legacy: no existen saves de jugadores que conservar.
 - Cambiar modificadores de conservación conserva el resto fraccional de deterioro acumulado para que aplicar una mejora no rejuvenezca ni perdone progreso previo.
+- `docs/design/` queda explícitamente como dirección secundaria/backlog: no sustituye `ROADMAP.md` ni autoriza adelantar sistemas post-MVP.
 
 ### Design Decisions — Phase 8A
 - Descomposición híbrida: almacenamiento integer 0–100, estados Fresh/Fading/Decomposed/Rotten y aceleración con la edad.
@@ -47,6 +52,14 @@
 - Cremar e investigar se añaden como decisiones distintas a enterrar; investigar consume tiempo mientras continúa el deterioro.
 - Economía preparada para modificadores multiplicativos neutrales por defecto; no se añade supply/demand complejo.
 - Feedback placeholder reutiliza EventBus/AudioManager; arte/audio final permanece en el sub-track visual.
+
+### Design Decisions — Post-MVP
+- Todo producto vendible debe tener al menos un `MerchantProfile` compatible salvo `quest_only`, `key_item` o `non_sellable`.
+- No todos los aldeanos comercian; los comerciantes aceptan familias de recursos según profesión mediante tags/categorías.
+- El herrero es el caso de referencia: acepta `iron`, `ore`, `metal_part` y `tool`, pero no productos agrícolas o madera no relacionada.
+- Un comerciante general puede actuar como salida de seguridad con peores precios; la afinidad profesional y los cupos evitan que todos los NPCs sean equivalentes.
+- Añadir o modificar recursos/comerciantes debe ser data-driven y validable, sin lógica específica dispersa por item.
+- El diseño futuro prioriza recetas `N inputs → N outputs`, subproductos reutilizables, progreso visible del mundo, construcción/estaciones extensibles, logística que evoluciona de manual a automatizada y densidad de contenido antes que tamaño de mapa.
 
 ### Fixed
 - Inferencias `Variant`, problemas de atomicidad y lifecycle detectados en fases anteriores.
@@ -82,3 +95,4 @@
 - Tileset exterior #25: PR #56, run `33333578933`, success.
 - **8A.1 descomposición integer:** PR #57, run funcional `33334955947`: `gdlint`, `gdformat --check`, Godot 4.7.2 import, main-scene smoke y suite headless completa en success.
 - **8A.2 conservación:** PR #59, run previo `33335651778` verde; RED de regresión `33336306728` falló exactamente por pérdida del resto fraccional; GREEN funcional `33336387360` pasó quality, import Godot 4.7.2, smoke y suite headless completa.
+- Cambio documental `docs/design/`: no modifica GDScript, escenas ni assets; validación requerida es integridad/relectura de documentación y estado de `main`.

@@ -89,3 +89,26 @@ Decisiones de alcance 8A: sin hambre, estaciones/clima agrícola, riego/fertiliz
 - [ ] **#31 — Aceptación visual del vertical slice** — bloqueada por #25–#30.
 
 Fase 8 permanece **ACTIVA**. El siguiente bloque del track de profundidad es **8A.3 — agricultura mínima**; el sub-track visual puede avanzar en tareas independientes sin pisar sistemas de gameplay.
+
+## Biblioteca de diseño y backlog
+- [x] `docs/design/` creada para consolidar ideas, mejoras, orden de ejecución, arquitectura data-driven y prompts de elaboración/implementación.
+- Esta biblioteca es dirección secundaria: no autoriza adelantar fases ni sustituye los criterios de aceptación del roadmap.
+- Orden futuro resumido: cerrar Fase 8/8A → consolidar catálogo/recetas N→N/cadenas → tecnología/economía profesional → construcción/restauración/logística → clima/pesca → automatización avanzada.
+
+## Post-MVP / Expansiones previstas
+
+### Economía local por profesión
+- [ ] Todo `ItemData` vendible debe tener al menos un comprador válido, salvo `quest_only`, `key_item` o `non_sellable`.
+- [ ] No todos los aldeanos comercian; comerciar es una capacidad explícita del NPC.
+- [ ] Los comerciantes aceptan por `tags`/categorías afines a su profesión mediante un `MerchantProfile` data-driven.
+- [ ] Ejemplo: el herrero acepta `iron`, `ore`, `metal_part` y `tool`, pero rechaza cultivos, comida y madera no relacionada.
+- [ ] Un comerciante general puede aceptar más categorías a peor precio para evitar recursos sin salida económica.
+- [ ] La afinidad profesional puede modificar el precio; demanda/cupos limitan venta infinita sin introducir todavía un mercado supply/demand completo.
+- [ ] Validación automática: ningún item marcado como vendible puede quedar sin al menos un `MerchantProfile` compatible.
+- [ ] Añadir recursos o aldeanos comerciantes debe ser principalmente contenido/configuración, sin condicionales hardcodeados por item o NPC.
+
+### Automatización avanzada de producción
+- [ ] Trabajadores originales del universo de `game1`, desbloqueados en progresión tardía, sin copiar los zombies del benchmark.
+- [ ] Tareas data-driven de `HARVEST`, `MINE`, `CHOP`, `TRANSPORT` y `PROCESS`.
+- [ ] Progresión manual → automatización parcial → cadenas extracción/transporte/almacenamiento/procesado.
+- [ ] Dependencia de infraestructura, rutas, almacenamiento y mantenimiento/energía.
