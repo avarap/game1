@@ -44,15 +44,23 @@ static func run() -> Array[String]:
 	if not world_player is CharacterBody2D:
 		failures.append("World should instance the player")
 
-	var map_collision := world.get_node_or_null("TechnicalMap/collision") as TileMapLayer
+	var zone_manager := world.get_node_or_null("ZoneManager")
+	var active_zone: Node = null
+	if zone_manager != null and zone_manager.has_method("get_active_zone"):
+		active_zone = zone_manager.call("get_active_zone") as Node
+	var map_collision: TileMapLayer = null
+	if active_zone != null:
+		map_collision = active_zone.get_node_or_null("collision") as TileMapLayer
 	if map_collision == null or map_collision.get_used_cells().is_empty():
-		failures.append("World should provide tile-based collision boundaries")
+		failures.append("Active world zone should provide tile-based collision boundaries")
 	elif not map_collision.collision_enabled:
-		failures.append("World map collision layer should have collision enabled")
+		failures.append("Active zone collision layer should have collision enabled")
 
-	var debug_sign := world.get_node_or_null("DebugSign")
-	if not debug_sign is Interactable:
-		failures.append("World should provide at least one functional Interactable")
+	var sleep_spot: Node = null
+	if active_zone != null:
+		sleep_spot = active_zone.find_child("SleepSpot", true, false)
+	if not sleep_spot is Interactable:
+		failures.append("Active world zone should provide a functional Interactable")
 
 	world.free()
 	return failures
