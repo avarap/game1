@@ -26,14 +26,14 @@ func matches(weekday_index: int, hour: int, minute: int) -> bool:
 	if (weekday_mask & (1 << weekday_index)) == 0:
 		return false
 
-	var current := posmod(TimeMath.to_total_minutes(hour, minute), TimeMath.MINUTES_PER_DAY)
-	var start := TimeMath.to_total_minutes(start_hour, start_minute)
-	var end := TimeMath.to_total_minutes(end_hour, end_minute)
-	if start == end:
+	var current: int = posmod(TimeMath.to_total_minutes(hour, minute), TimeMath.MINUTES_PER_DAY)
+	var start: int = TimeMath.to_total_minutes(start_hour, start_minute)
+	var finish: int = TimeMath.to_total_minutes(end_hour, end_minute)
+	if start == finish:
 		return true
-	if start < end:
-		return current >= start and current < end
-	return current >= start or current < end
+	if start < finish:
+		return current >= start and current < finish
+	return current >= start or current < finish
 
 
 func is_valid() -> bool:
