@@ -44,9 +44,15 @@ func snapshot() -> Dictionary:
 
 
 func apply_snapshot(data: Dictionary) -> void:
-	var saved_values: Dictionary = data.get("values", {})
+	var saved_values_value: Variant = data.get("values", {})
+	if typeof(saved_values_value) != TYPE_DICTIONARY:
+		return
+	var saved_values: Dictionary = saved_values_value
 	for saved_key in saved_values:
 		var id := StringName(str(saved_key))
 		if not _values.has(id):
 			continue
-		_values[id] = clampi(int(saved_values[saved_key]), MIN_VALUE, MAX_VALUE)
+		var saved_value: Variant = saved_values[saved_key]
+		if typeof(saved_value) != TYPE_INT and typeof(saved_value) != TYPE_FLOAT:
+			continue
+		_values[id] = clampi(int(saved_value), MIN_VALUE, MAX_VALUE)
