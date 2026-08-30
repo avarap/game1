@@ -29,18 +29,26 @@
 - Requisito mínimo de hacha mediante `equipped_tool_id` del jugador.
 - Feedback local de recolección para éxito, herramienta incorrecta, energía insuficiente, inventario lleno y recurso agotado.
 - Test de aceptación `test_resource_loop.gd` para el loop completo de recolección y sus principales errores.
+- `RecipeIngredient` y `RecipeData` como Resources tipados para crafting data-driven.
+- Item procesado `data/items/plank.tres` y receta `data/recipes/wood_to_plank.tres`.
+- `CraftingService` puro con validación y mutación atómica del inventario.
+- `CraftingStation` contextual y `world/buildings/workbench.tscn` como primera estación funcional.
+- Feedback mínimo de crafting y coste de 2 de energía solo en crafts exitosos.
+- `test_crafting_foundation.gd` para validar receta, atomicidad, errores e interacción jugador + banco.
 
 ### Changed
 - La Fase 2 quedó formalmente iniciada con criterios de aceptación explícitos en `ROADMAP.md`.
-- `tests/run_tests.gd` incluye las pruebas de items/inventario y resource loop.
+- `tests/run_tests.gd` incluye las pruebas de items/inventario, resource loop y crafting.
 - `InventoryModel` usa tipado entero explícito y `mini`/`maxi` para cumplir el modo estricto de CI.
 - El jugador integra ahora `EnergyComponent` además de `InventoryComponent`.
-- `world/world.tscn` incluye un árbol recolectable dentro de la zona inicial.
+- `world/world.tscn` incluye un árbol recolectable y un banco de trabajo en la zona inicial.
 - La Fase 2 queda completada tras validar el resource loop completo.
+- La Fase 3 queda formalmente activa con criterios explícitos; no se cerrará hasta StorageNetwork/cofres/colas y CI final.
 
 ### Fixed
 - Corregidos warnings de inferencia `Variant` tratados como errores por Godot 4.5 en la lógica de inventario.
 - La recolección revierte cualquier loot parcial cuando el inventario no puede aceptar la cantidad completa, evitando consumir energía o dejar estado parcial.
+- El crafting simula consumo y producción antes de aplicar cambios, evitando pérdida de inputs cuando los outputs no caben.
 
 ### Validated
 - Fase 0 validada mediante `Godot CI` run `33278173612`.
@@ -48,3 +56,4 @@
 - El primer intento de Fase 2 (`33283192098`) detectó el problema de tipado estricto en `InventoryModel`.
 - El bloque base corregido en `2412414889c0a5d6e403c9178aede9b31fa045c5` quedó validado mediante `Godot CI` run `33283283684`.
 - El resource loop completo en `c196e3ab5a42adffe97278f0b0daa8960c789e04` quedó validado mediante `Godot CI` run `33285578050`: importación, smoke test y suite headless en `success`.
+- El bloque funcional de crafting corresponde a `d284104ab8b9f300362413cd666bdab6b8855fbd`; su run `33287832451` debe quedar verde antes de considerarlo validado.
