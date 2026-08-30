@@ -10,7 +10,6 @@ static func run() -> Array[String]:
 	_test_snapshot_validation(failures)
 	_test_save_provider_contract(failures)
 	_test_dialogue_unlock(failures)
-	_test_restored_dialogue_unlock(failures)
 	return failures
 
 
@@ -126,21 +125,9 @@ static func _test_dialogue_unlock(failures: Array[String]) -> void:
 	dialogue_service.start(dialogue, relationships.build_dialogue_context())
 	if not _has_option(dialogue_service.get_available_options(), &"trusted_question"):
 		failures.append("Relationship 10 should unlock Aldren trusted dialogue content")
-
-
-static func _test_restored_dialogue_unlock(failures: Array[String]) -> void:
-	var relationship := load("res://data/relationships/brother_aldren.tres") as RelationshipData
-	var dialogue := load("res://data/dialogues/brother_aldren/introduction.tres") as DialogueData
-	if relationship == null or dialogue == null:
-		failures.append("Relationship and Aldren dialogue resources should load for restore")
-		return
-	var source := RelationshipService.new()
-	source.register(relationship)
-	source.set_value(&"brother_aldren", 10)
 	var restored := RelationshipService.new()
 	restored.register(relationship)
-	restored.apply_snapshot(source.snapshot())
-	var dialogue_service := DialogueService.new()
+	restored.apply_snapshot(relationships.snapshot())
 	dialogue_service.start(dialogue, restored.build_dialogue_context())
 	if not _has_option(dialogue_service.get_available_options(), &"trusted_question"):
 		failures.append("Restored relationship values should feed RELATIONSHIP_MIN conditions")
