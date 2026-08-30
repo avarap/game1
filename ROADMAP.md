@@ -62,22 +62,24 @@ Bloque 3 — cierre gameplay/persistencia: implementación `73e968a097c8b0107292
 
 ## Fase 5 — Simulación — ACTIVA
 
-Criterios de aceptación:
+### Criterios de aceptación
 - [x] Consolidar reloj, días y calendario sobre `TimeManager` sin duplicar estado.
 - [x] Ciclo día/noche observable por el mundo.
 - [x] Dormir: avance al siguiente día y restauración de energía.
 - [x] `NPCData` data-driven y primer NPC de prueba.
 - [x] `NavigationAgent2D` y navegación básica.
-- [ ] Rutinas/horarios con estados mínimos Idle/Walking/Working/Sleeping.
+- [x] Rutinas/horarios con estados mínimos Idle/Walking/Working/Sleeping.
 - [ ] Persistencia mínima de posición/estado de NPCs.
-- [ ] Tests de aceptación y CI verde antes de cerrar.
+- [ ] Test de aceptación lógico del flujo completo de simulación.
+- [x] `gdscript-quality` (lint + format) verde sobre los archivos tocados hasta este bloque.
+- [ ] CI final (`validate-and-test`) verde sobre el HEAD que cierre la fase.
 
-Bloque 1 — tiempo/calendario y sueño:
+### Bloque 1 — tiempo/calendario y sueño
 - `TimeManager` centraliza snapshot/restauración, avance de día, semana ficticia de seis días y transición al amanecer.
 - `SleepSpot` avanza al día siguiente a las 06:00 y restaura la energía.
 - Validación final: `62cb2658bd169270fffcb59c34134493b787f327`, run `33294728470`, `success`.
 
-Hardening transversal antes del bloque 2:
+### Hardening transversal antes del bloque 2
 - [x] Storage limitado por `scope_id`/`storage_scope`.
 - [x] Componentes de jugador/cofres resueltos por contrato/tipo.
 - [x] `CemeteryAction` sin `NodePath` relativo frágil.
@@ -85,7 +87,7 @@ Hardening transversal antes del bloque 2:
 - [x] Job `gdscript-quality` con `gdlint` y `gdformat --check`.
 - Estado final: `b13d024143b5fb0ff8118a689da079c37916c554`, run `33295277286`, ambos jobs `success`.
 
-Bloque 2 — ciclo día/noche:
+### Bloque 2 — ciclo día/noche
 - [x] `DayNightMath` encapsula fases e interpolación pura.
 - [x] Referencias horarias: 06:00 amanecer, 12:00 mediodía, 18:00 atardecer, 22:00 noche.
 - [x] Transición nocturna continua a través de medianoche.
@@ -97,20 +99,35 @@ Bloque 2 — ciclo día/noche:
 - Corrección final: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`.
 - Validación final: `Godot CI` run `33295805020`, ambos jobs `success`.
 
-Bloque 3 — NPCData y navegación básica:
+### Bloque 3 — NPCData y navegación básica
 - [x] `NPCData` tipado con identidad, rol y velocidad de movimiento.
 - [x] Primer recurso real `brother_aldren.tres`.
 - [x] `NPCNavigationMath` separa la lógica pura de dirección/llegada.
 - [x] `WorldNavigationRegion` proporciona geometría navegable mínima local.
-- [x] `NPCController` usa `CharacterBody2D` + `NavigationAgent2D` y destinos explícitos.
-- [x] `BrotherAldren` está integrado en `world/world.tscn` con navegación inicial.
+- [x] `NPCController` usa `CharacterBody2D` + `NavigationAgent2D`.
+- [x] `BrotherAldren` está integrado en `world/world.tscn`.
 - [x] `test_npc_navigation.gd` cubre datos, matemática, región, agente y escena.
 - [x] Quality gate ampliado a scripts/tests NPC.
 - Run `33296112250` detectó `class-definitions-order` en `NPCController`; se corrigió sin desactivar reglas.
 - Corrección final: `03986401968c83b79527d15f47217f090de43ab2`.
-- Validación final: `Godot CI` run `33296131085`, `gdscript-quality` y `validate-and-test` en `success`.
+- Validación final: `Godot CI` run `33296131085`, ambos jobs `success`.
 
-Próximo bloque: `ScheduleData` + estados mínimos Idle/Walking/Working/Sleeping y selección de rutina según `TimeManager`. Después, persistencia mínima de NPCs y aceptación final de Fase 5.
+### Bloque 4 — ScheduleData y rutinas NPC
+- [x] `ScheduleEntryData` y `ScheduleData` tipados, con máscara de seis días y rangos que pueden cruzar medianoche.
+- [x] `NPCStateMachine` con `Idle`, `Walking`, `Working` y `Sleeping`.
+- [x] Horario real data-driven para Hermano Aldren.
+- [x] El NPC observa `TimeManager`/`EventBus`; no duplica tiempo.
+- [x] Los destinos pertenecen al horario y el movimiento continúa delegado en `NavigationAgent2D`.
+- [x] `test_npc_routines.gd` cubre resolución horaria, medianoche y transiciones de estado.
+- [x] `test_npc_navigation.gd` actualizado para la arquitectura basada en horarios.
+- [x] Nuevos scripts/tests incluidos en `gdscript-quality`.
+- Run `33296549903`: lint/formato verdes; `validate-and-test` detectó comparación `Dictionary`/`int` en `ScheduleEntryData` y subresources degradados a `Resource`.
+- Corrección final: `82f5ccee1e109e2ad702532b7301922124548c7b`.
+- Validación del bloque: `Godot CI` run `33296648630`, ambos jobs `success`.
+- Revisión auxiliar: el archivo `editorconfig` subido manualmente fue corregido a `.editorconfig` para que EditorConfig lo reconozca.
+
+### Próximo bloque
+Persistencia mínima de NPCs (`id`, posición, estado/pending y destino cuando aplique) mediante provider local de `SaveManager`, seguida del test de aceptación completo y cierre de Fase 5 solo si todos los criterios quedan verdes.
 
 No implementar todavía diálogo, quests, economía o relaciones.
 
