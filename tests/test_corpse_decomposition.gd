@@ -26,10 +26,21 @@ static func run() -> Array[String]:
 	corpse.call("advance_decomposition", 24 * MINUTES_PER_HOUR)
 	var second_day_delta := int(corpse.get("decay_percent")) - first_day_decay
 	corpse.call("advance_decomposition", 24 * MINUTES_PER_HOUR)
-	var third_day_delta := int(corpse.get("decay_percent")) - first_day_decay - second_day_delta
+	var third_day_delta := (
+		int(corpse.get("decay_percent")) - first_day_decay - second_day_delta
+	)
 	corpse.call("advance_decomposition", 24 * MINUTES_PER_HOUR)
-	var fourth_day_delta := int(corpse.get("decay_percent")) - first_day_decay - second_day_delta - third_day_delta
-	if not (first_day_decay < second_day_delta and second_day_delta < third_day_delta and third_day_delta < fourth_day_delta):
+	var fourth_day_delta := (
+		int(corpse.get("decay_percent"))
+		- first_day_decay
+		- second_day_delta
+		- third_day_delta
+	)
+	if not (
+		first_day_decay < second_day_delta
+		and second_day_delta < third_day_delta
+		and third_day_delta < fourth_day_delta
+	):
 		failures.append("Corpse decomposition should accelerate across successive age bands")
 
 	var one_jump := _make_corpse(8)
