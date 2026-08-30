@@ -134,8 +134,19 @@
 ## Fase 7 — Mundo — ACTIVA
 Pueblo, bosque, mina, interiores, exploración y secretos.
 
+### Bloque 1 — Foundation de zonas y tránsito — COMPLETADO
+- [x] `world.tscn` expone `Zones/Homestead` y `Zones/ForestEdge` sin mover ni duplicar controllers RPG ya cerrados.
+- [x] Cada zona incorpora las capas `Ground`, `Terrain`, `Decoration`, `Collision`, `Foreground` y `Navigation` como `TileMapLayer`, siguiendo el master spec.
+- [x] `ZoneTransition` reutiliza `Interactable` para tránsito reversible dentro de la misma escena y conserva el estado contextual.
+- [x] El borde del bosque es una zona física dentro del mundo ampliado, con recurso interactuable real y retorno seguro a la propiedad.
+- [x] Cámara, límites físicos y navegación se amplían de 1600×1000 a 2600×1000.
+- [x] `test_world_zones.gd` valida estructura de capas y tránsito reversible; el quality gate cubre test y script nuevos.
+- RED TDD: run `33306375660`; las suites previas quedaron verdes y `WorldZones` falló únicamente por las tres capacidades ausentes esperadas.
+- GREEN: run `33306538328`; `gdlint`, `gdformat`, importación Godot, smoke y suite headless en `success`.
+- La Fase 7 permanece activa: aún faltan bosque jugable completo, pueblo, mina, interiores, exploración/secretos y aceptación integral sin softlocks.
+
 ### Próximo bloque
-Definir e implementar el primer bloque mínimo coherente de mundo siguiendo el master spec, sin adelantar polish de Fase 8.
+Completar el **bosque jugable compacto** sobre `ForestEdge`: navegación y colisiones útiles, densidad de recursos/interacciones y una progresión explícita hacia la siguiente zona, sin implementar todavía pueblo/mina ni adelantar polish de Fase 8.
 
 ## Fase 8 — Polish
 Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización.
