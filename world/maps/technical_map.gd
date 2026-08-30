@@ -52,6 +52,7 @@ func _build_technical_tileset() -> TileSet:
 	source.texture_region_size = TILE_SIZE
 	for atlas_x in range(5):
 		source.create_tile(Vector2i(atlas_x, 0))
+	tile_set.add_source(source, SOURCE_ID)
 
 	var collision_data := source.get_tile_data(COLLISION_TILE, 0)
 	collision_data.add_collision_polygon(0)
@@ -67,7 +68,6 @@ func _build_technical_tileset() -> TileSet:
 			]
 		),
 	)
-	tile_set.add_source(source, SOURCE_ID)
 	return tile_set
 
 
