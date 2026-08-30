@@ -98,6 +98,15 @@ static func run() -> Array[String]:
 	if day_night.current_phase != &"night":
 		failures.append("World should enter the night visual phase at 23:00")
 
+	# World-location restore reconstructs the active zone. Resolve the local interactable again
+	# instead of retaining a reference to the zone instance that SaveManager legitimately replaced.
+	active_zone = zone_manager.call("get_active_zone") as Node
+	sleep_spot = active_zone.find_child("SleepSpot", true, false) as SleepSpot
+	if sleep_spot == null:
+		failures.append("Restored cemetery zone should expose a fresh SleepSpot")
+		_cleanup(world, time_manager, original_time)
+		return failures
+
 	energy.current_energy = 10
 	sleep_spot.interact(player)
 	if int(time_manager.get("day")) != 2:
