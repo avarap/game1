@@ -14,6 +14,7 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - **8A.1 — Descomposición acelerada:** implementado en PR #57.
 - **8A.2 — Conservación:** implementado en PR #59; CI funcional `33336387360`, success.
 - Diseño 8A: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
+- Biblioteca de ideas/diseño: `docs/design/`.
 - Próximo bloque del track de profundidad: **8A.3 — agricultura mínima**.
 
 ## Fuentes de verdad
@@ -24,6 +25,7 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Contrato visual: `ART_DIRECTION.md`.
 - Narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**.
 - Idiomas: `LOCALIZATION.md`.
+- `docs/design/` es dirección secundaria/backlog; nunca permite adelantar una fase ni sustituye criterios de aceptación.
 
 ## Fases completadas
 
@@ -123,6 +125,15 @@ TDD/validación:
 - RED de regresión: run `33336306728` mantuvo import/smoke y todas las demás suites verdes y falló exactamente en `Changing preservation should preserve fractional decomposition progress`.
 - GREEN tras corregir el reset: run `33336387360` pasó `gdlint`, `gdformat --check`, import Godot 4.7.2, smoke y suite headless completa.
 
+## Biblioteca de diseño (`docs/design/`)
+
+- Captura todas las ideas discutidas a partir de referencias visuales y análisis del proyecto.
+- Categorías: visión, orden de ejecución, loops, mundo, recursos, crafting, tecnología, construcción, economía, farming, NPCs, cementerio, tiempo/clima, exploración, automatización, UI, arte, progresión y arquitectura data-driven.
+- `19_IDEA_BACKLOG.md` separa MVP/post-MVP/expansión.
+- `20_IMPLEMENTATION_PROMPTS.md` contiene prompts listos para profundizar o ejecutar bloques futuros.
+- Orden recomendado futuro: cerrar Fase 8/8A → consolidar items/recetas/cadenas → grafo tecnológico/economía profesional → construcción/restauración/logística → clima/pesca → automatización.
+- Principios nuevos consolidados: densidad antes que tamaño, progreso visible en el mundo, fricción que luego pueda eliminarse, recetas N→N con subproductos, merchants por profesión y contenido extensible mediante Resources/stable IDs/tags.
+
 ## Expansiones post-MVP registradas
 
 ### Economía local por profesión
@@ -155,11 +166,11 @@ TDD/validación:
 
 ## Próximo paso
 
-1. Integrar PR #59 solo con HEAD documental final y CI verde.
-2. Verificar CI posterior al merge en `main`.
-3. Empezar **8A.3 — agricultura mínima** con TDD: semilla → parcela → crecimiento por `TimeManager` → cosecha → persistencia.
-4. Mantener independencia con el sub-track visual #26–#31.
-5. No marcar Fase 8 ni Track 8A como completos al cerrar 8A.2.
+1. Empezar **8A.3 — agricultura mínima** con TDD: semilla → parcela → crecimiento por `TimeManager` → cosecha → persistencia.
+2. Mantener independencia con el sub-track visual #26–#31.
+3. Consultar `docs/design/` solo para decisiones compatibles con la fase activa.
+4. No promover ideas post-MVP al roadmap activo sin dependencias y criterios de aceptación.
+5. No marcar Fase 8 ni Track 8A como completos antes de sus criterios.
 
 ## Regla de continuidad
 
