@@ -56,16 +56,27 @@ Validación del bloque base: `Godot CI` run `33283283684`, `success`.
 Resource loop completo: `c196e3ab5a42adffe97278f0b0daa8960c789e04`.
 Validación final de Fase 2: `Godot CI` run `33285578050`, `success`.
 
-## Fase 3 — Crafting / Production Loop — SIGUIENTE
+## Fase 3 — Crafting / Production Loop — ACTIVA
 RecipeData, estaciones, crafting, cofres y StorageNetwork.
 
-Criterios iniciales a definir antes de implementar:
-- `RecipeData` tipado y data-driven.
-- Una estación mínima funcional.
-- Consumo de inputs y producción de outputs de forma atómica.
-- Integración con inventarios compatibles sin acoplar la UI.
-- Test de aceptación del primer loop de crafting.
-- CI verde final antes de cerrar la fase.
+Criterios de aceptación de fase:
+- [x] `RecipeData` y `RecipeIngredient` tipados y data-driven.
+- [x] Primera receta real `.tres` (`wood_to_plank`).
+- [x] Crafting instantáneo con consumo/producción atómicos.
+- [x] Rechazo sin mutación por estación incorrecta, inputs insuficientes o falta de espacio.
+- [x] Estación local interactuable (`Workbench`) sin Autoload.
+- [x] Coste de energía aplicado solo a crafting exitoso.
+- [x] Test unitario/aceptación del primer loop de crafting.
+- [ ] Abstracción `StorageProvider` para inventarios compatibles.
+- [ ] `StorageNetwork` con `has_item`, `get_available_amount`, `consume`, `deposit` y `find_sources`.
+- [ ] Cofre/contenedor compatible con la misma abstracción.
+- [ ] Crafting de estación capaz de consumir desde fuentes compatibles sin acoplarse a cofres concretos.
+- [ ] Soporte arquitectónico para recetas temporizadas/cola sin implementar automatización compleja.
+- [ ] Test de aceptación del loop estación + StorageNetwork.
+- [ ] CI final verde antes de cerrar la fase.
+
+Bloque 1 de crafting: `d284104ab8b9f300362413cd666bdab6b8855fbd`.
+La fase permanece abierta hasta completar StorageNetwork y validación final.
 
 ## Fase 4 — Cementerio
 Cadáveres, tumbas, preparación, entierro, rating y persistencia.
