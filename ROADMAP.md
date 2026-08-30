@@ -32,81 +32,59 @@
 - Cierre: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`.
 
 ## Fase 6 — RPG — COMPLETADA
-
-La fase se cierra solo después de #6, #8 y #9 y de comprobar el flujo integral actualizado sobre `world.tscn` real.
-
-### Criterios de aceptación
-- [x] Diálogos, condiciones y opciones funcionan desde datos.
-- [x] El mismo grafo de diálogo funciona en inglés y español mediante claves estables.
-- [x] Relaciones cambian y desbloquean contenido.
-- [x] Quests pueden iniciarse, progresar y completarse.
-- [x] Las recompensas `QUEST_FLAG` se conceden una sola vez.
-- [x] Núcleo de economía compra y vende atómicamente.
-- [x] **#6** Interacción de comerciante + UI técnica de compra/venta jugable, reutilizable y EN/ES.
-- [x] Núcleo de tecnologías consume puntos y desbloquea contenido.
-- [x] **#8** Integración tecnología ↔ quests: recompensa tipada de puntos tecnológicos e idempotencia tras save/load.
-- [x] Providers RPG persisten conjuntamente mediante `SaveManager`.
-- [x] **#9** Aceptación integral final: relación/diálogo, quest, recompensa única, puntos tecnológicos, unlock, compra + venta, reconstrucción de providers y save/load idempotente.
-- [x] `gdscript-quality` global verde.
-- [x] `validate-and-test` verde con importación Godot 4.7.2, smoke y suite headless.
-- [x] Documentación e issues sincronizadas para el cierre.
-
-### Bloques validados
-- Diálogo/localización: `46a37e00c2ad968e91834da5577a6f512a28f0a9`, run `33298737838`.
-- Relaciones: `fc446609004ea8031903c1c529144743cd963e51`, run `33299277228`.
-- Condiciones contextuales: `e1a19343e8303d1b28188a2a38c559d788c8087d`, run `33299990183`.
-- Quests foundation: `979b2328cc01c8d5a7a0ae4201deabe58cf9cc38`, run `33301533785`.
-- Economía foundation: `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`, run `33304080534`.
-- Tecnología foundation: `444fc2995ab14b293188aba54a0f4099dc3c36b3`, run `33305211363`.
-- Comercio UI #6: merge `3d6252e840ae32e5445f454170d0856909bf6a2b`, run `33307358527`.
-- Tecnología ↔ quests #8: merge `8cd26c98e3e43d982218ccf97869ab0c6a0830b3`; validación global posterior en `main` run `33308014015`.
-- Quality gate global #38: merge `cb4c14351abbee84f3162197cdf4ba794ab9846f`, run `33308014015`; todos los `*.gd` se descubren dinámicamente.
-- Cierre integral #9: HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, PR #39, run `33308814397`; ambos jobs `success`.
-- Upgrade Godot 4.7.2: PR #41, merge `1b4ff623b45c465bfb9bd57f2b96b6ecec88a2ad`, run `33309144543`; ambos jobs `success`.
-
-### Política de localización
-- Idiomas iniciales: `en` y `es`; fallback `en`.
-- `TranslationServer` + `LocalizationService`, sin nuevo Autoload.
-- IDs, condiciones, progreso y saves nunca dependen de texto traducido.
-- Ver `LOCALIZATION.md`.
-
-### Fuente narrativa
-- `HISTORIA_PRINCIPAL.md` define la dirección canónica de **El Cementerio de Valdeniebla**.
-- El documento y la implementación son deliberadamente spoiler-light.
-- Los flags narrativos describen hechos observados, no interpretaciones verdaderas.
+- [x] Diálogo/localización EN/ES, relaciones y condiciones contextuales.
+- [x] Quests con recompensas idempotentes.
+- [x] Economía atómica + comercio UI jugable.
+- [x] Tecnologías + integración de puntos tecnológicos desde quests.
+- [x] Persistencia conjunta de providers RPG.
+- [x] Aceptación integral final #9 sobre `world.tscn` real.
+- [x] Quality gate global para todos los `*.gd`.
+- Cierre integral: PR #39, acceptance HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, run `33308814397`.
+- Runtime/CI actualizado a **Godot 4.7.2** mediante PR #41.
 
 ## Transición pre-Fase 7 — COMPLETADA
-
-### Orden obligatorio
 1. [x] **#17 — Contrato visual**: `ART_DIRECTION.md` fija perspectiva, tile 32 px, escala/footprints, cámara, pivotes/Y-sort, capas, paleta, luz y convenciones de assets.
-2. [x] **#16 — TileMapLayer foundation**: mapa técnico, seis capas contractuales y sustitución del blockout de suelo/colisión validados.
-3. [ ] Producción posterior de Fase 7 (#18/#19/#20/#21/#22), solo según dependencias.
-
-#17 y #16 definen conjuntamente el contrato visual/técnico que debe respetar toda producción de mapas posterior.
+2. [x] **#16 — TileMapLayer foundation**: mapa técnico, seis capas contractuales y sustitución del blockout de suelo/colisión.
 
 ## Fase 7 — Mundo — ACTIVA
 Pueblo, bosque, mina, interiores, exploración y secretos.
 
-### Foundation técnica #16 — VALIDADA
-- [x] `world/maps/technical_map.tscn` es un mapa técnico cargable basado en `TileMapLayer`.
-- [x] Capas contractuales: `ground`, `paths`, `decoration_low`, `collision`, `objects_y_sorted`, `foreground_occlusion`.
-- [x] Tile lógico de 32 px y bounds estables de `1600 x 1024` (`50 x 32` tiles).
-- [x] `world.tscn` instancia `TechnicalMap` y elimina `Ground`, `Boundaries` y `WorkshopBlock` del blockout legacy.
-- [x] La capa `collision` posee physics tiles para perímetro y obstáculo técnico; capas visuales no crean colisión.
-- [x] Player, cámara, interacción, Y-sort y foreground/occlusion se preservan.
-- [x] `NavigationRegion2D` continúa generando un `NavigationPolygon` utilizable y los tests existentes de NPC/navigation siguen verdes.
-- [x] `test_map_foundation.gd` + `test_walking_prototype.gd` validan estructura e integración real.
-- [x] Run funcional/quality estricto `33313715794` sobre HEAD `00264c1e3ff920a46bad908182a8a89fbbb20263`: ambos jobs `success` en Godot 4.7.2.
-- [x] No se introduce arte final ni contenido de #18/#19/#20/#21/#22.
+### Bloques completados
+- [x] **#16 — Foundation técnica `TileMapLayer`** — PR #44. Seis capas contractuales, tile lógico 32 px, bounds estables, colisión tile-based e integración mínima en `world.tscn`.
+- [x] **#18 — Cementerio + taller del jugador** — PR #47. `world/maps/cemetery/cemetery_map.tscn`, interacciones críticas, markers, navegación y aceptación dedicada. GREEN: run `33316327221`.
+- [x] **#19 — Bosque de recursos** — PR #48. Mapa compacto, caminos, límites, recursos existentes, landmarks/secret clearing y navegación. GREEN: run `33316454888`.
+- [x] **#20 — Pueblo de Valdeniebla** — PR #46. Plaza, entrada, merchant spot, plots/markers de interiores y navegación. GREEN: run `33315626881`.
+- [x] **#21 — Interiores modulares + transiciones** — PR #49. Casa/taller + edificio de pueblo, markers estables y transición sin duplicar player. GREEN: run `33318051580`.
+- [x] **#22 — Mina inicial** — PR #50. Entrada/salida, corredor/bifurcación, oclusión, navegación y recursos existentes. GREEN: run `33318407597`.
 
-### Siguiente bloque: #18 — Mapa exterior cementerio + taller del jugador
-- [ ] Crear la primera zona exterior real bajo `world/maps/cemetery/*` reutilizando la foundation #16.
-- [ ] Mantener accesibles cementerio, entrega/preparación/entierro, workbench, storage y sleep spot.
-- [ ] Preparar caminos/límites y accesos hacia bosque/pueblo sin implementar todavía esas zonas.
-- [ ] Mantener navegación, colisión, Y-sort/occlusion y carga headless.
-- [ ] No tocar `world/world.tscn`, otros mapas ni lógica interna de gameplay salvo adaptación mínima permitida por #18.
+### Estado integrado actual
+- HEAD de `main`: `725529b9b5f9091853b1e78d8031d6dafcd2277a` (merge PR #50).
+- CI de `main`: run `33325342447`, `success` en Godot 4.7.2.
+- No hay PR abiertos en el repositorio tras la integración de #46–#50.
+- Issues #21 y #22, que habían quedado abiertas pese a sus merges, se cerraron como `completed` durante la sincronización documental.
 
-#19 — bosque es P1 y queda disponible tras #16/#17, pero #18 es el siguiente bloque P0. #20/#21/#22 deben respetar sus dependencias propias antes de comenzar.
+### Siguiente bloque obligatorio: #23 — Integración de zonas + exploración y secretos
+- [ ] Conectar cementerio/taller, bosque, pueblo, mina e interiores desde `world/world.tscn`.
+- [ ] Mantener una única instancia lógica del player durante transiciones.
+- [ ] Preservar inventario, energía, quests, economía, relaciones y tecnología.
+- [ ] Usar spawns deterministas y seguros y adaptar cámara/bounds por zona.
+- [ ] Mantener navegación/schedules de NPCs sin regresiones.
+- [ ] Añadir únicamente el mínimo de rutas secundarias/secretos requerido por #23.
+- [ ] Validar recorrido integral: propiedad → cementerio → bosque → pueblo/comercio → interior → mina → propiedad.
+- [ ] Guardar/cargar sin perder estado ni quedar en una ubicación inválida.
 
-## Fase 8 — Polish
+### Cierre de Fase 7: #24
+No marcar Fase 7 como completada hasta que #23 esté verde y #24 valide conjuntamente:
+- [ ] todas las zonas cargables y navegables;
+- [ ] recorrido integral sin softlocks;
+- [ ] navegación NPC y Y-sort sin regresiones;
+- [ ] save/load con ubicación válida;
+- [ ] camera bounds, colisiones y transiciones correctas;
+- [ ] `gdlint` + `gdformat --check` globales;
+- [ ] Godot 4.7.2 import, smoke y suite completa verdes;
+- [ ] `DEV_MEMORY.md`, `ROADMAP.md`, `CHANGELOG.md` y `README.md` sincronizados.
+
+## Fase 8 — Polish — BLOQUEADA POR #24
 Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización.
+
+El sub-track visual #25–#31 no debe comenzar hasta cerrar Fase 7 mediante #24, respetando `ART_DIRECTION.md`.
