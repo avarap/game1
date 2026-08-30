@@ -46,41 +46,32 @@
 1. [x] **#17 — Contrato visual**: `ART_DIRECTION.md` fija perspectiva, tile 32 px, escala/footprints, cámara, pivotes/Y-sort, capas, paleta, luz y convenciones de assets.
 2. [x] **#16 — TileMapLayer foundation**: mapa técnico, seis capas contractuales y sustitución del blockout de suelo/colisión.
 
-## Fase 7 — Mundo — ACTIVA
+## Fase 7 — Mundo — COMPLETADA
 Pueblo, bosque, mina, interiores, exploración y secretos.
 
 ### Bloques completados
 - [x] **#16 — Foundation técnica `TileMapLayer`** — PR #44.
-- [x] **#18 — Cementerio + taller del jugador** — PR #47. GREEN: `33316327221`.
-- [x] **#19 — Bosque de recursos** — PR #48. GREEN: `33316454888`.
-- [x] **#20 — Pueblo de Valdeniebla** — PR #46. GREEN: `33315626881`.
-- [x] **#21 — Interiores modulares + transiciones** — PR #49. GREEN: `33318051580`.
-- [x] **#22 — Mina inicial** — PR #50. GREEN: `33318407597`.
-- [x] **#23 — Integración de zonas + exploración y secretos** — PR #53 fusionada como `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`; issue #23 cerrada. GREEN final del PR: `33331094583`.
+- [x] **#18 — Cementerio + taller del jugador** — PR #47, run `33316327221`.
+- [x] **#19 — Bosque de recursos** — PR #48, run `33316454888`.
+- [x] **#20 — Pueblo de Valdeniebla** — PR #46, run `33315626881`.
+- [x] **#21 — Interiores modulares + transiciones** — PR #49, run `33318051580`.
+- [x] **#22 — Mina inicial** — PR #50, run `33318407597`.
+- [x] **#23 — Integración de zonas + exploración** — PR #53, merge `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`.
+- [x] **#24 — Aceptación integral de mundo** — PR #54, acceptance HEAD `d4489ddae0467afeb262c2994e8b71f0f2afd311`, run `33331207740`.
 
-### #23 — criterios cubiertos
-- [x] Cementerio/taller, bosque, pueblo, mina y dos interiores conectados desde un shell persistente.
-- [x] Una única instancia lógica de Player y controllers persistentes durante transiciones.
-- [x] Estado RPG/cementerio preservado durante viajes y save/load.
-- [x] Spawns deterministas; viaje inválido conserva zona y posición.
-- [x] Cámara/bounds se adaptan a la zona activa.
-- [x] Aldren conserva identidad y estado persistente; se oculta/pausa fuera de cementerio.
-- [x] Forest resources, secret clearing, merchant spot, interiores y secret landmark de mina cubiertos por aceptación.
-- [x] `WorldLocationProvider` guarda/resta zona, marker y posición con fallback seguro.
-- [x] `gdlint`, `gdformat --check`, Godot 4.7.2 import, smoke y suite headless verdes.
+### Criterios de cierre #24
+- [x] Todas las zonas cargables y seis `TileMapLayer` contractuales.
+- [x] Recorrido integral sin softlocks y sin cambiar identidad del Player.
+- [x] Navegación/schedule de NPC y Y-sort sin regresiones.
+- [x] Save/load conserva estado y ubicación válida.
+- [x] Camera bounds, colisiones, spawns y transiciones correctas.
+- [x] `gdlint` + `gdformat --check` globales.
+- [x] Godot 4.7.2 import, smoke y suite completa verdes.
+- [x] Aceptación conjunta registrada mediante `TestWorldPhase7Acceptance`.
 
-### Cierre de Fase 7: #24 — SIGUIENTE BLOQUE OBLIGATORIO
-No marcar Fase 7 como completada hasta que #24 valide conjuntamente:
-- [ ] todas las zonas cargables y seis `TileMapLayer` contractuales;
-- [ ] recorrido integral sin softlocks y sin cambiar identidad del Player;
-- [ ] navegación/schedule de NPC y Y-sort sin regresiones;
-- [ ] save/load con ubicación válida;
-- [ ] camera bounds, colisiones, spawns y transiciones correctas;
-- [ ] `gdlint` + `gdformat --check` globales;
-- [ ] Godot 4.7.2 import, smoke y suite completa verdes;
-- [ ] `DEV_MEMORY.md`, `ROADMAP.md`, `CHANGELOG.md` y `README.md` sincronizados.
+Cierre funcional integrado: PR #54, merge `7e281255322b6c7444d4177d85295b353babb38f`.
 
-## Fase 8 — Polish — BLOQUEADA POR #24
+## Fase 8 — Polish — ACTIVA
 Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización.
 
-El sub-track visual #25–#31 no debe comenzar hasta cerrar Fase 7 mediante #24, respetando `ART_DIRECTION.md`.
+El sub-track visual #25–#31 puede comenzar ahora respetando `ART_DIRECTION.md`, sin reabrir alcance funcional de fases anteriores salvo correcciones críticas.

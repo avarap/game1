@@ -7,16 +7,13 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Repositorio: `avarap/game1`.
 - Rama principal: `main`.
 - Runtime/CI objetivo: **Godot 4.7.2**.
-- HEAD de integración de #23: `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a` (merge PR #53).
-- CI final del PR #53: run `33331094583`, `success`.
-- Fases 0–6: **COMPLETADAS**.
-- Fase 7 — Mundo: **ACTIVA**.
-- #17 contrato visual y #16 foundation `TileMapLayer`: completadas.
-- Mapas independientes de Fase 7 #18–#22: integrados.
-- **#23 — integración de zonas: COMPLETADA**, PR #53 fusionada; issue #23 cerrada como `completed`.
-- Próximo bloque obligatorio: **#24 — aceptación integral de mundo**.
-- Fase 7 no se considera completada hasta cerrar #24.
-- Fase 8 y su sub-track visual #25–#31 permanecen bloqueados por #24.
+- Fases 0–7: **COMPLETADAS**.
+- Fase 7 — Mundo cerrada mediante #24.
+- Integración #23: PR #53, merge `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`.
+- Aceptación #24: PR #54, acceptance HEAD `d4489ddae0467afeb262c2994e8b71f0f2afd311`, run `33331207740`, `success`.
+- Merge funcional de #24 en `main`: `7e281255322b6c7444d4177d85295b353babb38f`.
+- Fase 8 — Polish: **ACTIVA**.
+- Próximo trabajo debe salir de #25–#31 respetando dependencias y `ART_DIRECTION.md`.
 
 ## Fuentes de verdad
 
@@ -30,112 +27,70 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 - Fase 0 — Bootstrap: run `33278173612`.
 - Fase 1 — Core: run `33280758441`.
-- Fase 2 — Items: `c196e3ab5a42adffe97278f0b0daa8960c789e04`, run `33285578050`.
-- Fase 3 — Crafting: `2252fcbd4280acec1e60530c026a8f5dd3365b91`, run `33292481990`.
-- Fase 4 — Cementerio: `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`.
-- Fase 5 — Simulación: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`.
-- Fase 6 — RPG: PR #39; aceptación integral HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, run `33308814397`.
+- Fase 2 — Items: run `33285578050`.
+- Fase 3 — Crafting: run `33292481990`.
+- Fase 4 — Cementerio: run `33294286014`.
+- Fase 5 — Simulación: run `33297774458`.
+- Fase 6 — RPG: PR #39, run `33308814397`.
+- Fase 7 — Mundo: PR #54, run `33331207740`.
 
-## Fase 6 — RPG — estado estable
+## Arquitectura estable
 
-Sistemas existentes y validados:
+- Exactamente cinco Autoloads: `EventBus`, `GameManager`, `TimeManager`, `SaveManager`, `AudioManager`.
+- `TimeManager` es la única fuente de reloj/calendario.
+- RPG permanece local/contextual: diálogo, relaciones, quests, economía y tecnología.
+- `SaveManager` agrega providers del grupo `save_provider`.
+- UI observa controllers/modelos y emite intents; no contiene lógica de negocio.
+- Quality gate descubre todos los `*.gd` y ejecuta `gdlint` + `gdformat --check` globalmente.
+- Runtime y CI usan Godot 4.7.2.
 
-- diálogo/localización EN/ES;
-- relaciones 0–100 y condiciones contextuales;
-- quests y recompensas idempotentes;
-- economía atómica y UI de comercio;
-- tecnologías rojo/verde/azul;
-- integración quest → puntos tecnológicos;
-- persistencia conjunta de providers RPG;
-- aceptación integral con save/load y reconstrucción del mundo;
-- quality gate global para todos los `*.gd`.
-
-No modificar estos sistemas durante Fase 7 salvo corrección estrictamente necesaria por integración de escenas.
-
-## Contrato visual/técnico vigente
+## Contrato de mundo estable tras Fase 7
 
 `ART_DIRECTION.md` + #16 fijan:
 
 - proyección 2D ortográfica cenital 3/4;
 - tile lógico `32 x 32 px`;
-- seis capas: `ground`, `paths`, `decoration_low`, `collision`, `objects_y_sorted`, `foreground_occlusion`;
-- pivotes/Y-sort en pies;
+- capas `ground`, `paths`, `decoration_low`, `collision`, `objects_y_sorted`, `foreground_occlusion`;
+- pivote/Y-sort en pies;
 - resolución de referencia `1280 x 720`, zoom base `1.5x`;
 - `TileMapLayer` como base de composición;
-- lógica de gameplay fuera de los tiles;
-- TileSet técnico de colores solo como diagnóstico, no arte final.
+- gameplay fuera de los tiles.
 
-## Fase 7 — Mundo — progreso integrado
+El mundo integrado usa `world/world.tscn` como shell persistente. `ZoneManager` mantiene una sola zona bajo `ZoneContainer` y conecta cementerio/propiedad, bosque, pueblo, dos interiores y mina. Player, controllers RPG/cementerio y Brother Aldren mantienen identidad lógica durante viajes.
 
-### #16 — Foundation técnica — COMPLETADA
-- PR #44; seis capas contractuales, bounds estables y colisión tile-based.
-- GREEN: run funcional `33313715794`.
+`WorldLocationProvider` persiste zona, marker y posición, con fallback/clamp seguro. La cámara adopta bounds de la zona activa. `TradePoint` solo se activa en pueblo y Aldren se oculta/pausa fuera del cementerio sin perder su provider persistente.
 
-### #18 — Cementerio + taller — COMPLETADA
-- PR #47; mapa, interacciones críticas, markers y navegación.
-- GREEN: run `33316327221`.
+## Fase 7 — cierre #24
 
-### #19 — Bosque — COMPLETADA
-- PR #48; caminos, navegación, recursos y secret clearing reservado.
-- GREEN: run `33316454888`.
+`TestWorldPhase7Acceptance` agrega explícitamente en un único gate final:
 
-### #20 — Pueblo — COMPLETADA
-- PR #46; entrada, plaza, merchant spot y markers de interiores.
-- GREEN: run `33315626881`.
+- foundation de mapas y seis `TileMapLayer`;
+- cementerio/taller;
+- bosque;
+- pueblo;
+- interiores;
+- mina;
+- recorrido completo de zonas y persistencia de Player/controllers;
+- navegación de NPC;
+- rutinas/schedule de Brother Aldren.
 
-### #21 — Interiores — COMPLETADA
-- PR #49; casa/taller, edificio de pueblo y transiciones estables.
-- GREEN: run `33318051580`.
+La suite final valida también save/load de ubicación, camera bounds, colisiones, spawns y transiciones mediante las suites especializadas que agrega. CI `33331207740` pasó `gdlint`, `gdformat --check`, import Godot 4.7.2, smoke y suite headless completa.
 
-### #22 — Mina — COMPLETADA
-- PR #50; entrada/salida, corredores, oclusión y landmark secreto.
-- GREEN: run `33318407597`.
+## Incidencias relevantes resueltas en Fase 7
 
-### #23 — Integración de zonas + exploración — COMPLETADA
+- Los tests legacy dejaron de retener referencias a interactables de zonas destruidas durante reconstrucción por load.
+- Restaurar `world_location` ya no sobreescribe el estado persistente de Brother Aldren.
+- `zone_manager.gd` quedó en formato canónico de `gdformat`.
+- El quality gate permanece global y estricto; no se relajaron reglas para cerrar la fase.
+- No se introdujo arte final ni contenido de Fase 8 durante el cierre.
 
-- PR #53 fusionada en `main` como `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`.
-- `world/world.tscn` es un shell persistente con un único Player y controllers RPG/cementerio persistentes.
-- `ZoneManager` carga exactamente una zona en `ZoneContainer` y crea transiciones deterministas entre cementerio, bosque, pueblo, dos interiores y mina.
-- Player y controllers conservan `instance_id` durante el recorrido completo.
-- `WorldLocationProvider` persiste `zone_id`, marker y posición y restaura/clampa la ubicación con fallback seguro.
-- Cámara adopta bounds de cada mapa.
-- TradePoint se activa solo en pueblo; Aldren permanece persistente y se oculta/pausa fuera del cementerio.
-- La restauración de ubicación no refresca ni reescribe estado persistente de NPCs.
-- Los tests legacy re-resuelven interactables locales después de reconstruir una zona durante load.
-- Aceptación #23 cubre transiciones, identidad persistente, recursos del bosque, secret clearing, merchant spot, interiores, secret landmark de mina, viajes inválidos y save/load de ubicación.
-- GREEN final del PR: run `33331094583` — `gdscript-quality`, import Godot 4.7.2, smoke y suite headless completa.
-- Issue #23 cerrada como `completed`.
+## Próximo paso — Fase 8
 
-## Errores detectados y decisiones durante #23
-
-- `SleepSpot` quedaba como referencia obsoleta después de que `WorldLocationProvider` reconstruyera la zona al cargar; el test ahora re-resuelve el interactable de la instancia activa.
-- La reconstrucción de zona podía sobreescribir el provider persistente de Aldren; `ZoneManager.travel_to` permite restaurar ubicación sin refrescar actores persistentes.
-- `gdformat` exigía la forma canónica de `ROUTES`; se aplicó el formato exacto y el quality gate global queda verde.
-- No se añadió arte/polish ni contenido de Fase 8.
-
-## Próximo paso — #24 Aceptación integral de Fase 7
-
-1. Revalidar todas las zonas y seis `TileMapLayer` contractuales.
-2. Recorrer todas las rutas sin cambiar la identidad del Player.
-3. Verificar navegación/schedule de Aldren, Y-sort, colisiones y spawns.
-4. Revalidar save/load de ubicación y camera bounds en varias zonas.
-5. Ejecutar `gdlint`, `gdformat --check`, import, smoke y suite completa.
-6. Corregir únicamente defectos de integración de Fase 7.
-7. Cerrar #24 solo con CI verde y entonces marcar Fase 7 COMPLETADA / Fase 8 ACTIVA en toda la documentación.
-
-## Decisiones vigentes
-
-- Mantener exactamente cinco Autoloads globales.
-- `TimeManager` es la única fuente de reloj/calendario.
-- NPCs, diálogo, relaciones, quests, economía y tecnología permanecen locales/contextuales.
-- IDs, condiciones, saves y progreso son independientes del idioma.
-- UI observa modelos/controllers y emite intents; no contiene lógica de negocio.
-- Gameplay data-driven mediante Resources tipados cuando corresponda.
-- Dinero/precios usan cobre entero; UI solo formatea oro/plata/cobre.
-- Recompensas de quest e unlocks tecnológicos son idempotentes.
-- Quality gate descubre todos los `*.gd` automáticamente.
-- `TileMapLayer` compone el mapa; la lógica sigue en escenas/componentes/sistemas.
-- No producir arte final hasta Fase 8.
+1. Revisar las issues #25–#31 y sus dependencias antes de empezar.
+2. Elegir el primer bloque visual/polish desbloqueado.
+3. Mantener `ART_DIRECTION.md` como contrato obligatorio.
+4. No reabrir alcance funcional de Fases 0–7 salvo bug crítico demostrado por tests/CI.
+5. Mantener Godot 4.7.2, quality gate global, import, smoke y suite headless verdes.
 
 ## Regla de continuidad
 
@@ -147,4 +102,4 @@ Al retomar:
 5. Ejecutar quality gate, importación, smoke y suite headless.
 6. Corregir errores críticos antes de avanzar.
 7. Actualizar `DEV_MEMORY.md`, `ROADMAP.md` y `CHANGELOG.md`.
-8. No marcar Fase 7 completada antes de cerrar #24.
+8. No marcar una fase completada antes de cumplir todos sus criterios de aceptación.
