@@ -12,11 +12,11 @@ static func run() -> Array[String]:
 	var corpse_data := CorpseData.new()
 	corpse_data.id = &"flow_corpse"
 	corpse_data.quality = 2
-	corpse_data.decay = 0.1
+	corpse_data.decay_percent = 10
 	corpse_data.preparation_level = 0
 	corpse_data.burial_value = 2
 
-	var corpse := CorpseState.new(corpse_data, 0.02)
+	var corpse := CorpseState.new(corpse_data)
 	var model := CemeteryModel.new(config)
 	var service := CemeteryService.new(model)
 
@@ -32,9 +32,9 @@ static func run() -> Array[String]:
 	if corpse_data.preparation_level != 0:
 		failures.append("Preparation should not mutate shared CorpseData")
 
-	corpse.advance_decay(2.0)
-	if absf(corpse.current_decay - 0.14) > 0.001:
-		failures.append("Pending corpse decay should remain deterministic during flow")
+	corpse.advance_decomposition(24 * 60)
+	if corpse.decay_percent != 18:
+		failures.append("Pending corpse decomposition should remain deterministic during flow")
 
 	var grave := service.bury_corpse(&"flow_corpse")
 	if grave == null or model.graves.size() != 1:
