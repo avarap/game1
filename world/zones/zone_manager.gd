@@ -11,11 +11,45 @@ const ZONE_SCENES := {
 	&"village_interior": "res://world/maps/interiors/village_building.tscn",
 	&"mine": "res://world/maps/mine/mine_map.tscn",
 }
+const ROUTES := {
+	&"cemetery": [
+		{&"source": &"ForestExit", &"zone": &"forest", &"marker": &"CemeteryEntrance"},
+		{&"source": &"VillageExit", &"zone": &"village", &"marker": &"Entrance"},
+		{&"source": &"PlayerSpawn", &"zone": &"home_interior", &"marker": &"entry_main"},
+		{&"source": &"FutureExpansion", &"zone": &"mine", &"marker": &"Entrance"},
+	],
+	&"forest": [
+		{&"source": &"CemeteryExit", &"zone": &"cemetery", &"marker": &"ForestExit"},
+	],
+	&"village": [
+		{&"source": &"Entrance", &"zone": &"cemetery", &"marker": &"VillageExit"},
+		{
+			&"source": &"InteriorAccess/Workshop",
+			&"zone": &"village_interior",
+			&"marker": &"entry_main",
+		},
+	],
+	&"home_interior": [
+		{&"source": &"EntryMarkers/exit_main", &"zone": &"cemetery", &"marker": &"PlayerSpawn"},
+	],
+	&"village_interior": [
+		{
+			&"source": &"EntryMarkers/exit_main",
+			&"zone": &"village",
+			&"marker": &"InteriorAccess/Workshop",
+		},
+	],
+	&"mine": [
+		{&"source": &"Exit", &"zone": &"cemetery", &"marker": &"FutureExpansion"},
+	],
+}
 
 var _active_zone_id: StringName = &""
 var _active_zone: Node2D
+var _active_marker_id: StringName = &""
 
 @onready var zone_container: Node = get_node("../ZoneContainer")
+@onready var transition_container: Node2D = get_node("../TransitionContainer") as Node2D
 @onready var player: Node2D = get_node("../Player") as Node2D
 @onready var aldren: NPCController = get_node("../BrotherAldren") as NPCController
 @onready var trade_point: Area2D = get_node("../TradePoint") as Area2D
@@ -29,6 +63,10 @@ func _ready() -> void:
 
 func get_active_zone_id() -> StringName:
 	return _active_zone_id
+
+
+func get_active_marker_id() -> StringName:
+	return _active_marker_id
 
 
 func get_active_zone() -> Node2D:
@@ -55,8 +93,10 @@ func travel_to(zone_id: StringName, marker_id: StringName) -> bool:
 	zone_container.add_child(candidate)
 	_active_zone = candidate
 	_active_zone_id = zone_id
+	_active_marker_id = marker_id
 	player.global_position = marker.global_position
 	_configure_persistent_shell(zone_id, candidate)
+	_build_transitions(zone_id, candidate)
 	return true
 
 
@@ -112,3 +152,32 @@ func _configure_camera(zone: Node2D) -> void:
 	camera.limit_top = int(bounds.position.y)
 	camera.limit_right = int(bounds.end.x)
 	camera.limit_bottom = int(bounds.end.y)
+
+
+func _build_transitions(zone_id: StringName, zone: Node2D) -> void:
+	_clear_transitions()
+	var routes: Array = ROUTES.get(zone_id, [])
+	for route in routes:
+		var source_id := StringName(route.get(&"source", &""))
+		var source := _resolve_marker(zone, source_id)
+		if source == null:
+			continue
+		var transition := ZoneTransition.new()
+		transition.name = "Travel_%s" % String(source_id).replace("/", "_")
+		transition.target_zone_id = StringName(route.get(&"zone", &""))
+		transition.target_marker_id = StringName(route.get(&"marker", &""))
+		transition.position = source.global_position
+		transition.collision_layer = 2
+		transition.collision_mask = 0
+		var collision := CollisionShape2D.new()
+		var shape := RectangleShape2D.new()
+		shape.size = Vector2(48, 48)
+		collision.shape = shape
+		transition.add_child(collision)
+		transition_container.add_child(transition)
+
+
+func _clear_transitions() -> void:
+	for child in transition_container.get_children():
+		transition_container.remove_child(child)
+		child.queue_free()
