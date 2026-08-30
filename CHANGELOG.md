@@ -30,8 +30,8 @@
 - Runtime/CI objetivo actualizado a **Godot 4.7.2**.
 - `world/world.tscn` pasa a ser un shell persistente: el mapa activo vive bajo `ZoneContainer`; Player, UI y controllers RPG/cementerio sobreviven a los cambios de zona.
 - Brother Aldren se mantiene persistente y se oculta/pausa fuera del cementerio; `TradePoint` se activa solo en pueblo.
-- **Fase 7 — Mundo permanece ACTIVA**: #23 está implementada/validada, pero #24 sigue siendo el gate obligatorio de cierre.
-- El siguiente bloque tras fusionar #23 es **#24 — aceptación final de Fase 7**.
+- **#23 está COMPLETADA** mediante PR #53; Fase 7 permanece ACTIVA porque #24 sigue siendo el gate obligatorio de cierre.
+- El siguiente bloque es **#24 — aceptación final de Fase 7**.
 - Fase 8 permanece bloqueada por #24.
 
 ### Fixed
@@ -67,4 +67,5 @@
 - Interiores #21: PR #49, run `33318051580`, success.
 - Mina #22: PR #50, run `33318407597`, success.
 - `main` previo a #23: `03c583d35a0e32f9a6a16e6225b9fa64969a4e25`; Godot CI `33325706902`, success.
-- Integración de zonas #23: PR #52, acceptance HEAD `ea6d85480b68ce7af658200b0b7e353a0e9b3cb6`, run `33330995787`, success (`gdscript-quality`, import, smoke y suite headless completa).
+- Integración de zonas #23: PR #53, merge `6c84c0f2d0e97e64c8f4f94f8de7ef144111c86a`, run final del PR `33331094583`, success (`gdscript-quality`, import, smoke y suite headless completa).
+- Issue #23 cerrada como `completed`.
