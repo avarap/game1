@@ -79,25 +79,34 @@ La fase se cierra solo después de #6, #8 y #9 y de comprobar el flujo integral 
 
 ### Orden obligatorio
 1. [x] **#17 — Contrato visual**: `ART_DIRECTION.md` fija perspectiva, tile 32 px, escala/footprints, cámara, pivotes/Y-sort, capas, paleta, luz y convenciones de assets.
-2. [ ] **#16 — TileMapLayer foundation**: siguiente bloque activo.
+2. [x] **#16 — TileMapLayer foundation**: mapa técnico, seis capas contractuales y sustitución del blockout de suelo/colisión validados.
 3. [ ] Producción posterior de Fase 7 (#18/#19/#20/#21/#22), solo según dependencias.
 
-#17 se considera resuelta al cumplir sus criterios documentales y pasar CI sin modificar gameplay. El contrato visual es obligatorio para #16 y para toda producción de assets posterior.
+#17 y #16 definen conjuntamente el contrato visual/técnico que debe respetar toda producción de mapas posterior.
 
 ## Fase 7 — Mundo — ACTIVA
 Pueblo, bosque, mina, interiores, exploración y secretos.
 
-### Siguiente bloque: #16 — Foundation técnica de mapas con TileMapLayer
-- [ ] Crear al menos un mapa técnico cargable basado en `TileMapLayer`.
-- [ ] Implementar las capas contractuales `ground`, `paths`, `decoration_low`, `collision`, `objects_y_sorted`, `foreground_occlusion`.
-- [ ] Mantener movimiento y colisión del player.
-- [ ] Mantener `NavigationRegion2D`/`NavigationAgent2D` funcionando.
-- [ ] Mantener Y-sort/occlusion sin regresiones.
-- [ ] Derivar o configurar camera bounds de forma estable.
-- [ ] Smoke test + suite headless + quality gate verdes.
-- [ ] No producir arte final ni ampliar todavía a #18/#19/#20/#21/#22.
+### Foundation técnica #16 — VALIDADA
+- [x] `world/maps/technical_map.tscn` es un mapa técnico cargable basado en `TileMapLayer`.
+- [x] Capas contractuales: `ground`, `paths`, `decoration_low`, `collision`, `objects_y_sorted`, `foreground_occlusion`.
+- [x] Tile lógico de 32 px y bounds estables de `1600 x 1024` (`50 x 32` tiles).
+- [x] `world.tscn` instancia `TechnicalMap` y elimina `Ground`, `Boundaries` y `WorkshopBlock` del blockout legacy.
+- [x] La capa `collision` posee physics tiles para perímetro y obstáculo técnico; capas visuales no crean colisión.
+- [x] Player, cámara, interacción, Y-sort y foreground/occlusion se preservan.
+- [x] `NavigationRegion2D` continúa generando un `NavigationPolygon` utilizable y los tests existentes de NPC/navigation siguen verdes.
+- [x] `test_map_foundation.gd` + `test_walking_prototype.gd` validan estructura e integración real.
+- [x] Run funcional/quality estricto `33313715794` sobre HEAD `00264c1e3ff920a46bad908182a8a89fbbb20263`: ambos jobs `success` en Godot 4.7.2.
+- [x] No se introduce arte final ni contenido de #18/#19/#20/#21/#22.
 
-PR #32 debe reevaluarse contra `ART_DIRECTION.md` y #16; no se fusiona por antigüedad ni se toma como cierre de esta foundation.
+### Siguiente bloque: #18 — Mapa exterior cementerio + taller del jugador
+- [ ] Crear la primera zona exterior real bajo `world/maps/cemetery/*` reutilizando la foundation #16.
+- [ ] Mantener accesibles cementerio, entrega/preparación/entierro, workbench, storage y sleep spot.
+- [ ] Preparar caminos/límites y accesos hacia bosque/pueblo sin implementar todavía esas zonas.
+- [ ] Mantener navegación, colisión, Y-sort/occlusion y carga headless.
+- [ ] No tocar `world/world.tscn`, otros mapas ni lógica interna de gameplay salvo adaptación mínima permitida por #18.
+
+#19 — bosque es P1 y queda disponible tras #16/#17, pero #18 es el siguiente bloque P0. #20/#21/#22 deben respetar sus dependencias propias antes de comenzar.
 
 ## Fase 8 — Polish
 Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización.

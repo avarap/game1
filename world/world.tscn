@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
@@ -23,18 +23,10 @@
 [ext_resource type="Resource" path="res://data/technology/sturdy_joinery.tres" id="21_technology_data"]
 [ext_resource type="PackedScene" path="res://ui/economy/trade_layer.tscn" id="22_trade_layer"]
 [ext_resource type="Script" path="res://world/interactables/trade_interactable.gd" id="23_trade_interactable"]
-
-[sub_resource type="RectangleShape2D" id="Wall_horizontal"]
-size = Vector2(1600, 32)
-
-[sub_resource type="RectangleShape2D" id="Wall_vertical"]
-size = Vector2(32, 1000)
+[ext_resource type="PackedScene" path="res://world/maps/technical_map.tscn" id="24_map"]
 
 [sub_resource type="RectangleShape2D" id="Sign_shape"]
 size = Vector2(28, 28)
-
-[sub_resource type="RectangleShape2D" id="Obstacle_shape"]
-size = Vector2(180, 90)
 
 [sub_resource type="RectangleShape2D" id="Cemetery_action_shape"]
 size = Vector2(42, 42)
@@ -48,10 +40,7 @@ size = Vector2(64, 64)
 [node name="World" type="Node2D"]
 y_sort_enabled = true
 
-[node name="Ground" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(0, 0, 1600, 0, 1600, 1000, 0, 1000)
-color = Color(0.19, 0.24, 0.15, 1)
-z_index = -10
+[node name="TechnicalMap" parent="." instance=ExtResource("24_map")]
 
 [node name="DayNightCycle" type="CanvasModulate" parent="."]
 script = ExtResource("10_day_night")
@@ -192,38 +181,6 @@ shape = SubResource("Cemetery_action_shape")
 
 [node name="BrotherAldren" parent="." instance=ExtResource("12_aldren")]
 position = Vector2(1180, 650)
-
-[node name="Boundaries" type="Node2D" parent="."]
-
-[node name="Top" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(800, 0)
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/Top"]
-shape = SubResource("Wall_horizontal")
-
-[node name="Bottom" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(800, 1000)
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/Bottom"]
-shape = SubResource("Wall_horizontal")
-
-[node name="Left" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(0, 500)
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/Left"]
-shape = SubResource("Wall_vertical")
-
-[node name="Right" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(1600, 500)
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/Right"]
-shape = SubResource("Wall_vertical")
-
-[node name="WorkshopBlock" type="StaticBody2D" parent="."]
-position = Vector2(820, 470)
-
-[node name="Visual" type="Polygon2D" parent="WorkshopBlock"]
-polygon = PackedVector2Array(-90, -45, 90, -45, 90, 45, -90, 45)
-color = Color(0.34, 0.24, 0.17, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WorkshopBlock"]
-shape = SubResource("Obstacle_shape")
 
 [node name="DebugSign" type="Area2D" parent="."]
 position = Vector2(720, 360)

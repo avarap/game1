@@ -38,6 +38,7 @@ func _run_all_tests() -> void:
 	_run_suite("TechnologyFoundation", TestTechnologyFoundation.run(), failures)
 	_run_suite("TechnologyGameplay", TestTechnologyGameplay.run(), failures)
 	_run_suite("TechnologyQuestIntegration", TestTechnologyQuestIntegration.run(), failures)
+	_run_suite("MapFoundation", TestMapFoundation.run(), failures)
 
 	if failures.is_empty():
 		print("[TEST] All core tests passed")
