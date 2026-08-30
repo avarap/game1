@@ -11,9 +11,10 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Fase 8 — Polish: **ACTIVA**.
 - #25 — Tileset exterior: completado en PR #56; run `33333578933`, success.
 - Track **8A — Gameplay Depth & Feel**: diseño aprobado y en implementación.
-- **8A.1 — Descomposición acelerada:** implementado en PR #57; CI funcional `33334955947`, success.
+- **8A.1 — Descomposición acelerada:** implementado en PR #57.
+- **8A.2 — Conservación:** implementado en PR #59; CI funcional `33336387360`, success.
 - Diseño 8A: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
-- Próximo bloque del track de profundidad: **8A.2 — conservación**.
+- Próximo bloque del track de profundidad: **8A.3 — agricultura mínima**.
 
 ## Fuentes de verdad
 
@@ -70,11 +71,14 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Preparar no reduce edad ni descomposición.
 - Objetivo posterior: preparar, enterrar, cremar e investigar con trade-offs distintos.
 
-### Conservación — siguiente bloque
+### Conservación — implementada en 8A.2
 - `effective_rate = age_rate × technology_modifier × facility_modifier × tool_modifier`.
-- Modificadores neutrales por defecto y componibles.
-- Tecnología, utensilios e instalaciones pueden ralentizar el deterioro, nunca rebobinarlo.
-- La rampa de entrega será logística únicamente, sin bonus de conservación.
+- `PreservationModifiers` usa basis points enteros (`10000 = 1.0`) para tecnología, instalación y utensilio.
+- Los tres factores son neutrales por defecto, se normalizan a `1..10000` y se componen multiplicativamente.
+- La conservación solo ralentiza deterioro futuro; nunca reduce `age_minutes`, `decay_percent`, unidades acumuladas ni el resto fraccional pendiente.
+- `CorpseState` persiste los modificadores y `_preservation_remainder` para mantener determinismo y round-trip exacto.
+- Cambiar de modificadores conserva el resto fraccional previo; descartarlo equivaldría a perdonar deterioro subporcentual.
+- La rampa de entrega sigue siendo logística únicamente, sin bonus de conservación.
 
 ### Servicio funerario
 - Entrega diaria determinista al atardecer; objetivo inicial **18:00**.
@@ -105,10 +109,19 @@ Archivos principales:
 - `tests/test_corpse_decomposition.gd`: contrato específico de aceleración, thresholds, determinismo y persistencia.
 - Tests legacy de cementerio actualizados para validar el nuevo contrato en vez del modelo float lineal eliminado.
 
-TDD:
-- RED confirmado: el nuevo suite falló únicamente porque faltaba `advance_decomposition` mientras suites anteriores permanecían verdes.
-- GREEN funcional: run `33334955947` pasó quality gate global, Godot 4.7.2 import, smoke y suite headless completa.
-- Se corrigieron únicamente discrepancias mecánicas de `gdlint`/`gdformat`; no se relajó el gate.
+## Implementación 8A.2
+
+Archivos principales:
+- `systems/cemetery/preservation_modifiers.gd`: Resource data-driven con factores technology/facility/tool en basis points enteros y composición multiplicativa.
+- `systems/cemetery/corpse_state.gd`: aplica el factor compuesto a nuevas unidades de deterioro y persiste factor/resto sin rewind.
+- `tests/test_corpse_preservation.gd`: neutralidad, reducción de velocidad, composición, no-rewind visible y subporcentual, determinismo y snapshot/restore.
+- `tests/run_tests.gd`: registra la suite de conservación.
+
+TDD/validación:
+- El PR llegó a GREEN funcional en run `33335651778` antes de la auditoría adicional.
+- Se detectó que `set_preservation_modifiers()` reiniciaba `_preservation_remainder`, descartando progreso fraccional ya acumulado.
+- RED de regresión: run `33336306728` mantuvo import/smoke y todas las demás suites verdes y falló exactamente en `Changing preservation should preserve fractional decomposition progress`.
+- GREEN tras corregir el reset: run `33336387360` pasó `gdlint`, `gdformat --check`, import Godot 4.7.2, smoke y suite headless completa.
 
 ## Scope fuera de 8A
 
@@ -122,11 +135,11 @@ TDD:
 
 ## Próximo paso
 
-1. Integrar PR #57 solo tras CI verde del HEAD documental final.
+1. Integrar PR #59 solo con HEAD documental final y CI verde.
 2. Verificar CI posterior al merge en `main`.
-3. Empezar **8A.2 — conservación** con TDD: neutralidad, composición, reducción de velocidad y no-rewind.
+3. Empezar **8A.3 — agricultura mínima** con TDD: semilla → parcela → crecimiento por `TimeManager` → cosecha → persistencia.
 4. Mantener independencia con el sub-track visual #26–#31.
-5. No marcar Fase 8 completa al cerrar 8A.1 ni 8A.
+5. No marcar Fase 8 ni Track 8A como completos al cerrar 8A.2.
 
 ## Regla de continuidad
 
