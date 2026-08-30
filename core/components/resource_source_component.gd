@@ -20,21 +20,19 @@ func _ready() -> void:
 
 
 func harvest(actor: Node) -> bool:
-	if remaining_hits <= 0:
-		return _fail(&"depleted", "El recurso está agotado.")
-	if loot_item == null or loot_amount <= 0:
-		return _fail(&"invalid_loot", "Este recurso no tiene loot configurado.")
-	if actor == null:
-		return _fail(&"invalid_actor", "No hay actor válido para recolectar.")
-	if not _has_required_tool(actor):
-		return _fail(&"missing_tool", "Necesitas la herramienta adecuada.")
+	if not _can_begin_harvest(actor):
+		return false
 
 	var inventory := _resolve_inventory(actor)
 	var energy := _resolve_energy(actor)
-	if inventory == null:
-		return _fail(&"missing_inventory", "No hay inventario disponible.")
-	if energy == null:
-		return _fail(&"missing_energy", "No hay energía disponible.")
+	if inventory == null or energy == null:
+		var reason := &"missing_inventory"
+		var message := "No hay inventario disponible."
+		if inventory != null:
+			reason = &"missing_energy"
+			message = "No hay energía disponible."
+		_fail(reason, message)
+		return false
 	if not energy.can_spend(energy_cost):
 		return _fail(&"insufficient_energy", "No tienes energía suficiente.")
 
@@ -54,6 +52,18 @@ func harvest(actor: Node) -> bool:
 	feedback.emit("+%d %s · Energía -%d" % [loot_amount, loot_item.display_name, energy_cost])
 	if remaining_hits <= 0:
 		depleted.emit()
+	return true
+
+
+func _can_begin_harvest(actor: Node) -> bool:
+	if remaining_hits <= 0:
+		return _fail(&"depleted", "El recurso está agotado.")
+	if loot_item == null or loot_amount <= 0:
+		return _fail(&"invalid_loot", "Este recurso no tiene loot configurado.")
+	if actor == null:
+		return _fail(&"invalid_actor", "No hay actor válido para recolectar.")
+	if not _has_required_tool(actor):
+		return _fail(&"missing_tool", "Necesitas la herramienta adecuada.")
 	return true
 
 

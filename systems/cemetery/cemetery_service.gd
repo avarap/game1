@@ -10,8 +10,10 @@ const RESULT_INVALID_GRAVE := &"invalid_grave"
 var model: CemeteryModel
 var pending_corpses: Dictionary = {}
 
+
 func _init(cemetery_model: CemeteryModel) -> void:
 	model = cemetery_model
+
 
 func receive_corpse(corpse: CorpseState) -> StringName:
 	if corpse == null or corpse.data == null or corpse.data.id == &"":
@@ -21,12 +23,14 @@ func receive_corpse(corpse: CorpseState) -> StringName:
 	pending_corpses[corpse.data.id] = corpse
 	return RESULT_OK
 
+
 func prepare_corpse(corpse_id: StringName, amount: int = 1) -> StringName:
 	var corpse := pending_corpses.get(corpse_id) as CorpseState
 	if corpse == null:
 		return RESULT_NOT_FOUND
 	corpse.prepare(amount)
 	return RESULT_OK
+
 
 func bury_corpse(corpse_id: StringName) -> GraveRecord:
 	var corpse := pending_corpses.get(corpse_id) as CorpseState
@@ -37,12 +41,14 @@ func bury_corpse(corpse_id: StringName) -> GraveRecord:
 	pending_corpses.erase(corpse_id)
 	return grave
 
+
 func install_headstone(grave_index: int) -> StringName:
 	var grave := _grave_at(grave_index)
 	if grave == null:
 		return RESULT_INVALID_GRAVE
 	grave.has_headstone = true
 	return RESULT_OK
+
 
 func install_fence(grave_index: int) -> StringName:
 	var grave := _grave_at(grave_index)
@@ -51,6 +57,7 @@ func install_fence(grave_index: int) -> StringName:
 	grave.has_fence = true
 	return RESULT_OK
 
+
 func add_decoration(grave_index: int, amount: int = 1) -> StringName:
 	var grave := _grave_at(grave_index)
 	if grave == null:
@@ -58,8 +65,10 @@ func add_decoration(grave_index: int, amount: int = 1) -> StringName:
 	grave.decoration_count += maxi(amount, 0)
 	return RESULT_OK
 
+
 func total_rating() -> int:
 	return model.total_rating() if model != null else 0
+
 
 func pending_ids() -> Array[StringName]:
 	var ids: Array[StringName] = []
@@ -68,9 +77,11 @@ func pending_ids() -> Array[StringName]:
 	ids.sort()
 	return ids
 
+
 func first_pending_id() -> StringName:
 	var ids := pending_ids()
 	return ids[0] if not ids.is_empty() else &""
+
 
 func snapshot() -> Dictionary:
 	var pending: Array[Dictionary] = []
@@ -83,7 +94,11 @@ func snapshot() -> Dictionary:
 		"cemetery": model.snapshot() if model != null else {},
 	}
 
-static func from_snapshot(config: CemeteryRatingConfig, snapshot_data: Dictionary) -> CemeteryService:
+
+static func from_snapshot(
+	config: CemeteryRatingConfig,
+	snapshot_data: Dictionary,
+) -> CemeteryService:
 	var cemetery_data: Dictionary = snapshot_data.get("cemetery", {})
 	var restored_model := CemeteryModel.from_snapshot(config, cemetery_data)
 	var restored := CemeteryService.new(restored_model)
@@ -96,10 +111,12 @@ static func from_snapshot(config: CemeteryRatingConfig, snapshot_data: Dictionar
 			restored.pending_corpses[corpse.data.id] = corpse
 	return restored
 
+
 func _grave_at(index: int) -> GraveRecord:
 	if model == null or index < 0 or index >= model.graves.size():
 		return null
 	return model.graves[index]
+
 
 func _find_grave_by_corpse_id(corpse_id: StringName) -> GraveRecord:
 	if model == null:
