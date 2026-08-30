@@ -43,6 +43,11 @@ static func run() -> Array[String]:
 	var ids := _capture_persistent_ids(world, failures)
 	if zone_manager.call("get_active_zone_id") != &"cemetery":
 		failures.append("World should start in the cemetery/property zone")
+	if world.get_node_or_null("TechnicalMap") != null:
+		failures.append("Persistent world shell should not retain the legacy TechnicalMap")
+	if tree.get_nodes_in_group("cemetery_controller").size() != 1:
+		failures.append("World integration should expose exactly one cemetery controller")
+	_assert_zone_shell_state(world, &"cemetery", failures)
 
 	for destination in ROUTE:
 		var zone_id := destination[0] as StringName
@@ -54,6 +59,7 @@ static func run() -> Array[String]:
 		if zone_manager.call("get_active_zone_id") != zone_id:
 			failures.append("ZoneManager should report active zone %s" % zone_id)
 		_assert_persistent_ids(world, ids, failures)
+		_assert_zone_shell_state(world, zone_id, failures)
 
 	var player := world.get_node_or_null("Player") as Node2D
 	if player != null:
@@ -87,3 +93,17 @@ static func _assert_persistent_ids(world: Node, ids: Dictionary, failures: Array
 		var node := world.get_node_or_null(node_name)
 		if node == null or node.get_instance_id() != ids[node_name]:
 			failures.append("Zone travel should preserve persistent node %s" % node_name)
+
+
+static func _assert_zone_shell_state(
+	world: Node, zone_id: StringName, failures: Array[String]
+) -> void:
+	var zone_container := world.get_node_or_null("ZoneContainer")
+	if zone_container == null or zone_container.get_child_count() != 1:
+		failures.append("ZoneContainer should own exactly one active zone")
+	var aldren := world.get_node_or_null("BrotherAldren") as CanvasItem
+	if aldren != null and aldren.visible != (zone_id == &"cemetery"):
+		failures.append("Brother Aldren visibility should follow the cemetery zone")
+	var trade_point := world.get_node_or_null("TradePoint") as CanvasItem
+	if trade_point != null and trade_point.visible != (zone_id == &"village"):
+		failures.append("TradePoint visibility should follow the village zone")
