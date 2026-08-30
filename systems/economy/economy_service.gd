@@ -49,11 +49,19 @@ static func simulate_buy(
 
 
 static func simulate_sell(
-	wallet: WalletState, merchant: MerchantState, offer: MerchantOfferData, quantity: int
+	wallet: WalletState,
+	merchant: MerchantState,
+	offer: MerchantOfferData,
+	quantity: int,
+	seller_stock: int
 ) -> EconomyTransaction:
 	var validation := _validate_common(wallet, merchant, offer, quantity)
 	if validation != RESULT_OK:
 		return _failure(validation)
+	if seller_stock < 0:
+		return _failure(RESULT_INVALID_AMOUNT)
+	if seller_stock < quantity:
+		return _failure(RESULT_OUT_OF_STOCK)
 	var total := get_sell_total(offer, quantity)
 	if total == MoneyMath.INVALID_AMOUNT:
 		return _failure(RESULT_INVALID_AMOUNT)
