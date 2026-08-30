@@ -13,16 +13,40 @@ const ZONE_SCENES := {
 }
 const ROUTES := {
 	&"cemetery": [
-		{&"source": &"ForestExit", &"zone": &"forest", &"marker": &"CemeteryEntrance"},
-		{&"source": &"VillageExit", &"zone": &"village", &"marker": &"Entrance"},
-		{&"source": &"PlayerSpawn", &"zone": &"home_interior", &"marker": &"entry_main"},
-		{&"source": &"FutureExpansion", &"zone": &"mine", &"marker": &"Entrance"},
+		{
+			&"source": &"ForestExit",
+			&"zone": &"forest",
+			&"marker": &"CemeteryEntrance",
+		},
+		{
+			&"source": &"VillageExit",
+			&"zone": &"village",
+			&"marker": &"Entrance",
+		},
+		{
+			&"source": &"PlayerSpawn",
+			&"zone": &"home_interior",
+			&"marker": &"entry_main",
+		},
+		{
+			&"source": &"FutureExpansion",
+			&"zone": &"mine",
+			&"marker": &"Entrance",
+		},
 	],
 	&"forest": [
-		{&"source": &"CemeteryExit", &"zone": &"cemetery", &"marker": &"ForestExit"},
+		{
+			&"source": &"CemeteryExit",
+			&"zone": &"cemetery",
+			&"marker": &"ForestExit",
+		},
 	],
 	&"village": [
-		{&"source": &"Entrance", &"zone": &"cemetery", &"marker": &"VillageExit"},
+		{
+			&"source": &"Entrance",
+			&"zone": &"cemetery",
+			&"marker": &"VillageExit",
+		},
 		{
 			&"source": &"InteriorAccess/Workshop",
 			&"zone": &"village_interior",
@@ -30,7 +54,11 @@ const ROUTES := {
 		},
 	],
 	&"home_interior": [
-		{&"source": &"EntryMarkers/exit_main", &"zone": &"cemetery", &"marker": &"PlayerSpawn"},
+		{
+			&"source": &"EntryMarkers/exit_main",
+			&"zone": &"cemetery",
+			&"marker": &"PlayerSpawn",
+		},
 	],
 	&"village_interior": [
 		{
@@ -40,7 +68,11 @@ const ROUTES := {
 		},
 	],
 	&"mine": [
-		{&"source": &"Exit", &"zone": &"cemetery", &"marker": &"FutureExpansion"},
+		{
+			&"source": &"Exit",
+			&"zone": &"cemetery",
+			&"marker": &"FutureExpansion",
+		},
 	],
 }
 
@@ -119,7 +151,9 @@ func _configure_aldren(zone_id: StringName, zone: Node2D) -> void:
 	var is_cemetery := zone_id == &"cemetery"
 	aldren.visible = is_cemetery
 	aldren.collision_layer = 4 if is_cemetery else 0
-	aldren.process_mode = Node.PROCESS_MODE_INHERIT if is_cemetery else Node.PROCESS_MODE_DISABLED
+	aldren.process_mode = (
+		Node.PROCESS_MODE_INHERIT if is_cemetery else Node.PROCESS_MODE_DISABLED
+	)
 	if not is_cemetery:
 		return
 	var marker := _resolve_marker(zone, &"AldrenSpawn")
