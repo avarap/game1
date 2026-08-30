@@ -59,6 +59,7 @@ jobs:
             tests/test_simulation_acceptance.gd \
             tests/test_dialogue_foundation.gd \
             tests/test_dialogue_gameplay.gd \
+            tests/test_dialogue_conditions.gd \
             tests/test_relationships.gd \
             tests/run_tests.gd
 
@@ -100,6 +101,7 @@ jobs:
             tests/test_simulation_acceptance.gd \
             tests/test_dialogue_foundation.gd \
             tests/test_dialogue_gameplay.gd \
+            tests/test_dialogue_conditions.gd \
             tests/test_relationships.gd \
             tests/run_tests.gd
 

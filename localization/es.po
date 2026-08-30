@@ -18,6 +18,9 @@ msgstr "¿Qué debería hacer primero?"
 msgid "DIALOGUE_ALDREN_OPTION_IDENTITY"
 msgstr "¿Quién eres?"
 
+msgid "DIALOGUE_ALDREN_OPTION_NIGHT"
+msgstr "¿Qué pasa aquí por la noche?"
+
 msgid "DIALOGUE_ALDREN_OPTION_TRUSTED"
 msgstr "Parece que ya desconfías menos de mí. ¿Hay algo más que deba saber?"
 
@@ -29,6 +32,9 @@ msgstr "Empieza por las tumbas. Los muertos se quejan menos cuando las vallas es
 
 msgid "DIALOGUE_ALDREN_IDENTITY_RESPONSE"
 msgstr "Hermano Aldren. Me ocupo de la capilla, de los registros y, de vez en cuando, de mi paciencia."
+
+msgid "DIALOGUE_ALDREN_NIGHT_RESPONSE"
+msgstr "No te quedes despierto. Lo que sale de noche no es amable."
 
 msgid "DIALOGUE_ALDREN_TRUSTED_RESPONSE"
 msgstr "Quizá. La confianza hace que las puertas viejas se abran mejor y que los registros antiguos cuesten más de ignorar."
