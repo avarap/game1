@@ -8,10 +8,10 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama: `main`
 - Fase completada más reciente: **Fase 4 — Cementerio**
 - Fase activa: **Fase 5 — Simulación**
-- Estado Fase 5: tiempo/calendario, sueño, ciclo día/noche, `NPCData` y navegación NPC básica implementados y validados; faltan rutinas/horarios y persistencia NPC antes de cerrar.
+- Estado Fase 5: tiempo/calendario, sueño, ciclo día/noche, `NPCData`, navegación y rutinas/horarios implementados y validados; falta persistencia mínima de NPCs y aceptación final antes de cerrar.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
-- Último bloque funcional: `03986401968c83b79527d15f47217f090de43ab2`.
-- Última validación funcional y de calidad: `Godot CI` run `33296131085`, `success` en `gdscript-quality` y `validate-and-test`.
+- Último bloque funcional: `82f5ccee1e109e2ad702532b7301922124548c7b`.
+- Última validación funcional y de calidad: `Godot CI` run `33296648630`, `success` en `gdscript-quality` y `validate-and-test`.
 
 ## Fases completadas
 
@@ -78,15 +78,31 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 3. Se añadió `data/npcs/brother_aldren.tres` para el primer NPC original: Hermano Aldren, sacerdote excéntrico.
 4. Se creó `NPCNavigationMath`, lógica pura para velocidad direccional y comprobación de llegada.
 5. Se creó `WorldNavigationRegion`, `NavigationRegion2D` local que genera la geometría navegable mínima del mapa sin nuevo Autoload.
-6. Se creó `NPCController` sobre `CharacterBody2D` con `NavigationAgent2D`, destino explícito, movimiento frame-independent mediante `move_and_slide()` y señal de llegada.
+6. Se creó `NPCController` sobre `CharacterBody2D` con `NavigationAgent2D`, movimiento frame-independent mediante `move_and_slide()` y señal de llegada.
 7. `world/npcs/brother_aldren.tscn` encapsula visual provisional, colisión y agente de navegación.
-8. `world/world.tscn` integra `NavigationRegion` y una instancia de `BrotherAldren` con destino inicial explícito.
-9. `test_npc_navigation.gd` valida `NPCData`, matemática de navegación, geometría de navegación, presencia del NPC, `NavigationAgent2D` y target configurado.
+8. `world/world.tscn` integra `NavigationRegion` y una instancia de `BrotherAldren`.
+9. `test_npc_navigation.gd` valida `NPCData`, matemática de navegación, geometría de navegación, presencia del NPC y `NavigationAgent2D`.
 10. La suite principal y `gdscript-quality` incluyen los nuevos scripts/tests.
 11. Run `33296112250` detectó `class-definitions-order` en `NPCController`; no se relajó la regla.
 12. Corrección final: `03986401968c83b79527d15f47217f090de43ab2`.
 13. Validación final: `Godot CI` run `33296131085`, `success` en lint, format-check, importación, smoke test y suite headless.
 14. Quedan cumplidos los criterios `NPCData data-driven y primer NPC de prueba` y `NavigationAgent2D y navegación básica`.
+
+### Bloque 4 — ScheduleData y rutinas NPC
+1. Se revisó el HEAD externo `e2d1351d31576407caed9c983457c09c0a1e93c3`: solo añadió documentación/configuración auxiliar y su CI estaba verde; no alteró gameplay.
+2. Se añadieron `ScheduleEntryData` y `ScheduleData` tipados. Las franjas soportan máscara de los seis días, rangos horarios normales o cruzando medianoche, estado de actividad y destino.
+3. Se añadió `NPCStateMachine` con estados explícitos mínimos `Idle`, `Walking`, `Working` y `Sleeping`; `Walking` es transitorio mientras el agente navega al estado programado.
+4. `brother_aldren_schedule.tres` define una rutina mínima completa: mañana idle, trabajo diurno, descanso vespertino y sueño nocturno.
+5. `NPCController` observa `TimeManager` mediante `EventBus`, selecciona la franja correspondiente sin duplicar reloj y mantiene `NavigationAgent2D` como mecanismo de movimiento.
+6. El destino inicial ad hoc de Aldren se eliminó del mundo; sus destinos pasan a ser propiedad de los datos de horario.
+7. `test_npc_routines.gd` cubre resolución horaria, rango nocturno que cruza medianoche, transiciones `Walking -> Working`, `Sleeping` e integración del horario en escena.
+8. `test_npc_navigation.gd` se actualizó para exigir un `ScheduleData` válido en lugar del antiguo `initial_target`.
+9. `gdscript-quality` cubre todos los nuevos scripts y tests.
+10. Run `33296549903` dejó lint/formato verdes pero detectó un error real: `ScheduleEntryData` comparaba el `Dictionary` devuelto por `TimeMath.normalize_total_minutes()` con enteros, degradando además los subresources de horario a `Resource`.
+11. La corrección `82f5ccee1e109e2ad702532b7301922124548c7b` normaliza minutos como entero con `posmod()` y mantiene los Resources tipados operativos.
+12. Validación final del bloque: `Godot CI` run `33296648630`, `success` en lint, format-check, importación, smoke test y suite headless completa.
+13. Durante la revisión se detectó que el archivo subido como `editorconfig` no era reconocido por EditorConfig; se renombró correctamente a `.editorconfig`.
+14. Queda cumplido el criterio `Rutinas/horarios con estados mínimos Idle/Walking/Working/Sleeping`.
 15. Fase 5 permanece abierta.
 
 ## Decisiones vigentes
@@ -94,9 +110,10 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Mantener solo cinco Autoloads globales.
 - `TimeManager` es la única fuente de reloj/calendario; otros sistemas observan o invocan su API.
 - Ciclo visual y NPCs son sistemas locales/contextuales.
-- `NPCData` contiene identidad/configuración estable; la lógica de movimiento permanece en `NPCController` y la matemática pura en `NPCNavigationMath`.
+- `NPCData` contiene identidad/configuración estable; `ScheduleData` contiene horarios/destinos y `NPCStateMachine` contiene el estado runtime.
+- `Walking` es un estado transitorio: al llegar, el NPC adopta el estado de actividad programado (`Idle`, `Working` o `Sleeping`).
 - El primer NPC usa `NavigationAgent2D`; no sustituir navegación por movimiento directo ad hoc.
-- El `NavigationRegion2D` actual es geometría mínima de validación. Obstáculos/baking complejo pertenecen al crecimiento del mundo, no a este bloque.
+- El `NavigationRegion2D` actual es geometría mínima de validación. Obstáculos/baking complejo pertenecen al crecimiento del mundo, no a esta fase.
 - No introducir diálogo, relaciones, quests, economía ni tecnologías antes de Fase 6.
 - `StorageProvider.scope_id` limita redes de almacenamiento por contexto/zona.
 - Dependencias entre escenas deben preferir inyección tipada, contratos o grupos con semántica explícita frente a `NodePath` frágiles.
@@ -109,13 +126,13 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 ## Próximo bloque — Fase 5
 
-1. Crear `ScheduleData` mínimo y una representación data-driven de franjas/acciones sin diálogos ni quests.
-2. Introducir estados explícitos mínimos `Idle`, `Walking`, `Working`, `Sleeping` para el NPC.
-3. Hacer que Hermano Aldren seleccione destino/estado según `TimeManager` y horario, sin duplicar tiempo.
-4. Mantener navegación en `NavigationAgent2D` y evitar bloques gigantes `if/else`.
-5. Añadir tests puros de selección de rutina y aceptación de escena/estado.
-6. Validar quality gate y CI completo.
-7. Después implementar persistencia mínima de posición/estado de NPCs y ejecutar aceptación final antes de cerrar Fase 5.
+1. Añadir snapshot/restauración mínima de NPC (`id`, posición, estado actual/pending y destino cuando aplique) sin almacenar datos derivados innecesarios.
+2. Integrar el NPC como `save_provider` local compatible con `SaveManager`, sin añadir Autoloads.
+3. Probar save/load de posición y estado y que, tras restaurar, las futuras señales de `TimeManager` vuelven a gobernar la rutina.
+4. Ejecutar test de aceptación final de Fase 5: reloj + día/noche + sueño + navegación + rutina + persistencia NPC.
+5. Validar `gdscript-quality`, importación, smoke test y suite headless.
+6. Solo si todos los criterios quedan en `[x]`, sincronizar `README.md`, `ROADMAP.md`, `DEV_MEMORY.md` y `CHANGELOG.md` y cerrar Fase 5.
+7. No entrar en diálogo, relaciones, quests, economía ni tecnologías hasta abrir Fase 6.
 
 ## Regla de continuidad
 
