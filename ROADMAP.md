@@ -67,7 +67,7 @@ Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimizaci�
 ### Track 8A — Gameplay Depth & Feel
 Fuente: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
 
-- [x] **8A.1 — Descomposición acelerada:** `decay_percent: int` 0–100, `age_minutes: int`, estados Fresh/Fading/Decomposed/Rotten, pérdida de calidad efectiva y tasas crecientes 0–24 / 24–48 / 48–72 / >72 h. Grandes saltos de tiempo son deterministas. PR #57, CI `33334955947` verde antes del cierre documental.
+- [x] **8A.1 — Descomposición acelerada:** `decay_percent: int` 0–100, `age_minutes: int`, estados Fresh/Fading/Decomposed/Rotten, pérdida de calidad efectiva y tasas crecientes 0–24 / 24–48 / 48–72 / >72 h. Grandes saltos de tiempo son deterministas. PR #57, CI final pre-merge `33335150259` verde.
 - [ ] **8A.2 — Conservación:** modificadores data-driven de tecnología, utensilios e instalaciones; nunca rejuvenecen el cadáver.
 - [ ] **8A.3 — Agricultura mínima:** `fodder_turnip_seed` → plantar → crecimiento por `TimeManager` → cosecha → persistencia.
 - [ ] **8A.4 — Recurso multiuso:** nabo forrajero comprable/vendible, almacenamiento y cocina reutilizando crafting; cultivar debe ser la estrategia sostenible.
