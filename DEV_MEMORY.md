@@ -10,10 +10,10 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Fase activa: **Fase 6 — RPG**
 - Estado Fase 6: **diálogo bilingüe, relaciones y condiciones narrativas contextuales completados y validados**; quests, economía y tecnologías siguen pendientes.
 - Fuente de verdad funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
-- Fuente narrativa de Fase 6: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**.
+- Fuente narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**, versión canónica spoiler-light.
 - Política concreta de idiomas: `LOCALIZATION.md`.
 - Último bloque funcional: `e1a19343e8303d1b28188a2a38c559d788c8087d`.
-- Última validación funcional y de calidad: `Godot CI` run `33299990183`, `success` en `gdscript-quality` y `validate-and-test`.
+- Última validación funcional y de calidad: `Godot CI` run `33299990183`, `success` en ambos jobs.
 
 ## Fases completadas
 
@@ -46,49 +46,49 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - NPCData/navegación: `03986401968c83b79527d15f47217f090de43ab2`, run `33296131085`, `success`.
 - Horarios/estados: `82f5ccee1e109e2ad702532b7301922124548c7b`, run `33296648630`, `success`.
 - Persistencia NPC y aceptación: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`, `success`.
-- El runner ejecuta suites después de inicializar `SceneTree`, permitiendo tests integrales con lifecycle real.
 
 ## Fase 6 — RPG — ACTIVA
 
 ### Bloque 1 — Foundation de diálogo + localización ES/EN
 
-1. Idiomas iniciales oficiales: inglés (`en`) y español (`es`), fallback inglés.
-2. `LocalizationService` encapsula `TranslationServer`; no se añade Autoload.
-3. `DialogueConditionData`, `DialogueOptionData`, `DialogueNodeData` y `DialogueData` son Resources tipados.
-4. `DialogueService` mantiene el grafo/estado runtime como lógica pura.
-5. `DialogueController` es UI local y permite cambio ES/EN sin mutar el grafo activo.
-6. Hermano Aldren tiene un primer diálogo original data-driven.
-7. Tests de foundation y gameplay real en `world.tscn`.
-8. Implementación final: `46a37e00c2ad968e91834da5577a6f512a28f0a9`.
-9. Validación: run `33298737838`, ambos jobs `success`.
+- `LocalizationService` encapsula `TranslationServer`; no hay Autoload nuevo.
+- `DialogueConditionData`, `DialogueOptionData`, `DialogueNodeData` y `DialogueData` son Resources tipados.
+- `DialogueService` mantiene el grafo/estado runtime como lógica pura.
+- `DialogueController` es UI local y permite cambio ES/EN sin mutar el grafo activo.
+- Hermano Aldren tiene un primer diálogo original data-driven.
+- Implementación final: `46a37e00c2ad968e91834da5577a6f512a28f0a9`.
+- Validación: run `33298737838`, ambos jobs `success`.
 
 ### Bloque 2 — Foundation de relaciones
 
-1. `RelationshipData` define relaciones por ID estable y rango 0-100.
-2. `RelationshipService` es puro, aplica cambios y clampa 0-100.
-3. `RelationshipController` es local/contextual en `world.tscn`.
-4. Hermano Aldren dispone de relación data-driven inicial 0.
-5. `RELATIONSHIP_MIN` desbloquea contenido de diálogo sin depender de texto.
-6. `test_relationships.gd` cubre rango, clamp y desbloqueo.
-7. Implementación final: `fc446609004ea8031903c1c529144743cd963e51`.
-8. Validación: run `33299277228`, ambos jobs `success`.
+- `RelationshipData` define relaciones por ID estable y rango 0-100.
+- `RelationshipService` es puro y clampa 0-100.
+- `RelationshipController` es local/contextual en `world.tscn`.
+- `RELATIONSHIP_MIN` desbloquea opciones sin depender de texto.
+- Implementación final: `fc446609004ea8031903c1c529144743cd963e51`.
+- Validación: run `33299277228`, ambos jobs `success`.
 
 ### Bloque 2B — Valdeniebla y condiciones contextuales
 
-1. `HISTORIA_PRINCIPAL.md` incorpora la propuesta narrativa **El Cementerio de Valdeniebla**, con comedia negra, misterio progresivo, Aldren, María, Gregorio, Elvira, Morvan, Sociedad del Velo y El Cuervo.
-2. La implementación inmediata se limita al **Acto 1 — El Trabajo Absurdo**; los actos 2 y 3 permanecen como diseño narrativo y no fuerzan sistemas de fases posteriores.
-3. Los nuevos aldeanos del documento no sustituyen automáticamente a Mara Vell, Oren Brask y Silas Crow del master; se evaluarán dentro del objetivo final de 8–10 NPCs.
-4. `DialogueConditionData` soporta ahora `FLAG`, `RELATIONSHIP_MIN`, `HAS_ITEM`, `TIME_OF_DAY` y `QUEST_FLAG`.
-5. `TIME_OF_DAY` usa inicio inclusivo/final exclusivo y soporta rangos que cruzan medianoche.
-6. `HAS_ITEM` evalúa cantidades desde un snapshot de inventario contextual.
-7. `QUEST_FLAG` consume `context["quest_flags"]`, preparado para el futuro `quest_controller` sin acoplar la foundation de diálogo a quests.
-8. `DialogueInteractable` construye contexto desde relaciones, inventario del actor, `TimeManager` y un futuro controller de quests si existe.
-9. El diálogo de Aldren añade una opción nocturna 22:00–06:00. La respuesta española procede del diseño narrativo: «No te quedes despierto. Lo que sale de noche no es amable.»; inglés usa su traducción equivalente.
-10. `test_dialogue_conditions.gd` cubre `HAS_ITEM`, `TIME_OF_DAY`, cruce de medianoche, `QUEST_FLAG` y la opción nocturna real de Aldren.
-11. `gdscript-quality` incluye el test nuevo y todos los scripts modificados.
-12. Documento narrativo: `cf1e6fbaa6f562ca4d3a005496354ac996168ace`.
-13. Implementación funcional: `e1a19343e8303d1b28188a2a38c559d788c8087d`.
-14. Validación: `Godot CI` run `33299990183`, ambos jobs `success`.
+- `DialogueConditionData` soporta `FLAG`, `RELATIONSHIP_MIN`, `HAS_ITEM`, `TIME_OF_DAY` y `QUEST_FLAG`.
+- `TIME_OF_DAY` usa inicio inclusivo/final exclusivo y soporta rangos que cruzan medianoche.
+- `DialogueInteractable` construye contexto desde relaciones, inventario del actor, `TimeManager` y futuro controller de quests.
+- Aldren tiene una opción nocturna 22:00–06:00 con texto localizado EN/ES.
+- `test_dialogue_conditions.gd` cubre inventario, hora, cruce de medianoche, `QUEST_FLAG` e integración real.
+- Implementación funcional: `e1a19343e8303d1b28188a2a38c559d788c8087d`.
+- Validación: run `33299990183`, ambos jobs `success`.
+
+### Dirección narrativa revisada
+
+- La propuesta narrativa v1 contenía revelaciones demasiado explícitas para alguien que quiere jugar el proyecto sin spoilers.
+- `HISTORIA_PRINCIPAL.md` se redefine como documento canónico **spoiler-light**.
+- Mantiene Valdeniebla, el cementerio, Aldren, el tono de comedia negra y misterio progresivo, y la estructura general por actos.
+- No fija públicamente culpables, identidades ocultas, naturaleza exacta del misterio, lealtades finales ni finales concretos.
+- Ningún personaje debe presentarse demasiado pronto como «villano verdadero»; las perspectivas deben poder contener razones válidas y errores simultáneamente.
+- Las pistas importantes deben admitir más de una interpretación cuando aparecen.
+- Los flags narrativos deben describir hechos observados (`read_old_register`, `saw_npc_at_cemetery_night`) y no conclusiones (`npc_is_traitor`).
+- Evitar spoilers en nombres de Resources, archivos, IDs, tests y comentarios.
+- La verdad de fondo solo se concreta cuando una implementación jugable la necesita y debe ser compatible con todas las pistas previas.
 
 ## Decisiones vigentes
 
@@ -101,12 +101,13 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Cambiar idioma no puede alterar grafo, quest IDs, relaciones, saves ni progreso.
 - Relaciones usan IDs estables y rango 0-100.
 - Condiciones narrativas consumen snapshots/contextos; no mantienen referencias directas a inventario, tiempo, relaciones o quests.
-- `HISTORIA_PRINCIPAL.md` define contenido narrativo; `ROADMAP.md` sigue siendo la autoridad del orden de implementación.
-- Durante el siguiente bloque se implementará solo una quest mínima del Acto 1 con Aldren; no añadir todavía los tres nuevos aldeanos ni eventos de Actos 2/3.
+- `HISTORIA_PRINCIPAL.md` define dirección narrativa sin revelar respuestas finales; `ROADMAP.md` gobierna el orden de implementación.
+- Fase 6 debe construir primero un Acto 1 pequeño y jugable, no escribir contenido masivo de actos posteriores.
+- La primera quest debe parecer un encargo cotidiano y descubrir como máximo una irregularidad observable; no debe explicar el misterio central.
 - La UI observa modelos/servicios y no posee estado de negocio.
 - Datos de gameplay deben ser Resources tipados cuando corresponda.
 - Lógica pura debe ser testeable de forma aislada siempre que sea posible.
-- `gdscript-quality` es un gate adicional; la autoridad funcional sigue siendo importación/smoke/tests de Godot.
+- `gdscript-quality` es gate adicional; autoridad funcional: importación, smoke test y tests Godot.
 - No introducir sistemas de Fase 7/8 durante Fase 6.
 
 ## Criterios restantes de Fase 6
@@ -120,13 +121,14 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 ## Próximo bloque — Fase 6
 
-1. Crear `QuestData`, objetivos/estado runtime y un `QuestService` puro con estados `unavailable`, `active`, `completed`.
-2. Usar IDs estables y texto por claves de traducción; la quest no debe depender de idioma.
-3. Integrar una primera quest de Hermano Aldren basada en el Acto 1 de Valdeniebla.
-4. Diseñar recompensas idempotentes desde el principio: una recompensa no puede reclamarse/aplicarse dos veces.
-5. Exponer `quest_flags` al contexto de diálogo mediante un controller local, aprovechando `QUEST_FLAG` ya implementado.
-6. Añadir tests puros + integración y ampliar quality gate.
-7. No abrir economía ni tecnologías hasta validar la foundation de quests.
+1. Crear `QuestData`, objetivos/estado runtime y `QuestService` puro con estados `unavailable`, `active`, `completed`.
+2. Usar IDs neutrales, estables y sin spoilers; texto por claves de traducción.
+3. Integrar una primera quest de Aldren del Acto 1 basada en un trabajo normal del cementerio.
+4. Introducir como máximo una anomalía observable como resultado del encargo; no resolver su significado.
+5. Diseñar recompensas idempotentes desde el principio.
+6. Exponer `quest_flags` al diálogo mediante controller local, aprovechando `QUEST_FLAG`.
+7. Añadir tests puros + integración y ampliar quality gate.
+8. No abrir economía ni tecnologías hasta validar quests.
 
 ## Regla de continuidad
 
@@ -137,5 +139,5 @@ Al retomar:
 4. Implementar un bloque coherente y pequeño.
 5. Ejecutar quality gate, importación, smoke test y tests.
 6. Corregir errores críticos antes de avanzar.
-7. Actualizar `DEV_MEMORY.md`, `ROADMAP.md`, `CHANGELOG.md` y `README.md` cuando cambie el estado.
+7. Actualizar documentación cuando cambie el estado.
 8. No marcar una fase como completada hasta cumplir todos sus criterios.

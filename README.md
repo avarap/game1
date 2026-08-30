@@ -9,12 +9,12 @@ El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_
 - Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio, 5 — Simulación**
 - Fase activa: **6 — RPG**
 - Bloques validados: diálogo bilingüe EN/ES, relaciones 0-100 y condiciones narrativas contextuales.
-- Fuente narrativa: **`HISTORIA_PRINCIPAL.md` — El Cementerio de Valdeniebla**.
+- Fuente narrativa: **`HISTORIA_PRINCIPAL.md` — El Cementerio de Valdeniebla**, en versión spoiler-light.
 - Próximo bloque: foundation de quests del Acto 1 con Hermano Aldren.
 - Godot objetivo de CI: **4.5**
 - Rama principal: `main`
 - Memoria de desarrollo: `DEV_MEMORY.md`
-- Última validación: **Godot CI `33299990183` — success**
+- Última validación funcional: **Godot CI `33299990183` — success**
 
 ## Ejecutar
 
@@ -44,9 +44,9 @@ La UI técnica muestra botones `ES` / `EN` para cambiar idioma en runtime. El di
 
 ## Narrativa
 
-`HISTORIA_PRINCIPAL.md` contiene la propuesta narrativa de **El Cementerio de Valdeniebla**: comedia negra con misterio progresivo, tres actos y personajes como Hermano Aldren, María la Panadera, Tío Gregorio, Doña Elvira, el Alcalde Morvan, la Sociedad del Velo y El Cuervo.
+`HISTORIA_PRINCIPAL.md` contiene la dirección narrativa de **El Cementerio de Valdeniebla**. El documento se mantiene deliberadamente sin spoilers fuertes: describe tono, personajes, tensiones y estructura general, pero no revela culpables, identidades ocultas, naturaleza final del misterio ni finales concretos.
 
-El desarrollo técnico no implementa los tres actos de golpe. Durante Fase 6 se prioriza el **Acto 1 — El Trabajo Absurdo**, y los nuevos NPCs se introducirán gradualmente dentro del objetivo global de 8–10 NPCs cuando sus sistemas estén maduros.
+La historia se integra con el trabajo cotidiano del cementerio. La prioridad es un Acto 1 pequeño en el que reparar, enterrar, fabricar, observar horarios y hablar con habitantes produzca preguntas nuevas de forma natural. Las pistas deben poder admitir más de una interpretación y ningún personaje se presenta demasiado pronto como dueño de toda la verdad.
 
 ## Loop jugable disponible
 
@@ -63,6 +63,8 @@ Los Autoloads se limitan a cinco servicios globales: `EventBus`, `GameManager`, 
 `SaveManager` agrega estado persistente mediante providers del grupo `save_provider`. `TimeManager` es la única fuente de reloj/calendario. `TranslationServer` es la autoridad de idioma del motor; `LocalizationService` solo encapsula la política EN/ES y no se registra como Autoload.
 
 Los datos de diálogo almacenan claves de traducción y referencias por ID. `DialogueInteractable` construye un snapshot contextual para `DialogueService`, por lo que el servicio no depende directamente del inventario, reloj, relaciones o quests.
+
+La narrativa usa IDs neutrales y flags de hechos observados para evitar acoplar lógica o persistencia a una interpretación concreta del misterio.
 
 ## Calidad y tests
 
@@ -87,7 +89,7 @@ godot --headless --path . --quit-after 3
 ## Documentación
 
 - `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`: fuente de verdad funcional y arquitectónica.
-- `HISTORIA_PRINCIPAL.md`: diseño narrativo de Valdeniebla y estructura por actos.
+- `HISTORIA_PRINCIPAL.md`: dirección narrativa spoiler-light de Valdeniebla.
 - `LOCALIZATION.md`: política concreta EN/ES, claves y reglas de localización.
 - `GAME_DESIGN.md`: diseño resumido del juego.
 - `ARCHITECTURE.md`: decisiones técnicas.

@@ -1,292 +1,297 @@
 # Historia Principal — El Cementerio de Valdeniebla
 
-**Documento de diseño narrativo para el vertical slice**  
-**Versión**: 1.0  
+**Documento de dirección narrativa del vertical slice**  
+**Versión**: 2.0  
 **Fecha**: 30 Agosto 2026  
-**Estado**: Propuesta para Fase 6 (RPG / Diálogos)
+**Estado**: Dirección narrativa canónica, deliberadamente sin spoilers
 
 ---
 
-## Resumen Ejecutivo
+## Política de spoilers
 
-**Tono**: Comedia negra con misterio progresivo. Empieza ligero y absurdo, pero revela capas oscuras conforme avanza la historia.
+Este documento define tono, personajes, estructura dramática y reglas de diseño, pero **no documenta las respuestas definitivas del misterio**.
 
-**Premisa**: Llegas al Cementerio de Valdeniebla huyendo de tus problemas. Aceptas el trabajo de enterrador sin saber que el pueblo es un nido de secretos, conspiraciones y cadáveres que "no deberían estar aquí".
+Quedan deliberadamente fuera de este archivo:
 
-**Referentes**: *Disco Elysium* (humor + misterio), *What Remains of Edith Finch* (narrativa por capas), *Gravity Falls* (misterio con humor).
+- identidades ocultas;
+- culpables definitivos;
+- explicaciones completas de los fenómenos extraños;
+- lealtades finales de los personajes;
+- revelaciones de los últimos actos;
+- decisiones finales y consecuencias concretas.
 
----
+La intención es que incluso alguien que desarrolla o revisa el proyecto pueda conservar parte de la experiencia de descubrimiento al jugarlo.
 
-## Personajes Principales
-
-### Hermano Aldren (Tu Compinche)
-
-**Perfil básico**:
-- **Edad**: 50 y tantos
-- **Apariencia**: Barba canosa desaliñada, siempre con una taza de café en la mano, ojos cansados pero observadores
-- **Personalidad**: Sarcástico, directo, humor seco que usa para mantener a la gente a distancia
-
-**Frases características**:
-- *"No preguntes cómo murió. Pregúntate si pagó la lápida."*
-- *"Los muertos no se quejan, así que ya son más educados que la mitad del pueblo."*
-- *"Ah, el nuevo. Supongo que la carta de recomendación era real. Qué decepción."*
-
-**Arco narrativo**:
-- **Acto 1**: Tu jefe gruñón que te asigna tareas absurdas. Parece desinteresado.
-- **Acto 2**: Descubres que sabe mucho más de lo que dice. Su cinismo es una coraza.
-- **Acto 3**: Revela su verdadero conflicto: lleva 10 años buscando quién mató a su hermano, el anterior guardián del cementerio.
-
-**Secreto**: Aldren enterró a su propio hermano hace 10 años en una tumba sin nombre. Ese cuerpo fue el primero en "dar problemas".
+Cuando una verdad concreta sea necesaria para implementar gameplay, debe introducirse de la forma más local posible y evitar nombres de archivos, IDs o comentarios que revelen gratuitamente el misterio.
 
 ---
 
-### El Protagonista (Tú)
+## Resumen ejecutivo
 
-**Background**: Alguien con un pasado que prefiere no mencionar. Llegaste al pueblo en un carruaje de madrugada, con una carta de recomendación y deudas que no puedes pagar.
+**Tono**: comedia negra, vida cotidiana, misterio progresivo y melancolía ligera.
 
-**Motivación inicial**: Sobrevivir, ganar algo de dinero, pasar desapercibido.
+**Premisa**: el protagonista llega a Valdeniebla buscando un trabajo sencillo y discreto. Acaba como cuidador de un cementerio antiguo cuyo funcionamiento cotidiano está rodeado de costumbres que nadie explica del todo.
 
-**Evolución**: Te vuelves curioso. Empiezas a notar que los cadáveres tienen cosas raras, que algunos aldeanos vienen de noche a "visitar" tumbas que no son de sus familiares, que Aldren a veces habla solo... o con alguien que no ves.
+Al principio los problemas parecen administrativos: tumbas deterioradas, cadáveres, vecinos peculiares, falta de materiales y un superior con muy poca paciencia. Poco a poco aparecen contradicciones entre lo que la gente dice, lo que muestran los registros y lo que ocurre cuando cae la noche.
+
+La pregunta central no debe formularse pronto como «¿quién es el villano?», sino como:
+
+> **¿Por qué tantas personas necesitan que este cementerio siga funcionando de una forma concreta?**
 
 ---
 
-## Personajes Secundarios (Aldeanos)
+## Pilares narrativos
+
+### 1. El trabajo cotidiano sostiene el misterio
+
+La narrativa debe nacer de acciones que el jugador ya realiza: enterrar, reparar, fabricar, ordenar registros, hablar con vecinos, encontrar objetos y decidir en quién confiar.
+
+No separar «gameplay normal» e «historia principal» como dos experiencias distintas.
+
+### 2. Nadie posee toda la verdad
+
+Los personajes pueden ser sinceros y estar equivocados al mismo tiempo. Una explicación coherente no implica que sea completa.
+
+El jugador debe poder escuchar versiones incompatibles sin que el juego indique inmediatamente cuál es correcta.
+
+### 3. Humor antes que exposición
+
+Aldren y los habitantes deben seguir siendo personas antes que dispensadores de lore. Una conversación puede ser divertida, incómoda o absurda aunque contenga una pista importante.
+
+### 4. El misterio debe poder ignorarse durante un rato
+
+El jugador puede concentrarse en reparar el cementerio, mejorar herramientas o fabricar objetos sin que la trama lo arrastre constantemente.
+
+La curiosidad debe empujar más que la urgencia artificial.
+
+### 5. Las decisiones no se etiquetan como buenas o malas
+
+Las consecuencias deben derivarse de intereses, relaciones, información disponible y prioridades del jugador. Evitar botones de «decisión correcta» y «decisión malvada».
+
+---
+
+## Personajes principales
+
+### Hermano Aldren
+
+**Edad aparente**: cincuenta y tantos.  
+**Rol inicial**: responsable de la capilla, los registros y buena parte de las reglas no escritas del cementerio.  
+**Personalidad**: sarcástico, observador, práctico y poco dado a explicaciones largas.
+
+**Imagen pública**:
+- conoce demasiado bien el cementerio;
+- tolera mal las preguntas innecesarias;
+- usa humor seco para evitar conversaciones personales;
+- parece distinguir con claridad qué reglas son importantes y cuáles son simple tradición.
+
+**Función narrativa**:
+- guía inicial sin convertirse en tutorial parlante;
+- relación que evoluciona mediante acciones y confianza;
+- fuente importante de información, pero nunca autoridad omnisciente;
+- su rutina y comportamiento pueden cambiar conforme avanza la partida.
+
+**Tono de sus diálogos**:
+- «No preguntes cómo murió. Pregunta si alguien pagó la lápida.»
+- «Los muertos no se quejan. Es una ventaja competitiva.»
+- «Si algo te susurra desde una tumba, primero comprueba que no sea Gregorio.»
+
+### El protagonista
+
+El jugador llega a Valdeniebla con una carta de recomendación, problemas económicos y poco interés en explicar su pasado.
+
+Su motivación inicial es simple: trabajar, cobrar y pasar desapercibido.
+
+El juego no debe imponer rápidamente una personalidad heroica. La implicación en los asuntos del pueblo surge porque el trabajo hace imposible no observar ciertas cosas.
+
+---
+
+## Habitantes relevantes
+
+Estos personajes forman parte de la dirección narrativa, pero su incorporación al vertical slice debe ser gradual y respetar el límite técnico de NPCs.
 
 ### María la Panadera
-- **Apariencia inicial**: Simpática, te da pan gratis, pregunta demasiado sobre los muertos
-- **Verdad**: Parte de una red de contrabando que usa el cementerio para pasar objetos ilegales (los "entrega" en tumbas falsas)
-- **Diálogo típico**: *"¡Buenos días, cariño! ¿Qué tal va el trabajo? Oye, ¿has notado algo... interesante últimamente?"*
+
+Amable, sociable y generosa con alguien recién llegado. Tiene una curiosidad poco habitual por lo que ocurre alrededor del cementerio.
+
+**Uso jugable**: economía cotidiana, rumores, favores pequeños y conversaciones que pueden adquirir otro significado según lo que el jugador haya visto.
 
 ### Tío Gregorio
-- **Apariencia inicial**: El borracho del pueblo. Te cuenta "historias" sobre el cementerio
-- **Verdad**: Ex-guardián del cementerio que perdió la cordura (o eso dice Aldren). En realidad está cuerdo y lleva años investigando en secreto
-- **Diálogo típico**: *"¿Sabes lo que vi anoche? No, no, no fue el vino. Fue... ellos. Los que caminan de noche."*
+
+Habitual de la taberna y narrador incansable de historias que nadie parece tomar completamente en serio.
+
+**Uso jugable**: rumores, versiones alternativas de acontecimientos y pistas cuya fiabilidad nunca está garantizada de antemano.
 
 ### Doña Elvira
-- **Apariencia inicial**: Viuda rica que visita la tumba de su esposo todos los días. Demasiado frecuente
-- **Verdad**: No está visitando a su esposo: está intentando desenterrarlo porque él escondió algo antes de morir
-- **Diálogo típico**: *"Buenas tardes, joven. Disculpe la molestia. ¿Podría decirme si el entierro de hoy... fue satisfactorio?"*
+
+Viuda acomodada que visita el cementerio con una frecuencia suficiente para llamar la atención de un cuidador observador.
+
+**Uso jugable**: conversaciones condicionadas por objetos, horarios y decisiones previas.
+
+### Alcalde Morvan
+
+Defiende cambios administrativos y económicos que chocan con las costumbres de Aldren y de otros habitantes.
+
+Debe funcionar como **fuente de conflicto político y práctico**, no presentarse automáticamente como antagonista verdadero. Algunas de sus críticas al cementerio pueden ser razonables.
 
 ---
 
-## Villanos
+## Fuerzas y tensiones de Valdeniebla
 
-### El Alcalde Morvan
-- **Perfil**: Carismático, populista, quiere "modernizar" el cementerio (cerrarlo, vender el terreno)
-- **Apariencia**: Político corrupto normal
-- **Verdad**: Quiere lo que hay debajo del cementerio. Su familia lleva generaciones sacrificando gente para alimentar "lo que hay debajo". Cree que controla algo poderoso
-- **Frase**: *"El progreso no puede detenerse por supersticiones de viejos, Aldren."*
+El pueblo contiene intereses incompatibles alrededor del cementerio:
 
-### La Sociedad del Velo
-- **Perfil**: Grupo secreto de aldeanos que protegen el cementerio. Aldren fue miembro
-- **Conflicto**: Están divididos. Algunos quieren que tú tomes el relevo, otros creen que deberías desaparecer
-- **Rol**: Aliados ambiguos. No siempre actúan en tu interés
+- tradición frente a modernización;
+- memoria frente a conveniencia;
+- superstición frente a evidencia;
+- secretos familiares frente a interés público;
+- necesidad económica frente a respeto por los muertos;
+- versiones oficiales frente a experiencias personales.
 
-### El Cuervo
-- **Perfil**: Figura misteriosa que deja notas anónimas en las tumbas
-- **Identidad real**: (Opción C recomendada) Tío Gregorio, que en realidad está cuerdo y lleva años investigando en secreto
-- **Función**: Proporciona pistas al jugador, mantiene el misterio
+Pueden existir grupos, acuerdos antiguos o personas que compartan información, pero su naturaleza exacta no debe explicarse antes de que el jugador tenga motivos para investigarla.
 
 ---
 
-## Estructura Narrativa por Actos
+## Estructura narrativa
 
-### ACTO 1 — "El Trabajo Absurdo" (Días 1-7)
+### Acto 1 — El Trabajo Absurdo
 
-**Tono**: Comedia ligera, tutorial narrativo
+**Función**: tutorial narrativo y establecimiento de Valdeniebla.
 
-**Eventos principales**:
-1. Aldren te recibe con sarcasmo
-2. Te asigna tareas mundanas: cavar, limpiar, recibir el primer cuerpo
-3. **Primer cadáver**: un mercader aparentemente normal
-4. Conoces a los primeros aldeanos (María, Gregorio, Elvira)
+El jugador aprende el trabajo mediante problemas concretos:
 
-**Giros sutiles**:
-- El mercader tenía un objeto extraño en el bolsillo
-- Doña Elvira deja "ofrendas" que no son flores
-- Tío Gregorio menciona "los que caminan de noche" como si fuera una broma, pero Aldren se pone serio
+1. llegada y presentación de Aldren;
+2. limpieza y reparación básica del cementerio;
+3. recolección y crafting necesarios para trabajar;
+4. recepción y preparación de un primer cadáver;
+5. primeros encuentros con habitantes;
+6. aparición de una pequeña irregularidad que puede parecer trivial;
+7. primeras conversaciones cuya respuesta cambia según hora, objetos o relación.
 
-**Clímax del Acto 1**:
-Aldren te pilla con el objeto del mercader. Suspira y dice:
-> *"Maldita sea. Pensé que tendríamos más tiempo. Escucha, muchacho. Hay cosas en este cementerio que no están en el manual. Si quieres seguir trabajando aquí, necesitas saber la verdad. Pero la verdad tiene un precio."*
+El acto debe terminar con **una pregunta nueva**, no con una explicación del misterio.
 
----
+### Acto 2 — Las Versiones de Valdeniebla
 
-### ACTO 2 — "Los Secretos de Valdeniebla" (Días 8-20)
+**Función**: convertir las rarezas aisladas en contradicciones sistémicas.
 
-**Tono**: Misterio creciente, humor negro, tensión
+El jugador obtiene acceso a más personas, zonas, registros y tareas. Las explicaciones empiezan a entrar en conflicto y algunas acciones aparentemente rutinarias adquieren consecuencias inesperadas.
 
-**Revelaciones**:
-- El cementerio es una **barrera**. Algunos cuerpos "no deberían descansar". Si no se preparan correctamente, "dan problemas" por la noche
-- Los aldeanos no son lo que parecen (María contrabandista, Elvira quiere desenterrar a su esposo, Gregorio es ex-guardián)
+El objetivo dramático es que el jugador construya su propia hipótesis y pueda equivocarse razonablemente.
 
-**Giros de guion**:
-- Aldren tiene un hermano enterrado aquí. Murió hace 10 años
-- El hermano de Aldren fue el último guardián antes que él. Murió "protegiendo la barrera"
-- Aldren confiesa: *"Mi hermano no murió de forma natural. Lo mataron. Y yo he pasado 10 años buscando quién."*
+### Acto 3 — Lo que Decides Conservar
 
-**Clímax del Acto 2**:
-El Alcalde Morvan anuncia que va a cerrar el cementerio. Aldren te dice:
-> *"Tenemos 7 días antes de que Morvan envíe a sus hombres. Si no encontramos la prueba de lo que hizo con mi hermano, todo se pierde."*
+**Función**: hacer que relaciones, conocimientos y decisiones acumuladas tengan consecuencias.
+
+Las respuestas importantes deben llegar a través de gameplay, exploración y confrontación de evidencias, no mediante una única exposición final.
+
+Incluso al cerrar el arco principal puede mantenerse cierta ambigüedad sobre aspectos secundarios del mundo.
 
 ---
 
-### ACTO 3 — "La Barrera" (Días 21-30)
+## Reglas para construir el misterio
 
-**Tono**: Tensión alta, revelaciones finales, decisión moral
-
-**Revelaciones finales**:
-- El cementerio está construido sobre una **grieta en la realidad**
-- Los muertos mal preparados la agrandan. Los objetos que la Sociedad del Velo protege son "sellos"
-- El hermano de Aldren descubrió que el Alcalde Morvan (o su familia) lleva generaciones sacrificando gente para alimentar "lo que hay debajo"
-- **El Cuervo** es Tío Gregorio, que está cuerdo y lleva años investigando
-
-**Decisiones morales**:
-1. ¿Entregas a Morvan a la Sociedad del Velo (linchamiento) o lo llevas ante la justicia imperial?
-2. ¿Revelas la verdad sobre la barrera a todo el pueblo (caos) o la mantienes en secreto?
-3. ¿Ayudas a Aldren a desenterrar a su hermano para darle paz, o lo dejas descansar?
-
-**Clímax final**:
-Morvan intenta abrir la grieta por la fuerza. Tú, Aldren y la Sociedad del Velo debéis detenerlo en una noche crítica (evento nocturno especial: preparar X tumbas, craftear Y sellos, tomar Z decisiones rápidas).
-
-**Final abierto**:
-Dependiendo de tus decisiones:
-- El cementerio se salva... o no
-- Aldren puede retirarse en paz... o quedarse un poco más
-- Tú puedes irte... o convertirte en el nuevo guardián
+1. **Toda pista importante debe tener al menos dos lecturas posibles cuando aparece.**
+2. **No introducir una organización, fenómeno o personaje misterioso solo para explicar otro misterio.** Cada elemento nuevo debe tener una función jugable o humana independiente.
+3. **Las contradicciones deben ser intencionadas y rastreables**, no errores de continuidad.
+4. **Los objetos cuentan historia.** Inventario, tumbas, herramientas, cartas y registros pueden aportar contexto sin diálogo expositivo.
+5. **Los horarios importan.** Ver a alguien en un lugar inesperado puede ser una pista tan válida como una conversación.
+6. **Las relaciones cambian lo que se comparte**, no necesariamente la veracidad de lo compartido.
+7. **La ausencia de información también puede ser significativa**, pero nunca debe bloquear el progreso principal por una pista extremadamente oscura.
+8. **El sobrenatural debe escalar lentamente.** Primero anomalías discutibles; después hechos más difíciles de explicar.
+9. **Evitar un villano inequívoco demasiado pronto.** Los conflictos deben tener argumentos comprensibles desde más de una perspectiva.
+10. **No poner spoilers en IDs técnicos.** Preferir IDs neutrales como `aldren_record_question` frente a nombres que describan una revelación futura.
 
 ---
 
-## Integración con Mecánicas de Juego
+## Integración con mecánicas
 
-| Mecánica | Justificación Narrativa |
-|---|---|
-| **Ciclo día/noche** | De día: rutina, aldeanos, humor. De noche: eventos sobrenaturales, investigación, peligro |
-| **Sueño / energía** | Aldren te advierte: *"No te quedes despierto. Lo que sale de noche no es amable."* |
-| **Crafting** | Crafteas sellos, objetos rituales, herramientas especiales para "preparar" cuerpos problemáticos |
-| **Inventario** | Los objetos de los muertos son pistas. Algunos son peligrosos si los llevas contigo de noche |
-| **NPCs (Aldren)** | Su rutina cambia según el acto. Acto 1: relajado. Acto 2: estresado. Acto 3: desesperado |
-| **Guardado** | El `SaveManager` guarda el estado del cementerio, decisiones con aldeanos, y tu "nivel de conocimiento" |
-
----
-
-## Ejemplo de Diálogo Data-Driven
-
-**Contexto**: Acto 1, día 3. El jugador acaba de enterrar al mercader. Doña Elvira aparece.
-
-### Nodo: `elvira_encuentro_1`
-**Hablante**: Doña Elvira  
-**Texto**: *"Buenas tardes, joven. Disculpe la molestia. ¿Podría decirme si el entierro de hoy... fue satisfactorio?"*
-
-**Opciones**:
-
-1. **Opción 1**: *"Todo en orden, señora. ¿Conocía al difunto?"*
-   - **Condiciones**: Ninguna
-   - **Siguiente nodo**: `elvira_nerviosa`
-   - **Respuesta de Elvira**: *"No, no, solo... curiosidad morbosa, ya sabe. Uno se aburre tanto en esta casa vacía."*
-   - **Comentario de Aldren** (desde lejos): *"Mentira. La muy zorra lo conocía."*
-
-2. **Opción 2**: *"¿Por qué lo pregunta?"*
-   - **Condiciones**: Ninguna
-   - **Siguiente nodo**: `elvira_evade`
-   - **Respuesta de Elvira**: *"Solo... asegurarme de que descansa en paz. Buenas tardes."*
-   - **Acción**: Elvira se va rápido
-   - **Comentario de Aldren**: *"Interesante. Lleva tres días preguntando lo mismo."*
-
-3. **Opción 3**: *"¿Buscaba esto?"* (Mostrar anillo del mercader)
-   - **Condiciones**: `HAS_ITEM: anillo_mercader`
-   - **Siguiente nodo**: `elvira_panic`
-   - **Respuesta de Elvira**: *"¿Dónde...? No importa. Si lo encontró, es suyo. Buenas tardes."*
-   - **Acción**: Elvira se va apresurada, `SET_FLAG: elvira_descubierta`
-   - **Comentario de Aldren**: *"Bien jugado. Ahora sabemos que ella le dio ese anillo. Y eso complica las cosas."*
+| Mecánica | Función narrativa |
+| --- | --- |
+| Ciclo día/noche | Cambia rutinas, disponibilidad de conversaciones y percepción del mismo lugar. |
+| Sueño / energía | Obliga a decidir cuánto tiempo dedicar al trabajo y cuánto a investigar. |
+| Cementerio | El estado físico del lugar refleja progreso y desbloquea nuevas situaciones. |
+| Crafting | Resolver encargos cotidianos y, progresivamente, necesidades menos convencionales. |
+| Inventario | Objetos encontrados pueden abrir opciones de diálogo o reinterpretar información previa. |
+| Relaciones | Determinan qué está dispuesto a contar o pedir cada NPC. |
+| Quests | Conectan trabajo práctico, relaciones y descubrimiento sin separar historia y gameplay. |
+| Guardado | Conserva decisiones, relaciones, quests y conocimiento relevante mediante IDs estables. |
 
 ---
 
-## Próximos Pasos para Fase 6
+## Alcance narrativo del vertical slice
 
-### Implementación técnica
+La prioridad inmediata es construir **un Acto 1 pequeño pero completo**, no escribir treinta días de contenido antes de validar los sistemas RPG.
 
-1. **Escribir los diálogos del Acto 1** (5-7 nodos iniciales con Aldren)
-2. **Crear los primeros 3 aldeanos** (María, Gregorio, Elvira) con sus propios `DialogueData`
-3. **Implementar condiciones de diálogo** basadas en:
-   - Hora del día (algunos aldeanos solo hablan de noche)
-   - Objetos en inventario (opciones especiales si tienes pistas)
-   - Progreso narrativo (Aldren cambia de tono tras el Acto 1)
-4. **Añadir un sistema de "secreto descubierto"** que desbloquee nuevas opciones de diálogo
+El vertical slice debe conseguir:
 
-### Archivos a crear
+- presentar a Aldren con una voz reconocible;
+- convertir una tarea de cementerio en la primera quest narrativa;
+- introducir al menos una irregularidad sin explicarla;
+- permitir una opción especial mediante inventario, hora o relación;
+- hacer que completar una quest cambie una conversación posterior;
+- cerrar el slice con curiosidad por seguir investigando.
 
-```
-data/dialogue/
-├── aldren_intro.tres          # Conversación inicial con Aldren
-├── aldren_acto1_final.tres    # Clímax del Acto 1
-├── elvira_encuentro.tres      # Primer encuentro con Doña Elvira
-├── maria_panadera.tres        # Diálogos con María
-└── gregorio_historias.tres    # "Historias" del Tío Gregorio
+Los habitantes adicionales se incorporarán solo cuando aporten una función jugable concreta y los sistemas de quests/economía estén estables.
+
+---
+
+## Directrices para Fase 6
+
+### Quests
+
+La primera quest de Aldren debe comenzar como un encargo perfectamente razonable relacionado con el cementerio. La capa de misterio aparece como consecuencia del trabajo, no como briefing inicial.
+
+Las quests deben usar IDs neutrales, texto localizado y estados persistentes.
+
+### Diálogos
+
+Mantener un único grafo por conversación con claves EN/ES. Las opciones pueden depender de:
+
+- relación;
+- inventario;
+- hora;
+- estado de quest;
+- flags narrativos estables.
+
+### Secretos y conocimiento
+
+No crear un gran `mystery_level` que simplifique toda la narrativa a un número. Preferir flags concretos que representen hechos que el jugador conoce o decisiones que ha tomado.
+
+Ejemplos técnicos seguros:
+
+```text
+noticed_unusual_mark
+read_old_register
+asked_aldren_about_rules
+saw_npc_at_cemetery_night
 ```
 
-### Tests a implementar
-
-```gdscript
-# tests/test_dialogue_conditions.gd
-func test_dialogue_option_requires_item():
-    # Verificar que una opción de diálogo solo aparece si el jugador tiene el objeto
-    pass
-
-func test_dialogue_option_requires_time_of_day():
-    # Verificar que una opción solo aparece en un momento específico del día
-    pass
-
-func test_dialogue_progression_unlocks_new_options():
-    # Verificar que descubrir un secreto desbloquea nuevas opciones
-    pass
-```
+Estos flags describen **lo observado**, no la interpretación verdadera.
 
 ---
 
-## Checklist de Implementación
+## Política de canon
 
-- [ ] Crear estructura de carpetas `data/dialogue/`
-- [ ] Escribir diálogo inicial con Aldren (Acto 1, Día 1)
-- [ ] Implementar `DialogueCondition` con soporte para `HAS_ITEM`, `TIME_OF_DAY`, `QUEST_FLAG`
-- [ ] Crear primer encuentro con Doña Elvira (con opción condicional basada en inventario)
-- [ ] Integrar `NPCDialogueComponent` en escena de Aldren
-- [ ] Conectar señales `dialogue_requested` y `dialogue_closed` con UI
-- [ ] Escribir test headless para validar condiciones de diálogo
-- [ ] Documentar en `DEV_MEMORY.md` el estado narrativo actual
+Son canon para producción:
 
----
+- Valdeniebla como escenario;
+- el cementerio como centro del loop narrativo;
+- Aldren como principal vínculo inicial;
+- comedia negra + misterio progresivo;
+- información parcial y perspectivas enfrentadas;
+- narrativa integrada con sistemas de gestión;
+- Acto 1 centrado en aprender el oficio y detectar que algo no encaja.
 
-## Notas de Producción
-
-### Escalabilidad narrativa
-Esta estructura permite:
-- **Expandir el vertical slice** a un juego completo añadiendo más actos
-- **Añadir más aldeanos** con sus propias agendas ocultas
-- **Crear misiones secundarias** basadas en las historias de los aldeanos
-- **Implementar múltiples finales** basados en decisiones acumuladas
-
-### Coherencia con arquitectura existente
-- **Sin nuevos Autoloads**: El sistema de diálogo usa `RefCounted` para el runner
-- **Data-driven**: Todos los diálogos son Resources editables en el inspector
-- **CI-friendly**: Los tests pueden validar lógica de diálogo sin cargar la escena completa
-- **Persistencia**: El estado narrativo (secretos descubiertos, decisiones tomadas) se integra con `SaveManager`
+Las respuestas finales del misterio **no quedan fijadas en este documento**. Deben concretarse únicamente cuando el gameplay necesite soportarlas y siempre preservando coherencia con las pistas ya mostradas.
 
 ---
 
-## Referencias y Inspiración
+## Referencias de tono y diseño
 
-### Narrativa
-- *Disco Elysium*: Diálogos con consecuencias, humor negro, misterio
-- *What Remains of Edith Finch*: Narrativa por capas, revelaciones progresivas
-- *Gravity Falls*: Misterio con humor, personajes excéntricos, secretos ocultos
-- *Pentiment*: Ambientación histórica, decisiones morales, consecuencias a largo plazo
-
-### Mecánicas
-- *Graveyard Keeper*: Gestión de cementerio, crafting, ciclo día/noche
-- *Stardew Valley*: Relación con NPCs, rutina diaria, progresión por estaciones
-- *Papers, Please*: Burocracia, decisiones morales, consecuencias sistémicas
+- *Disco Elysium*: personajes con perspectivas parciales y humor dentro de situaciones serias.
+- *Pentiment*: investigación basada en personas, contexto y decisiones sin verdad cómoda inmediata.
+- *Gravity Falls*: escalado gradual del misterio y humor de personajes.
+- *What Remains of Edith Finch*: información ambiental y narrativa por capas.
+- *Graveyard Keeper*: referencia estructural para gestión/cementerio, no para contenido narrativo protegido.
 
 ---
 
-**Fin del documento**
+**Fin del documento — versión sin spoilers**
