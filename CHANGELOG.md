@@ -16,6 +16,8 @@
 - **#25 Tileset exterior:** atlas original `256 x 256` con 64 tiles de `32 x 32` y documentación estable de celdas.
 - **8A.1 Descomposición acelerada:** `CorpseState` incorpora edad en minutos enteros, deterioro entero 0–100, cuatro estados legibles, aceleración por edad, calidad efectiva y persistencia determinista.
 - `TestCorpseDecomposition` valida bandas 0–24/24–48/48–72/>72 h, equivalencia entre saltos grandes y pequeños, thresholds y round-trip integer.
+- **8A.2 Conservación:** `PreservationModifiers` añade factores data-driven en basis points enteros para tecnología, instalación y utensilio, neutrales por defecto y multiplicativos.
+- `CorpseState` aplica conservación solo al deterioro futuro y persiste modificadores y resto fraccional; `TestCorpsePreservation` cubre neutralidad, reducción, composición, no-rewind, determinismo y round-trip.
 - Spec detallado de Phase 8A para conservación, agricultura/nabo multiuso, servicio funerario a las 18:00, comedero, rampa, cremación/investigación y aceptación integral.
 
 ### Changed
@@ -32,11 +34,12 @@
 - El contrato legacy de descomposición float lineal (`current_decay`/`decay_rate_per_hour`) se sustituye por `decay_percent: int` y `age_minutes: int`.
 - `CorpseData` usa `decay_percent` entero 0–100; los tests históricos de cementerio se migran al nuevo comportamiento.
 - No se implementa migración de saves legacy: no existen saves de jugadores que conservar.
+- Cambiar modificadores de conservación conserva el resto fraccional de deterioro acumulado para que aplicar una mejora no rejuvenezca ni perdone progreso previo.
 
 ### Design Decisions — Phase 8A
 - Descomposición híbrida: almacenamiento integer 0–100, estados Fresh/Fading/Decomposed/Rotten y aceleración con la edad.
 - Un acumulador privado entero conserva progreso subporcentual y evita depender de floats persistentes.
-- Conservación futura mediante multiplicadores de tecnología, utensilios e instalaciones; nunca rejuvenece.
+- Conservación mediante multiplicadores enteros de tecnología, utensilios e instalaciones; nunca rejuvenece y la rampa de entrega no aporta bonus.
 - Transporte funerario original al atardecer, objetivo 18:00; tras quest requiere alimento cultivable y debe ser exactly-once con sueño/time-jump/save-load.
 - Descarga inicial junto al camino; rampa desbloqueable dirige entregas al depósito sin bonus de conservación.
 - `fodder_turnip` será cultivable, comprable, vendible, almacenable y utilizable en cocina; cultivar es la estrategia sostenible y comprar una salida de emergencia.
@@ -54,6 +57,7 @@
 - Restaurar `world_location` no sobreescribe el estado persistente de Brother Aldren.
 - `zone_manager.gd` quedó normalizado por `gdformat` sin relajar el gate global.
 - Durante 8A.1 se corrigieron únicamente discrepancias mecánicas de longitud/formato detectadas por el gate antes de aceptar el bloque.
+- **8A.2:** `set_preservation_modifiers()` ya no reinicia `_preservation_remainder`; se evita descartar deterioro subporcentual acumulado al cambiar mejoras de conservación.
 
 ### Validated
 - Fase 0: run `33278173612`, success.
@@ -77,3 +81,4 @@
 - Cierre #24: PR #54, run `33331207740`, success.
 - Tileset exterior #25: PR #56, run `33333578933`, success.
 - **8A.1 descomposición integer:** PR #57, run funcional `33334955947`: `gdlint`, `gdformat --check`, Godot 4.7.2 import, main-scene smoke y suite headless completa en success.
+- **8A.2 conservación:** PR #59, run previo `33335651778` verde; RED de regresión `33336306728` falló exactamente por pérdida del resto fraccional; GREEN funcional `33336387360` pasó quality, import Godot 4.7.2, smoke y suite headless completa.
