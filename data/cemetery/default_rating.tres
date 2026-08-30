@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CemeteryRatingConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/cemetery/cemetery_rating_config.gd" id="1_rating"]
+
+[resource]
+script = ExtResource("1_rating")
+headstone_points = 3
+fence_points = 2
+decoration_points = 1
