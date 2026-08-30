@@ -4,6 +4,7 @@ extends RefCounted
 
 static func run() -> Array[String]:
 	var failures: Array[String] = []
+	var previous_locale := LocalizationService.get_locale()
 	var tree := Engine.get_main_loop() as SceneTree
 	var world_scene := load("res://world/world.tscn") as PackedScene
 	if tree == null or world_scene == null:
@@ -18,15 +19,22 @@ static func run() -> Array[String]:
 	var trade_point := world.get_node_or_null("TradePoint")
 	if player == null or economy == null:
 		failures.append("Trading UI requires player and economy controller")
-		world.free()
+		_cleanup(world, previous_locale)
 		return failures
 	if trade_layer == null or not trade_layer.has_method("open_trade"):
 		failures.append("World should expose reusable TradeLayer UI")
 	if trade_point == null or not trade_point.has_method("interact"):
 		failures.append("World should expose reusable TradePoint interactable")
 	if not failures.is_empty():
-		world.free()
+		_cleanup(world, previous_locale)
 		return failures
+
+	LocalizationService.set_locale("en")
+	if str(trade_point.get("prompt")) != "Trade":
+		failures.append("Trade interaction prompt should localize to English")
+	LocalizationService.set_locale("es")
+	if str(trade_point.get("prompt")) != "Comerciar":
+		failures.append("Trade interaction prompt should localize to Spanish")
 
 	trade_point.call("interact", player)
 	if not bool(trade_layer.call("is_trade_open")):
@@ -77,5 +85,10 @@ static func run() -> Array[String]:
 	if bool(trade_layer.call("is_trade_open")):
 		failures.append("Trading UI should close cleanly")
 
-	world.free()
+	_cleanup(world, previous_locale)
 	return failures
+
+
+static func _cleanup(world: Node, previous_locale: StringName) -> void:
+	LocalizationService.set_locale(String(previous_locale))
+	world.free()
