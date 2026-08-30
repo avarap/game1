@@ -57,14 +57,13 @@ static func run() -> Array[String]:
 		map.free()
 		return failures
 
+	var world_rect: Rect2 = map.get_world_rect()
 	for node_path in REQUIRED_INTERACTIONS:
 		var interaction := map.get_node_or_null(node_path) as Node2D
 		if interaction == null:
 			failures.append("Cemetery map should preserve interaction '%s'" % node_path)
 			continue
-		if map.has_method("get_world_rect") and not map.get_world_rect().has_point(
-			interaction.global_position
-		):
+		if not world_rect.has_point(interaction.global_position):
 			failures.append("%s should stay inside cemetery map bounds" % node_path)
 		var cell := collision.local_to_map(collision.to_local(interaction.global_position))
 		if collision.get_cell_source_id(cell) != -1:
@@ -75,9 +74,7 @@ static func run() -> Array[String]:
 		if marker == null:
 			failures.append("Cemetery map should expose marker '%s'" % marker_path)
 			continue
-		if map.has_method("get_world_rect") and not map.get_world_rect().has_point(
-			marker.global_position
-		):
+		if not world_rect.has_point(marker.global_position):
 			failures.append("%s should stay inside cemetery map bounds" % marker_path)
 		var cell := collision.local_to_map(collision.to_local(marker.global_position))
 		if collision.get_cell_source_id(cell) != -1:
