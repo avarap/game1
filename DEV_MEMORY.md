@@ -7,73 +7,69 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 - Repositorio: `avarap/game1`
 - Rama: `main`
 - Fase completada más reciente: **Fase 1 — Core / Walking Prototype**
-- Próxima fase: **Fase 2 — Items / Resource Loop**
-- Objetivo inmediato de la próxima ejecución: analizar requisitos, dependencias y criterios de aceptación de Fase 2 antes de implementar `ItemData`, inventario y primer loop de recursos.
+- Fase activa: **Fase 2 — Items / Resource Loop**
+- Estado Fase 2: primer bloque de arquitectura de items/inventario implementado; fase todavía no completada.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 
 ## Trabajo realizado — Fase 0
 
-1. Se inicializó el repositorio y `project.godot` para Godot 4.x.
-2. Se configuró `main.tscn` como escena principal.
-3. Se añadieron Autoloads: `EventBus`, `GameManager`, `TimeManager`, `SaveManager`, `AudioManager`.
-4. Se configuró InputMap, logging mínimo, panel debug, guardado JSON versionado y tests headless.
-5. Se añadió GitHub Actions con `barichello/godot-ci:4.5`.
-6. Se añadieron documentación base, estructura del proyecto y el master spec.
-7. La Fase 0 quedó validada por `Godot CI` run `33278173612` con importación, smoke test de `main.tscn` y tests en `success`.
+1. Bootstrap Godot 4.x, escena raíz, estructura y Autoloads mínimos.
+2. InputMap, logging, panel debug, guardado versionado, tests y GitHub Actions.
+3. Validación final: `Godot CI` run `33278173612` en `success`.
 
 ## Trabajo realizado — Fase 1
 
-1. Se creó `world/world.tscn` con composición base del mundo y Y-sort.
-2. Se creó `player/player.tscn` con raíz `CharacterBody2D`.
-3. Se implementó movimiento 8-direccional mediante `Input.get_vector`.
-4. Se separó la lógica pura en `player/player_movement.gd` para poder testear aceleración, desaceleración y normalización de input.
-5. Se añadió `Camera2D` con smoothing, zoom y límites del mapa.
-6. Se añadieron colisiones exteriores y un obstáculo de prueba.
-7. Se añadió `InteractionArea` al jugador.
-8. Se creó `Interactable` reutilizable en `core/components/interactable.gd`.
-9. Se añadió `DebugSign` como interactuable funcional de prueba.
-10. Se añadieron tests de `PlayerMovement`.
-11. Se añadió `tests/test_walking_prototype.gd` para validar la estructura real de las escenas: `CharacterBody2D`, cámara, límites, Y-sort, colisiones e `Interactable`.
-12. El commit principal de implementación es `b0881d4983997b22f1678904d4cf3417a099f739`.
-13. El commit de validación de aceptación es `ae77e23a190c4cb7824eff0bce8c6cf672fb381f`.
-14. `Godot CI` run `33280758441` completó con `success` sobre el commit de aceptación.
-15. La Fase 1 queda formalmente completada en `ROADMAP.md`.
+1. `world/world.tscn`, jugador `CharacterBody2D`, movimiento 8 direcciones y lógica pura `PlayerMovement`.
+2. `Camera2D`, colisiones, Y-sort, `InteractionArea` e `Interactable` reutilizable.
+3. `DebugSign` como interacción funcional.
+4. Tests de movimiento y aceptación de escenas.
+5. Implementación principal: `b0881d4983997b22f1678904d4cf3417a099f739`.
+6. Validación de aceptación: `ae77e23a190c4cb7824eff0bce8c6cf672fb381f`.
+7. `Godot CI` run `33280758441` completó con `success`.
 
-## Validaciones confirmadas
+## Trabajo realizado — Fase 2, bloque 1
 
-- Godot importa el proyecto correctamente en modo headless.
-- `main.tscn` arranca en smoke test headless.
-- Los tests de bootstrap, tiempo, movimiento y walking prototype pasan.
-- El jugador es un `CharacterBody2D` con movimiento 8-direccional independiente del framerate.
-- La aceleración y desaceleración están aisladas en lógica testeable.
-- La cámara tiene smoothing y límites válidos.
-- El mundo usa Y-sort y contiene límites de colisión.
-- Existe al menos un `Interactable` funcional dentro del mundo.
-- El workflow CI real de GitHub Actions pasa con los criterios de aceptación de Fase 1.
+1. Se analizaron los requisitos del master spec para items, inventario, recursos, herramientas y energía antes de escribir código.
+2. Se definieron criterios de aceptación explícitos en `ROADMAP.md` para evitar cerrar la fase solo con infraestructura.
+3. Se creó `items/definitions/item_data.gd` como `Resource` tipado con id, nombre, descripción, categoría, stack, valor e icono.
+4. Se creó `InventoryStack` como unidad de stack independiente de UI.
+5. Se creó `InventoryModel` como lógica pura para capacidad por slots, stacking, altas, bajas, conteo, disponibilidad y limpieza.
+6. Se creó `InventoryComponent` como componente local de escena; no es Autoload y envuelve el modelo mediante señales locales.
+7. `player/player.tscn` ahora posee un `InventoryComponent` de 20 slots.
+8. Se añadió `data/items/wood.tres` como primer item data-driven real.
+9. Se añadió `tests/test_inventory_model.gd` para stacking, overflow, capacidad, remove, count y has_item.
+10. Se añadió `tests/test_items_foundation.gd` para validar carga del `.tres` e integración local del inventario en el jugador.
+11. `tests/run_tests.gd` ejecuta también los tests de Fase 2.
+12. Commit del bloque: `f6d346a298910900785f19943bbf0680f33fde76`.
+13. Se lanzó `Godot CI` run `33283192098`; durante esta ejecución permanecía en inicialización del contenedor, por lo que todavía no se considera validación final de Fase 2.
 
 ## Decisiones tomadas
 
 - Mantener solo cinco Autoloads globales.
-- No convertir inventario, crafting, quests, cementerio o economía en Autoloads.
-- Toda lógica que pueda vivir sin `Node` debe mantenerse testeable de forma aislada.
-- Mantener guardado versionado desde el inicio.
-- Mantener smoke test de la escena principal en cada push/PR a `main`.
-- Usar validaciones de estructura de escenas además de tests de lógica pura para cerrar fases de gameplay.
-- No avanzar de fase hasta confirmar CI real en GitHub Actions.
+- Inventario, crafting, quests, cementerio y economía siguen siendo sistemas locales/contextuales.
+- `ItemData` usa `Resource` tipado y los items concretos viven como `.tres`.
+- La UI no será dueña del estado de inventario.
+- `InventoryModel` es reutilizable por jugador, cofres, comerciantes, estaciones y loot sin depender de `Node`.
+- El componente de inventario solo adapta lifecycle/señales de escena al modelo puro.
+- No implementar crafting ni fases posteriores durante Fase 2.
+- No marcar Fase 2 como completada hasta tener recolección + loot + energía + feedback + test de aceptación + CI verde.
+
+## Validaciones confirmadas hasta ahora
+
+- Fase 0 y Fase 1 permanecen validadas en CI.
+- El último CI anterior al bloque de Fase 2 (`33280827024`) estaba en `success` sobre `main`.
+- El CI del nuevo bloque fue disparado correctamente, pero aún no había alcanzado los pasos de importación/test al registrar esta memoria.
 
 ## Próximo bloque de trabajo — Fase 2
 
-Antes de escribir código:
-
-1. Leer la sección de items/inventario/recursos/energía del master spec.
-2. Definir criterios de aceptación concretos para Fase 2.
-3. Diseñar `ItemData` como `Resource` tipado y data-driven.
-4. Diseñar un `InventoryComponent` local, no Autoload.
-5. Definir operaciones puras testeables para stacks, capacidad y altas/bajas de items.
-6. Añadir un recurso recolectable mínimo y feedback funcional.
-7. Mantener el proyecto ejecutable y ampliar tests/CI.
-
-No implementar crafting, cementerio, NPCs o sistemas de fases posteriores durante el primer bloque de Fase 2.
+1. Revisar primero el resultado de `Godot CI` run `33283192098`; corregir cualquier fallo antes de ampliar funcionalidad.
+2. Crear `ResourceSourceComponent` reutilizable con vida/cantidad y loot definidos mediante datos.
+3. Añadir un recurso mínimo recolectable al mundo, inicialmente madera/árbol de prueba.
+4. Conectar la recompensa al `InventoryComponent` del jugador sin acoplar el nodo de recurso a una UI.
+5. Añadir un `EnergyComponent` local mínimo y consumir energía en la acción de recolección.
+6. Dar feedback funcional mínimo de éxito, inventario lleno y energía insuficiente.
+7. Añadir tests de lógica y escena para el primer loop completo `interactuar -> consumir energía -> recibir recurso`.
+8. Mantener la fase abierta hasta cumplir todos los criterios de `ROADMAP.md`.
 
 ## Regla de continuidad
 
