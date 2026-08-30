@@ -88,9 +88,9 @@ jobs:
             tests/test_rpg_acceptance.gd \
             tests/run_tests.gd
 
-      - name: Show formatting diff for hardened gameplay scripts
+      - name: Check formatting of hardened gameplay scripts
         run: |
-          gdformat --diff \
+          gdformat --check \
             player/player.gd \
             core/components/inventory_component.gd \
             core/components/resource_source_component.gd \
