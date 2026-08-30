@@ -2,19 +2,18 @@
 
 RPG 2D de gestión, crafting, exploración y simulación construido con **Godot 4.x + GDScript**.
 
-El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md` y avanza fase por fase, manteniendo el proyecto ejecutable y validado por CI.
+El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`, `ROADMAP.md` y las issues de integración/cierre asociadas a cada fase.
 
 ## Estado
 
-- Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio, 5 — Simulación, 6 — RPG**
-- Fase activa: **7 — Mundo**
-- Fase 6 validada: diálogo bilingüe EN/ES, relaciones, condiciones narrativas, quests, economía, tecnologías y persistencia RPG integral.
-- Fuente narrativa: **`HISTORIA_PRINCIPAL.md` — El Cementerio de Valdeniebla**, en versión spoiler-light.
-- Próximo bloque: **primer bloque mínimo coherente de Fase 7 — Mundo**, sin adelantar polish.
-- Godot objetivo de CI: **4.5**
-- Rama principal: `main`
-- Memoria de desarrollo: `DEV_MEMORY.md`
-- Última validación funcional de Fase 6: **Godot CI `33305899447` — success**
+- Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio, 5 — Simulación**.
+- Fase activa: **6 — RPG**.
+- Fase 6 tiene validados diálogo bilingüe EN/ES, relaciones, condiciones narrativas, quests foundation, economía foundation, tecnologías foundation y persistencia conjunta básica.
+- Pendientes obligatorios antes del cierre: **#6 comercio UI**, **#8 integración tecnología ↔ quests** y después **#9 aceptación/cierre real**.
+- Fase 7 está bloqueada. El PR #32 permanece draft y no debe mergearse hasta completar las dependencias de cierre.
+- Godot objetivo de CI: **4.5**.
+- Rama principal: `main`.
+- Memoria de desarrollo: `DEV_MEMORY.md`.
 
 ## Ejecutar
 
@@ -35,31 +34,25 @@ El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_
 
 ## Idiomas
 
-El vertical slice soporta **English (`en`)** y **Español (`es`)**, con fallback inglés. La UI técnica permite cambiar idioma durante un diálogo sin alterar el estado del grafo. Las traducciones usan `TranslationServer` y catálogos `.po`; IDs, condiciones, saves y progreso no dependen del texto localizado. Ver `LOCALIZATION.md`.
-
-## Narrativa
-
-`HISTORIA_PRINCIPAL.md` contiene la dirección narrativa de **El Cementerio de Valdeniebla** y se mantiene deliberadamente sin spoilers fuertes. La historia surge del trabajo cotidiano del cementerio y las pistas deben admitir más de una interpretación mientras sea razonable.
+El vertical slice soporta **English (`en`)** y **Español (`es`)**, con fallback inglés. Las traducciones usan `TranslationServer` y catálogos `.po`; IDs, condiciones, saves y progreso no dependen del texto localizado. Ver `LOCALIZATION.md`.
 
 ## Loop jugable disponible
 
 La build técnica permite probar movimiento, recolección, inventario, energía, crafting/producción, cementerio, tiempo, día/noche, sueño y un NPC con navegación/horarios persistentes.
 
-Hermano Aldren puede ser abordado mediante el sistema genérico de interacción para iniciar diálogo data-driven EN/ES. Sus opciones pueden depender de relaciones, inventario, hora y estado de quests.
+Hermano Aldren puede iniciar diálogo data-driven EN/ES. La primera quest jugable se acepta, progresa y entrega mediante los sistemas existentes, con recompensa `QUEST_FLAG` idempotente.
 
-La **primera quest jugable** ya está integrada: se acepta hablando con Aldren, progresa usando el inventario/crafting existente, se entrega mediante diálogo y su estado/recompensa se conserva mediante el sistema genérico de guardado. Las recompensas son idempotentes y no pueden concederse dos veces tras restaurar una partida.
+La foundation de **economía** ya ofrece APIs atómicas de compra/venta, saldo entero en cobre, precios/stock data-driven y persistencia. Falta la interacción/UI técnica definida en #6 para considerarla jugable desde la interfaz.
 
-La foundation de **economía** permite compra/venta atómica con inventario, saldo en cobre, precios y stock data-driven, con persistencia del wallet y del comerciante. La foundation de **tecnologías** añade puntos rojo/verde/azul y un desbloqueo persistente: `sturdy_joinery` consume 2 puntos rojos + 1 verde y habilita el ID `recipe_reinforced_fence`.
-
-La aceptación integral de Fase 6 guarda y restaura conjuntamente relaciones, quests, economía y tecnología mediante `SaveManager`. Después del load se verifica además que las recompensas ya reclamadas y los desbloqueos tecnológicos continúan siendo idempotentes.
+La foundation de **tecnologías** ya mantiene puntos rojo/verde/azul, desbloqueos persistentes e idempotentes. Falta #8: que las quests concedan puntos tecnológicos mediante una recompensa tipada/data-driven sin duplicarlos tras save/load.
 
 ## Arquitectura
 
 Los Autoloads se limitan a cinco servicios globales: `EventBus`, `GameManager`, `TimeManager`, `SaveManager` y `AudioManager`.
 
-Los sistemas RPG permanecen locales/contextuales y usan Resources tipados. `QuestService`, `EconomyService` y `TechnologyService` contienen lógica de negocio testeable; sus controllers conectan mundo/persistencia sin convertirse en servicios globales. `DialogueController` emite intención y no posee lógica de quests.
+Los sistemas RPG permanecen locales/contextuales y usan Resources tipados. `QuestService`, `EconomyService` y `TechnologyService` contienen lógica de negocio testeable; sus controllers conectan mundo/persistencia sin convertirse en servicios globales.
 
-`SaveManager` agrega providers del grupo `save_provider`. Quests, relaciones, economía y tecnología mantienen claves de persistencia independientes. `TimeManager` es la única fuente de reloj/calendario y `TranslationServer` es la autoridad de idioma.
+`SaveManager` agrega providers del grupo `save_provider`. Quests, relaciones, economía y tecnología mantienen claves de persistencia independientes.
 
 ## Calidad y tests
 
@@ -68,27 +61,17 @@ El CI ejecuta dos gates independientes:
 - `gdscript-quality`: `gdlint` + `gdformat --check`.
 - `validate-and-test`: importación Godot 4.5, smoke test y suite headless.
 
-La suite cubre el flujo real de quests **diálogo → activar quest → progreso de inventario → entregar → recompensa única → restauración**, compra/venta atómica y persistencia de economía, costes/idempotencia/snapshot de tecnologías y un roundtrip RPG conjunto con `SaveManager`.
+El run `33305899447` validó una aceptación RPG parcial, pero no representa el cierre definitivo de Fase 6 porque todavía no incluía #6 ni #8. El cierre real deberá ejecutarse de nuevo desde #9 sobre el HEAD final definitivo.
 
 ```bash
 godot --headless --path . --script res://tests/run_tests.gd
 ```
 
-## Validación headless
-
-```bash
-godot --headless --path . --editor --quit
-godot --headless --path . --quit-after 3
-```
-
 ## Documentación
 
-- `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`: fuente de verdad funcional y arquitectónica.
-- `HISTORIA_PRINCIPAL.md`: dirección narrativa spoiler-light de Valdeniebla.
-- `LOCALIZATION.md`: política EN/ES.
-- `GAME_DESIGN.md`: diseño resumido.
-- `ARCHITECTURE.md`: decisiones técnicas.
-- `ROADMAP.md`: fases y criterios de avance.
-- `CHANGELOG.md`: cambios relevantes.
+- `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`: fuente funcional y arquitectónica.
+- `ROADMAP.md`: fases, dependencias y criterios de avance.
 - `DEV_MEMORY.md`: memoria operativa.
-- `PHASE_TEMPLATE.md`: checklist para abrir/cerrar fases.
+- `CHANGELOG.md`: historial técnico relevante.
+- `HISTORIA_PRINCIPAL.md`: dirección narrativa spoiler-light.
+- `LOCALIZATION.md`: política EN/ES.
