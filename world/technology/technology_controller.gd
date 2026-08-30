@@ -18,6 +18,11 @@ func _ready() -> void:
 	_ensure_service()
 
 
+func add_points(red: int, green: int, blue: int) -> bool:
+	_ensure_service()
+	return service != null and service.add_points(red, green, blue)
+
+
 func unlock(technology_id: StringName) -> StringName:
 	_ensure_service()
 	if service == null:
