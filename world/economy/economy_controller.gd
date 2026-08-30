@@ -42,9 +42,7 @@ func sell(offer_id: StringName, quantity: int, inventory: InventoryComponent) ->
 		return validation
 
 	var seller_stock := inventory.count_item(offer.item_id)
-	var transaction := EconomyService.simulate_sell(
-		wallet, merchant, offer, quantity, seller_stock
-	)
+	var transaction := EconomyService.simulate_sell(wallet, merchant, offer, quantity, seller_stock)
 	if not transaction.is_success():
 		return transaction.result
 	return _commit_sell(transaction, offer, quantity, inventory)
