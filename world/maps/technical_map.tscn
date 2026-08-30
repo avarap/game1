@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3]
+
+[sub_resource type="TileSet" id="TileSet_technical"]
+tile_size = Vector2i(32, 32)
+
+[node name="TechnicalMap" type="Node2D"]
+
+[node name="ground" type="TileMapLayer" parent="."]
+z_index = -10
+tile_set = SubResource("TileSet_technical")
+
+[node name="paths" type="TileMapLayer" parent="."]
+z_index = -9
+tile_set = SubResource("TileSet_technical")
+
+[node name="decoration_low" type="TileMapLayer" parent="."]
+z_index = -8
+tile_set = SubResource("TileSet_technical")
+
+[node name="collision" type="TileMapLayer" parent="."]
+visible = false
+tile_set = SubResource("TileSet_technical")
+
+[node name="objects_y_sorted" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+tile_set = SubResource("TileSet_technical")
+
+[node name="foreground_occlusion" type="TileMapLayer" parent="."]
+z_index = 10
+tile_set = SubResource("TileSet_technical")
