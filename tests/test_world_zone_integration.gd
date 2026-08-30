@@ -22,6 +22,14 @@ const PERSISTENT_NODES := [
 	"CemeteryController",
 	"BrotherAldren",
 ]
+const EXPECTED_TRANSITION_TARGETS := {
+	&"cemetery": [&"forest", &"village", &"home_interior", &"mine"],
+	&"forest": [&"cemetery"],
+	&"village": [&"cemetery", &"village_interior"],
+	&"home_interior": [&"cemetery"],
+	&"village_interior": [&"village"],
+	&"mine": [&"cemetery"],
+}
 
 
 static func run() -> Array[String]:
@@ -48,6 +56,7 @@ static func run() -> Array[String]:
 	if tree.get_nodes_in_group("cemetery_controller").size() != 1:
 		failures.append("World integration should expose exactly one cemetery controller")
 	_assert_zone_shell_state(world, &"cemetery", failures)
+	_assert_zone_transitions(world, &"cemetery", failures)
 
 	for destination in ROUTE:
 		var zone_id := destination[0] as StringName
@@ -60,6 +69,7 @@ static func run() -> Array[String]:
 			failures.append("ZoneManager should report active zone %s" % zone_id)
 		_assert_persistent_ids(world, ids, failures)
 		_assert_zone_shell_state(world, zone_id, failures)
+		_assert_zone_transitions(world, zone_id, failures)
 
 	var player := world.get_node_or_null("Player") as Node2D
 	if player != null:
@@ -107,3 +117,24 @@ static func _assert_zone_shell_state(
 	var trade_point := world.get_node_or_null("TradePoint") as CanvasItem
 	if trade_point != null and trade_point.visible != (zone_id == &"village"):
 		failures.append("TradePoint visibility should follow the village zone")
+
+
+static func _assert_zone_transitions(
+	world: Node, zone_id: StringName, failures: Array[String]
+) -> void:
+	var container := world.get_node_or_null("TransitionContainer")
+	if container == null:
+		failures.append("World should expose a persistent TransitionContainer")
+		return
+	var actual_targets: Array[StringName] = []
+	for child in container.get_children():
+		if not child.has_method("interact"):
+			failures.append("Every zone transition should be interactable")
+			continue
+		actual_targets.append(StringName(child.get("target_zone_id")))
+	var expected: Array = EXPECTED_TRANSITION_TARGETS.get(zone_id, [])
+	if actual_targets.size() != expected.size():
+		failures.append("Zone %s should expose %d travel transitions" % [zone_id, expected.size()])
+	for target in expected:
+		if not actual_targets.has(target):
+			failures.append("Zone %s should expose travel to %s" % [zone_id, target])
