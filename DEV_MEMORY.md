@@ -8,12 +8,12 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama: `main`
 - Fase completada más reciente: **Fase 5 — Simulación**
 - Fase activa: **Fase 6 — RPG**
-- Estado Fase 6: diálogo bilingüe, relaciones, condiciones narrativas, quests y **economía** completados y validados; tecnologías siguen pendientes.
+- Estado Fase 6: diálogo bilingüe, relaciones, condiciones narrativas, quests, economía y **foundation de tecnologías** completados y validados; solo quedan aceptación/persistencia integral y cierre final de fase.
 - Fuente funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 - Fuente narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**, canónica y spoiler-light.
 - Política de idiomas: `LOCALIZATION.md`.
-- Último bloque funcional: `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`.
-- Última validación: `Godot CI` run `33304080534`, `success` en `gdscript-quality` y `validate-and-test`.
+- Último bloque funcional: `444fc2995ab14b293188aba54a0f4099dc3c36b3`.
+- Última validación: `Godot CI` run `33305211363`, `success` en `gdscript-quality` y `validate-and-test`.
 
 ## Fases completadas
 
@@ -107,6 +107,33 @@ Tiempo/calendario, sueño, día/noche, `NPCData`, navegación, horarios/estados 
 - Formato final aplicado en `91f66bed3621fc8f8577c1553d755d010bc58dff` y quality gate restaurado en `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`.
 - Validación final: `Godot CI` `33304080534`, `gdscript-quality` y `validate-and-test` en `success`.
 
+### Bloque 5 — Foundation de tecnologías — COMPLETADO
+
+1. `TechnologyData` define ID estable, una de las siete categorías del master, costes rojo/verde/azul y una lista de unlock IDs.
+2. `TechnologyService` mantiene puntos rojo, verde y azul como enteros no negativos y registra datos tecnológicos sin depender de escenas/UI.
+3. `unlock()` valida existencia, idempotencia y saldo antes de mutar; un desbloqueo válido consume exactamente los puntos requeridos.
+4. Un segundo desbloqueo devuelve `already_unlocked` y no vuelve a consumir puntos.
+5. Un desbloqueo sin saldo suficiente devuelve `insufficient_points` y deja el snapshot idéntico.
+6. Los IDs de contenido desbloqueado se derivan de `TechnologyData`; no se persiste texto ni estado de UI.
+7. `snapshot()` guarda balances y tecnologías desbloqueadas; `apply_snapshot()` valida primero y reconstruye los unlock IDs desde los datos registrados.
+8. `TechnologyController` es local, pertenece a `technology_controller` y `save_provider`, y persiste con `get_save_key() == "technology"`.
+9. Primera tecnología mínima: `sturdy_joinery`, categoría Construcción, coste 2 rojo + 1 verde, que desbloquea `recipe_reinforced_fence`.
+10. `world.tscn` incorpora `TechnologyController` con puntos iniciales 3 rojo, 2 verde y 1 azul.
+11. `test_technology_foundation.gd` cubre costes exactos, idempotencia, rechazo sin puntos y snapshot.
+12. `test_technology_gameplay.gd` cubre integración real de mundo, contrato de persistencia y restauración.
+13. El quality gate incluye datos, servicio, controller y tests de tecnología.
+14. Prerequisitos, árbol tecnológico, UI de tecnologías y contenido masivo quedan explícitamente fuera de esta foundation mínima.
+
+#### Incidencias del bloque
+- RED TDD confirmado en run `33304394505`: todas las suites previas seguían verdes y las nuevas suites fallaban porque aún no existían `TechnologyData`/`TechnologyService`.
+- Implementación principal: `572e640f522b3c0fc788bc3cd3acd0c1b2832147`.
+- Run `33304983995`: importación, smoke y suite funcional verdes; `gdlint` exigió ordenar `PointType` antes de constantes.
+- `57a9fec427e171faf629e485a143f546dfc6f783` corrige el orden global sin cambiar comportamiento.
+- Run `33305055491`: gameplay verde y `gdlint` verde; quedó una única diferencia de `gdformat` en el diccionario anidado del snapshot.
+- `ac13542a37641ce420567708e0a0cbf6b1a25996` añadió temporalmente `gdformat --diff` para aislar la diferencia exacta.
+- `444fc2995ab14b293188aba54a0f4099dc3c36b3` aplica el formato canónico y restaura el quality gate normal.
+- Validación final: `Godot CI` `33305211363`, `gdscript-quality` y `validate-and-test` en `success`.
+
 ## Dirección narrativa vigente
 
 - `HISTORIA_PRINCIPAL.md` es deliberadamente spoiler-light.
@@ -124,9 +151,12 @@ Tiempo/calendario, sueño, día/noche, `NPCData`, navegación, horarios/estados 
 - UI observa servicios/modelos y emite intents; no posee lógica de negocio.
 - Gameplay data-driven mediante Resources tipados cuando corresponda.
 - Lógica crítica pura y testeable de forma aislada.
-- `SaveManager` agrega providers locales; quests y economía usan keys independientes dentro del estado de mundo agregado.
+- `SaveManager` agrega providers locales; quests, economía y tecnología usan keys independientes dentro del estado de mundo agregado.
 - Recompensas de quests deben seguir siendo idempotentes cuando se añadan nuevos tipos de recompensa.
 - Dinero y precios se representan exclusivamente como enteros en cobre; UI futura solo formatea oro/plata/cobre.
+- Puntos tecnológicos se representan como enteros no negativos rojo/verde/azul.
+- Los desbloqueos tecnológicos se identifican por IDs estables de contenido; la UI/árbol futuro no será fuente de verdad.
+- Prerequisitos tecnológicos, árbol visual y contenido masivo quedan fuera hasta después de validar el cierre integral de Fase 6.
 - Economía dinámica, fluctuaciones de precio y múltiples comerciantes quedan fuera hasta fases posteriores/expansión de alcance.
 - No introducir alcance de Fase 7/8 durante Fase 6.
 
@@ -135,22 +165,21 @@ Tiempo/calendario, sueño, día/noche, `NPCData`, navegación, horarios/estados 
 1. ~~Quests pueden iniciarse, progresar y completarse.~~ COMPLETADO.
 2. ~~Recompensas se conceden exactamente una vez.~~ COMPLETADO.
 3. ~~Economía compra/vende correctamente.~~ COMPLETADO.
-4. Tecnologías consumen puntos y desbloquean contenido.
+4. ~~Tecnologías consumen puntos y desbloquean contenido.~~ COMPLETADO.
 5. Estado RPG completo persiste de forma compatible con `SaveManager`.
 6. Aceptación integral de Fase 6 y CI final verdes.
 
 ## Próximo bloque — Fase 6
 
-**Foundation de tecnologías**, sin ampliar todavía mundo/UI/polish:
+**Aceptación integral, persistencia conjunta y cierre de Fase 6**:
 
-1. Representar puntos de progreso rojo, verde y azul como enteros no negativos.
-2. `TechnologyData` data-driven con ID estable, categoría, costes, prerequisitos y una lista mínima de unlock IDs.
-3. Servicio puro para validar costes/prerequisitos y comprar una tecnología exactamente una vez.
-4. `TechnologyController` local + `save_provider`; sin nuevo Autoload.
-5. Una integración mínima que demuestre que una tecnología desbloquea contenido existente mediante ID estable, sin construir todavía un árbol/UI completo.
-6. Persistencia de puntos y tecnologías desbloqueadas compatible con `SaveManager`.
-7. Tests puros + integración mínima + quality gate.
-8. No abrir Fase 7 ni añadir categorías/contenido masivo antes de validar esta foundation.
+1. Crear un test de aceptación de mundo que ejercite en una misma sesión relaciones, quests, economía y tecnología mediante sus controllers reales.
+2. Realizar un roundtrip completo a través de `SaveManager` y verificar que los providers locales restauran su estado conjuntamente.
+3. Confirmar después de restaurar que una recompensa de quest no se duplica y que una tecnología ya desbloqueada no vuelve a consumir puntos.
+4. Verificar que dinero/stock, relaciones, quest flags/progreso y puntos/unlocks tecnológicos sobreviven al mismo save/load.
+5. Mantener el test centrado en contratos e integración; no duplicar las suites unitarias ya existentes.
+6. Ejecutar quality gate, importación, smoke y suite headless sobre el HEAD final.
+7. Solo si todos los criterios están realmente satisfechos, actualizar `ROADMAP.md`/`README.md` para marcar **Fase 6 — RPG** como completada y abrir Fase 7.
 
 ## Regla de continuidad
 

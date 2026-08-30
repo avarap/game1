@@ -40,7 +40,7 @@
 - [x] Quests pueden iniciarse, progresar y completarse.
 - [x] Las recompensas de quests se conceden una sola vez.
 - [x] La economía compra y vende correctamente.
-- [ ] Las tecnologías consumen puntos y desbloquean contenido.
+- [x] Las tecnologías consumen puntos y desbloquean contenido.
 - [ ] Estado RPG completo persistente compatible con `SaveManager`.
 - [ ] Tests de aceptación del flujo RPG mínimo.
 - [ ] `gdscript-quality` verde sobre el HEAD final de la fase.
@@ -105,15 +105,29 @@
 - Correcciones quality/formato: `c371147bf0f716c038eeef245ad6f7294421871e` y `91f66bed3621fc8f8577c1553d755d010bc58dff`.
 - Final validado: `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`, run `33304080534`, ambos jobs `success`.
 
-### Próximo bloque — Foundation de tecnologías
-- Puntos de progreso rojo, verde y azul como enteros no negativos.
-- `TechnologyData` data-driven con ID estable, categoría, costes, prerequisitos y unlock IDs mínimos.
-- Servicio puro para validar costes/prerequisitos y adquirir cada tecnología una sola vez.
-- `TechnologyController` local + `save_provider`, sin nuevo Autoload.
-- Integración mínima que demuestre un desbloqueo real por ID estable sin construir todavía árbol/UI completo.
-- Persistencia de puntos y tecnologías desbloqueadas compatible con `SaveManager`.
-- Tests puros + integración mínima + quality gate.
-- No abrir Fase 7 ni añadir contenido masivo antes de validar esta foundation.
+### Bloque 5 — Foundation de tecnologías — COMPLETADO
+- [x] Puntos de progreso rojo, verde y azul como enteros no negativos.
+- [x] `TechnologyData` data-driven con ID estable, categoría, costes y unlock IDs.
+- [x] `TechnologyService` puro para registrar tecnologías, validar puntos y desbloquear cada tecnología una sola vez.
+- [x] El desbloqueo consume exactamente los puntos requeridos y una operación rechazada no modifica el estado.
+- [x] Contenido desbloqueado expuesto mediante IDs estables, independiente de UI y texto.
+- [x] `TechnologyController` local + `save_provider`, sin nuevo Autoload.
+- [x] Primera tecnología mínima `sturdy_joinery`, que desbloquea `recipe_reinforced_fence`.
+- [x] Persistencia de puntos y tecnologías desbloqueadas; el contenido desbloqueado se reconstruye desde los datos registrados.
+- [x] `test_technology_foundation.gd` + `test_technology_gameplay.gd` cubren costes, idempotencia, rechazo sin puntos, integración de mundo y snapshot.
+- [x] Quality gate ampliado a tecnología y tests.
+- Implementación: `572e640f522b3c0fc788bc3cd3acd0c1b2832147`.
+- Corrección de orden para `gdlint`: `57a9fec427e171faf629e485a143f546dfc6f783`.
+- Diagnóstico de formato: `ac13542a37641ce420567708e0a0cbf6b1a25996`.
+- Final validado: `444fc2995ab14b293188aba54a0f4099dc3c36b3`, run `33305211363`, ambos jobs `success`.
+- Los prerequisitos, el árbol tecnológico y la UI completa quedan fuera de esta foundation mínima.
+
+### Próximo bloque — Aceptación integral y cierre de Fase 6
+- Probar en un único flujo de mundo el guardado/restauración conjunta de relaciones, quests, economía y tecnología mediante `SaveManager`.
+- Añadir aceptación mínima RPG que atraviese los sistemas ya validados sin duplicar su lógica interna.
+- Confirmar que las recompensas y desbloqueos siguen siendo idempotentes después de un roundtrip completo de save/load.
+- Ejecutar `gdscript-quality`, importación, smoke y suite headless sobre el HEAD final.
+- Solo si todo queda verde, marcar **Fase 6 — RPG** como completada y abrir Fase 7.
 
 ## Fase 7 — Mundo
 Pueblo, bosque, mina, interiores, exploración y secretos.

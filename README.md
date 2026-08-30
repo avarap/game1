@@ -8,13 +8,13 @@ El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_
 
 - Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio, 5 — Simulación**
 - Fase activa: **6 — RPG**
-- Bloques validados: diálogo bilingüe EN/ES, relaciones 0-100, condiciones narrativas contextuales y **foundation de quests**.
+- Bloques validados: diálogo bilingüe EN/ES, relaciones 0-100, condiciones narrativas contextuales, quests, economía y **foundation de tecnologías**.
 - Fuente narrativa: **`HISTORIA_PRINCIPAL.md` — El Cementerio de Valdeniebla**, en versión spoiler-light.
-- Próximo bloque: **foundation de economía**.
+- Próximo bloque: **aceptación/persistencia integral y cierre de Fase 6**.
 - Godot objetivo de CI: **4.5**
 - Rama principal: `main`
 - Memoria de desarrollo: `DEV_MEMORY.md`
-- Última validación funcional: **Godot CI `33301533785` — success**
+- Última validación funcional: **Godot CI `33305211363` — success**
 
 ## Ejecutar
 
@@ -49,13 +49,15 @@ Hermano Aldren puede ser abordado mediante el sistema genérico de interacción 
 
 La **primera quest jugable** ya está integrada: se acepta hablando con Aldren, progresa usando el inventario/crafting existente, se entrega mediante diálogo y su estado/recompensa se conserva mediante el sistema genérico de guardado. Las recompensas son idempotentes y no pueden concederse dos veces tras restaurar una partida.
 
+La foundation de **economía** permite compra/venta atómica con inventario, saldo en cobre, precios y stock data-driven, con persistencia del wallet y del comerciante. La foundation de **tecnologías** añade puntos rojo/verde/azul y un desbloqueo persistente: `sturdy_joinery` consume 2 puntos rojos + 1 verde y habilita el ID `recipe_reinforced_fence`.
+
 ## Arquitectura
 
 Los Autoloads se limitan a cinco servicios globales: `EventBus`, `GameManager`, `TimeManager`, `SaveManager` y `AudioManager`.
 
-Los sistemas RPG permanecen locales/contextuales y usan Resources tipados. `QuestService` contiene la lógica pura; `QuestController` conecta mundo, inventario, diálogo y persistencia; `DialogueController` solo emite intención y no posee lógica de quests.
+Los sistemas RPG permanecen locales/contextuales y usan Resources tipados. `QuestService`, `EconomyService` y `TechnologyService` contienen lógica de negocio testeable; sus controllers conectan mundo/persistencia sin convertirse en servicios globales. `DialogueController` emite intención y no posee lógica de quests.
 
-`SaveManager` agrega providers del grupo `save_provider`. `TimeManager` es la única fuente de reloj/calendario y `TranslationServer` es la autoridad de idioma.
+`SaveManager` agrega providers del grupo `save_provider`. Quests, relaciones, economía y tecnología mantienen claves de persistencia independientes. `TimeManager` es la única fuente de reloj/calendario y `TranslationServer` es la autoridad de idioma.
 
 ## Calidad y tests
 
@@ -64,7 +66,7 @@ El CI ejecuta dos gates independientes:
 - `gdscript-quality`: `gdlint` + `gdformat --check`.
 - `validate-and-test`: importación Godot 4.5, smoke test y suite headless.
 
-La suite cubre ahora el flujo real **diálogo → activar quest → progreso de inventario → entregar → recompensa única → restauración**.
+La suite cubre el flujo real de quests **diálogo → activar quest → progreso de inventario → entregar → recompensa única → restauración**, además de compra/venta atómica y persistencia de economía, y costes/idempotencia/snapshot de tecnologías.
 
 ```bash
 godot --headless --path . --script res://tests/run_tests.gd
