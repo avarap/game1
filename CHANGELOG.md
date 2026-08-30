@@ -54,4 +54,4 @@
 - Quality gate global #38: merge `cb4c14351abbee84f3162197cdf4ba794ab9846f`, run `33308014015`, ambos jobs success sobre 109 scripts GDScript.
 - Cierre RPG #9: acceptance HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, PR #39, run `33308814397`: `gdscript-quality` y `validate-and-test` success.
 - Godot 4.7.2: PR #41, merge `1b4ff623b45c465bfb9bd57f2b96b6ecec88a2ad`, run `33309144543`, ambos jobs success.
-- Contrato visual #17: PR #42, primer CI documental `33310931349`, ambos jobs success; tras sincronizar documentación se requiere CI final del HEAD antes de merge.
+- Contrato visual #17: PR #42, HEAD `2e05a9f945244fe2e2a7fa2f6a16a9d2877ae055`, run `33311594061`, ambos jobs success; merge `fc45840c8be48e82380d8bded841dce5f46e0e73`.
