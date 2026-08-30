@@ -90,6 +90,11 @@ Decisiones de alcance 8A: sin hambre, estaciones/clima agrícola, riego/fertiliz
 
 Fase 8 permanece **ACTIVA**. El siguiente bloque del track de profundidad es **8A.3 — agricultura mínima**; el sub-track visual puede avanzar en tareas independientes sin pisar sistemas de gameplay.
 
+## Biblioteca de diseño y backlog
+- [x] `docs/design/` creada para consolidar ideas, mejoras, orden de ejecución, arquitectura data-driven y prompts de elaboración/implementación.
+- Esta biblioteca es dirección secundaria: no autoriza adelantar fases ni sustituye los criterios de aceptación del roadmap.
+- Orden futuro resumido: cerrar Fase 8/8A → consolidar catálogo/recetas N→N/cadenas → tecnología/economía profesional → construcción/restauración/logística → clima/pesca → automatización avanzada.
+
 ## Post-MVP / Expansiones previstas
 
 ### Economía local por profesión
