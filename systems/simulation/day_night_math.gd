@@ -15,21 +15,23 @@ const NIGHT_COLOR: Color = Color(0.32, 0.36, 0.52, 1.0)
 
 static func color_at(hour: int, minute: int) -> Color:
 	var total := _normalized_minutes(hour, minute)
+	var factor: float
 	if total < DAWN_MINUTE:
-		return NIGHT_COLOR.lerp(
-			DAWN_COLOR,
-			_segment_factor(total + MINUTES_PER_DAY, NIGHT_MINUTE, DAWN_MINUTE + MINUTES_PER_DAY),
-		)
+		var dawn_next := DAWN_MINUTE + MINUTES_PER_DAY
+		factor = _segment_factor(total + MINUTES_PER_DAY, NIGHT_MINUTE, dawn_next)
+		return NIGHT_COLOR.lerp(DAWN_COLOR, factor)
 	if total < NOON_MINUTE:
-		return DAWN_COLOR.lerp(NOON_COLOR, _segment_factor(total, DAWN_MINUTE, NOON_MINUTE))
+		factor = _segment_factor(total, DAWN_MINUTE, NOON_MINUTE)
+		return DAWN_COLOR.lerp(NOON_COLOR, factor)
 	if total < DUSK_MINUTE:
-		return NOON_COLOR.lerp(DUSK_COLOR, _segment_factor(total, NOON_MINUTE, DUSK_MINUTE))
+		factor = _segment_factor(total, NOON_MINUTE, DUSK_MINUTE)
+		return NOON_COLOR.lerp(DUSK_COLOR, factor)
 	if total < NIGHT_MINUTE:
-		return DUSK_COLOR.lerp(NIGHT_COLOR, _segment_factor(total, DUSK_MINUTE, NIGHT_MINUTE))
-	return NIGHT_COLOR.lerp(
-		DAWN_COLOR,
-		_segment_factor(total, NIGHT_MINUTE, DAWN_MINUTE + MINUTES_PER_DAY),
-	)
+		factor = _segment_factor(total, DUSK_MINUTE, NIGHT_MINUTE)
+		return DUSK_COLOR.lerp(NIGHT_COLOR, factor)
+	var dawn_next := DAWN_MINUTE + MINUTES_PER_DAY
+	factor = _segment_factor(total, NIGHT_MINUTE, dawn_next)
+	return NIGHT_COLOR.lerp(DAWN_COLOR, factor)
 
 
 static func phase_at(hour: int, minute: int) -> StringName:
