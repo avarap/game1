@@ -1,39 +1,22 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
-[ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
-[ext_resource type="PackedScene" path="res://world/resources/tree_resource.tscn" id="3_tree"]
-[ext_resource type="PackedScene" path="res://world/buildings/workbench.tscn" id="4_workbench"]
-[ext_resource type="PackedScene" path="res://world/storage/storage_chest.tscn" id="5_chest"]
-[ext_resource type="Script" path="res://world/cemetery/cemetery_controller.gd" id="6_cemetery_controller"]
-[ext_resource type="Script" path="res://world/cemetery/cemetery_action.gd" id="7_cemetery_action"]
-[ext_resource type="Resource" path="res://data/cemetery/default_rating.tres" id="8_rating"]
-[ext_resource type="Script" path="res://world/interactables/sleep_spot.gd" id="9_sleep"]
-[ext_resource type="Script" path="res://world/simulation/day_night_controller.gd" id="10_day_night"]
-[ext_resource type="Script" path="res://world/navigation/world_navigation_region.gd" id="11_navigation"]
-[ext_resource type="PackedScene" path="res://world/npcs/brother_aldren.tscn" id="12_aldren"]
-[ext_resource type="PackedScene" path="res://ui/dialogue/dialogue_layer.tscn" id="13_dialogue"]
-[ext_resource type="Script" path="res://systems/reputation/relationship_controller.gd" id="14_relationship_controller"]
-[ext_resource type="Resource" path="res://data/relationships/brother_aldren.tres" id="15_aldren_relationship"]
-[ext_resource type="Script" path="res://systems/quests/quest_controller.gd" id="16_quest_controller"]
-[ext_resource type="Resource" path="res://data/quests/aldren_first_duty.tres" id="17_first_quest"]
-[ext_resource type="Script" path="res://world/economy/economy_controller.gd" id="18_economy_controller"]
-[ext_resource type="Resource" path="res://data/economy/yard_supplier.tres" id="19_merchant_data"]
-[ext_resource type="Script" path="res://world/technology/technology_controller.gd" id="20_technology_controller"]
-[ext_resource type="Resource" path="res://data/technology/sturdy_joinery.tres" id="21_technology_data"]
-[ext_resource type="PackedScene" path="res://ui/economy/trade_layer.tscn" id="22_trade_layer"]
-[ext_resource type="Script" path="res://world/interactables/trade_interactable.gd" id="23_trade_interactable"]
-[ext_resource type="PackedScene" path="res://world/maps/technical_map.tscn" id="24_map"]
-[ext_resource type="Script" path="res://world/zones/zone_manager.gd" id="25_zone_manager"]
-
-[sub_resource type="RectangleShape2D" id="Sign_shape"]
-size = Vector2(28, 28)
-
-[sub_resource type="RectangleShape2D" id="Cemetery_action_shape"]
-size = Vector2(42, 42)
-
-[sub_resource type="RectangleShape2D" id="Sleep_shape"]
-size = Vector2(72, 40)
+[ext_resource type="Script" path="res://world/simulation/day_night_controller.gd" id="2_day_night"]
+[ext_resource type="PackedScene" path="res://world/npcs/brother_aldren.tscn" id="3_aldren"]
+[ext_resource type="PackedScene" path="res://ui/dialogue/dialogue_layer.tscn" id="4_dialogue"]
+[ext_resource type="Script" path="res://systems/reputation/relationship_controller.gd" id="5_relationship_controller"]
+[ext_resource type="Resource" path="res://data/relationships/brother_aldren.tres" id="6_aldren_relationship"]
+[ext_resource type="Script" path="res://systems/quests/quest_controller.gd" id="7_quest_controller"]
+[ext_resource type="Resource" path="res://data/quests/aldren_first_duty.tres" id="8_first_quest"]
+[ext_resource type="Script" path="res://world/economy/economy_controller.gd" id="9_economy_controller"]
+[ext_resource type="Resource" path="res://data/economy/yard_supplier.tres" id="10_merchant_data"]
+[ext_resource type="Script" path="res://world/technology/technology_controller.gd" id="11_technology_controller"]
+[ext_resource type="Resource" path="res://data/technology/sturdy_joinery.tres" id="12_technology_data"]
+[ext_resource type="PackedScene" path="res://ui/economy/trade_layer.tscn" id="13_trade_layer"]
+[ext_resource type="Script" path="res://world/interactables/trade_interactable.gd" id="14_trade_interactable"]
+[ext_resource type="Script" path="res://world/cemetery/cemetery_controller.gd" id="15_cemetery_controller"]
+[ext_resource type="Resource" path="res://data/cemetery/default_rating.tres" id="16_rating"]
+[ext_resource type="Script" path="res://world/zones/zone_manager.gd" id="17_zone_manager"]
 
 [sub_resource type="RectangleShape2D" id="Trade_shape"]
 size = Vector2(64, 64)
@@ -41,60 +24,45 @@ size = Vector2(64, 64)
 [node name="World" type="Node2D"]
 y_sort_enabled = true
 
-[node name="TechnicalMap" parent="." instance=ExtResource("24_map")]
-
-[node name="ZoneContainer" type="Node2D" parent="."]
-
 [node name="DayNightCycle" type="CanvasModulate" parent="."]
-script = ExtResource("10_day_night")
+script = ExtResource("2_day_night")
 
-[node name="DialogueLayer" parent="." instance=ExtResource("13_dialogue")]
+[node name="DialogueLayer" parent="." instance=ExtResource("4_dialogue")]
 
-[node name="TradeLayer" parent="." instance=ExtResource("22_trade_layer")]
+[node name="TradeLayer" parent="." instance=ExtResource("13_trade_layer")]
 
 [node name="RelationshipController" type="Node" parent="."]
-script = ExtResource("14_relationship_controller")
-relationship_data = Array[ExtResource("15_aldren_relationship")]([ExtResource("15_aldren_relationship")])
-
-[node name="NavigationRegion" type="NavigationRegion2D" parent="."]
-script = ExtResource("11_navigation")
+script = ExtResource("5_relationship_controller")
+relationship_data = Array[ExtResource("6_aldren_relationship")]([ExtResource("6_aldren_relationship")])
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
-position = Vector2(640, 360)
-
-[node name="ZoneManager" type="Node" parent="."]
-script = ExtResource("25_zone_manager")
+position = Vector2(544, 640)
 
 [node name="QuestController" type="Node" parent="."]
-script = ExtResource("16_quest_controller")
-quest_data = Array[ExtResource("17_first_quest")]([ExtResource("17_first_quest")])
+script = ExtResource("7_quest_controller")
+quest_data = Array[ExtResource("8_first_quest")]([ExtResource("8_first_quest")])
 
 [node name="EconomyController" type="Node" parent="."]
-script = ExtResource("18_economy_controller")
-merchant_data = ExtResource("19_merchant_data")
+script = ExtResource("9_economy_controller")
+merchant_data = ExtResource("10_merchant_data")
 starting_balance_copper = 500
 
 [node name="TechnologyController" type="Node" parent="."]
-script = ExtResource("20_technology_controller")
-technology_data = Array[ExtResource("21_technology_data")]([ExtResource("21_technology_data")])
+script = ExtResource("11_technology_controller")
+technology_data = Array[ExtResource("12_technology_data")]([ExtResource("12_technology_data")])
 starting_red_points = 3
 starting_green_points = 2
 starting_blue_points = 1
 
-[node name="TreeResource" parent="." instance=ExtResource("3_tree")]
-position = Vector2(610, 300)
-
-[node name="Workbench" parent="." instance=ExtResource("4_workbench")]
-position = Vector2(690, 330)
-
-[node name="StorageChest" parent="." instance=ExtResource("5_chest")]
-position = Vector2(750, 330)
+[node name="CemeteryController" type="Node" parent="."]
+script = ExtResource("15_cemetery_controller")
+rating_config = ExtResource("16_rating")
 
 [node name="TradePoint" type="Area2D" parent="."]
-position = Vector2(820, 620)
-collision_layer = 2
+visible = false
+collision_layer = 0
 collision_mask = 0
-script = ExtResource("23_trade_interactable")
+script = ExtResource("14_trade_interactable")
 
 [node name="Visual" type="Polygon2D" parent="TradePoint"]
 polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
@@ -103,100 +71,10 @@ color = Color(0.58, 0.43, 0.24, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TradePoint"]
 shape = SubResource("Trade_shape")
 
-[node name="SleepSpot" type="Area2D" parent="."]
-position = Vector2(560, 420)
-collision_layer = 2
-collision_mask = 0
-script = ExtResource("9_sleep")
-prompt = "Dormir hasta el amanecer"
+[node name="BrotherAldren" parent="." instance=ExtResource("3_aldren")]
+position = Vector2(1216, 640)
 
-[node name="Visual" type="Polygon2D" parent="SleepSpot"]
-polygon = PackedVector2Array(-36, -20, 36, -20, 36, 20, -36, 20)
-color = Color(0.3, 0.24, 0.22, 1)
+[node name="ZoneContainer" type="Node2D" parent="."]
 
-[node name="Pillow" type="Polygon2D" parent="SleepSpot"]
-polygon = PackedVector2Array(-28, -14, -8, -14, -8, 0, -28, 0)
-color = Color(0.72, 0.68, 0.58, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SleepSpot"]
-shape = SubResource("Sleep_shape")
-
-[node name="CemeteryController" type="Node" parent="."]
-script = ExtResource("6_cemetery_controller")
-rating_config = ExtResource("8_rating")
-
-[node name="CorpseDelivery" type="Area2D" parent="."]
-position = Vector2(900, 300)
-collision_layer = 2
-collision_mask = 0
-script = ExtResource("7_cemetery_action")
-prompt = "Recibir cadáver"
-action = 0
-
-[node name="Visual" type="Polygon2D" parent="CorpseDelivery"]
-polygon = PackedVector2Array(-21, -21, 21, -21, 21, 21, -21, 21)
-color = Color(0.42, 0.35, 0.28, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CorpseDelivery"]
-shape = SubResource("Cemetery_action_shape")
-
-[node name="PreparationTable" type="Area2D" parent="."]
-position = Vector2(960, 300)
-collision_layer = 2
-collision_mask = 0
-script = ExtResource("7_cemetery_action")
-prompt = "Preparar cadáver"
-action = 1
-
-[node name="Visual" type="Polygon2D" parent="PreparationTable"]
-polygon = PackedVector2Array(-21, -21, 21, -21, 21, 21, -21, 21)
-color = Color(0.48, 0.45, 0.4, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PreparationTable"]
-shape = SubResource("Cemetery_action_shape")
-
-[node name="GravePlot" type="Area2D" parent="."]
-position = Vector2(1020, 300)
-collision_layer = 2
-collision_mask = 0
-script = ExtResource("7_cemetery_action")
-prompt = "Enterrar cadáver"
-action = 2
-
-[node name="Visual" type="Polygon2D" parent="GravePlot"]
-polygon = PackedVector2Array(-21, -21, 21, -21, 21, 21, -21, 21)
-color = Color(0.32, 0.26, 0.2, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GravePlot"]
-shape = SubResource("Cemetery_action_shape")
-
-[node name="GraveUpgrade" type="Area2D" parent="."]
-position = Vector2(1080, 300)
-collision_layer = 2
-collision_mask = 0
-script = ExtResource("7_cemetery_action")
-prompt = "Mejorar tumba"
-action = 3
-
-[node name="Visual" type="Polygon2D" parent="GraveUpgrade"]
-polygon = PackedVector2Array(-21, -21, 21, -21, 21, 21, -21, 21)
-color = Color(0.38, 0.38, 0.42, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GraveUpgrade"]
-shape = SubResource("Cemetery_action_shape")
-
-[node name="BrotherAldren" parent="." instance=ExtResource("12_aldren")]
-position = Vector2(1180, 650)
-
-[node name="DebugSign" type="Area2D" parent="."]
-position = Vector2(720, 360)
-collision_layer = 2
-collision_mask = 0
-script = ExtResource("2_sign")
-
-[node name="Visual" type="Polygon2D" parent="DebugSign"]
-polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
-color = Color(0.72, 0.55, 0.31, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DebugSign"]
-shape = SubResource("Sign_shape")
+[node name="ZoneManager" type="Node" parent="."]
+script = ExtResource("17_zone_manager")
