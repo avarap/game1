@@ -8,6 +8,7 @@ func _initialize() -> void:
     failures.append_array(TestInventoryModel.run())
     failures.append_array(TestItemsFoundation.run())
     failures.append_array(TestResourceLoop.run())
+    failures.append_array(TestCraftingFoundation.run())
 
     if failures.is_empty():
         print("[TEST] All core tests passed")
