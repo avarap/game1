@@ -1,13 +1,11 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://world/maps/technical_map.gd" id="1_map"]
 [ext_resource type="Script" path="res://world/navigation/world_navigation_region.gd" id="2_navigation"]
 [ext_resource type="PackedScene" path="res://world/buildings/workbench.tscn" id="3_workbench"]
 [ext_resource type="PackedScene" path="res://world/storage/storage_chest.tscn" id="4_chest"]
 [ext_resource type="Script" path="res://world/interactables/sleep_spot.gd" id="5_sleep"]
-[ext_resource type="Script" path="res://world/cemetery/cemetery_controller.gd" id="6_controller"]
 [ext_resource type="Script" path="res://world/cemetery/cemetery_action.gd" id="7_action"]
-[ext_resource type="Resource" path="res://data/cemetery/default_rating.tres" id="8_rating"]
 
 [sub_resource type="TileSet" id="TileSet_cemetery"]
 tile_size = Vector2i(32, 32)
@@ -76,10 +74,6 @@ color = Color(0.3, 0.24, 0.22, 1)
 shape = SubResource("Sleep_shape")
 
 [node name="CemeteryArea" type="Node2D" parent="."]
-
-[node name="CemeteryController" type="Node" parent="CemeteryArea"]
-script = ExtResource("6_controller")
-rating_config = ExtResource("8_rating")
 
 [node name="CorpseDelivery" type="Area2D" parent="CemeteryArea"]
 position = Vector2(960, 320)
