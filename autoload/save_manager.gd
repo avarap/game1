@@ -13,11 +13,7 @@ func save_game(path: String = DEFAULT_SAVE_PATH, world_override: Dictionary = {}
         "player": {},
         "world": world_data,
         "quests": {},
-        "time": {
-            "day": TimeManager.day,
-            "hour": TimeManager.hour,
-            "minute": TimeManager.minute
-        }
+        "time": TimeManager.snapshot()
     }
 
     var file := FileAccess.open(path, FileAccess.WRITE)
@@ -48,8 +44,7 @@ func load_game(path: String = DEFAULT_SAVE_PATH, apply_world_state: bool = true)
         GameLogger.warn("Save version requires migration")
 
     var time_data: Dictionary = payload.get("time", {})
-    TimeManager.day = int(time_data.get("day", 1))
-    TimeManager.set_time(int(time_data.get("hour", 6)), int(time_data.get("minute", 0)))
+    TimeManager.apply_snapshot(time_data)
 
     if apply_world_state:
         var world_data: Dictionary = payload.get("world", {})

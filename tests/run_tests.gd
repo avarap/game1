@@ -3,6 +3,7 @@ extends SceneTree
 func _initialize() -> void:
     var failures: Array[String] = []
     _run_suite("TimeMath", TestTimeMath.run(), failures)
+    _run_suite("SimulationTime", TestSimulationTime.run(), failures)
     _run_suite("PlayerMovement", TestPlayerMovement.run(), failures)
     _run_suite("WalkingPrototype", TestWalkingPrototype.run(), failures)
     _run_suite("InventoryModel", TestInventoryModel.run(), failures)
