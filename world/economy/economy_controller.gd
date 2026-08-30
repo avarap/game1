@@ -106,9 +106,7 @@ func apply_save_data(data: Dictionary) -> void:
 	merchant.apply_from(candidate)
 
 
-func _validate_trade_context(
-	offer: MerchantOfferData, inventory: InventoryComponent
-) -> StringName:
+func _validate_trade_context(offer: MerchantOfferData, inventory: InventoryComponent) -> StringName:
 	if inventory == null or wallet == null or merchant == null:
 		return EconomyService.RESULT_INVALID_STATE
 	if offer == null or offer.item == null:
@@ -167,9 +165,7 @@ func _saved_stock_amount(saved_stock: Dictionary, item_id: StringName) -> int:
 	return int(saved_stock.get(str(item_id), -1))
 
 
-func _rollback_added_items(
-	inventory: InventoryComponent, item_id: StringName, amount: int
-) -> void:
+func _rollback_added_items(inventory: InventoryComponent, item_id: StringName, amount: int) -> void:
 	if amount > 0:
 		inventory.remove_item(item_id, amount)
 
