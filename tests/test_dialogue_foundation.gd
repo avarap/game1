@@ -36,9 +36,7 @@ static func _test_conditions(failures: Array[String]) -> void:
 
 
 static func _test_dialogue_graph(failures: Array[String]) -> void:
-	var dialogue := load(
-		"res://data/dialogues/brother_aldren/introduction.tres"
-	) as DialogueData
+	var dialogue := load("res://data/dialogues/brother_aldren/introduction.tres") as DialogueData
 	if dialogue == null or not dialogue.is_valid():
 		failures.append("Brother Aldren dialogue should load as valid DialogueData")
 		return
