@@ -65,10 +65,7 @@ func get_journal_entries() -> Array[Dictionary]:
 		if quest == null:
 			continue
 		var status := service.get_status(quest.id)
-		if (
-			status != QuestService.STATUS_ACTIVE
-			and status != QuestService.STATUS_COMPLETED
-		):
+		if status != QuestService.STATUS_ACTIVE and status != QuestService.STATUS_COMPLETED:
 			continue
 		var objectives: Array[Dictionary] = []
 		for objective in quest.objectives:
