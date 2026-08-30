@@ -29,6 +29,7 @@ func _run_all_tests() -> void:
 	_run_suite("StorageNetwork", TestStorageNetwork.run(), failures)
 	_run_suite("ProductionQueue", TestProductionQueue.run(), failures)
 	_run_suite("CemeteryFoundation", TestCemeteryFoundation.run(), failures)
+	_run_suite("CorpseDecomposition", TestCorpseDecomposition.run(), failures)
 	_run_suite("CemeteryFlow", TestCemeteryFlow.run(), failures)
 	_run_suite("CemeteryPersistence", TestCemeteryPersistence.run(), failures)
 	_run_suite("CemeteryGameplay", TestCemeteryGameplay.run(), failures)
