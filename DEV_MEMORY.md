@@ -123,6 +123,26 @@ TDD/validación:
 - RED de regresión: run `33336306728` mantuvo import/smoke y todas las demás suites verdes y falló exactamente en `Changing preservation should preserve fractional decomposition progress`.
 - GREEN tras corregir el reset: run `33336387360` pasó `gdlint`, `gdformat --check`, import Godot 4.7.2, smoke y suite headless completa.
 
+## Expansiones post-MVP registradas
+
+### Economía local por profesión
+- Todo objeto producido que sea vendible debe tener al menos un comprador válido.
+- No todos los aldeanos comercian; la capacidad de comerciar es explícita por NPC.
+- Los compradores usan `MerchantProfile` data-driven con `accept_tags`/categorías por profesión, no condicionales hardcodeados por item.
+- Ejemplo contractual: el herrero compra `iron`, `ore`, `metal_part` y `tool`, pero no acepta cultivos, comida o madera ajena a su oficio.
+- Puede existir un comerciante general con mayor cobertura pero peor precio para dar salida económica a recursos comunes.
+- La afinidad profesional puede afectar el precio y cada comerciante puede tener límites de demanda/cupo para impedir venta infinita.
+- Excepciones explícitas a la obligación de comprador: `quest_only`, `key_item`, `non_sellable`.
+- Debe existir validación automática que detecte cualquier `ItemData` vendible sin un `MerchantProfile` compatible.
+- Añadir/modificar recursos y comerciantes debe ser principalmente configuración/contenido.
+
+### Automatización avanzada
+- Expansión posterior al primer vertical slice/MVP.
+- Trabajadores originales del mundo de `game1`, sin copiar zombies del benchmark.
+- Tareas previstas: `HARVEST`, `MINE`, `CHOP`, `TRANSPORT`, `PROCESS`.
+- Evolución manual → automatización parcial → cadenas de producción completas.
+- Requiere infraestructura, rutas, almacenamiento y mantenimiento/energía.
+
 ## Scope fuera de 8A
 
 - Hambre/sed.
