@@ -4,6 +4,7 @@ extends CharacterBody2D
 @export var max_speed: float = 220.0
 @export var acceleration: float = 1200.0
 @export var deceleration: float = 1500.0
+@export var equipped_tool_id: StringName = &"axe"
 
 @onready var interaction_area: Area2D = $InteractionArea
 
@@ -22,6 +23,9 @@ func _physics_process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
     if event.is_action_pressed("interact"):
         _interact_with_nearest()
+
+func get_equipped_tool_id() -> StringName:
+    return equipped_tool_id
 
 func _interact_with_nearest() -> void:
     var candidates := interaction_area.get_overlapping_areas()

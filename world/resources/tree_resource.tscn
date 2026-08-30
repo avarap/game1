@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://world/resources/resource_node.gd" id="1_node"]
+[ext_resource type="Script" path="res://core/components/resource_source_component.gd" id="2_source"]
+[ext_resource type="Resource" path="res://data/items/wood.tres" id="3_wood"]
+
+[sub_resource type="CircleShape2D" id="Tree_shape"]
+radius = 22.0
+
+[node name="TreeResource" type="Area2D"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_node")
+prompt = "Cortar árbol"
+
+[node name="Trunk" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-8, -20, 8, -20, 10, 22, -10, 22)
+color = Color(0.35, 0.22, 0.12, 1)
+
+[node name="Crown" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, -54, 34, -18, 24, 14, -24, 14, -34, -18)
+color = Color(0.24, 0.42, 0.18, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("Tree_shape")
+
+[node name="ResourceSourceComponent" type="Node" parent="."]
+script = ExtResource("2_source")
+loot_item = ExtResource("3_wood")
+loot_amount = 2
+hit_points = 3
+energy_cost = 4
+required_tool_id = &"axe"
+
+[node name="FeedbackLabel" type="Label" parent="."]
+offset_left = -70.0
+offset_top = 30.0
+offset_right = 70.0
+offset_bottom = 54.0
+text = "E · Cortar árbol"
+horizontal_alignment = 1
