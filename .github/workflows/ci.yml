@@ -28,11 +28,15 @@ jobs:
             core/components/resource_source_component.gd \
             systems/storage/storage_provider.gd \
             systems/cemetery/cemetery_service.gd \
+            systems/simulation/day_night_math.gd \
             world/storage/storage_chest.gd \
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
             world/cemetery/cemetery_action.gd \
-            world/interactables/sleep_spot.gd
+            world/interactables/sleep_spot.gd \
+            world/simulation/day_night_controller.gd \
+            tests/test_day_night_cycle.gd \
+            tests/run_tests.gd
 
       - name: Check formatting of hardened gameplay scripts
         run: |
@@ -41,11 +45,15 @@ jobs:
             core/components/resource_source_component.gd \
             systems/storage/storage_provider.gd \
             systems/cemetery/cemetery_service.gd \
+            systems/simulation/day_night_math.gd \
             world/storage/storage_chest.gd \
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
             world/cemetery/cemetery_action.gd \
-            world/interactables/sleep_spot.gd
+            world/interactables/sleep_spot.gd \
+            world/simulation/day_night_controller.gd \
+            tests/test_day_night_cycle.gd \
+            tests/run_tests.gd
 
   validate-and-test:
     runs-on: ubuntu-24.04

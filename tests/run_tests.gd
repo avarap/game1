@@ -1,31 +1,34 @@
 extends SceneTree
 
+
 func _initialize() -> void:
-    var failures: Array[String] = []
-    _run_suite("TimeMath", TestTimeMath.run(), failures)
-    _run_suite("SimulationTime", TestSimulationTime.run(), failures)
-    _run_suite("PlayerMovement", TestPlayerMovement.run(), failures)
-    _run_suite("WalkingPrototype", TestWalkingPrototype.run(), failures)
-    _run_suite("InventoryModel", TestInventoryModel.run(), failures)
-    _run_suite("ItemsFoundation", TestItemsFoundation.run(), failures)
-    _run_suite("ResourceLoop", TestResourceLoop.run(), failures)
-    _run_suite("CraftingFoundation", TestCraftingFoundation.run(), failures)
-    _run_suite("StorageNetwork", TestStorageNetwork.run(), failures)
-    _run_suite("ProductionQueue", TestProductionQueue.run(), failures)
-    _run_suite("CemeteryFoundation", TestCemeteryFoundation.run(), failures)
-    _run_suite("CemeteryFlow", TestCemeteryFlow.run(), failures)
-    _run_suite("CemeteryPersistence", TestCemeteryPersistence.run(), failures)
-    _run_suite("CemeteryGameplay", TestCemeteryGameplay.run(), failures)
+	var failures: Array[String] = []
+	_run_suite("TimeMath", TestTimeMath.run(), failures)
+	_run_suite("SimulationTime", TestSimulationTime.run(), failures)
+	_run_suite("DayNightCycle", TestDayNightCycle.run(), failures)
+	_run_suite("PlayerMovement", TestPlayerMovement.run(), failures)
+	_run_suite("WalkingPrototype", TestWalkingPrototype.run(), failures)
+	_run_suite("InventoryModel", TestInventoryModel.run(), failures)
+	_run_suite("ItemsFoundation", TestItemsFoundation.run(), failures)
+	_run_suite("ResourceLoop", TestResourceLoop.run(), failures)
+	_run_suite("CraftingFoundation", TestCraftingFoundation.run(), failures)
+	_run_suite("StorageNetwork", TestStorageNetwork.run(), failures)
+	_run_suite("ProductionQueue", TestProductionQueue.run(), failures)
+	_run_suite("CemeteryFoundation", TestCemeteryFoundation.run(), failures)
+	_run_suite("CemeteryFlow", TestCemeteryFlow.run(), failures)
+	_run_suite("CemeteryPersistence", TestCemeteryPersistence.run(), failures)
+	_run_suite("CemeteryGameplay", TestCemeteryGameplay.run(), failures)
 
-    if failures.is_empty():
-        print("[TEST] All core tests passed")
-        quit(0)
-        return
+	if failures.is_empty():
+		print("[TEST] All core tests passed")
+		quit(0)
+		return
 
-    for failure in failures:
-        push_error("[TEST] %s" % failure)
-    quit(1)
+	for failure in failures:
+		push_error("[TEST] %s" % failure)
+	quit(1)
+
 
 func _run_suite(name: String, suite_failures: Array[String], failures: Array[String]) -> void:
-    print("[TEST] %s complete (%d failures)" % [name, suite_failures.size()])
-    failures.append_array(suite_failures)
+	print("[TEST] %s complete (%d failures)" % [name, suite_failures.size()])
+	failures.append_array(suite_failures)

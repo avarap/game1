@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://world/cemetery/cemetery_action.gd" id="7_cemetery_action"]
 [ext_resource type="Resource" path="res://data/cemetery/default_rating.tres" id="8_rating"]
 [ext_resource type="Script" path="res://world/interactables/sleep_spot.gd" id="9_sleep"]
+[ext_resource type="Script" path="res://world/simulation/day_night_controller.gd" id="10_day_night"]
 
 [sub_resource type="RectangleShape2D" id="Wall_horizontal"]
 size = Vector2(1600, 32)
@@ -35,6 +36,9 @@ y_sort_enabled = true
 polygon = PackedVector2Array(0, 0, 1600, 0, 1600, 1000, 0, 1000)
 color = Color(0.19, 0.24, 0.15, 1)
 z_index = -10
+
+[node name="DayNightCycle" type="CanvasModulate" parent="."]
+script = ExtResource("10_day_night")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(640, 360)
