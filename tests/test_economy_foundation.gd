@@ -9,6 +9,7 @@ static func run() -> Array[String]:
 	_test_offer_and_stock_validation(failures)
 	_test_buy_simulation_and_apply(failures)
 	_test_buy_failures_are_atomic(failures)
+	_test_sell_without_stock_is_atomic(failures)
 	_test_sell_simulation_and_apply(failures)
 	_test_stale_transaction_is_rejected(failures)
 	return failures
@@ -118,12 +119,23 @@ static func _test_buy_failures_are_atomic(failures: Array[String]) -> void:
 		failures.append("Invalid purchase quantity must not mutate state")
 
 
+static func _test_sell_without_stock_is_atomic(failures: Array[String]) -> void:
+	var wallet := WalletState.new(10)
+	var merchant := MerchantState.new(&"aldren_shop")
+	merchant.set_stock(&"wood", 1)
+	var transaction := EconomyService.simulate_sell(wallet, merchant, _make_offer(120, 60), 2, 1)
+	if transaction.result != EconomyService.RESULT_OUT_OF_STOCK:
+		failures.append("Sale without enough seller stock should report out of stock")
+	if wallet.balance_copper != 10 or merchant.get_stock(&"wood") != 1:
+		failures.append("Sale without seller stock must not mutate economy state")
+
+
 static func _test_sell_simulation_and_apply(failures: Array[String]) -> void:
 	var wallet := WalletState.new(10)
 	var merchant := MerchantState.new(&"aldren_shop")
 	merchant.set_stock(&"wood", 1)
 	var offer := _make_offer(120, 60)
-	var transaction := EconomyService.simulate_sell(wallet, merchant, offer, 3)
+	var transaction := EconomyService.simulate_sell(wallet, merchant, offer, 3, 3)
 	if transaction.result != EconomyService.RESULT_OK:
 		failures.append("Valid sale should simulate successfully")
 		return
