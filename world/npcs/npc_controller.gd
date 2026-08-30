@@ -7,9 +7,9 @@ signal destination_reached
 @export var initial_target: Vector2 = Vector2.ZERO
 @export var auto_start: bool = true
 
-@onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
-
 var navigation_started: bool = false
+
+@onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 
 
 func _ready() -> void:
