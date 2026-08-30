@@ -6,9 +6,8 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 
 - Repositorio: `avarap/game1`
 - Rama: `main`
-- Fase completada más reciente: **Fase 1 — Core / Walking Prototype**
-- Fase activa: **Fase 2 — Items / Resource Loop**
-- Estado Fase 2: bloque base de items/inventario implementado y validado; fase todavía no completada.
+- Fase completada más reciente: **Fase 2 — Items / Resource Loop**
+- Próxima fase: **Fase 3 — Crafting / Production Loop**
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 
 ## Trabajo realizado — Fase 0
@@ -29,52 +28,64 @@ Memoria operativa del proyecto. Este archivo debe actualizarse después de cada 
 
 ## Trabajo realizado — Fase 2, bloque 1
 
-1. Se analizaron los requisitos del master spec para items, inventario, recursos, herramientas y energía antes de escribir código.
-2. Se definieron criterios de aceptación explícitos en `ROADMAP.md` para evitar cerrar la fase solo con infraestructura.
-3. Se creó `items/definitions/item_data.gd` como `Resource` tipado con id, nombre, descripción, categoría, stack, valor e icono.
-4. Se creó `InventoryStack` como unidad de stack independiente de UI.
-5. Se creó `InventoryModel` como lógica pura para capacidad por slots, stacking, altas, bajas, conteo, disponibilidad y limpieza.
-6. Se creó `InventoryComponent` como componente local de escena; no es Autoload y envuelve el modelo mediante señales locales.
-7. `player/player.tscn` ahora posee un `InventoryComponent` de 20 slots.
-8. Se añadió `data/items/wood.tres` como primer item data-driven real.
-9. Se añadió `tests/test_inventory_model.gd` para stacking, overflow, capacidad, remove, count y has_item.
-10. Se añadió `tests/test_items_foundation.gd` para validar carga del `.tres` e integración local del inventario en el jugador.
-11. `tests/run_tests.gd` ejecuta también los tests de Fase 2.
-12. Commit del bloque: `f6d346a298910900785f19943bbf0680f33fde76`.
-13. El primer CI (`33283192098`) falló porque el proyecto trata warnings de inferencia `Variant` como errores en `InventoryModel`.
-14. Se corrigió el tipado usando enteros explícitos y `mini`/`maxi` en `2412414889c0a5d6e403c9178aede9b31fa045c5`.
-15. `Godot CI` run `33283283684` pasó completo: importación, smoke test de `main.tscn`, suite headless y limpieza en `success`.
+1. Se definieron criterios de aceptación explícitos en `ROADMAP.md`.
+2. Se creó `ItemData` como `Resource` tipado.
+3. Se creó `InventoryStack` y `InventoryModel` independientes de UI.
+4. Se creó `InventoryComponent` local al jugador con 20 slots.
+5. Se añadió `data/items/wood.tres`.
+6. Se añadieron tests de inventario e integración.
+7. Commit base: `f6d346a298910900785f19943bbf0680f33fde76`.
+8. El primer CI detectó warnings de inferencia `Variant` tratados como errores.
+9. Se corrigió con tipado explícito y `mini`/`maxi` en `2412414889c0a5d6e403c9178aede9b31fa045c5`.
+10. `Godot CI` run `33283283684` pasó completo.
+
+## Trabajo realizado — Fase 2, bloque 2
+
+1. Se creó `EnergyComponent` local y reutilizable con gasto, restauración y señales.
+2. Se creó `ResourceSourceComponent` como componente reutilizable para vida/cantidad, loot, coste de energía y herramienta requerida.
+3. La recolección es atómica: si falta herramienta, energía o espacio de inventario no se consume energía ni se concede loot parcial.
+4. Se añadió requisito mínimo de herramienta mediante `equipped_tool_id`; el jugador equipa `axe` como herramienta inicial de prueba.
+5. Se añadió `ResourceNode` como `Interactable` que delega la lógica al componente de recurso.
+6. Se añadió `world/resources/tree_resource.tscn` con loot `wood.tres`, 3 golpes, 2 unidades de madera por golpe y coste de 4 de energía.
+7. El árbol se integró en `world/world.tscn` dentro del radio inicial de interacción del jugador.
+8. Se añadió feedback local mediante `FeedbackLabel` para éxito, herramienta incorrecta, energía insuficiente, inventario lleno y agotamiento.
+9. Se añadió `tests/test_resource_loop.gd` para validar el loop `harvest -> loot -> energy`, además de fallos por herramienta, energía e inventario lleno.
+10. `tests/run_tests.gd` incluye el nuevo test de aceptación.
+11. Commit funcional: `c196e3ab5a42adffe97278f0b0daa8960c789e04`.
+12. `Godot CI` run `33285578050` completó con `success`: importación, smoke test de `main.tscn`, suite headless y limpieza.
+13. Con todos los criterios de aceptación cumplidos, la **Fase 2 queda completada**.
 
 ## Decisiones tomadas
 
 - Mantener solo cinco Autoloads globales.
-- Inventario, crafting, quests, cementerio y economía siguen siendo sistemas locales/contextuales.
+- Inventario, energía, recursos, crafting, quests, cementerio y economía permanecen como sistemas locales/contextuales.
 - `ItemData` usa `Resource` tipado y los items concretos viven como `.tres`.
-- La UI no será dueña del estado de inventario.
-- `InventoryModel` es reutilizable por jugador, cofres, comerciantes, estaciones y loot sin depender de `Node`.
-- El componente de inventario solo adapta lifecycle/señales de escena al modelo puro.
-- Mantener tipado explícito en lógica aritmética cuando Godot pueda inferir `Variant`, porque CI trata warnings como errores.
-- No implementar crafting ni fases posteriores durante Fase 2.
-- No marcar Fase 2 como completada hasta tener recolección + loot + energía + feedback + test de aceptación + CI verde final.
+- La UI no posee estado de gameplay.
+- `InventoryModel` es reutilizable sin depender de `Node`.
+- `ResourceSourceComponent` contiene la lógica de recolección; `ResourceNode` solo adapta interacción/feedback de escena.
+- El requisito de herramienta de Fase 2 es deliberadamente mínimo; durabilidad, niveles y herramientas avanzadas se posponen hasta que su fase lo requiera.
+- Mantener tipado explícito en lógica aritmética cuando Godot pueda inferir `Variant`.
+- No implementar crafting dentro de Fase 2.
 
 ## Validaciones confirmadas
 
-- Fase 0 y Fase 1 permanecen validadas en CI.
-- El bloque base de Fase 2 carga y compila correctamente en Godot 4.5 headless.
-- `main.tscn` sigue arrancando en smoke test.
-- Los tests de `InventoryModel` y de integración del `InventoryComponent` pasan.
-- El recurso `data/items/wood.tres` carga como `ItemData` real.
-- `Godot CI` run `33283283684` completó con `success` sobre `2412414889c0a5d6e403c9178aede9b31fa045c5`.
+- Fases 0, 1 y 2 permanecen validadas en CI.
+- `main.tscn` arranca en smoke test headless con el árbol recolectable presente.
+- El jugador dispone localmente de `InventoryComponent` y `EnergyComponent`.
+- La madera se concede al inventario y la energía baja de 100 a 96 en una recolección válida.
+- Herramienta incorrecta, energía insuficiente e inventario lleno no alteran indebidamente inventario/energía.
+- `Godot CI` run `33285578050` pasó sobre `c196e3ab5a42adffe97278f0b0daa8960c789e04`.
 
-## Próximo bloque de trabajo — Fase 2
+## Próximo bloque de trabajo — Fase 3
 
-1. Crear `ResourceSourceComponent` reutilizable con vida/cantidad y loot definidos mediante datos.
-2. Añadir un recurso mínimo recolectable al mundo, inicialmente madera/árbol de prueba.
-3. Conectar la recompensa al `InventoryComponent` del jugador sin acoplar el nodo de recurso a una UI.
-4. Añadir un `EnergyComponent` local mínimo y consumir energía en la acción de recolección.
-5. Dar feedback funcional mínimo de éxito, inventario lleno y energía insuficiente.
-6. Añadir tests de lógica y escena para el primer loop completo `interactuar -> consumir energía -> recibir recurso`.
-7. Mantener la fase abierta hasta cumplir todos los criterios de `ROADMAP.md`.
+1. Leer la sección de crafting y `StorageNetwork` del master spec antes de escribir código.
+2. Definir criterios de aceptación completos de Fase 3 en `ROADMAP.md`.
+3. Crear `RecipeData` tipado y al menos una receta `.tres` mínima.
+4. Diseñar lógica pura de crafting que valide inputs y outputs de forma atómica.
+5. Crear una estación mínima contextual, sin Autoload.
+6. Integrar la estación con inventarios compatibles sin acoplarla a UI.
+7. Añadir tests unitarios y un test de aceptación del primer loop completo de crafting.
+8. Mantener Fase 3 abierta hasta cumplir todos sus criterios y tener CI verde final.
 
 ## Regla de continuidad
 
