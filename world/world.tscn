@@ -76,7 +76,6 @@ collision_layer = 2
 collision_mask = 0
 script = ExtResource("7_cemetery_action")
 prompt = "Recibir cadáver"
-controller_path = NodePath("../CemeteryController")
 action = 0
 
 [node name="Visual" type="Polygon2D" parent="CorpseDelivery"]
@@ -92,7 +91,6 @@ collision_layer = 2
 collision_mask = 0
 script = ExtResource("7_cemetery_action")
 prompt = "Preparar cadáver"
-controller_path = NodePath("../CemeteryController")
 action = 1
 
 [node name="Visual" type="Polygon2D" parent="PreparationTable"]
@@ -108,7 +106,6 @@ collision_layer = 2
 collision_mask = 0
 script = ExtResource("7_cemetery_action")
 prompt = "Enterrar cadáver"
-controller_path = NodePath("../CemeteryController")
 action = 2
 
 [node name="Visual" type="Polygon2D" parent="GravePlot"]
@@ -124,7 +121,6 @@ collision_layer = 2
 collision_mask = 0
 script = ExtResource("7_cemetery_action")
 prompt = "Mejorar tumba"
-controller_path = NodePath("../CemeteryController")
 action = 3
 
 [node name="Visual" type="Polygon2D" parent="GraveUpgrade"]

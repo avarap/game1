@@ -12,6 +12,7 @@ collision_mask = 0
 script = ExtResource("1_station")
 prompt = "Fabricar tabla"
 station_id = &"workbench"
+storage_scope = &"workshop"
 recipe = ExtResource("2_recipe")
 
 [node name="Visual" type="Polygon2D" parent="."]

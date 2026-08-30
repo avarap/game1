@@ -8,38 +8,50 @@ extends CharacterBody2D
 
 @onready var interaction_area: Area2D = $InteractionArea
 
+
 func _physics_process(delta: float) -> void:
-    var direction := PlayerMovement.input_direction()
-    velocity = PlayerMovement.next_velocity(
-        velocity,
-        direction,
-        max_speed,
-        acceleration,
-        deceleration,
-        delta
-    )
-    move_and_slide()
+	var direction := PlayerMovement.input_direction()
+	velocity = PlayerMovement.next_velocity(
+		velocity,
+		direction,
+		max_speed,
+		acceleration,
+		deceleration,
+		delta,
+	)
+	move_and_slide()
+
 
 func _unhandled_input(event: InputEvent) -> void:
-    if event.is_action_pressed("interact"):
-        _interact_with_nearest()
+	if event.is_action_pressed("interact"):
+		_interact_with_nearest()
+
 
 func get_equipped_tool_id() -> StringName:
-    return equipped_tool_id
+	return equipped_tool_id
+
+
+func get_inventory_component() -> InventoryComponent:
+	return get_node_or_null("InventoryComponent") as InventoryComponent
+
+
+func get_energy_component() -> EnergyComponent:
+	return get_node_or_null("EnergyComponent") as EnergyComponent
+
 
 func _interact_with_nearest() -> void:
-    var candidates := interaction_area.get_overlapping_areas()
-    if candidates.is_empty():
-        return
+	var candidates := interaction_area.get_overlapping_areas()
+	if candidates.is_empty():
+		return
 
-    var nearest: Area2D
-    var nearest_distance := INF
-    for candidate in candidates:
-        if candidate is Interactable:
-            var distance := global_position.distance_squared_to(candidate.global_position)
-            if distance < nearest_distance:
-                nearest = candidate
-                nearest_distance = distance
+	var nearest: Area2D
+	var nearest_distance := INF
+	for candidate in candidates:
+		if candidate is Interactable:
+			var distance := global_position.distance_squared_to(candidate.global_position)
+			if distance < nearest_distance:
+				nearest = candidate
+				nearest_distance = distance
 
-    if nearest != null:
-        nearest.interact(self)
+	if nearest != null:
+		nearest.interact(self)
