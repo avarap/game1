@@ -30,8 +30,21 @@ jobs:
         continue-on-error: true
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
 
-      - name: Check formatting of all GDScript files
-        run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat --check
+      - name: Apply canonical formatting in runner
+        run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat
+
+      - name: Archive formatted GDScript tree
+        run: tar -czf /tmp/formatted-gdscript.tar.gz --files-from <(find . -type f -name '*.gd' -not -path './.git/*' -print | sort)
+
+      - name: Upload formatted GDScript tree
+        uses: actions/upload-artifact@v4
+        with:
+          name: formatted-gdscript
+          path: /tmp/formatted-gdscript.tar.gz
+          retention-days: 1
+
+      - name: Prove migration is required
+        run: git diff --exit-code -- '*.gd'
 
   validate-and-test:
     runs-on: ubuntu-24.04
