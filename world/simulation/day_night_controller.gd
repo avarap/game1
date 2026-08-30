@@ -2,17 +2,22 @@ class_name DayNightController
 extends CanvasModulate
 
 var current_phase: StringName = &"night"
+var _event_bus: Node
+var _time_manager: Node
+
+
+func _enter_tree() -> void:
+	_event_bus = get_node_or_null("/root/EventBus")
+	_time_manager = get_node_or_null("/root/TimeManager")
+	if _event_bus != null and _event_bus.has_signal("time_changed"):
+		var callback := Callable(self, "_on_time_changed")
+		if not _event_bus.is_connected("time_changed", callback):
+			_event_bus.connect("time_changed", callback)
+	_apply_current_time()
 
 
 func _ready() -> void:
-	var tree := get_tree()
-	var event_bus := tree.root.get_node_or_null("EventBus")
-	if event_bus != null and event_bus.has_signal("time_changed"):
-		event_bus.connect(&"time_changed", Callable(self, "_on_time_changed"))
-
-	var time_manager := tree.root.get_node_or_null("TimeManager")
-	if time_manager != null:
-		apply_time(int(time_manager.get("hour")), int(time_manager.get("minute")))
+	_apply_current_time()
 
 
 func apply_time(hour: int, minute: int) -> void:
@@ -22,3 +27,10 @@ func apply_time(hour: int, minute: int) -> void:
 
 func _on_time_changed(hour: int, minute: int) -> void:
 	apply_time(hour, minute)
+
+
+func _apply_current_time() -> void:
+	if _time_manager == null:
+		_time_manager = get_node_or_null("/root/TimeManager")
+	if _time_manager != null:
+		apply_time(int(_time_manager.get("hour")), int(_time_manager.get("minute")))

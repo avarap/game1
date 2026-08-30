@@ -17,12 +17,16 @@ var _event_bus: Node
 @onready var navigation_agent: NavigationAgent2D = $NavigationAgent2D
 
 
+func _enter_tree() -> void:
+	if data != null and not data.id.is_empty():
+		add_to_group("save_provider")
+	_resolve_time_dependencies()
+
+
 func _ready() -> void:
 	if data == null:
 		push_warning("NPCController requires NPCData")
 		return
-	add_to_group("save_provider")
-	_resolve_time_dependencies()
 	if schedule != null and _time_manager != null:
 		apply_current_schedule()
 		return
