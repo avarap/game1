@@ -7,14 +7,16 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Repositorio: `avarap/game1`.
 - Rama principal: `main`.
 - Fase completada más reciente: **Fase 6 — RPG**.
-- Cierre funcional de Fase 6 validado en PR #39, HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, Godot CI `33308814397`: `gdscript-quality` y `validate-and-test` en `success`.
-- #8 — tecnología ↔ quests está cerrada: merge funcional `8cd26c98e3e43d982218ccf97869ab0c6a0830b3`; la validación global posterior de `main` fue `33308014015` sobre `cb4c14351abbee84f3162197cdf4ba794ab9846f`.
-- #9 — aceptación RPG integral queda resuelta por el test reforzado de PR #39 y la sincronización documental de este bloque.
-- Próximo bloque obligatorio: **#17 — contrato visual pre-Fase 7**.
-- Fase 7 permanece **bloqueada** hasta cerrar #17; #16 depende de #17 y no debe adelantarse.
-- PR #32 (`Phase 7: world zones foundation`) permanece fuera de `main` y no debe mergearse todavía.
+- Cierre funcional de Fase 6: PR #39, merge `1efe0bc9a47c2a434c597276bc326d24713720aa`; aceptación HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, run `33308814397`.
+- Runtime/CI objetivo actualizado a **Godot 4.7.2** por PR #41, merge `1b4ff623b45c465bfb9bd57f2b96b6ecec88a2ad`; run de `main` `33309144543`, ambos jobs `success`.
+- **#17 — contrato visual pre-Fase 7 resuelto en PR #42** mediante `ART_DIRECTION.md`: perspectiva cenital 3/4 ortográfica, tile 32 px, escala de personajes, footprints, cámara, pivotes/Y-sort, capas, paleta, luz, pixel-art, carpetas y spritesheets.
+- El contrato conserva como referencia el footprint actual del player (`20 x 28 px`) y el zoom actual (`1.5x`) para no introducir gameplay en #17.
+- **Siguiente bloque obligatorio: #16 — foundation técnica de mapas con `TileMapLayer`**.
+- Fase 7 pasa de bloqueada a **activa**, pero no está completada; debe avanzar por sus issues y criterios de aceptación.
+- PR #32 (`Phase 7: world zones foundation`) sigue fuera de `main`; no debe mergearse automáticamente porque nació antes del contrato visual y debe reevaluarse contra #17/#16.
 - Fuente funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
-- Fuente de planificación: `ROADMAP.md` + issues de integración/cierre.
+- Fuente de planificación: `ROADMAP.md` + issues activas.
+- Contrato visual: `ART_DIRECTION.md`.
 - Fuente narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**, spoiler-light.
 - Política de idiomas: `LOCALIZATION.md`.
 
@@ -26,7 +28,7 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Fase 3 — Crafting: `2252fcbd4280acec1e60530c026a8f5dd3365b91`, run `33292481990`.
 - Fase 4 — Cementerio: `dc9b4adc2710a18f182bd4a04f676a3afc74c198`, run `33294286014`.
 - Fase 5 — Simulación: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`.
-- Fase 6 — RPG: aceptación funcional HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, run `33308814397`.
+- Fase 6 — RPG: PR #39, merge `1efe0bc9a47c2a434c597276bc326d24713720aa`; run `33309017205` de `main` verde.
 
 ## Fase 6 — RPG — COMPLETADA
 
@@ -39,26 +41,30 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 5. Economía foundation: `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`, run `33304080534`.
 6. Tecnología foundation: `444fc2995ab14b293188aba54a0f4099dc3c36b3`, run `33305211363`.
 7. Comercio UI #6: merge `3d6252e840ae32e5445f454170d0856909bf6a2b`, run `33307358527`.
-8. Tecnología ↔ quests #8: merge `8cd26c98e3e43d982218ccf97869ab0c6a0830b3`; recompensa tipada de puntos tecnológicos, compatibilidad `QUEST_FLAG`, idempotencia y persistencia verificadas por `test_technology_quest_integration.gd`.
-9. Quality gate global #38: merge `cb4c14351abbee84f3162197cdf4ba794ab9846f`, run `33308014015`; 109 scripts GDScript cubiertos dinámicamente por `gdlint` + `gdformat --check`.
+8. Tecnología ↔ quests #8: merge `8cd26c98e3e43d982218ccf97869ab0c6a0830b3`; recompensa tipada, compatibilidad `QUEST_FLAG`, idempotencia y persistencia verificadas.
+9. Quality gate global #38: merge `cb4c14351abbee84f3162197cdf4ba794ab9846f`, run `33308014015`; descubrimiento dinámico de todos los `*.gd`.
 10. Cierre integral #9: `test_rpg_acceptance.gd` reforzado en `ea3543aba5b6d859266553a964d817f54670b9a3`, run `33308814397`.
 
 ### Aceptación integral final
 
-El test de cierre usa `world.tscn` real y cubre en un único flujo:
+El test de cierre usa `world.tscn` real y cubre en un único flujo relación→diálogo, quest, recompensa única, puntos tecnológicos, unlock, compra/venta, guardado, destrucción/reconstrucción del mundo, restauración de providers e idempotencia posterior a load.
 
-- relación que desbloquea contenido de diálogo;
-- inicio, progreso y entrega de `aldren_first_duty`;
-- `QUEST_FLAG` y puntos tecnológicos concedidos exactamente una vez;
-- reintento de recompensa sin duplicación;
-- compra y venta con economía atómica;
-- desbloqueo de `sturdy_joinery` consumiendo puntos;
-- guardado con providers `relationships`, `quests`, `economy` y `technology`;
-- destrucción y reconstrucción del mundo antes de cargar;
-- restauración de relación, quest/flags, saldo, stock, puntos y unlock IDs;
-- idempotencia posterior a load tanto de recompensas como del desbloqueo.
+## Transición visual pre-Fase 7 — #17 RESUELTA
 
-No fue necesario modificar lógica de producción para cerrar #9: el código existente ya cumplía el flujo cuando se amplió la cobertura de aceptación.
+`ART_DIRECTION.md` fija un contrato original y verificable para producción independiente:
+
+- proyección: 2D ortográfica cenital 3/4, cuadrícula no isométrica;
+- tile lógico: `32 x 32 px`, submódulos de 16/8 px;
+- frame humano estándar: `32 x 48 px`, pivot/Y-sort en pies;
+- footprint de referencia: `20 x 28 px` para player/NPC humano mientras una tarea de gameplay no lo cambie explícitamente;
+- resolución de referencia: `1280 x 720`, zoom base `1.5x`, nearest filtering;
+- capas: `ground`, `paths`, `decoration_low`, `collision`, `objects_y_sorted`, `foreground_occlusion`;
+- paleta base original y rangos de valor por cementerio/bosque/pueblo/interiores;
+- luz diurna desde arriba-izquierda y sombras abajo-derecha;
+- reglas de contorno, detalle, dithering, nombres, carpetas y spritesheets;
+- ejemplos numéricos de footprint de personaje y árbol Y-sorted.
+
+#17 no modifica escenas, gameplay, Autoloads ni assets finales. Su función es eliminar decisiones visuales incompatibles antes de #16.
 
 ## Decisiones vigentes
 
@@ -72,16 +78,18 @@ No fue necesario modificar lógica de producción para cerrar #9: el código exi
 - Recompensas de quest son idempotentes para todos sus tipos.
 - Los desbloqueos tecnológicos se identifican por IDs estables.
 - El quality gate descubre todos los `*.gd` automáticamente; no volver a listas blancas manuales.
-- No iniciar producción de mapas/assets de Fase 7 antes de fijar #17.
+- Fase 7 debe respetar `ART_DIRECTION.md`; cualquier excepción de escala/pivote/capa debe justificarse explícitamente.
+- `TileMapLayer` es la base técnica obligatoria de mapas; la lógica de mundo no debe incrustarse en sus tiles.
+- No reutilizar PR #32 sin revisar su compatibilidad con el contrato visual y los criterios de #16.
 
 ## Próximo paso
 
-Implementar **#17 — Contrato visual: escala, tiles, paleta y perspectiva** como bloque documental/técnico aislado. Debe fijar métricas numéricas y convenciones que permitan después ejecutar #16 — foundation `TileMapLayer` sin decisiones visuales incompatibles. No mergear PR #32 ni producir assets definitivos antes de cerrar #17.
+Implementar **#16 — Foundation técnica de mapas con `TileMapLayer`**. Debe crear al menos un mapa técnico cargable con las seis capas contractuales, preservar movimiento, colisión, navegación, Y-sort/occlusion y camera bounds, y cerrar con smoke + suite headless + quality gate verdes. No producir todavía mapas o assets finales de #18/#19/#20/#21/#22.
 
 ## Regla de continuidad
 
 Al retomar:
-1. Leer `DEV_MEMORY.md`, `ROADMAP.md` y la issue activa.
+1. Leer `DEV_MEMORY.md`, `ROADMAP.md`, `ART_DIRECTION.md` y la issue activa.
 2. Revisar `main` y el último CI.
 3. Comprobar dependencias antes de iniciar trabajo nuevo.
 4. Implementar un bloque coherente y pequeño.
