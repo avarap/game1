@@ -61,24 +61,26 @@ func is_ready(quest_id: StringName) -> bool:
 
 func _resolve_inventory() -> void:
 	var player := get_tree().get_first_node_in_group("player")
-	if player == null or not player.has_method("get_inventory_component"):
+	if player == null:
+		return
+	if not player.has_method("get_inventory_component"):
 		return
 	_inventory = player.call("get_inventory_component") as InventoryComponent
-	if (
-		_inventory != null
-		and not _inventory.inventory_changed.is_connected(_on_inventory_changed)
-	):
-		_inventory.inventory_changed.connect(_on_inventory_changed)
+	if _inventory == null:
+		return
+	if _inventory.inventory_changed.is_connected(_on_inventory_changed):
+		return
+	_inventory.inventory_changed.connect(_on_inventory_changed)
 
 
 func _connect_dialogue() -> void:
-	var controller := (
-		get_tree().get_first_node_in_group("dialogue_controller") as DialogueController
-	)
+	var node := get_tree().get_first_node_in_group("dialogue_controller")
+	var controller := node as DialogueController
 	if controller == null:
 		return
-	if not controller.option_committed.is_connected(_on_dialogue_option_committed):
-		controller.option_committed.connect(_on_dialogue_option_committed)
+	if controller.option_committed.is_connected(_on_dialogue_option_committed):
+		return
+	controller.option_committed.connect(_on_dialogue_option_committed)
 
 
 func _on_inventory_changed() -> void:
@@ -91,12 +93,15 @@ func _sync_active_item_objectives() -> void:
 	if _inventory == null:
 		return
 	for quest in service.get_active_quests():
-		for objective in quest.objectives:
-			if objective.objective_type != QuestObjectiveData.ObjectiveType.ITEM_COUNT:
-				continue
-			service.update_item_count(
-				objective.item_id, _inventory.count_item(objective.item_id)
-			)
+		_sync_quest_item_objectives(quest)
+
+
+func _sync_quest_item_objectives(quest: QuestData) -> void:
+	for objective in quest.objectives:
+		if objective.objective_type != QuestObjectiveData.ObjectiveType.ITEM_COUNT:
+			continue
+		var amount := _inventory.count_item(objective.item_id)
+		service.update_item_count(objective.item_id, amount)
 
 
 func _on_dialogue_option_committed(option: DialogueOptionData) -> void:
