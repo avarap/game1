@@ -42,7 +42,7 @@ La definición de cierre canónica está además reflejada en las issues de Fase
 - [x] Quests pueden iniciarse, progresar y completarse.
 - [x] Las recompensas `QUEST_FLAG` se conceden una sola vez.
 - [x] Núcleo de economía compra y vende atómicamente.
-- [ ] **#6** Interacción de comerciante + UI técnica de compra/venta jugable, reutilizable y EN/ES.
+- [x] **#6** Interacción de comerciante + UI técnica de compra/venta jugable, reutilizable y EN/ES.
 - [x] Núcleo de tecnologías consume puntos y desbloquea contenido.
 - [ ] **#8** Integración tecnología ↔ quests: recompensa tipada de puntos tecnológicos e idempotencia tras save/load.
 - [x] Providers RPG básicos persisten conjuntamente mediante `SaveManager`.
@@ -58,15 +58,15 @@ La definición de cierre canónica está además reflejada en las issues de Fase
 - Quests foundation: `979b2328cc01c8d5a7a0ae4201deabe58cf9cc38`, run `33301533785`.
 - Economía foundation: `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`, run `33304080534`.
 - Tecnología foundation: `444fc2995ab14b293188aba54a0f4099dc3c36b3`, run `33305211363`.
-- Aceptación parcial previa: `cc1351048609a474cedd524543f6c4370c46bea4`, run `33305899447`; verde técnicamente, pero insuficiente para #9 porque no cubre #6/#8.
+- Comercio UI (#6): merge `3d6252e840ae32e5445f454170d0856909bf6a2b`, run `33307358527`; `gdscript-quality`, importación, smoke y suite headless en `success`.
+- Aceptación parcial previa: `cc1351048609a474cedd524543f6c4370c46bea4`, run `33305899447`; verde técnicamente, pero insuficiente para #9 porque no cubre #8 ni el flujo final actualizado.
 
 ### Orden obligatorio restante
-1. **#6 — Comercio UI**.
-2. **#8 — Tecnología ↔ quests** (después de #7, ya completada).
-3. **#9 — Cierre real de Fase 6** con aceptación integral y CI sobre el mismo HEAD final.
-4. **#17 — Contrato visual**, solo después de #9.
-5. **#16 — TileMapLayer foundation**, solo después de #9 + #17.
-6. Producción posterior de Fase 7 (#18/#19/#20/#21/#22).
+1. **#8 — Tecnología ↔ quests** (después de #7, ya completada).
+2. **#9 — Cierre real de Fase 6** con aceptación integral y CI sobre el mismo HEAD final.
+3. **#17 — Contrato visual**, solo después de #9.
+4. **#16 — TileMapLayer foundation**, solo después de #9 + #17.
+5. Producción posterior de Fase 7 (#18/#19/#20/#21/#22).
 
 ### Política de localización
 - Idiomas iniciales: `en` y `es`; fallback `en`.
