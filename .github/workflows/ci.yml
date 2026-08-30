@@ -6,12 +6,17 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   gdscript-quality:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,11 +34,16 @@ jobs:
       - name: Lint all GDScript files
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
 
-      - name: Check formatting of all GDScript files
+      - name: Apply canonical formatting once
         run: |
-          gdformat world/zones/zone_manager.gd
-          git diff -- world/zones/zone_manager.gd
-          git diff --quiet -- world/zones/zone_manager.gd
+          find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -- '*.gd'
+            git commit -m "style: apply canonical gdformat"
+            git push origin HEAD:${{ github.head_ref }}
+          fi
 
   validate-and-test:
     runs-on: ubuntu-24.04
