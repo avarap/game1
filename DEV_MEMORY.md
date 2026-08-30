@@ -6,14 +6,14 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 - Repositorio: `avarap/game1`
 - Rama: `main`
-- Fase completada más reciente: **Fase 5 — Simulación**
-- Fase activa: **Fase 6 — RPG**
-- Estado Fase 6: diálogo bilingüe, relaciones, condiciones narrativas, quests, economía y **foundation de tecnologías** completados y validados; solo quedan aceptación/persistencia integral y cierre final de fase.
+- Fase completada más reciente: **Fase 6 — RPG**
+- Fase activa: **Fase 7 — Mundo**
+- Estado Fase 6: **COMPLETADA**. Diálogo bilingüe, relaciones, condiciones narrativas, quests, economía, tecnologías y persistencia RPG integral están validados conjuntamente.
 - Fuente funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 - Fuente narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**, canónica y spoiler-light.
 - Política de idiomas: `LOCALIZATION.md`.
-- Último bloque funcional: `444fc2995ab14b293188aba54a0f4099dc3c36b3`.
-- Última validación: `Godot CI` run `33305211363`, `success` en `gdscript-quality` y `validate-and-test`.
+- Último bloque funcional de Fase 6: `cc1351048609a474cedd524543f6c4370c46bea4`.
+- Última validación funcional de Fase 6: `Godot CI` run `33305899447`, `success` en `gdscript-quality` y `validate-and-test`.
 
 ## Fases completadas
 
@@ -35,7 +35,10 @@ Cadáveres, preparación, tumbas, rating, mejoras y persistencia. Commit final `
 ### Fase 5 — Simulación
 Tiempo/calendario, sueño, día/noche, `NPCData`, navegación, horarios/estados y persistencia NPC. Cierre `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`.
 
-## Fase 6 — RPG — ACTIVA
+### Fase 6 — RPG
+Diálogo/localización, relaciones, condiciones narrativas, quests, economía, tecnologías y persistencia conjunta mediante `SaveManager`. Cierre funcional `cc1351048609a474cedd524543f6c4370c46bea4`, run `33305899447`.
+
+## Fase 6 — RPG — COMPLETADA
 
 ### Bloque 1 — Diálogo + localización — COMPLETADO
 - Resources tipados de diálogo y `DialogueService` puro.
@@ -134,6 +137,24 @@ Tiempo/calendario, sueño, día/noche, `NPCData`, navegación, horarios/estados 
 - `444fc2995ab14b293188aba54a0f4099dc3c36b3` aplica el formato canónico y restaura el quality gate normal.
 - Validación final: `Godot CI` `33305211363`, `gdscript-quality` y `validate-and-test` en `success`.
 
+### Bloque 6 — Aceptación integral y cierre — COMPLETADO
+
+1. `test_rpg_acceptance.gd` instancia `world.tscn` y usa los controllers reales de relaciones, quests, economía y tecnología.
+2. El flujo cambia relación con Aldren, completa `aldren_first_duty`, realiza una compra y desbloquea `sturdy_joinery`.
+3. Un único `SaveManager.save_game()` agrega los providers `relationships`, `quests`, `economy` y `technology`.
+4. Tras mutar el estado y ejecutar `SaveManager.load_game()`, se restauran relación, quest completada y flags, wallet/stock, puntos y unlocks.
+5. La recompensa de quest permanece reclamada después del load y no puede duplicarse.
+6. Una tecnología ya desbloqueada devuelve `already_unlocked` después del load y no vuelve a consumir puntos.
+7. `test_rpg_acceptance.gd` forma parte de `tests/run_tests.gd` y del quality gate.
+8. No fue necesario modificar producción: el contrato genérico existente de `SaveManager` ya soportaba el roundtrip integral.
+
+#### Incidencias del bloque
+- Run `33305661192`: `gdlint` detectó una línea del nuevo test >100 caracteres; se corrigió sin relajar el gate.
+- Run `33305708696`: importación y smoke verdes, pero el runner `--script` no resolvía el identificador global `SaveManager`; el test pasó a obtener el Autoload desde `/root/SaveManager`.
+- El mismo ciclo mostró formato no canónico únicamente por EOF en `test_rpg_acceptance.gd` y `run_tests.gd`; se aplicó el formato canónico y se restauró `gdformat --check` estricto.
+- Cierre funcional: `cc1351048609a474cedd524543f6c4370c46bea4`.
+- Validación: `Godot CI` `33305899447`; `gdlint`, `gdformat`, importación Godot, smoke y suite headless completos en `success`.
+
 ## Dirección narrativa vigente
 
 - `HISTORIA_PRINCIPAL.md` es deliberadamente spoiler-light.
@@ -156,30 +177,21 @@ Tiempo/calendario, sueño, día/noche, `NPCData`, navegación, horarios/estados 
 - Dinero y precios se representan exclusivamente como enteros en cobre; UI futura solo formatea oro/plata/cobre.
 - Puntos tecnológicos se representan como enteros no negativos rojo/verde/azul.
 - Los desbloqueos tecnológicos se identifican por IDs estables de contenido; la UI/árbol futuro no será fuente de verdad.
-- Prerequisitos tecnológicos, árbol visual y contenido masivo quedan fuera hasta después de validar el cierre integral de Fase 6.
+- Prerequisitos tecnológicos, árbol visual y contenido masivo no forman parte de la foundation mínima ya cerrada; solo introducirlos si una fase futura los exige.
 - Economía dinámica, fluctuaciones de precio y múltiples comerciantes quedan fuera hasta fases posteriores/expansión de alcance.
-- No introducir alcance de Fase 7/8 durante Fase 6.
+- No introducir alcance de Fase 8 durante Fase 7.
 
-## Criterios restantes de Fase 6
+## Fase 7 — Mundo — ACTIVA
 
-1. ~~Quests pueden iniciarse, progresar y completarse.~~ COMPLETADO.
-2. ~~Recompensas se conceden exactamente una vez.~~ COMPLETADO.
-3. ~~Economía compra/vende correctamente.~~ COMPLETADO.
-4. ~~Tecnologías consumen puntos y desbloquean contenido.~~ COMPLETADO.
-5. Estado RPG completo persiste de forma compatible con `SaveManager`.
-6. Aceptación integral de Fase 6 y CI final verdes.
+Objetivo de alto nivel según `ROADMAP.md`: pueblo, bosque, mina, interiores, exploración y secretos.
 
-## Próximo bloque — Fase 6
+## Próximo bloque — Fase 7
 
-**Aceptación integral, persistencia conjunta y cierre de Fase 6**:
-
-1. Crear un test de aceptación de mundo que ejercite en una misma sesión relaciones, quests, economía y tecnología mediante sus controllers reales.
-2. Realizar un roundtrip completo a través de `SaveManager` y verificar que los providers locales restauran su estado conjuntamente.
-3. Confirmar después de restaurar que una recompensa de quest no se duplica y que una tecnología ya desbloqueada no vuelve a consumir puntos.
-4. Verificar que dinero/stock, relaciones, quest flags/progreso y puntos/unlocks tecnológicos sobreviven al mismo save/load.
-5. Mantener el test centrado en contratos e integración; no duplicar las suites unitarias ya existentes.
-6. Ejecutar quality gate, importación, smoke y suite headless sobre el HEAD final.
-7. Solo si todos los criterios están realmente satisfechos, actualizar `ROADMAP.md`/`README.md` para marcar **Fase 6 — RPG** como completada y abrir Fase 7.
+1. Releer la sección de Mundo del master spec antes de implementar.
+2. Elegir el primer bloque mínimo y coherente de expansión del mundo que pueda validarse de extremo a extremo.
+3. Mantener reutilizables los sistemas ya cerrados; no reabrir Fase 6 salvo regresión demostrada.
+4. No adelantar arte/polish de Fase 8.
+5. Añadir criterios y tests específicos del bloque antes de marcar progreso de Fase 7.
 
 ## Regla de continuidad
 
