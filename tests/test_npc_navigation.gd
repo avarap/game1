@@ -55,7 +55,7 @@ static func _check_world_integration(failures: Array[String]) -> void:
 			failures.append("Brother Aldren scene should use NPCData")
 		if npc.get_node_or_null("NavigationAgent2D") as NavigationAgent2D == null:
 			failures.append("Brother Aldren should own a NavigationAgent2D")
-		if npc.initial_target == Vector2.ZERO:
-			failures.append("Brother Aldren should have an explicit navigation target")
+		if npc.schedule == null or not npc.schedule.is_valid():
+			failures.append("Brother Aldren should have a valid data-driven schedule")
 
 	world.free()
