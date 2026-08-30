@@ -80,9 +80,8 @@ static func run() -> Array[String]:
 		if collision.get_cell_source_id(cell) != -1:
 			failures.append("%s should not spawn inside tile collision" % marker_path)
 
-	var controller := map.get_node_or_null("CemeteryArea/CemeteryController") as CemeteryController
-	if controller == null:
-		failures.append("Cemetery map should preserve CemeteryController")
+	if map.find_child("CemeteryController", true, false) != null:
+		failures.append("Cemetery map should delegate persistent cemetery state to world shell")
 
 	var region := map.get_node_or_null("NavigationRegion") as WorldNavigationRegion
 	if region == null:
