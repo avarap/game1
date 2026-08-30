@@ -31,7 +31,7 @@
 - [x] Aceptación integral y CI final verdes.
 - Cierre: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`.
 
-## Fase 6 — RPG — ACTIVA
+## Fase 6 — RPG — COMPLETADA
 
 ### Criterios de aceptación
 - [x] Diálogos, condiciones y opciones funcionan desde datos.
@@ -41,10 +41,10 @@
 - [x] Las recompensas de quests se conceden una sola vez.
 - [x] La economía compra y vende correctamente.
 - [x] Las tecnologías consumen puntos y desbloquean contenido.
-- [ ] Estado RPG completo persistente compatible con `SaveManager`.
-- [ ] Tests de aceptación del flujo RPG mínimo.
-- [ ] `gdscript-quality` verde sobre el HEAD final de la fase.
-- [ ] CI final verde antes de cerrar la fase.
+- [x] Estado RPG completo persistente compatible con `SaveManager`.
+- [x] Tests de aceptación del flujo RPG mínimo.
+- [x] `gdscript-quality` verde sobre el HEAD funcional final de la fase.
+- [x] CI funcional final verde antes de cerrar la fase.
 
 ### Política de localización
 - Idiomas iniciales: `en` y `es`; fallback `en`.
@@ -122,15 +122,20 @@
 - Final validado: `444fc2995ab14b293188aba54a0f4099dc3c36b3`, run `33305211363`, ambos jobs `success`.
 - Los prerequisitos, el árbol tecnológico y la UI completa quedan fuera de esta foundation mínima.
 
-### Próximo bloque — Aceptación integral y cierre de Fase 6
-- Probar en un único flujo de mundo el guardado/restauración conjunta de relaciones, quests, economía y tecnología mediante `SaveManager`.
-- Añadir aceptación mínima RPG que atraviese los sistemas ya validados sin duplicar su lógica interna.
-- Confirmar que las recompensas y desbloqueos siguen siendo idempotentes después de un roundtrip completo de save/load.
-- Ejecutar `gdscript-quality`, importación, smoke y suite headless sobre el HEAD final.
-- Solo si todo queda verde, marcar **Fase 6 — RPG** como completada y abrir Fase 7.
+### Bloque 6 — Aceptación integral y cierre — COMPLETADO
+- [x] `test_rpg_acceptance.gd` ejercita relaciones, quest, economía y tecnología sobre `world.tscn` real.
+- [x] Roundtrip conjunto mediante `SaveManager` comprueba providers `relationships`, `quests`, `economy` y `technology` en un único save.
+- [x] Tras cargar, se restauran relación, quest/flag/recompensa reclamada, saldo/stock y puntos/unlocks tecnológicos.
+- [x] Recompensa de quest y desbloqueo tecnológico siguen siendo idempotentes después del load.
+- [x] Test integrado incorporado al runner y al quality gate.
+- Incidencias: run `33305661192` detectó una línea >100; run `33305708696` reveló acceso no resoluble al Autoload desde `--script` y EOF no canónico. Se corrigió el test sin tocar producción ni relajar gates.
+- Cierre funcional: `cc1351048609a474cedd524543f6c4370c46bea4`, run `33305899447`, ambos jobs `success`.
 
-## Fase 7 — Mundo
+## Fase 7 — Mundo — ACTIVA
 Pueblo, bosque, mina, interiores, exploración y secretos.
+
+### Próximo bloque
+Definir e implementar el primer bloque mínimo coherente de mundo siguiendo el master spec, sin adelantar polish de Fase 8.
 
 ## Fase 8 — Polish
 Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimización.
