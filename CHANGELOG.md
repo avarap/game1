@@ -20,9 +20,14 @@
 - `NPCNavigationMath` para dirección/llegada testeables fuera de escena.
 - `WorldNavigationRegion` local con geometría mínima navegable.
 - `NPCController` sobre `CharacterBody2D` + `NavigationAgent2D` y escena `brother_aldren.tscn`.
+- `ScheduleEntryData` y `ScheduleData` para horarios NPC data-driven con soporte de los seis días y rangos que cruzan medianoche.
+- `NPCStateMachine` con estados explícitos `Idle`, `Walking`, `Working` y `Sleeping`.
+- `brother_aldren_schedule.tres` con rutina mínima completa para Hermano Aldren.
 - `test_npc_navigation.gd` para datos, navegación pura e integración del primer NPC.
+- `test_npc_routines.gd` para horarios, medianoche, transiciones de estado e integración de escena.
 - Instrumentación de suites headless y timeout de 30 segundos en CI para evitar bloqueos silenciosos.
 - Job `gdscript-quality` independiente con Python + `gdtoolkit`, `gdlint` y `gdformat --check` para los scripts endurecidos.
+- `.editorconfig` activo para normalizar tabulación GDScript y whitespace en archivos del proyecto.
 
 ### Changed
 - El crafting instantáneo opera sobre `StorageNetwork` manteniendo compatibilidad con inventario individual.
@@ -34,8 +39,10 @@
 - Jugador y cofres exponen/resuelven `InventoryComponent` y `EnergyComponent` por contrato y tipo; crafting, recolección y sueño dejan de conocer nombres internos de nodo.
 - `CemeteryAction` sustituye el `NodePath` relativo al controller por inyección tipada o descubrimiento mediante grupo `cemetery_controller`.
 - El mundo incorpora `DayNightCycle`, cuyo color deriva del reloj global sin almacenar una copia local de hora/día.
-- `world/world.tscn` incorpora `NavigationRegion` y `BrotherAldren` con un destino inicial explícito.
-- El quality gate incluye incrementalmente lógica, controllers y tests del ciclo día/noche y navegación NPC.
+- `world/world.tscn` incorpora `NavigationRegion` y `BrotherAldren`.
+- `NPCController` selecciona rutina desde `ScheduleData` observando `TimeManager`/`EventBus`; los destinos iniciales ad hoc se sustituyen por destinos de horario.
+- `Walking` pasa a ser estado transitorio: al llegar, el NPC adopta la actividad programada (`Idle`, `Working` o `Sleeping`).
+- El quality gate incluye incrementalmente lógica, controllers y tests del ciclo día/noche, navegación y rutinas NPC.
 - Fase 4 — Cementerio queda completada; Fase 5 — Simulación está activa.
 
 ### Fixed
@@ -52,6 +59,10 @@
 - `DayNightController` resuelve `EventBus`/`TimeManager` desde `/root` para compilar y funcionar también bajo tests `--script`.
 - La transición visual nocturna atraviesa medianoche de forma continua hasta las 06:00.
 - `NPCController` respeta el orden de definiciones exigido por el quality gate.
+- Los tests NPC ya no dependen del antiguo `initial_target`; validan el `ScheduleData` que realmente gobierna los destinos.
+- `NPCController` resuelve `NavigationAgent2D` también fuera de `_ready()`, permitiendo pruebas off-tree sin falsear el lifecycle del juego.
+- `ScheduleEntryData` usa minutos normalizados enteros; se eliminó la comparación inválida entre el `Dictionary` de `TimeMath.normalize_total_minutes()` y enteros.
+- El archivo auxiliar `editorconfig` se renombró a `.editorconfig`, nombre efectivo del estándar EditorConfig.
 
 ### Validated
 - Fase 0: run `33278173612`, `success`.
@@ -63,4 +74,5 @@
 - Hardening funcional de storage/dependencias: commit `0639a43b16c152bf7a8b9ad3b44e2aa4aa640a8a`, run `33294983254`, `success`.
 - Desacoplamiento final de componentes por tipo: commit `b13d024143b5fb0ff8118a689da079c37916c554`, run `33295277286`, ambos jobs `success`.
 - Fase 5 bloque 2 ciclo día/noche: corrección final `5c6467c5aad04b1d44c48cceef2280af5d049bf8`, run `33295805020`, `gdscript-quality` y `validate-and-test` en `success`.
-- Fase 5 bloque 3 NPCData/navegación: run `33296112250` detectó `class-definitions-order`; corrección final `03986401968c83b79527d15f47217f090de43ab2`, run `33296131085`, `gdscript-quality` y `validate-and-test` en `success`.
+- Fase 5 bloque 3 NPCData/navegación: run `33296112250` detectó `class-definitions-order`; corrección final `03986401968c83b79527d15f47217f090de43ab2`, run `33296131085`, ambos jobs `success`.
+- Fase 5 bloque 4 rutinas: run `33296549903` detectó comparación `Dictionary`/`int` en horarios; corrección final `82f5ccee1e109e2ad702532b7301922124548c7b`, run `33296648630`, `gdscript-quality` y `validate-and-test` en `success`.
