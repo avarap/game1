@@ -8,12 +8,15 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama: `main`
 - Fase completada más reciente: **Fase 5 — Simulación**.
 - Fase activa: **Fase 6 — RPG**.
-- El cierre documental previo de Fase 6 fue prematuro: las issues canónicas #6, #8 y #9 seguían abiertas y #9 declara dependencias explícitas sobre #6 y #8.
-- Fase 7 está **bloqueada**. PR #32 (`Phase 7: world zones foundation`) está draft y no debe mergearse todavía.
+- El cierre documental previo de Fase 6 fue prematuro; #6 ya está completada, pero #8 y #9 siguen siendo dependencias obligatorias del cierre real.
+- Fase 7 está **bloqueada**. PR #32 (`Phase 7: world zones foundation`) sigue fuera de `main` y no debe mergearse todavía.
 - Fuente funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 - Fuente de planificación: `ROADMAP.md` + issues de integración/cierre.
 - Fuente narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**, spoiler-light.
 - Política de idiomas: `LOCALIZATION.md`.
+- Último bloque completado de Fase 6: **#6 — Comercio UI**.
+- Merge funcional #6: `3d6252e840ae32e5445f454170d0856909bf6a2b` (PR #35).
+- Validación de `main` para #6: Godot CI `33307358527`, ambos jobs `success`.
 
 ## Fases completadas
 
@@ -34,19 +37,23 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 4. Quests foundation: `979b2328cc01c8d5a7a0ae4201deabe58cf9cc38`, run `33301533785`.
 5. Economía foundation: `184f2b6d9df6d0b26dcfeb7d2a2d8e3dc7604863`, run `33304080534`.
 6. Tecnología foundation: `444fc2995ab14b293188aba54a0f4099dc3c36b3`, run `33305211363`.
-7. Roundtrip conjunto básico de providers: `cc1351048609a474cedd524543f6c4370c46bea4`, run `33305899447`. Este run es técnicamente verde pero **no cierra #9**, porque no cubre #6 ni #8.
+7. Roundtrip conjunto básico de providers: `cc1351048609a474cedd524543f6c4370c46bea4`, run `33305899447`. Es verde, pero no cierra #9 porque todavía falta #8 y la aceptación final debe usar el flujo actualizado.
+8. **#6 — Comercio UI:** merge `3d6252e840ae32e5445f454170d0856909bf6a2b`, run `33307358527`.
+   - `TradeInteractable` reutilizable y localizado EN/ES.
+   - `TradePanel` observa `EconomyController`/inventario y usa `buy()`/`sell()` existentes.
+   - Saldo/precios se presentan como oro/plata/cobre manteniendo cobre entero como unidad base.
+   - Stock e inventario se refrescan tras operaciones; rechazos muestran feedback localizado sin mutar estado.
+   - `test_trading_ui.gd` cubre apertura/cierre, compra, venta, rechazo, saldo/stock/inventario y localización.
+   - Quality gate incluye los scripts/test nuevos y permanece estricto (`gdlint` + `gdformat --check`).
+
+### Incidencias #6
+
+- El primer cierre de Fase 6 había omitido esta UI y se corrigió la planificación antes de continuar.
+- La prueba de prompt detectó que `TradePoint.prompt` no estaba localizado; se añadió `UI_TRADE_PROMPT` y actualización ante cambio de idioma.
+- `gdformat` exigió formato canónico en dos expresiones multilínea de `trade_panel.gd`; se obtuvo el diff exacto y se aplicó sin relajar el gate.
+- El conector GitHub falló al convertir el draft PR #34 a ready (`fullDatabaseId` GraphQL). Se sustituyó por PR #35 sobre el mismo HEAD validado; #35 fue mergeado. El PR redundante #36 se cerró sin merge.
 
 ### Pendientes obligatorios
-
-#### #6 — Comercio UI
-- Crear `ui/economy/*`.
-- Panel mínimo de compra/venta que observe `EconomyController` y emita intents.
-- Usar exactamente `EconomyController.buy()` / `sell()` para mantener atomicidad.
-- Mostrar saldo en oro/plata/cobre, precios, stock y feedback de rechazo.
-- `TradeInteractable` reutilizable, no acoplado a un NPC concreto.
-- Integración mínima en `world.tscn`.
-- EN/ES mediante claves estables.
-- Tests de apertura/cierre, compra/venta, actualización de UI y operación inválida.
 
 #### #8 — Tecnología ↔ quests
 - Extender `QuestRewardData` con recompensa tipada de puntos tecnológicos.
@@ -56,13 +63,13 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Regresión de `QUEST_FLAG` debe seguir verde.
 
 #### #9 — Cierre real de Fase 6
-Debe ejecutarse solo después de #6 + #8. La aceptación final debe incluir relación/diálogo, quest, progreso, entrega, recompensa única, puntos de tecnología obtenidos desde quest, desbloqueo, compra **y venta**, save/load conjunto e idempotencia posterior. CI y documentación deben corresponder al mismo HEAD final.
+Debe ejecutarse solo después de #8. La aceptación final debe incluir relación/diálogo, quest, progreso, entrega, recompensa única, puntos de tecnología obtenidos desde quest, desbloqueo, compra **y venta**, save/load conjunto e idempotencia posterior. CI y documentación deben corresponder al mismo HEAD final.
 
 ## Dependencias posteriores
 
 Orden obligatorio:
 
-`#6 + #8 -> #9 -> #17 -> #16 -> #18/#19/#20/#21/#22`
+`#8 -> #9 -> #17 -> #16 -> #18/#19/#20/#21/#22`
 
 - #17 no empieza hasta cerrar #9.
 - #16 exige #9 + #17.
@@ -83,7 +90,7 @@ Orden obligatorio:
 
 ## Próximo paso
 
-Implementar **#6 — Interacción de comerciante + UI técnica de compra/venta** con TDD. Validar quality gate, importación, smoke y suite headless. Solo después actualizar esta memoria con commits/runs y pasar a #8.
+Implementar **#8 — Integración tecnología ↔ quests y persistencia** con TDD. Añadir recompensa tipada de puntos tecnológicos, integrarla con `TechnologyController` de forma contextual, demostrar idempotencia tras save/load y mantener regresión `QUEST_FLAG`. Solo después ejecutar #9.
 
 ## Regla de continuidad
 
