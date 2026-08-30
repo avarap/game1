@@ -6,11 +6,10 @@ El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_
 
 ## Estado
 
-- Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio, 5 — Simulación**.
-- Fase activa: **6 — RPG**.
-- Fase 6 tiene validados diálogo bilingüe EN/ES, relaciones, condiciones narrativas, quests foundation, economía foundation, tecnologías foundation y persistencia conjunta básica.
-- Pendientes obligatorios antes del cierre: **#6 comercio UI**, **#8 integración tecnología ↔ quests** y después **#9 aceptación/cierre real**.
-- Fase 7 está bloqueada. El PR #32 permanece draft y no debe mergearse hasta completar las dependencias de cierre.
+- Fases completadas: **0 — Bootstrap, 1 — Core, 2 — Items, 3 — Crafting, 4 — Cementerio, 5 — Simulación, 6 — RPG**.
+- Siguiente bloque obligatorio: **#17 — contrato visual pre-Fase 7**.
+- Fase 7 — Mundo permanece bloqueada hasta cerrar #17; #16 — `TileMapLayer` foundation depende de ese contrato.
+- PR #32 (`Phase 7: world zones foundation`) permanece fuera de `main` y no debe mergearse antes de #17.
 - Godot objetivo de CI: **4.5**.
 - Rama principal: `main`.
 - Memoria de desarrollo: `DEV_MEMORY.md`.
@@ -40,11 +39,13 @@ El vertical slice soporta **English (`en`)** y **Español (`es`)**, con fallback
 
 La build técnica permite probar movimiento, recolección, inventario, energía, crafting/producción, cementerio, tiempo, día/noche, sueño y un NPC con navegación/horarios persistentes.
 
-Hermano Aldren puede iniciar diálogo data-driven EN/ES. La primera quest jugable se acepta, progresa y entrega mediante los sistemas existentes, con recompensa `QUEST_FLAG` idempotente.
+Hermano Aldren dispone de diálogo data-driven EN/ES con contenido condicionado por relación, hora y estado de quest. `aldren_first_duty` puede iniciarse, progresar y entregarse; concede `QUEST_FLAG` y puntos tecnológicos exactamente una vez.
 
-La foundation de **economía** ya ofrece APIs atómicas de compra/venta, saldo entero en cobre, precios/stock data-driven y persistencia. Falta la interacción/UI técnica definida en #6 para considerarla jugable desde la interfaz.
+La economía es jugable mediante `TradeInteractable` + `TradePanel`: compra y venta usan las APIs atómicas de `EconomyController`, con saldo entero en cobre, precios/stock data-driven, feedback localizado y persistencia.
 
-La foundation de **tecnologías** ya mantiene puntos rojo/verde/azul, desbloqueos persistentes e idempotentes. Falta #8: que las quests concedan puntos tecnológicos mediante una recompensa tipada/data-driven sin duplicarlos tras save/load.
+El sistema de tecnologías mantiene puntos rojo/verde/azul, consume puntos al desbloquear `sturdy_joinery`, expone unlock IDs y persiste el progreso. Las recompensas tecnológicas de quests son tipadas, data-driven e idempotentes tras save/load.
+
+La aceptación integral de Fase 6 destruye y reconstruye el mundo antes de cargar para verificar conjuntamente relaciones, quests/flags, economía y tecnología.
 
 ## Arquitectura
 
@@ -58,10 +59,13 @@ Los sistemas RPG permanecen locales/contextuales y usan Resources tipados. `Ques
 
 El CI ejecuta dos gates independientes:
 
-- `gdscript-quality`: `gdlint` + `gdformat --check`.
+- `gdscript-quality`: descubre todos los `*.gd` del repositorio y ejecuta `gdlint` + `gdformat --check` globalmente.
 - `validate-and-test`: importación Godot 4.5, smoke test y suite headless.
 
-El run `33305899447` validó una aceptación RPG parcial, pero no representa el cierre definitivo de Fase 6 porque todavía no incluía #6 ni #8. El cierre real deberá ejecutarse de nuevo desde #9 sobre el HEAD final definitivo.
+Validaciones recientes:
+
+- Quality gate global: merge `cb4c14351abbee84f3162197cdf4ba794ab9846f`, run `33308014015`.
+- Cierre funcional de Fase 6: acceptance HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, PR #39, run `33308814397`, ambos jobs `success`.
 
 ```bash
 godot --headless --path . --script res://tests/run_tests.gd
