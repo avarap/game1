@@ -32,12 +32,10 @@ static func run() -> Array[String]:
 	corpse.call("advance_decomposition", 24 * MINUTES_PER_HOUR)
 	var fourth_day_total := int(corpse.get("decay_percent"))
 	var fourth_day_delta := fourth_day_total - third_day_total
-	var accelerates := (
-		first_day_decay < second_day_delta
-		and second_day_delta < third_day_delta
-		and third_day_delta < fourth_day_delta
-	)
-	if not accelerates:
+	var first_acceleration := first_day_decay < second_day_delta
+	var second_acceleration := second_day_delta < third_day_delta
+	var third_acceleration := third_day_delta < fourth_day_delta
+	if not first_acceleration or not second_acceleration or not third_acceleration:
 		failures.append("Corpse decomposition should accelerate across successive age bands")
 
 	var one_jump := _make_corpse(8)
@@ -82,11 +80,11 @@ static func run() -> Array[String]:
 	var restored := CorpseState.from_snapshot(snapshot)
 	if restored == null:
 		failures.append("Integer corpse snapshot should restore")
-	elif (
-		int(restored.get("decay_percent")) != int(one_jump.get("decay_percent"))
-		or int(restored.get("age_minutes")) != int(one_jump.get("age_minutes"))
-	):
-		failures.append("Corpse snapshot should preserve integer decay and age")
+	else:
+		var same_decay := restored.decay_percent == one_jump.decay_percent
+		var same_age := restored.age_minutes == one_jump.age_minutes
+		if not same_decay or not same_age:
+			failures.append("Corpse snapshot should preserve integer decay and age")
 
 	return failures
 
