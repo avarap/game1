@@ -87,6 +87,9 @@ jobs:
             tests/test_technology_gameplay.gd \
             tests/run_tests.gd
 
+      - name: Show technology format diff
+        run: gdformat --diff systems/technology/technology_service.gd
+
       - name: Check formatting of hardened gameplay scripts
         run: |
           gdformat --check \
