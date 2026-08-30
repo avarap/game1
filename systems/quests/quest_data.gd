@@ -11,7 +11,12 @@ extends Resource
 
 
 func is_valid() -> bool:
-	if id.is_empty() or giver_npc_id.is_empty() or title_key.is_empty() or description_key.is_empty():
+	if (
+		id.is_empty()
+		or giver_npc_id.is_empty()
+		or title_key.is_empty()
+		or description_key.is_empty()
+	):
 		return false
 	if objectives.is_empty():
 		return false
