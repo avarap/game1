@@ -8,11 +8,11 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama: `main`
 - Fase completada más reciente: **Fase 5 — Simulación**
 - Fase activa: **Fase 6 — RPG**
-- Estado Fase 6: **Bloque 1 de diálogo bilingüe completado y validado**; relaciones, quests, economía y tecnologías siguen pendientes.
+- Estado Fase 6: **Bloques 1 (diálogo bilingüe) y 2 (relaciones) completados y validados**; quests, economía y tecnologías siguen pendientes.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 - Política concreta de idiomas: `LOCALIZATION.md`.
-- Último bloque funcional: `46a37e00c2ad968e91834da5577a6f512a28f0a9`.
-- Última validación funcional y de calidad: `Godot CI` run `33298737838`, `success` en `gdscript-quality` y `validate-and-test`.
+- Último bloque funcional: `fc446609004ea8031903c1c529144743cd963e51`.
+- Última validación funcional y de calidad: `Godot CI` run `33299277228`, `success` en `gdscript-quality` y `validate-and-test`.
 
 ## Fases completadas
 
@@ -70,15 +70,33 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 17. Validación final del bloque: `Godot CI` run `33298737838`, ambos jobs `success`.
 18. Documento de política: `LOCALIZATION.md`.
 
+### Bloque 2 — Foundation de relaciones
+
+1. `RelationshipData` define relaciones data-driven con ID estable y valor inicial dentro del rango 0-100.
+2. `RelationshipService` mantiene el estado runtime, aplica cambios y clampa siempre entre 0 y 100; permanece como lógica pura y testeable.
+3. `RelationshipController` es local/contextual en `world.tscn`; no se añade ningún Autoload y se mantiene el límite de cinco globales.
+4. Hermano Aldren dispone de `data/relationships/brother_aldren.tres` con valor inicial 0.
+5. `DialogueConditionData` amplía sus condiciones con `RELATIONSHIP_MIN` sin depender de texto localizado.
+6. `DialogueInteractable` pasa al diálogo un contexto de relaciones obtenido del controller local.
+7. El diálogo de Aldren incorpora una opción bilingüe adicional bloqueada hasta alcanzar relación 10.
+8. `test_relationships.gd` cubre registro, valor inicial, clamp 0-100 y bloqueo/desbloqueo de la opción condicionada.
+9. La importación de Godot, smoke test y suite headless validan además la integración real de `RelationshipController` en `world.tscn`.
+10. El quality gate incluye scripts y tests de relaciones.
+11. Implementación base: `6d9eb1d54ab97ea92a8ee533bec1d9523ee2d1a5`.
+12. Run `33299203135`: `validate-and-test` fue `success`; `gdscript-quality` falló únicamente porque `DialogueInteractable` requería formato de `gdformat`.
+13. Corrección de formato: `fc446609004ea8031903c1c529144743cd963e51`.
+14. Validación final: `Godot CI` run `33299277228`, ambos jobs `success`.
+
 ## Decisiones vigentes
 
 - Mantener exactamente cinco Autoloads globales.
 - `TimeManager` es la única fuente de reloj/calendario.
-- NPCs, diálogo y otros sistemas de gameplay permanecen locales/contextuales.
+- NPCs, diálogo, relaciones y otros sistemas de gameplay permanecen locales/contextuales.
 - `TranslationServer` es la autoridad runtime de idioma; `LocalizationService` es un wrapper estático, no un Autoload.
 - Idiomas iniciales oficiales del vertical slice: inglés y español; fallback inglés.
 - Los Resources de diálogo contienen **claves de traducción**, nunca texto localizado usado como identidad o condición.
 - Cambiar idioma no puede alterar grafo, quest IDs, relaciones, saves ni progreso.
+- Relaciones usan IDs estables y rango 0-100; el diálogo consume un snapshot contextual, no referencias directas al controller.
 - La UI observa modelos/servicios y no posee estado de negocio.
 - Datos de gameplay deben ser Resources tipados cuando corresponda.
 - Lógica pura debe ser testeable de forma aislada siempre que sea posible.
@@ -87,21 +105,20 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 ## Criterios restantes de Fase 6
 
-1. Relaciones cambian y desbloquean contenido.
-2. Quests pueden iniciarse, progresar y completarse.
-3. Recompensas se conceden exactamente una vez.
-4. Economía compra/vende correctamente.
-5. Tecnologías consumen puntos y desbloquean contenido.
-6. Estado RPG persistente compatible con `SaveManager` cuando aplique.
-7. Aceptación integral y CI final verdes.
+1. Quests pueden iniciarse, progresar y completarse.
+2. Recompensas se conceden exactamente una vez.
+3. Economía compra/vende correctamente.
+4. Tecnologías consumen puntos y desbloquean contenido.
+5. Estado RPG persistente compatible con `SaveManager` cuando aplique.
+6. Aceptación integral y CI final verdes.
 
 ## Próximo bloque — Fase 6
 
-1. Implementar foundation de relaciones: `RelationshipData`/estado runtime desacoplado y rango 0-100.
-2. Permitir que relaciones desbloqueen contenido mediante condiciones data-driven, reutilizando el patrón de evaluación del diálogo sin acoplarlo a texto localizado.
-3. Integrar un cambio mínimo de relación con Hermano Aldren y comprobar que desbloquea una opción de diálogo condicionada.
-4. Añadir tests puros e integración; ampliar quality gate.
-5. No entrar aún en quests/economía/tecnologías hasta validar este bloque.
+1. Implementar foundation de quests data-driven con IDs estables y estados mínimos `unavailable`, `active` y `completed`.
+2. Crear un servicio puro/testeable para iniciar y progresar quests sin acoplarlo a UI, traducciones ni NPC controllers.
+3. Integrar una quest mínima de Hermano Aldren que pueda iniciarse desde contenido ya desbloqueado y progresar mediante un objetivo simple existente.
+4. Añadir tests de transiciones e integración y ampliar quality gate.
+5. Mantener las recompensas idempotentes como criterio obligatorio del sistema de quests, sin abrir aún economía ni tecnologías.
 
 ## Regla de continuidad
 
