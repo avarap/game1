@@ -59,3 +59,18 @@ msgstr "Continue"
 
 msgid "UI_DIALOGUE_CLOSE"
 msgstr "Close"
+
+msgid "UI_QUEST_JOURNAL_TITLE"
+msgstr "Quests"
+
+msgid "UI_QUEST_JOURNAL_ACTIVE"
+msgstr "Active"
+
+msgid "UI_QUEST_JOURNAL_COMPLETED"
+msgstr "Completed"
+
+msgid "UI_QUEST_JOURNAL_PROGRESS"
+msgstr "Progress"
+
+msgid "UI_QUEST_JOURNAL_CLOSE"
+msgstr "Close"

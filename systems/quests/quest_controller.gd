@@ -59,6 +59,33 @@ func is_ready(quest_id: StringName) -> bool:
 	return service.is_ready(quest_id)
 
 
+func get_journal_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	for quest in quest_data:
+		if quest == null:
+			continue
+		var status := service.get_status(quest.id)
+		if status != QuestService.STATUS_ACTIVE and status != QuestService.STATUS_COMPLETED:
+			continue
+		var objectives: Array[Dictionary] = []
+		for objective in quest.objectives:
+			if objective == null:
+				continue
+			var objective_entry: Dictionary = {}
+			objective_entry["id"] = objective.id
+			objective_entry["current"] = service.get_progress(quest.id, objective.id)
+			objective_entry["required"] = objective.required_amount
+			objectives.append(objective_entry)
+		var entry: Dictionary = {}
+		entry["id"] = quest.id
+		entry["status"] = status
+		entry["title_key"] = quest.title_key
+		entry["description_key"] = quest.description_key
+		entry["objectives"] = objectives
+		entries.append(entry)
+	return entries
+
+
 func _resolve_inventory() -> void:
 	var player := get_tree().get_first_node_in_group("player")
 	if player == null:
