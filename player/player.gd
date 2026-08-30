@@ -27,11 +27,17 @@ func get_equipped_tool_id() -> StringName:
 
 
 func get_inventory_component() -> InventoryComponent:
-	return get_node_or_null("InventoryComponent") as InventoryComponent
+	for child in get_children():
+		if child is InventoryComponent:
+			return child as InventoryComponent
+	return null
 
 
 func get_energy_component() -> EnergyComponent:
-	return get_node_or_null("EnergyComponent") as EnergyComponent
+	for child in get_children():
+		if child is EnergyComponent:
+			return child as EnergyComponent
+	return null
 
 
 func _interact_with_nearest() -> void:

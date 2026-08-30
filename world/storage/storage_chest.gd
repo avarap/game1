@@ -6,7 +6,10 @@ extends Interactable
 
 
 func get_inventory_component() -> InventoryComponent:
-	return get_node_or_null("InventoryComponent") as InventoryComponent
+	for child in get_children():
+		if child is InventoryComponent:
+			return child as InventoryComponent
+	return null
 
 
 func get_storage_provider() -> StorageProvider:
