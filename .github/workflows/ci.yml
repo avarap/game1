@@ -43,6 +43,11 @@ jobs:
             systems/reputation/relationship_data.gd \
             systems/reputation/relationship_service.gd \
             systems/reputation/relationship_controller.gd \
+            systems/quests/quest_objective_data.gd \
+            systems/quests/quest_reward_data.gd \
+            systems/quests/quest_data.gd \
+            systems/quests/quest_service.gd \
+            systems/quests/quest_controller.gd \
             world/storage/storage_chest.gd \
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
@@ -61,6 +66,8 @@ jobs:
             tests/test_dialogue_gameplay.gd \
             tests/test_dialogue_conditions.gd \
             tests/test_relationships.gd \
+            tests/test_quests.gd \
+            tests/test_quest_gameplay.gd \
             tests/run_tests.gd
 
       - name: Check formatting of hardened gameplay scripts
@@ -85,6 +92,11 @@ jobs:
             systems/reputation/relationship_data.gd \
             systems/reputation/relationship_service.gd \
             systems/reputation/relationship_controller.gd \
+            systems/quests/quest_objective_data.gd \
+            systems/quests/quest_reward_data.gd \
+            systems/quests/quest_data.gd \
+            systems/quests/quest_service.gd \
+            systems/quests/quest_controller.gd \
             world/storage/storage_chest.gd \
             world/buildings/crafting_station.gd \
             world/cemetery/cemetery_controller.gd \
@@ -103,6 +115,8 @@ jobs:
             tests/test_dialogue_gameplay.gd \
             tests/test_dialogue_conditions.gd \
             tests/test_relationships.gd \
+            tests/test_quests.gd \
+            tests/test_quest_gameplay.gd \
             tests/run_tests.gd
 
   validate-and-test:

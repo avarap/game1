@@ -15,6 +15,9 @@ msgstr "Ah, el nuevo cuidador. El cementerio ha estado más tranquilo de lo que 
 msgid "DIALOGUE_ALDREN_OPTION_FIRST_TASK"
 msgstr "¿Qué debería hacer primero?"
 
+msgid "DIALOGUE_ALDREN_OPTION_TURN_IN_FIRST_TASK"
+msgstr "He preparado las dos tablas."
+
 msgid "DIALOGUE_ALDREN_OPTION_IDENTITY"
 msgstr "¿Quién eres?"
 
@@ -28,7 +31,10 @@ msgid "DIALOGUE_ALDREN_OPTION_GOODBYE"
 msgstr "Debería volver al trabajo."
 
 msgid "DIALOGUE_ALDREN_FIRST_TASK_RESPONSE"
-msgstr "Empieza por las tumbas. Los muertos se quejan menos cuando las vallas están rectas."
+msgstr "Empieza por algo difícil de estropear: prepárame dos tablas decentes. Las vallas viejas se están quedando sin excusas."
+
+msgid "DIALOGUE_ALDREN_TURN_IN_FIRST_TASK_RESPONSE"
+msgstr "Servirán. Curioso... una conserva una marca de inventario muy antigua. Déjala. Ya habrá tiempo para papeles viejos."
 
 msgid "DIALOGUE_ALDREN_IDENTITY_RESPONSE"
 msgstr "Hermano Aldren. Me ocupo de la capilla, de los registros y, de vez en cuando, de mi paciencia."
@@ -41,6 +47,12 @@ msgstr "Quizá. La confianza hace que las puertas viejas se abran mejor y que lo
 
 msgid "DIALOGUE_ALDREN_GOODBYE_RESPONSE"
 msgstr "Procura no cavar en ningún sitio que te susurre de vuelta."
+
+msgid "QUEST_ALDREN_FIRST_DUTY_TITLE"
+msgstr "Un trabajo sencillo"
+
+msgid "QUEST_ALDREN_FIRST_DUTY_DESCRIPTION"
+msgstr "Prepara dos tablas decentes para las reparaciones del cementerio y vuelve con Aldren."
 
 msgid "UI_DIALOGUE_CONTINUE"
 msgstr "Continuar"

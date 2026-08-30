@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" path="res://ui/dialogue/dialogue_layer.tscn" id="13_dialogue"]
 [ext_resource type="Script" path="res://systems/reputation/relationship_controller.gd" id="14_relationship_controller"]
 [ext_resource type="Resource" path="res://data/relationships/brother_aldren.tres" id="15_aldren_relationship"]
+[ext_resource type="Script" path="res://systems/quests/quest_controller.gd" id="16_quest_controller"]
+[ext_resource type="Resource" path="res://data/quests/aldren_first_duty.tres" id="17_first_quest"]
 
 [sub_resource type="RectangleShape2D" id="Wall_horizontal"]
 size = Vector2(1600, 32)
@@ -56,6 +58,10 @@ script = ExtResource("11_navigation")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(640, 360)
+
+[node name="QuestController" type="Node" parent="."]
+script = ExtResource("16_quest_controller")
+quest_data = Array[ExtResource("17_first_quest")]([ExtResource("17_first_quest")])
 
 [node name="TreeResource" parent="." instance=ExtResource("3_tree")]
 position = Vector2(610, 300)

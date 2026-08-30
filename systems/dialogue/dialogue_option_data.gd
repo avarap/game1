@@ -1,10 +1,14 @@
 class_name DialogueOptionData
 extends Resource
 
+enum QuestAction { NONE, START, TURN_IN }
+
 @export var id: StringName
 @export var text_key: StringName
 @export var next_node_id: StringName
 @export var conditions: Array[DialogueConditionData] = []
+@export var quest_action: QuestAction = QuestAction.NONE
+@export var quest_id: StringName
 
 
 func is_available(context: Dictionary) -> bool:
@@ -15,4 +19,8 @@ func is_available(context: Dictionary) -> bool:
 
 
 func is_valid() -> bool:
-	return not id.is_empty() and not text_key.is_empty()
+	if id.is_empty() or text_key.is_empty():
+		return false
+	if quest_action != QuestAction.NONE and quest_id.is_empty():
+		return false
+	return true

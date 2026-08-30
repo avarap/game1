@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://systems/quests/quest_data.gd" id="1_quest"]
+[ext_resource type="Script" path="res://systems/quests/quest_objective_data.gd" id="2_objective"]
+[ext_resource type="Script" path="res://systems/quests/quest_reward_data.gd" id="3_reward"]
+
+[sub_resource type="Resource" id="ObjectivePlanks"]
+script = ExtResource("2_objective")
+id = &"prepare_planks"
+objective_type = 0
+item_id = &"plank"
+required_amount = 2
+
+[sub_resource type="Resource" id="RewardFirstDuty"]
+script = ExtResource("3_reward")
+reward_type = 0
+flag_id = &"completed_first_duty"
+
+[resource]
+script = ExtResource("1_quest")
+id = &"aldren_first_duty"
+giver_npc_id = &"brother_aldren"
+title_key = &"QUEST_ALDREN_FIRST_DUTY_TITLE"
+description_key = &"QUEST_ALDREN_FIRST_DUTY_DESCRIPTION"
+objectives = Array[ExtResource("2_objective")]([SubResource("ObjectivePlanks")])
+rewards = Array[ExtResource("3_reward")]([SubResource("RewardFirstDuty")])

@@ -15,6 +15,9 @@ msgstr "Ah, the new keeper. The cemetery has been quieter than I expected. That'
 msgid "DIALOGUE_ALDREN_OPTION_FIRST_TASK"
 msgstr "What should I do first?"
 
+msgid "DIALOGUE_ALDREN_OPTION_TURN_IN_FIRST_TASK"
+msgstr "I've prepared the two planks."
+
 msgid "DIALOGUE_ALDREN_OPTION_IDENTITY"
 msgstr "Who are you?"
 
@@ -28,7 +31,10 @@ msgid "DIALOGUE_ALDREN_OPTION_GOODBYE"
 msgstr "I should get back to work."
 
 msgid "DIALOGUE_ALDREN_FIRST_TASK_RESPONSE"
-msgstr "Start with the graves. The dead complain less when the fences are straight."
+msgstr "Start with something hard to ruin: prepare two decent planks. The old fences are running out of excuses."
+
+msgid "DIALOGUE_ALDREN_TURN_IN_FIRST_TASK_RESPONSE"
+msgstr "They'll do. Curious... one still carries a very old inventory mark. Leave it. There'll be time for old paperwork later."
 
 msgid "DIALOGUE_ALDREN_IDENTITY_RESPONSE"
 msgstr "Brother Aldren. I keep the chapel, the records, and occasionally my patience."
@@ -41,6 +47,12 @@ msgstr "Perhaps. Trust makes old doors easier to open, and old records harder to
 
 msgid "DIALOGUE_ALDREN_GOODBYE_RESPONSE"
 msgstr "Try not to dig anywhere that whispers back."
+
+msgid "QUEST_ALDREN_FIRST_DUTY_TITLE"
+msgstr "A Simple Job"
+
+msgid "QUEST_ALDREN_FIRST_DUTY_DESCRIPTION"
+msgstr "Prepare two decent planks for cemetery repairs and return to Aldren."
 
 msgid "UI_DIALOGUE_CONTINUE"
 msgstr "Continue"

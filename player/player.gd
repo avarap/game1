@@ -9,6 +9,10 @@ extends CharacterBody2D
 @onready var interaction_area: Area2D = $InteractionArea
 
 
+func _enter_tree() -> void:
+	add_to_group("player")
+
+
 func _physics_process(delta: float) -> void:
 	var direction := PlayerMovement.input_direction()
 	velocity = PlayerMovement.next_velocity(

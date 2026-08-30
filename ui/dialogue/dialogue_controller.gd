@@ -1,6 +1,8 @@
 class_name DialogueController
 extends CanvasLayer
 
+signal option_committed(option: DialogueOptionData)
+
 var service := DialogueService.new()
 
 @onready var dialogue_panel: PanelContainer = $DialoguePanel
@@ -31,8 +33,10 @@ func start_dialogue(dialogue: DialogueData, context: Dictionary = {}) -> bool:
 
 
 func select_option(option_id: StringName) -> bool:
-	if not service.choose_option(option_id):
+	var selected := _find_available_option(option_id)
+	if selected == null or not service.choose_option(option_id):
 		return false
+	option_committed.emit(selected)
 	if service.is_active():
 		_render_current_node()
 	else:
@@ -68,6 +72,13 @@ func get_current_speaker_text() -> String:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready() and service.is_active():
 		_render_current_node()
+
+
+func _find_available_option(option_id: StringName) -> DialogueOptionData:
+	for option in service.get_available_options():
+		if option.id == option_id:
+			return option
+	return null
 
 
 func _render_current_node() -> void:
