@@ -1,0 +1,74 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://world/maps/forest/forest_map.gd" id="1_forest"]
+[ext_resource type="PackedScene" path="res://world/resources/tree_resource.tscn" id="2_tree"]
+
+[sub_resource type="TileSet" id="TileSet_forest"]
+tile_size = Vector2i(32, 32)
+
+[node name="ForestMap" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_forest")
+
+[node name="ground" type="TileMapLayer" parent="."]
+z_index = -10
+collision_enabled = false
+tile_set = SubResource("TileSet_forest")
+
+[node name="paths" type="TileMapLayer" parent="."]
+z_index = -9
+collision_enabled = false
+tile_set = SubResource("TileSet_forest")
+
+[node name="decoration_low" type="TileMapLayer" parent="."]
+z_index = -8
+collision_enabled = false
+tile_set = SubResource("TileSet_forest")
+
+[node name="collision" type="TileMapLayer" parent="."]
+visible = false
+tile_set = SubResource("TileSet_forest")
+
+[node name="objects_y_sorted" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+collision_enabled = false
+tile_set = SubResource("TileSet_forest")
+
+[node name="foreground_occlusion" type="TileMapLayer" parent="."]
+z_index = 10
+collision_enabled = false
+tile_set = SubResource("TileSet_forest")
+
+[node name="NavigationRegion" type="NavigationRegion2D" parent="."]
+
+[node name="Markers" type="Node2D" parent="."]
+
+[node name="CemeteryEntrance" type="Marker2D" parent="Markers"]
+position = Vector2(64, 448)
+
+[node name="CemeteryExit" type="Marker2D" parent="Markers"]
+position = Vector2(64, 576)
+
+[node name="SecretClearing" type="Marker2D" parent="Markers"]
+position = Vector2(1280, 704)
+
+[node name="Resources" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="TreeNorthWest" parent="Resources" instance=ExtResource("2_tree")]
+position = Vector2(320, 256)
+
+[node name="TreeNorthEast" parent="Resources" instance=ExtResource("2_tree")]
+position = Vector2(1184, 288)
+
+[node name="TreeSouthWest" parent="Resources" instance=ExtResource("2_tree")]
+position = Vector2(448, 768)
+
+[node name="TreeSouthEast" parent="Resources" instance=ExtResource("2_tree")]
+position = Vector2(1216, 736)
+
+[node name="TreeTrailWest" parent="Resources" instance=ExtResource("2_tree")]
+position = Vector2(704, 416)
+
+[node name="TreeTrailEast" parent="Resources" instance=ExtResource("2_tree")]
+position = Vector2(1056, 608)
