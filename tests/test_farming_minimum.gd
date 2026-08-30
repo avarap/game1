@@ -72,7 +72,7 @@ static func run() -> Array[String]:
 static func _item(id: StringName) -> ItemData:
 	var item := ItemData.new()
 	item.id = id
-	item.name_key = StringName("item.%s.name" % id)
-	item.description_key = StringName("item.%s.description" % id)
+	item.display_name = String(id)
+	item.description = String(id)
 	item.max_stack = 20
 	return item
