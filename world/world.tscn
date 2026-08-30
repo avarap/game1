@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
@@ -19,6 +19,8 @@
 [ext_resource type="Resource" path="res://data/quests/aldren_first_duty.tres" id="17_first_quest"]
 [ext_resource type="Script" path="res://world/economy/economy_controller.gd" id="18_economy_controller"]
 [ext_resource type="Resource" path="res://data/economy/yard_supplier.tres" id="19_merchant_data"]
+[ext_resource type="Script" path="res://world/technology/technology_controller.gd" id="20_technology_controller"]
+[ext_resource type="Resource" path="res://data/technology/sturdy_joinery.tres" id="21_technology_data"]
 
 [sub_resource type="RectangleShape2D" id="Wall_horizontal"]
 size = Vector2(1600, 32)
@@ -69,6 +71,13 @@ quest_data = Array[ExtResource("17_first_quest")]([ExtResource("17_first_quest")
 script = ExtResource("18_economy_controller")
 merchant_data = ExtResource("19_merchant_data")
 starting_balance_copper = 500
+
+[node name="TechnologyController" type="Node" parent="."]
+script = ExtResource("20_technology_controller")
+technology_data = Array[ExtResource("21_technology_data")]([ExtResource("21_technology_data")])
+starting_red_points = 3
+starting_green_points = 2
+starting_blue_points = 1
 
 [node name="TreeResource" parent="." instance=ExtResource("3_tree")]
 position = Vector2(610, 300)
