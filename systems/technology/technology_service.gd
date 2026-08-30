@@ -1,13 +1,13 @@
 class_name TechnologyService
 extends RefCounted
 
+enum PointType { RED, GREEN, BLUE }
+
 const RESULT_OK: StringName = &"ok"
 const RESULT_INVALID_STATE: StringName = &"invalid_state"
 const RESULT_INVALID_TECHNOLOGY: StringName = &"invalid_technology"
 const RESULT_ALREADY_UNLOCKED: StringName = &"already_unlocked"
 const RESULT_INSUFFICIENT_POINTS: StringName = &"insufficient_points"
-
-enum PointType { RED, GREEN, BLUE }
 
 var _technologies: Dictionary = {}
 var _points: Dictionary = {
