@@ -10,11 +10,17 @@ static func run() -> Array[String]:
 		return failures
 
 	var world := world_scene.instantiate()
+	var tree := Engine.get_main_loop() as SceneTree
+	tree.root.add_child(world)
 	var controller := world.get_node_or_null("CemeteryController") as CemeteryController
-	var delivery := world.get_node_or_null("CorpseDelivery") as CemeteryAction
-	var preparation := world.get_node_or_null("PreparationTable") as CemeteryAction
-	var grave_plot := world.get_node_or_null("GravePlot") as CemeteryAction
-	var grave_upgrade := world.get_node_or_null("GraveUpgrade") as CemeteryAction
+	var zone_manager := world.get_node_or_null("ZoneManager")
+	var active_zone: Node = null
+	if zone_manager != null and zone_manager.has_method("get_active_zone"):
+		active_zone = zone_manager.call("get_active_zone") as Node
+	var delivery := _find_action(active_zone, "CorpseDelivery")
+	var preparation := _find_action(active_zone, "PreparationTable")
+	var grave_plot := _find_action(active_zone, "GravePlot")
+	var grave_upgrade := _find_action(active_zone, "GraveUpgrade")
 
 	if (
 		controller == null
@@ -23,7 +29,7 @@ static func run() -> Array[String]:
 		or grave_plot == null
 		or grave_upgrade == null
 	):
-		failures.append("World should expose cemetery controller and all four interactables")
+		failures.append("World should expose persistent cemetery state and active interactables")
 		world.free()
 		return failures
 
@@ -81,3 +87,9 @@ static func run() -> Array[String]:
 	restored_controller.free()
 	world.free()
 	return failures
+
+
+static func _find_action(root: Node, node_name: String) -> CemeteryAction:
+	if root == null:
+		return null
+	return root.find_child(node_name, true, false) as CemeteryAction

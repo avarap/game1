@@ -40,14 +40,22 @@ static func _check_world_integration(failures: Array[String]) -> void:
 		return
 
 	var world := world_scene.instantiate()
-	var region := world.get_node_or_null("NavigationRegion") as WorldNavigationRegion
+	var tree := Engine.get_main_loop() as SceneTree
+	tree.root.add_child(world)
+	var zone_manager := world.get_node_or_null("ZoneManager")
+	var active_zone: Node = null
+	if zone_manager != null:
+		active_zone = zone_manager.call("get_active_zone") as Node
+	var region: WorldNavigationRegion = null
+	if active_zone != null:
+		region = active_zone.get_node_or_null("NavigationRegion") as WorldNavigationRegion
 	var npc := world.get_node_or_null("BrotherAldren") as NPCController
 	if region == null:
-		failures.append("World should expose a local navigation region")
+		failures.append("Active cemetery zone should expose a local navigation region")
 	else:
 		region.ensure_navigation_polygon()
 		if region.navigation_polygon == null:
-			failures.append("World navigation region should provide navigation geometry")
+			failures.append("Active zone navigation region should provide navigation geometry")
 	if npc == null:
 		failures.append("World should contain Brother Aldren as the first NPC")
 	else:

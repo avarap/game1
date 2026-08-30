@@ -80,9 +80,14 @@ static func _check_world_integration(failures: Array[String]) -> void:
 		return
 
 	var world := world_scene.instantiate()
-	var technical_map := world.get_node_or_null("TechnicalMap")
-	if technical_map == null:
-		failures.append("World should instance the technical TileMapLayer map")
+	var tree := Engine.get_main_loop() as SceneTree
+	tree.root.add_child(world)
+	var zone_manager := world.get_node_or_null("ZoneManager")
+	var active_zone: Node = null
+	if zone_manager != null:
+		active_zone = zone_manager.call("get_active_zone") as Node
+	if active_zone == null:
+		failures.append("World should instance an active TileMapLayer zone")
 	if world.get_node_or_null("Ground") != null:
 		failures.append("Legacy Polygon2D ground should be replaced by the map foundation")
 	if world.get_node_or_null("Boundaries") != null:
@@ -98,14 +103,16 @@ static func _check_world_integration(failures: Array[String]) -> void:
 		if camera == null:
 			failures.append("Player camera should remain available")
 		elif camera.limit_right > 1600 or camera.limit_bottom > 1024:
-			failures.append("Camera limits should stay inside technical map bounds")
+			failures.append("Camera limits should stay inside active zone bounds")
 
-	var region := world.get_node_or_null("NavigationRegion") as WorldNavigationRegion
+	var region: WorldNavigationRegion = null
+	if active_zone != null:
+		region = active_zone.get_node_or_null("NavigationRegion") as WorldNavigationRegion
 	if region == null:
-		failures.append("World should preserve NavigationRegion2D")
+		failures.append("Active world zone should preserve NavigationRegion2D")
 	else:
 		region.ensure_navigation_polygon()
 		if region.navigation_polygon == null:
-			failures.append("NavigationRegion2D should remain usable after map integration")
+			failures.append("NavigationRegion2D should remain usable after zone integration")
 
 	world.free()

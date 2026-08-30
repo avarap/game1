@@ -49,37 +49,33 @@
 ## Fase 7 — Mundo — ACTIVA
 Pueblo, bosque, mina, interiores, exploración y secretos.
 
-### Bloques completados
+### Bloques completados / validados
 - [x] **#16 — Foundation técnica `TileMapLayer`** — PR #44. Seis capas contractuales, tile lógico 32 px, bounds estables, colisión tile-based e integración mínima en `world.tscn`.
-- [x] **#18 — Cementerio + taller del jugador** — PR #47. `world/maps/cemetery/cemetery_map.tscn`, interacciones críticas, markers, navegación y aceptación dedicada. GREEN: run `33316327221`.
-- [x] **#19 — Bosque de recursos** — PR #48. Mapa compacto, caminos, límites, recursos existentes, landmarks/secret clearing y navegación. GREEN: run `33316454888`.
-- [x] **#20 — Pueblo de Valdeniebla** — PR #46. Plaza, entrada, merchant spot, plots/markers de interiores y navegación. GREEN: run `33315626881`.
-- [x] **#21 — Interiores modulares + transiciones** — PR #49. Casa/taller + edificio de pueblo, markers estables y transición sin duplicar player. GREEN: run `33318051580`.
-- [x] **#22 — Mina inicial** — PR #50. Entrada/salida, corredor/bifurcación, oclusión, navegación y recursos existentes. GREEN: run `33318407597`.
+- [x] **#18 — Cementerio + taller del jugador** — PR #47. GREEN: run `33316327221`.
+- [x] **#19 — Bosque de recursos** — PR #48. GREEN: run `33316454888`.
+- [x] **#20 — Pueblo de Valdeniebla** — PR #46. GREEN: run `33315626881`.
+- [x] **#21 — Interiores modulares + transiciones** — PR #49. GREEN: run `33318051580`.
+- [x] **#22 — Mina inicial** — PR #50. GREEN: run `33318407597`.
+- [x] **#23 — Integración de zonas + exploración y secretos** — PR #52, implementada y validada; cierre efectivo al merge. GREEN: run `33330995787`.
 
-### Estado integrado actual
-- HEAD de `main`: `725529b9b5f9091853b1e78d8031d6dafcd2277a` (merge PR #50).
-- CI de `main`: run `33325342447`, `success` en Godot 4.7.2.
-- No hay PR abiertos en el repositorio tras la integración de #46–#50.
-- Issues #21 y #22, que habían quedado abiertas pese a sus merges, se cerraron como `completed` durante la sincronización documental.
+### #23 — criterios cubiertos
+- [x] Cementerio/taller, bosque, pueblo, mina y dos interiores conectados desde un shell persistente.
+- [x] Una única instancia lógica de Player y controllers persistentes durante transiciones.
+- [x] Inventario/energía/quests/economía/relaciones/tecnología no se recrean al viajar.
+- [x] Spawns deterministas; viaje inválido conserva zona y posición.
+- [x] Cámara/bounds se adaptan a la zona activa.
+- [x] Aldren conserva identidad y estado persistente; se oculta/pausa fuera de cementerio.
+- [x] Forest resources, secret clearing, merchant spot, interiores y secret landmark de mina cubiertos por aceptación.
+- [x] `WorldLocationProvider` guarda/restaura zona, marker y posición con fallback seguro.
+- [x] `gdlint`, `gdformat --check`, Godot 4.7.2 import, smoke y suite headless verdes en `33330995787`.
 
-### Siguiente bloque obligatorio: #23 — Integración de zonas + exploración y secretos
-- [ ] Conectar cementerio/taller, bosque, pueblo, mina e interiores desde `world/world.tscn`.
-- [ ] Mantener una única instancia lógica del player durante transiciones.
-- [ ] Preservar inventario, energía, quests, economía, relaciones y tecnología.
-- [ ] Usar spawns deterministas y seguros y adaptar cámara/bounds por zona.
-- [ ] Mantener navegación/schedules de NPCs sin regresiones.
-- [ ] Añadir únicamente el mínimo de rutas secundarias/secretos requerido por #23.
-- [ ] Validar recorrido integral: propiedad → cementerio → bosque → pueblo/comercio → interior → mina → propiedad.
-- [ ] Guardar/cargar sin perder estado ni quedar en una ubicación inválida.
-
-### Cierre de Fase 7: #24
-No marcar Fase 7 como completada hasta que #23 esté verde y #24 valide conjuntamente:
-- [ ] todas las zonas cargables y navegables;
-- [ ] recorrido integral sin softlocks;
-- [ ] navegación NPC y Y-sort sin regresiones;
+### Cierre de Fase 7: #24 — SIGUIENTE BLOQUE OBLIGATORIO
+No marcar Fase 7 como completada hasta que #23 esté fusionada y #24 valide conjuntamente:
+- [ ] todas las zonas cargables y seis `TileMapLayer` contractuales;
+- [ ] recorrido integral sin softlocks y sin cambiar identidad del Player;
+- [ ] navegación/schedule de NPC y Y-sort sin regresiones;
 - [ ] save/load con ubicación válida;
-- [ ] camera bounds, colisiones y transiciones correctas;
+- [ ] camera bounds, colisiones, spawns y transiciones correctas;
 - [ ] `gdlint` + `gdformat --check` globales;
 - [ ] Godot 4.7.2 import, smoke y suite completa verdes;
 - [ ] `DEV_MEMORY.md`, `ROADMAP.md`, `CHANGELOG.md` y `README.md` sincronizados.
