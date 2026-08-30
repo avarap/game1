@@ -68,7 +68,7 @@ Arte, animaciones, shaders, partículas, audio, feedback, UI final y optimizaci�
 Fuente: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
 
 - [x] **8A.1 — Descomposición acelerada:** `decay_percent: int` 0–100, `age_minutes: int`, estados Fresh/Fading/Decomposed/Rotten, pérdida de calidad efectiva y tasas crecientes 0–24 / 24–48 / 48–72 / >72 h. Grandes saltos de tiempo son deterministas. PR #57, CI final pre-merge `33335150259` verde.
-- [ ] **8A.2 — Conservación:** modificadores data-driven de tecnología, utensilios e instalaciones; nunca rejuvenecen el cadáver.
+- [x] **8A.2 — Conservación:** modificadores enteros data-driven de tecnología, utensilios e instalaciones, neutrales por defecto y multiplicativos; ralentizan solo deterioro futuro, preservan progreso subporcentual y persisten en snapshot. PR #59, CI funcional `33336387360` verde.
 - [ ] **8A.3 — Agricultura mínima:** `fodder_turnip_seed` → plantar → crecimiento por `TimeManager` → cosecha → persistencia.
 - [ ] **8A.4 — Recurso multiuso:** nabo forrajero comprable/vendible, almacenamiento y cocina reutilizando crafting; cultivar debe ser la estrategia sostenible.
 - [ ] **8A.5 — Servicio funerario:** entrega determinista al atardecer, objetivo 18:00; intro gratuita y después consumo de nabo desde comedero; exactamente una entrega por día incluso con sueño/time-jump/save-load.
@@ -88,4 +88,4 @@ Decisiones de alcance 8A: sin hambre, estaciones/clima agrícola, riego/fertiliz
 - [ ] **#30 — Atmósfera: sombras, vegetación, iluminación y partículas** — bloqueada por #29.
 - [ ] **#31 — Aceptación visual del vertical slice** — bloqueada por #25–#30.
 
-Fase 8 permanece **ACTIVA**. El siguiente bloque del track de profundidad es **8A.2 — conservación**; el sub-track visual puede avanzar en tareas independientes sin pisar sistemas de gameplay.
+Fase 8 permanece **ACTIVA**. El siguiente bloque del track de profundidad es **8A.3 — agricultura mínima**; el sub-track visual puede avanzar en tareas independientes sin pisar sistemas de gameplay.

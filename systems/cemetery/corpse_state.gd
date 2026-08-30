@@ -17,7 +17,9 @@ var data: CorpseData
 var decay_percent: int = 0
 var age_minutes: int = 0
 var current_preparation_level: int = 0
+var preservation := PreservationModifiers.new()
 var _decay_units: int = 0
+var _preservation_remainder: int = 0
 
 
 func _init(corpse_data: CorpseData) -> void:
@@ -34,10 +36,25 @@ func advance_decomposition(minutes: int) -> int:
 
 	var start_age := age_minutes
 	var end_age := age_minutes + elapsed
-	_decay_units += _decay_units_between(start_age, end_age)
+	var raw_units := _decay_units_between(start_age, end_age)
+	var factor_bp := preservation.combined_basis_points()
+	var scaled_numerator := raw_units * factor_bp + _preservation_remainder
+	_decay_units += scaled_numerator / PreservationModifiers.NEUTRAL_BP
+	_preservation_remainder = scaled_numerator % PreservationModifiers.NEUTRAL_BP
 	age_minutes = end_age
 	decay_percent = clampi(_decay_units / DECAY_UNITS_PER_PERCENT, 0, 100)
 	return decay_percent
+
+
+func set_preservation_modifiers(modifiers: PreservationModifiers) -> void:
+	if modifiers == null:
+		preservation = PreservationModifiers.new()
+	else:
+		preservation = modifiers.duplicate_values()
+
+
+func get_preservation_factor_basis_points() -> int:
+	return preservation.combined_basis_points()
 
 
 func get_condition_state() -> StringName:
@@ -80,6 +97,8 @@ func snapshot() -> Dictionary:
 		"age_minutes": age_minutes,
 		"preparation_level": current_preparation_level,
 		"burial_value": data.burial_value if data != null else 0,
+		"preservation": preservation.snapshot(),
+		"preservation_remainder": _preservation_remainder,
 	}
 
 
@@ -101,6 +120,9 @@ static func from_snapshot(snapshot_data: Dictionary) -> CorpseState:
 	state._decay_units = maxi(int(snapshot_data.get("decay_units", default_units)), 0)
 	state.decay_percent = clampi(state._decay_units / DECAY_UNITS_PER_PERCENT, 0, 100)
 	state.current_preparation_level = maxi(int(snapshot_data.get("preparation_level", 0)), 0)
+	var preservation_data: Dictionary = snapshot_data.get("preservation", {})
+	state.preservation = PreservationModifiers.from_snapshot(preservation_data)
+	state._preservation_remainder = maxi(int(snapshot_data.get("preservation_remainder", 0)), 0)
 	return state
 
 
