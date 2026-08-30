@@ -49,7 +49,7 @@ Cierre funcional: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`,
 ### Criterios de aceptación
 - [x] Diálogos, condiciones y opciones funcionan desde datos.
 - [x] Los diálogos del vertical slice soportan inglés y español mediante claves estables, sin duplicar el grafo.
-- [ ] Relaciones cambian y desbloquean contenido.
+- [x] Relaciones cambian y desbloquean contenido.
 - [ ] Quests pueden iniciarse, progresar y completarse.
 - [ ] Las recompensas de quests se conceden una sola vez.
 - [ ] La economía compra y vende correctamente.
@@ -81,8 +81,23 @@ Cierre funcional: `f0290951a27d5e66581da2532151d957ec35075e`, run `33297774458`,
 - Corrección: `46a37e00c2ad968e91834da5577a6f512a28f0a9`.
 - Validación: `Godot CI` run `33298737838`, `gdscript-quality` y `validate-and-test` en `success`.
 
+### Bloque 2 — Foundation de relaciones — COMPLETADO
+- [x] `RelationshipData` data-driven con IDs estables y rango 0-100.
+- [x] `RelationshipService` puro con registro, lectura, cambios y clamp 0-100.
+- [x] `RelationshipController` contextual en `world.tscn`, sin nuevo Autoload.
+- [x] Relación de Hermano Aldren definida en `data/relationships/brother_aldren.tres`.
+- [x] Condición `RELATIONSHIP_MIN` integrada en `DialogueConditionData`.
+- [x] `DialogueInteractable` inyecta el contexto de relaciones al grafo.
+- [x] Opción bilingüe de Aldren bloqueada bajo relación 10 y disponible desde 10.
+- [x] `test_relationships.gd` cubre rango, clamp y desbloqueo de contenido.
+- [x] Importación, smoke test, suite headless y quality gate verdes.
+- Implementación: `6d9eb1d54ab97ea92a8ee533bec1d9523ee2d1a5`.
+- Run `33299203135`: tests funcionales verdes; `gdformat` detectó únicamente formato en `DialogueInteractable`.
+- Corrección: `fc446609004ea8031903c1c529144743cd963e51`.
+- Validación: `Godot CI` run `33299277228`, `gdscript-quality` y `validate-and-test` en `success`.
+
 ### Próximo bloque
-Foundation de relaciones: estado 0-100, datos desacoplados y condición de relación capaz de desbloquear una opción del diálogo de Hermano Aldren. Validar antes de abrir quests.
+Foundation de quests: Resources/estado data-driven, servicio puro con transiciones `unavailable` → `active` → `completed`, primera quest mínima de Hermano Aldren y tests. Las recompensas deben diseñarse idempotentes; no abrir economía ni tecnologías antes de validar el bloque.
 
 ## Fase 7 — Mundo
 Pueblo, bosque, mina, interiores, exploración y secretos.
