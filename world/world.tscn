@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
@@ -21,9 +21,10 @@
 [ext_resource type="Resource" path="res://data/economy/yard_supplier.tres" id="19_merchant_data"]
 [ext_resource type="Script" path="res://world/technology/technology_controller.gd" id="20_technology_controller"]
 [ext_resource type="Resource" path="res://data/technology/sturdy_joinery.tres" id="21_technology_data"]
+[ext_resource type="Script" path="res://world/interactables/zone_transition.gd" id="22_zone_transition"]
 
 [sub_resource type="RectangleShape2D" id="Wall_horizontal"]
-size = Vector2(1600, 32)
+size = Vector2(2600, 32)
 
 [sub_resource type="RectangleShape2D" id="Wall_vertical"]
 size = Vector2(32, 1000)
@@ -40,6 +41,9 @@ size = Vector2(42, 42)
 [sub_resource type="RectangleShape2D" id="Sleep_shape"]
 size = Vector2(72, 40)
 
+[sub_resource type="RectangleShape2D" id="Zone_gate_shape"]
+size = Vector2(48, 96)
+
 [node name="World" type="Node2D"]
 y_sort_enabled = true
 
@@ -47,6 +51,74 @@ y_sort_enabled = true
 polygon = PackedVector2Array(0, 0, 1600, 0, 1600, 1000, 0, 1000)
 color = Color(0.19, 0.24, 0.15, 1)
 z_index = -10
+
+[node name="Zones" type="Node2D" parent="."]
+
+[node name="Homestead" type="Node2D" parent="Zones"]
+
+[node name="Ground" type="TileMapLayer" parent="Zones/Homestead"]
+
+[node name="Terrain" type="TileMapLayer" parent="Zones/Homestead"]
+
+[node name="Decoration" type="TileMapLayer" parent="Zones/Homestead"]
+
+[node name="Collision" type="TileMapLayer" parent="Zones/Homestead"]
+
+[node name="Foreground" type="TileMapLayer" parent="Zones/Homestead"]
+
+[node name="Navigation" type="TileMapLayer" parent="Zones/Homestead"]
+
+[node name="ForestGate" type="Area2D" parent="Zones/Homestead"]
+position = Vector2(1510, 500)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("22_zone_transition")
+prompt = "Ir al borde del bosque"
+target_position = Vector2(2050, 500)
+
+[node name="Visual" type="Polygon2D" parent="Zones/Homestead/ForestGate"]
+polygon = PackedVector2Array(-24, -48, 24, -48, 24, 48, -24, 48)
+color = Color(0.31, 0.4, 0.2, 0.75)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Zones/Homestead/ForestGate"]
+shape = SubResource("Zone_gate_shape")
+
+[node name="ForestEdge" type="Node2D" parent="Zones"]
+
+[node name="Ground" type="TileMapLayer" parent="Zones/ForestEdge"]
+
+[node name="Terrain" type="TileMapLayer" parent="Zones/ForestEdge"]
+
+[node name="Decoration" type="TileMapLayer" parent="Zones/ForestEdge"]
+
+[node name="Collision" type="TileMapLayer" parent="Zones/ForestEdge"]
+
+[node name="Foreground" type="TileMapLayer" parent="Zones/ForestEdge"]
+
+[node name="Navigation" type="TileMapLayer" parent="Zones/ForestEdge"]
+
+[node name="AreaVisual" type="Polygon2D" parent="Zones/ForestEdge"]
+polygon = PackedVector2Array(1600, 0, 2600, 0, 2600, 1000, 1600, 1000)
+color = Color(0.14, 0.21, 0.12, 1)
+z_index = -10
+
+[node name="HomesteadGate" type="Area2D" parent="Zones/ForestEdge"]
+position = Vector2(1950, 500)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("22_zone_transition")
+prompt = "Volver a la propiedad"
+target_position = Vector2(1450, 500)
+
+[node name="Visual" type="Polygon2D" parent="Zones/ForestEdge/HomesteadGate"]
+polygon = PackedVector2Array(-24, -48, 24, -48, 24, 48, -24, 48)
+color = Color(0.36, 0.3, 0.19, 0.75)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Zones/ForestEdge/HomesteadGate"]
+shape = SubResource("Zone_gate_shape")
+
+[node name="ForestTree" parent="Zones/ForestEdge" instance=ExtResource("3_tree")]
+position = Vector2(2200, 430)
 
 [node name="DayNightCycle" type="CanvasModulate" parent="."]
 script = ExtResource("10_day_night")
@@ -176,12 +248,12 @@ position = Vector2(1180, 650)
 [node name="Boundaries" type="Node2D" parent="."]
 
 [node name="Top" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(800, 0)
+position = Vector2(1300, 0)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/Top"]
 shape = SubResource("Wall_horizontal")
 
 [node name="Bottom" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(800, 1000)
+position = Vector2(1300, 1000)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/Bottom"]
 shape = SubResource("Wall_horizontal")
 
@@ -191,7 +263,7 @@ position = Vector2(0, 500)
 shape = SubResource("Wall_vertical")
 
 [node name="Right" type="StaticBody2D" parent="Boundaries"]
-position = Vector2(1600, 500)
+position = Vector2(2600, 500)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/Right"]
 shape = SubResource("Wall_vertical")
 
