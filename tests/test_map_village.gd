@@ -39,9 +39,16 @@ static func run() -> Array[String]:
 		if layer == null:
 			failures.append("Village should expose TileMapLayer '%s'" % layer_name)
 
+	var collision := village.get_node_or_null("collision") as TileMapLayer
 	for marker_path in REQUIRED_MARKERS:
-		if village.get_node_or_null(marker_path) == null:
+		var marker := village.get_node_or_null(marker_path) as Node2D
+		if marker == null:
 			failures.append("Village should expose stable marker '%s'" % marker_path)
+			continue
+		if collision != null:
+			var marker_cell := collision.local_to_map(marker.position)
+			if collision.get_cell_source_id(marker_cell) != -1:
+				failures.append("Marker '%s' should remain accessible" % marker_path)
 
 	var region := village.get_node_or_null("NavigationRegion") as WorldNavigationRegion
 	if region == null:
@@ -50,6 +57,10 @@ static func run() -> Array[String]:
 		region.ensure_navigation_polygon()
 		if region.navigation_polygon == null:
 			failures.append("Village navigation polygon should be usable")
+
+	var paths := village.get_node_or_null("paths") as TileMapLayer
+	if paths == null or paths.get_used_cells().is_empty():
+		failures.append("Village should provide a readable primary route")
 
 	if village.has_method("get_world_rect"):
 		var world_rect := village.get_world_rect() as Rect2
