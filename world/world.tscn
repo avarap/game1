@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3]
+[gd_scene load_steps=31 format=3]
 
 [ext_resource type="PackedScene" path="res://player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://world/interactables/debug_sign.gd" id="2_sign"]
@@ -21,6 +21,8 @@
 [ext_resource type="Resource" path="res://data/economy/yard_supplier.tres" id="19_merchant_data"]
 [ext_resource type="Script" path="res://world/technology/technology_controller.gd" id="20_technology_controller"]
 [ext_resource type="Resource" path="res://data/technology/sturdy_joinery.tres" id="21_technology_data"]
+[ext_resource type="PackedScene" path="res://ui/economy/trade_layer.tscn" id="22_trade_layer"]
+[ext_resource type="Script" path="res://world/interactables/trade_interactable.gd" id="23_trade_interactable"]
 
 [sub_resource type="RectangleShape2D" id="Wall_horizontal"]
 size = Vector2(1600, 32)
@@ -40,6 +42,9 @@ size = Vector2(42, 42)
 [sub_resource type="RectangleShape2D" id="Sleep_shape"]
 size = Vector2(72, 40)
 
+[sub_resource type="RectangleShape2D" id="Trade_shape"]
+size = Vector2(64, 64)
+
 [node name="World" type="Node2D"]
 y_sort_enabled = true
 
@@ -52,6 +57,8 @@ z_index = -10
 script = ExtResource("10_day_night")
 
 [node name="DialogueLayer" parent="." instance=ExtResource("13_dialogue")]
+
+[node name="TradeLayer" parent="." instance=ExtResource("22_trade_layer")]
 
 [node name="RelationshipController" type="Node" parent="."]
 script = ExtResource("14_relationship_controller")
@@ -87,6 +94,19 @@ position = Vector2(690, 330)
 
 [node name="StorageChest" parent="." instance=ExtResource("5_chest")]
 position = Vector2(750, 330)
+
+[node name="TradePoint" type="Area2D" parent="."]
+position = Vector2(820, 620)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("23_trade_interactable")
+
+[node name="Visual" type="Polygon2D" parent="TradePoint"]
+polygon = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+color = Color(0.58, 0.43, 0.24, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TradePoint"]
+shape = SubResource("Trade_shape")
 
 [node name="SleepSpot" type="Area2D" parent="."]
 position = Vector2(560, 420)
