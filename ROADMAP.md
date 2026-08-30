@@ -49,16 +49,19 @@ Criterios de aceptación derivados del master spec:
 - [x] `CorpseData` tipado con calidad, decay, preparación y valor de entierro.
 - [x] Modelo de tumba/cementerio independiente de UI y escenas visuales.
 - [x] Fórmula de rating encapsulada y configurable, no dispersa por escenas.
-- [ ] Flujo mínimo: recibir/preparar cadáver -> enterrar -> calcular contribución de tumba.
-- [ ] Lápida y valla como mejoras jugables que alteran el rating mediante datos.
+- [x] Flujo mínimo: recibir/preparar cadáver -> enterrar -> calcular contribución de tumba.
+- [x] Lápida y valla como mejoras de estado que alteran el rating mediante datos.
 - [x] Descomposición progresiva testeable.
 - [ ] Persistencia mínima del estado de tumbas/cadáveres compatible con el guardado versionado.
-- [ ] Test de aceptación del loop mínimo de cementerio.
+- [x] Test de aceptación lógico del loop mínimo de cementerio.
+- [ ] Integración contextual/escena para interacción jugable con preparación, parcela y mejoras.
 - [ ] CI final verde antes de cerrar la fase.
 
 Bloque 1 — foundation: `CorpseData`, `CorpseState`, `GraveRecord`, `CemeteryModel` y `CemeteryRatingConfig` data-driven. Validación: commit `6e2bdab525adcc3e3d0fe65714c7f725e43eef91`, `Godot CI` run `33293105681`, `success`.
 
-Próximo bloque: preparación/entierro contextual, mejoras básicas de tumba y test del flujo sin introducir NPCs ni calendario.
+Bloque 2 — flujo lógico: `CemeteryService` gestiona recepción, preparación, entierro y mejoras; `CorpseState` mantiene preparación por instancia sin mutar el Resource compartido. Test `test_cemetery_flow.gd`. Validación: commit `c94bacac772f8f5a0075b972c56baeb86b37afa0`, `Godot CI` run `33293544721`, `success`.
+
+Próximo bloque: integrar persistencia versionada y después una representación contextual/interactuable mínima del loop antes de cerrar Fase 4.
 
 ## Fase 5 — Simulación
 Tiempo, día/noche, calendario, NPCs, navegación y rutinas.
