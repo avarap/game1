@@ -10,8 +10,8 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Cierre funcional de Fase 6: PR #39, merge `1efe0bc9a47c2a434c597276bc326d24713720aa`; aceptación HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, run `33308814397`.
 - Runtime/CI objetivo: **Godot 4.7.2** por PR #41, merge `1b4ff623b45c465bfb9bd57f2b96b6ecec88a2ad`.
 - **#17 — contrato visual** resuelto mediante `ART_DIRECTION.md`.
-- **#16 — foundation técnica `TileMapLayer` validada en PR #43**: `technical_map.tscn` + `TechnicalMap`, seis capas contractuales, tiles de 32 px, bounds `1600 x 1024`, colisión tile-based e integración mínima en `world.tscn`.
-- HEAD funcional validado de #16: `00264c1e3ff920a46bad908182a8a89fbbb20263`, run `33313715794`, ambos jobs `success` en Godot 4.7.2.
+- **#16 — foundation técnica `TileMapLayer` cerrada mediante PR #44**: `technical_map.tscn` + `TechnicalMap`, seis capas contractuales, tiles de 32 px, bounds `1600 x 1024`, colisión tile-based e integración mínima en `world.tscn`.
+- HEAD funcional validado de #16: `00264c1e3ff920a46bad908182a8a89fbbb20263`, run `33313715794`, ambos jobs `success` en Godot 4.7.2. Merge final `fec32bd85b78a60acc29dbd0c2b651cad735def7`; CI de `main` `33314012640`, ambos jobs `success`; issue #16 cerrada como `completed`.
 - Fase 7 — Mundo permanece **ACTIVA**; #16 no cierra la fase.
 - **Siguiente bloque obligatorio: #18 — mapa exterior cementerio + taller del jugador (P0)**. #19 — bosque es P1 y también queda desbloqueada tras #16/#17, pero no adelantarla antes de #18 en la ejecución secuencial actual.
 - PR #32 está cerrado sin merge y marcado superseded; no reutilizarlo como implementación de Fase 7.
@@ -86,6 +86,7 @@ TDD / validación:
 - Se corrigió el orden de registro del atlas y el test legacy pasó a verificar la nueva colisión `TechnicalMap/collision` sin rebajar cobertura.
 - El quality gate detectó únicamente formato de `technical_map.gd`; se obtuvo el diff canónico con un run diagnóstico temporal y el workflow estricto fue restaurado antes de validar.
 - HEAD funcional final `00264c1e3ff920a46bad908182a8a89fbbb20263`, run `33313715794`: `gdlint` global, `gdformat --check` global, importación Godot 4.7.2, smoke y suite completa `success`; `MapFoundation` y `WalkingPrototype` 0 fallos.
+- Merge final de #16: PR #44 → `fec32bd85b78a60acc29dbd0c2b651cad735def7`; run de `main` `33314012640` con quality, importación, smoke y suite headless `success`.
 - Los mensajes `fontconfig` del contenedor 4.7.2 son ruido baseline del image CI; no hubo errores de `TechnicalMap`, TileSet, física o tests en el run final.
 
 ### Restricciones para mapas posteriores
