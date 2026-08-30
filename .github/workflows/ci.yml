@@ -67,6 +67,7 @@ jobs:
             world/technology/technology_controller.gd \
             world/interactables/sleep_spot.gd \
             world/interactables/dialogue_interactable.gd \
+            world/interactables/zone_transition.gd \
             world/simulation/day_night_controller.gd \
             world/navigation/world_navigation_region.gd \
             world/npcs/npc_controller.gd \
@@ -86,6 +87,7 @@ jobs:
             tests/test_technology_foundation.gd \
             tests/test_technology_gameplay.gd \
             tests/test_rpg_acceptance.gd \
+            tests/test_world_zones.gd \
             tests/run_tests.gd
 
       - name: Check formatting of hardened gameplay scripts
@@ -134,6 +136,7 @@ jobs:
             world/technology/technology_controller.gd \
             world/interactables/sleep_spot.gd \
             world/interactables/dialogue_interactable.gd \
+            world/interactables/zone_transition.gd \
             world/simulation/day_night_controller.gd \
             world/navigation/world_navigation_region.gd \
             world/npcs/npc_controller.gd \
@@ -153,6 +156,7 @@ jobs:
             tests/test_technology_foundation.gd \
             tests/test_technology_gameplay.gd \
             tests/test_rpg_acceptance.gd \
+            tests/test_world_zones.gd \
             tests/run_tests.gd
 
   validate-and-test:
