@@ -6,12 +6,17 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   gdscript-quality:
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
+      - name: Checkout PR branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -21,30 +26,24 @@ jobs:
       - name: Install GDScript quality tools
         run: python -m pip install --quiet "gdtoolkit>=4.3,<5"
 
-      - name: Discover GDScript files
-        run: |
-          find . -type f -name '*.gd' -not -path './.git/*' -print | sort
-          echo "GDScript files: $(find . -type f -name '*.gd' -not -path './.git/*' | wc -l)"
-
-      - name: Diagnose lint across all GDScript files
-        continue-on-error: true
-        run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
-
-      - name: Apply canonical formatting in runner
+      - name: Apply canonical formatting
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat
 
-      - name: Archive formatted GDScript tree
-        run: tar -czf /tmp/formatted-gdscript.tar.gz --files-from <(find . -type f -name '*.gd' -not -path './.git/*' -print | sort)
+      - name: Commit canonical formatting once
+        run: |
+          if git diff --quiet -- '*.gd'; then
+            echo "No formatting migration required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.gd'
+          git commit -m "style: format all GDScript"
+          git push origin HEAD:${{ github.head_ref }}
 
-      - name: Upload formatted GDScript tree
-        uses: actions/upload-artifact@v4
-        with:
-          name: formatted-gdscript
-          path: /tmp/formatted-gdscript.tar.gz
-          retention-days: 1
-
-      - name: Prove migration is required
-        run: git diff --exit-code -- '*.gd'
+      - name: Diagnose remaining lint
+        continue-on-error: true
+        run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
 
   validate-and-test:
     runs-on: ubuntu-24.04
