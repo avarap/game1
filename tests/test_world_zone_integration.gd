@@ -2,6 +2,7 @@ class_name TestWorldZoneIntegration
 extends RefCounted
 
 const WORLD_PATH := "res://world/world.tscn"
+const SAVE_PATH := "user://test_world_zone_integration.json"
 const ROUTE := [
 	[&"forest", &"CemeteryEntrance"],
 	[&"cemetery", &"ForestExit"],
@@ -45,7 +46,7 @@ static func run() -> Array[String]:
 	var zone_manager := world.get_node_or_null("ZoneManager")
 	if zone_manager == null:
 		failures.append("World integration should expose a local ZoneManager")
-		world.free()
+		_cleanup(world)
 		return failures
 
 	var ids := _capture_persistent_ids(world, failures)
@@ -83,7 +84,8 @@ static func run() -> Array[String]:
 		if player.global_position != position_before:
 			failures.append("Invalid travel should preserve Player position")
 
-	world.free()
+	_check_location_persistence(world, zone_manager, failures)
+	_cleanup(world)
 	return failures
 
 
@@ -117,6 +119,15 @@ static func _assert_zone_shell_state(
 	var trade_point := world.get_node_or_null("TradePoint") as CanvasItem
 	if trade_point != null and trade_point.visible != (zone_id == &"village"):
 		failures.append("TradePoint visibility should follow the village zone")
+	var player := world.get_node_or_null("Player") as Node2D
+	var active_zone := world.get_node("ZoneManager").call("get_active_zone") as Node2D
+	if player != null and active_zone != null and active_zone.has_method("get_world_rect"):
+		var bounds := active_zone.call("get_world_rect") as Rect2
+		var camera := player.get_node_or_null("Camera2D") as Camera2D
+		if camera == null:
+			failures.append("Persistent Player should keep its camera")
+		elif camera.limit_right != int(bounds.end.x) or camera.limit_bottom != int(bounds.end.y):
+			failures.append("Camera bounds should follow active zone %s" % zone_id)
 
 
 static func _assert_zone_transitions(
@@ -138,3 +149,43 @@ static func _assert_zone_transitions(
 	for target in expected:
 		if not actual_targets.has(target):
 			failures.append("Zone %s should expose travel to %s" % [zone_id, target])
+
+
+static func _check_location_persistence(
+	world: Node, zone_manager: Node, failures: Array[String]
+) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var save_manager := tree.root.get_node_or_null("SaveManager")
+	var player := world.get_node_or_null("Player") as Node2D
+	if save_manager == null or player == null:
+		failures.append("World location persistence requires SaveManager and Player")
+		return
+	if not zone_manager.call("travel_to", &"mine", &"SecretLandmark"):
+		failures.append("Persistence setup should travel to mine secret landmark")
+		return
+	player.global_position = Vector2(960, 704)
+	var expected_position := player.global_position
+	if not bool(save_manager.call("save_game", SAVE_PATH)):
+		failures.append("SaveManager should persist world location")
+		return
+	var payload: Variant = save_manager.call("load_game", SAVE_PATH, false)
+	if typeof(payload) != TYPE_DICTIONARY:
+		failures.append("World location save should load as a dictionary")
+		return
+	var world_data: Dictionary = (payload as Dictionary).get("world", {})
+	if not world_data.has("world_location"):
+		failures.append("Integrated save should contain world_location provider")
+	zone_manager.call("travel_to", &"cemetery", &"PlayerSpawn")
+	var loaded: Variant = save_manager.call("load_game", SAVE_PATH, true)
+	if typeof(loaded) != TYPE_DICTIONARY:
+		failures.append("World location load should return save payload")
+	if zone_manager.call("get_active_zone_id") != &"mine":
+		failures.append("Save/load should restore the active mine zone")
+	if not player.global_position.is_equal_approx(expected_position):
+		failures.append("Save/load should restore a valid Player world position")
+
+
+static func _cleanup(world: Node) -> void:
+	if FileAccess.file_exists(SAVE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+	world.free()
