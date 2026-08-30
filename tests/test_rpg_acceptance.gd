@@ -20,7 +20,13 @@ static func run() -> Array[String]:
 	var quests := world.get_node_or_null("QuestController") as QuestController
 	var economy := world.get_node_or_null("EconomyController")
 	var technology := world.get_node_or_null("TechnologyController") as TechnologyController
-	if player == null or relationships == null or quests == null or economy == null or technology == null:
+	if (
+		player == null
+		or relationships == null
+		or quests == null
+		or economy == null
+		or technology == null
+	):
 		failures.append("World should expose all RPG controllers for acceptance")
 		world.free()
 		return failures
