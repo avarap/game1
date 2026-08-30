@@ -61,9 +61,7 @@ static func _test_snapshot_validation(failures: Array[String]) -> void:
 	var service := RelationshipService.new()
 	service.register(data)
 	service.set_value(&"brother_aldren", 50)
-	service.apply_snapshot(
-		{"values": {"brother_aldren": "invalid", "unknown_relationship": 80}}
-	)
+	service.apply_snapshot({"values": {"brother_aldren": "invalid", "unknown_relationship": 80}})
 	if service.get_value(&"brother_aldren") != 50:
 		failures.append("Malformed relationship values should not overwrite valid state")
 	if service.has_relationship(&"unknown_relationship"):
