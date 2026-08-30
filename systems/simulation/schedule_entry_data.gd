@@ -26,7 +26,7 @@ func matches(weekday_index: int, hour: int, minute: int) -> bool:
 	if (weekday_mask & (1 << weekday_index)) == 0:
 		return false
 
-	var current := TimeMath.normalize_total_minutes(TimeMath.to_total_minutes(hour, minute))
+	var current := posmod(TimeMath.to_total_minutes(hour, minute), TimeMath.MINUTES_PER_DAY)
 	var start := TimeMath.to_total_minutes(start_hour, start_minute)
 	var end := TimeMath.to_total_minutes(end_hour, end_minute)
 	if start == end:
