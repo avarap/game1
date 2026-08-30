@@ -35,6 +35,8 @@ static func run() -> Array[String]:
 		return failures
 
 	var world := world_scene.instantiate()
+	var tree := Engine.get_main_loop() as SceneTree
+	tree.root.add_child(world)
 	if not world.y_sort_enabled:
 		failures.append("World should have Y-sort enabled")
 
@@ -42,9 +44,11 @@ static func run() -> Array[String]:
 	if not world_player is CharacterBody2D:
 		failures.append("World should instance the player")
 
-	var boundaries := world.get_node_or_null("Boundaries")
-	if boundaries == null or boundaries.get_child_count() < 4:
-		failures.append("World should provide collision boundaries")
+	var map_collision := world.get_node_or_null("TechnicalMap/collision") as TileMapLayer
+	if map_collision == null or map_collision.get_used_cells().is_empty():
+		failures.append("World should provide tile-based collision boundaries")
+	elif not map_collision.collision_enabled:
+		failures.append("World map collision layer should have collision enabled")
 
 	var debug_sign := world.get_node_or_null("DebugSign")
 	if not debug_sign is Interactable:
