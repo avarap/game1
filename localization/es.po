@@ -75,6 +75,9 @@ msgstr "Progreso"
 msgid "UI_QUEST_JOURNAL_CLOSE"
 msgstr "Cerrar"
 
+msgid "UI_TRADE_PROMPT"
+msgstr "Comerciar"
+
 msgid "UI_TRADE_TITLE"
 msgstr "Comercio"
 
