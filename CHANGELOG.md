@@ -56,4 +56,4 @@
 - El primer intento de Fase 2 (`33283192098`) detectó el problema de tipado estricto en `InventoryModel`.
 - El bloque base corregido en `2412414889c0a5d6e403c9178aede9b31fa045c5` quedó validado mediante `Godot CI` run `33283283684`.
 - El resource loop completo en `c196e3ab5a42adffe97278f0b0daa8960c789e04` quedó validado mediante `Godot CI` run `33285578050`: importación, smoke test y suite headless en `success`.
-- El bloque funcional de crafting corresponde a `d284104ab8b9f300362413cd666bdab6b8855fbd`; su run `33287832451` debe quedar verde antes de considerarlo validado.
+- El bloque 1 de crafting en `d284104ab8b9f300362413cd666bdab6b8855fbd` quedó validado mediante `Godot CI` run `33287832451`: importación, smoke test y suite headless en `success`.
