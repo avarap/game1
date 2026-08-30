@@ -97,14 +97,8 @@ static func from_snapshot(snapshot_data: Dictionary) -> CorpseState:
 
 	var state := CorpseState.new(corpse_data)
 	state.age_minutes = maxi(int(snapshot_data.get("age_minutes", 0)), 0)
-	state._decay_units = maxi(
-		int(
-			snapshot_data.get(
-				"decay_units", state.decay_percent * DECAY_UNITS_PER_PERCENT
-			)
-		),
-		0
-	)
+	var default_units := state.decay_percent * DECAY_UNITS_PER_PERCENT
+	state._decay_units = maxi(int(snapshot_data.get("decay_units", default_units)), 0)
 	state.decay_percent = clampi(state._decay_units / DECAY_UNITS_PER_PERCENT, 0, 100)
 	state.current_preparation_level = maxi(int(snapshot_data.get("preparation_level", 0)), 0)
 	return state
@@ -114,34 +108,21 @@ static func _decay_units_between(start_minute: int, end_minute: int) -> int:
 	if end_minute <= start_minute:
 		return 0
 
+	var day_one_end := MINUTES_PER_DAY
+	var day_two_end := 2 * MINUTES_PER_DAY
+	var day_three_end := 3 * MINUTES_PER_DAY
 	var total := 0
-	total += _band_units(start_minute, end_minute, 0, MINUTES_PER_DAY, FIRST_DAY_RATE)
-	total += _band_units(
-		start_minute,
-		end_minute,
-		MINUTES_PER_DAY,
-		2 * MINUTES_PER_DAY,
-		SECOND_DAY_RATE
-	)
-	total += _band_units(
-		start_minute,
-		end_minute,
-		2 * MINUTES_PER_DAY,
-		3 * MINUTES_PER_DAY,
-		THIRD_DAY_RATE
-	)
-	var late_start := maxi(start_minute, 3 * MINUTES_PER_DAY)
+	total += _band_units(start_minute, end_minute, 0, day_one_end, FIRST_DAY_RATE)
+	total += _band_units(start_minute, end_minute, day_one_end, day_two_end, SECOND_DAY_RATE)
+	total += _band_units(start_minute, end_minute, day_two_end, day_three_end, THIRD_DAY_RATE)
+	var late_start := maxi(start_minute, day_three_end)
 	if end_minute > late_start:
 		total += (end_minute - late_start) * LATE_RATE
 	return total
 
 
 static func _band_units(
-	start_minute: int,
-	end_minute: int,
-	band_start: int,
-	band_end: int,
-	rate: int
+	start_minute: int, end_minute: int, band_start: int, band_end: int, rate: int
 ) -> int:
 	var overlap_start := maxi(start_minute, band_start)
 	var overlap_end := mini(end_minute, band_end)
