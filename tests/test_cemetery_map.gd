@@ -96,11 +96,7 @@ static func _check_scene_contract(failures: Array[String]) -> void:
 
 
 static func _check_accessible_position(
-	map: Node2D,
-	collision: TileMapLayer,
-	node: Node2D,
-	label: String,
-	failures: Array[String]
+	map: Node2D, collision: TileMapLayer, node: Node2D, label: String, failures: Array[String]
 ) -> void:
 	if map.has_method("get_world_rect") and not map.get_world_rect().has_point(node.global_position):
 		failures.append("%s should stay inside cemetery map bounds" % label)
