@@ -37,6 +37,15 @@ func set_points(red: int, green: int, blue: int) -> bool:
 	return true
 
 
+func add_points(red: int, green: int, blue: int) -> bool:
+	if red < 0 or green < 0 or blue < 0:
+		return false
+	_points[PointType.RED] = get_points(PointType.RED) + red
+	_points[PointType.GREEN] = get_points(PointType.GREEN) + green
+	_points[PointType.BLUE] = get_points(PointType.BLUE) + blue
+	return true
+
+
 func get_points(point_type: PointType) -> int:
 	return int(_points.get(point_type, 0))
 
