@@ -64,7 +64,7 @@ Bloque 3 — cierre gameplay/persistencia: implementación `73e968a097c8b0107292
 
 Criterios de aceptación:
 - [x] Consolidar reloj, días y calendario sobre `TimeManager` sin duplicar estado.
-- [ ] Ciclo día/noche observable por el mundo.
+- [x] Ciclo día/noche observable por el mundo.
 - [x] Dormir: avance al siguiente día y restauración de energía.
 - [ ] `NPCData` data-driven y primer NPC de prueba.
 - [ ] `NavigationAgent2D` y navegación básica.
@@ -75,28 +75,33 @@ Criterios de aceptación:
 Bloque 1 — tiempo/calendario y sueño:
 - `TimeManager` centraliza snapshot/restauración, avance de día, semana ficticia de seis días y transición al amanecer.
 - `SaveManager` persiste/restaura el tiempo exclusivamente mediante la API de `TimeManager`, conservando `save_version = 1`.
-- `SleepSpot` es un `Interactable` del mundo que avanza al día siguiente a las 06:00 y restaura completamente la energía.
-- `test_simulation_time.gd` cubre rollover de medianoche, semana ficticia, sueño y round-trip de guardado temporal.
-- Implementación inicial: `57d9cfdc010398cf5b34764131c7859dd7221084`.
-- Run `33294671978` detectó que `SleepSpot` asumía que el actor estaba dentro del árbol durante tests headless; importación y smoke test pasaron.
-- Corrección: `62cb2658bd169270fffcb59c34134493b787f327` con fallback seguro al `SceneTree` principal.
-- Validación final del bloque: `Godot CI` run `33294728470`, `success`.
+- `SleepSpot` avanza al día siguiente a las 06:00 y restaura la energía.
+- Validación final: `62cb2658bd169270fffcb59c34134493b787f327`, run `33294728470`, `success`.
 
 Hardening transversal antes del bloque 2:
-- [x] `StorageProvider` incorpora `scope_id`; Workbench/Cofre usan `storage_scope = workshop` y el crafting ignora providers de otros scopes.
-- [x] Tests verifican que un storage de otro scope no se consume ni se modifica.
-- [x] Jugador y cofres exponen componentes mediante contratos y resolución por tipo; crafting, recolección y sueño dejan de depender de nombres concretos de hijos.
-- [x] `CemeteryAction` elimina `NodePath` relativo y usa inyección tipada o descubrimiento por grupo `cemetery_controller`.
-- [x] Eliminado `RESULT_ALREADY_OCCUPIED`, que no tenía ningún comportamiento asociado.
-- [x] CI incorpora un job independiente `gdscript-quality` con `gdlint` y `gdformat --check` sobre los scripts endurecidos.
-- [x] El job Godot sigue validando importación, smoke test y suite headless de forma independiente.
-- Implementación principal: `0639a43b16c152bf7a8b9ad3b44e2aa4aa640a8a`, run `33294983254`, `success`.
-- La primera integración de gdtoolkit (`33295018716`) reveló que la imagen Godot no incluye Python; el lint separado detectó después dos reglas (`33295072703`) y el formatter cuatro archivos (`33295142431`). Se corrigieron sin desactivar reglas.
-- Estado final del hardening: `b13d024143b5fb0ff8118a689da079c37916c554`, `Godot CI` run `33295277286`, ambos jobs `gdscript-quality` y `validate-and-test` en `success`.
+- [x] Storage limitado por `scope_id`/`storage_scope`.
+- [x] Componentes de jugador/cofres resueltos por contrato/tipo.
+- [x] `CemeteryAction` sin `NodePath` relativo frágil.
+- [x] Código muerto eliminado.
+- [x] Job `gdscript-quality` con `gdlint` y `gdformat --check`.
+- Estado final: `b13d024143b5fb0ff8118a689da079c37916c554`, run `33295277286`, ambos jobs `success`.
 
-Próximo bloque: ciclo día/noche observable mediante un controlador local del mundo que reaccione a `TimeManager`, sin introducir todavía NPCs.
+Bloque 2 — ciclo día/noche:
+- [x] `DayNightMath` encapsula fases e interpolación pura.
+- [x] Referencias horarias: 06:00 amanecer, 12:00 mediodía, 18:00 atardecer, 22:00 noche.
+- [x] Transición nocturna continua a través de medianoche.
+- [x] `DayNightController` local basado en `CanvasModulate`, sin nuevo Autoload.
+- [x] El controller observa `time_changed` y deriva todo el estado visual de `TimeManager`.
+- [x] `world/world.tscn` contiene `DayNightCycle`.
+- [x] Tests cubren referencias, interpolación, fases e integración de escena.
+- [x] Nuevos scripts/tests incorporados al quality gate.
+- Implementación inicial: `5ea87dda3ce3b4dda9d09d8dadebcddd7d6a0a26`.
+- Run `33295708310`: detectó dos líneas >100 caracteres en el test.
+- `f0c014bdebb13135428be1857e035ea8f6d70525`, run `33295738329`: lint verde; detectó formato de `DayNightMath` y resolución de Autoload no compatible con `--script`.
+- Corrección final: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`.
+- Validación final: `Godot CI` run `33295805020`, `gdscript-quality` y `validate-and-test` en `success`.
 
-No entrar en diálogo, relaciones, quests, economía o tecnologías salvo interfaces estrictamente necesarias para preparar Fase 6.
+Próximo bloque: `NPCData` data-driven + primer NPC de prueba con `NavigationAgent2D` y navegación básica. No implementar todavía diálogo, quests, economía o relaciones.
 
 ## Fase 6 — RPG
 Diálogo, relaciones, quests, economía y tecnologías.

@@ -8,10 +8,10 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama: `main`
 - Fase completada más reciente: **Fase 4 — Cementerio**
 - Fase activa: **Fase 5 — Simulación**
-- Estado Fase 5: bloque 1 tiempo/calendario + sueño implementado y validado; hardening transversal completado; falta ciclo día/noche, NPC base, navegación, rutinas y persistencia NPC antes de cerrar.
+- Estado Fase 5: tiempo/calendario, sueño y ciclo día/noche implementados y validados; falta NPC base, navegación, rutinas y persistencia NPC antes de cerrar.
 - Fuente de verdad: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
-- Último bloque funcional/hardening: `b13d024143b5fb0ff8118a689da079c37916c554`.
-- Última validación funcional y de calidad: `Godot CI` run `33295277286`, `success` en `gdscript-quality` y `validate-and-test`.
+- Último bloque funcional: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`.
+- Última validación funcional y de calidad: `Godot CI` run `33295805020`, `success` en `gdscript-quality` y `validate-and-test`.
 
 ## Fases completadas
 
@@ -44,46 +44,49 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 ### Bloque 1 — Tiempo, calendario y sueño
 1. Se releyeron las secciones 14.3, 23, 24 y 25 del master spec antes de implementar.
-2. `TimeManager` continúa siendo la única fuente global de tiempo y ahora expone `snapshot()`, `apply_snapshot()`, `set_day()`, `advance_to_next_day()`, `get_weekday_index()` y `get_weekday_name()`.
-3. Se implementó la semana ficticia de seis días: Sol, Luna, Hierro, Bosque, Espíritu y Comercio.
-4. El rollover de minutos mantiene el avance de día y el nombre de día se repite correctamente cada seis jornadas.
-5. `SaveManager` conserva `SAVE_VERSION = 1` y deja de manipular directamente `day/hour/minute`: usa la API de snapshot/restauración de `TimeManager`.
-6. Se creó `SleepSpot` como `Interactable` local del mundo. Dormir avanza al siguiente día a las 06:00 y restaura toda la energía del jugador.
-7. `world/world.tscn` incluye un `SleepSpot` mínimo y visible, sin introducir sistemas de fases posteriores.
-8. Se añadió `test_simulation_time.gd` para calendario, rollover de medianoche, sueño, recuperación de energía y persistencia del tiempo.
-9. Commit inicial: `57d9cfdc010398cf5b34764131c7859dd7221084`.
-10. CI `33294671978`: importación y smoke test pasaron; la suite detectó que `SleepSpot` asumía que el actor estaba dentro de `SceneTree` durante tests `--script`.
-11. Corrección: `SleepSpot` usa su árbol cuando está montado y el `SceneTree` principal como fallback headless seguro.
-12. Commit corregido: `62cb2658bd169270fffcb59c34134493b787f327`.
-13. Validación final del bloque: `Godot CI` run `33294728470`, `success` en importación, smoke test y suite completa.
-14. Fase 5 permanece abierta.
+2. `TimeManager` continúa siendo la única fuente global de tiempo y expone snapshot/restauración, avance de día y semana ficticia de seis días.
+3. Se creó `SleepSpot` como `Interactable` local del mundo. Dormir avanza al siguiente día a las 06:00 y restaura toda la energía del jugador.
+4. `test_simulation_time.gd` cubre calendario, rollover, sueño y persistencia del tiempo.
+5. Implementación inicial: `57d9cfdc010398cf5b34764131c7859dd7221084`.
+6. Corrección headless: `62cb2658bd169270fffcb59c34134493b787f327`.
+7. Validación final del bloque: `Godot CI` run `33294728470`, `success`.
 
 ### Hardening transversal previo al bloque 2
-1. Se añadió `scope_id` a `StorageProvider` y `storage_scope` a estaciones/cofres. Workbench y cofre inicial usan `workshop`.
-2. `CraftingStation` solo incorpora providers registrados o descubiertos cuyo scope coincide; un storage de otra zona no se consume.
-3. `test_storage_network.gd` cubre explícitamente el rechazo y la no mutación de un provider remoto con scope `mine`.
-4. El jugador expone contratos `get_inventory_component()` y `get_energy_component()`; los componentes se resuelven por tipo, no por nombres mágicos de nodo.
-5. Recolección, crafting y sueño consumen esos contratos en vez de conocer la estructura interna del actor.
-6. `StorageChest` también localiza su `InventoryComponent` por tipo y encapsula la creación de su `StorageProvider`.
-7. `CemeteryAction` dejó de usar `NodePath("../CemeteryController")`: admite inyección tipada y, en runtime, descubrimiento mediante el grupo `cemetery_controller`.
-8. Se eliminó `CemeteryService.RESULT_ALREADY_OCCUPIED`, constante sin uso ni comportamiento asociado.
-9. Implementación principal: `0639a43b16c152bf7a8b9ad3b44e2aa4aa640a8a`. `Godot CI` run `33294983254`, `success`.
-10. Se añadió job independiente `gdscript-quality` con Python + `gdtoolkit` para ejecutar `gdlint` y `gdformat --check` sobre los scripts endurecidos, manteniendo el job Godot separado.
-11. CI `33295018716` detectó que la imagen `barichello/godot-ci:4.5` no contiene Python; se separó el quality job en Ubuntu nativo.
-12. CI `33295072703` detectó dos problemas reales de lint (`max-returns` y longitud de línea); se corrigieron sin desactivar reglas.
-13. CI `33295142431` dejó lint verde y señaló cuatro archivos no alineados con `gdformat`; se formatearon.
-14. CI `33295217917` dejó por primera vez ambos jobs completos en `success`.
-15. Commit final de desacoplamiento por tipo: `b13d024143b5fb0ff8118a689da079c37916c554`.
-16. Validación final del hardening: `Godot CI` run `33295277286`, `success` en `gdscript-quality` y `validate-and-test` (lint, formato, importación, smoke test y suite headless).
-17. Fase 5 permanece abierta; este hardening no constituye una fase nueva ni adelanta alcance de Fase 6.
+1. `StorageProvider.scope_id` y `storage_scope` limitan redes de almacenamiento por contexto.
+2. Jugador y cofres exponen componentes por contrato/tipo; crafting, recolección y sueño no dependen de nombres internos.
+3. `CemeteryAction` usa inyección tipada o grupo `cemetery_controller` en lugar de `NodePath` relativo.
+4. Se eliminó código muerto de cementerio.
+5. Se añadió `gdscript-quality` con `gdlint` y `gdformat --check`, manteniendo el job Godot separado.
+6. Implementación principal: `0639a43b16c152bf7a8b9ad3b44e2aa4aa640a8a`.
+7. Desacoplamiento final: `b13d024143b5fb0ff8118a689da079c37916c554`.
+8. Validación final: run `33295277286`, ambos jobs `success`.
+
+### Bloque 2 — Ciclo día/noche observable
+1. Se releyó la especificación del ciclo visual: `CanvasModulate`/luces/shaders cuando aporten valor y referencias 06:00, 12:00, 18:00 y 22:00.
+2. Se creó `DayNightMath`, lógica pura que normaliza hora/minuto, determina fase visual y calcula interpolación gradual de color.
+3. Las referencias son: 06:00 amanecer, 12:00 mediodía, 18:00 atardecer y 22:00 noche.
+4. La transición nocturna cruza medianoche de forma continua hasta el amanecer; no existe salto de color a las 00:00.
+5. Se creó `DayNightController` local como `CanvasModulate`; observa la señal `time_changed` y aplica el resultado de `DayNightMath` sin duplicar el reloj.
+6. El controller resuelve `EventBus` y `TimeManager` desde `/root` en `_ready()` para mantener compatibilidad con ejecución headless `--script`.
+7. `world/world.tscn` incluye `DayNightCycle` como nodo local; no se añadieron nuevos Autoloads.
+8. `test_day_night_cycle.gd` valida colores de referencia, interpolación, fases y presencia/aplicación del controller en la escena del mundo.
+9. `tests/run_tests.gd` incorpora la suite `DayNightCycle` y el quality gate se amplió incrementalmente a los nuevos scripts/tests.
+10. Implementación inicial: `5ea87dda3ce3b4dda9d09d8dadebcddd7d6a0a26`.
+11. Run `33295708310` detectó dos líneas >100 caracteres en el nuevo test.
+12. Corrección de lint: `f0c014bdebb13135428be1857e035ea8f6d70525`; run `33295738329` dejó lint verde pero detectó formato pendiente de `DayNightMath` y resolución de Autoload incompatible con `--script`.
+13. Corrección final: `5c6467c5aad04b1d44c48cceef2280af5d049bf8`.
+14. Validación final del bloque: `Godot CI` run `33295805020`, `success` en lint, format-check, importación, smoke test y suite headless completa.
+15. El criterio "Ciclo día/noche observable por el mundo" queda cumplido; Fase 5 permanece abierta.
 
 ## Decisiones vigentes
 
 - Mantener solo cinco Autoloads globales.
 - `TimeManager` es la única fuente de reloj/calendario; otros sistemas observan o invocan su API, no duplican tiempo.
+- El ciclo visual es local al mundo y deriva su estado exclusivamente de `TimeManager`/`EventBus`.
+- La interpolación visual queda encapsulada en lógica pura (`DayNightMath`) para poder probarla sin escena/render.
 - Inventario, energía, crafting, storage, cementerio, ciclo visual y NPCs deben ser locales/contextuales salvo necesidad demostrada.
-- `StorageProvider.scope_id` limita redes de almacenamiento por contexto/zona; no conectar automáticamente cofres de scopes distintos.
-- Los sistemas externos acceden a capacidades del actor mediante contratos (`get_inventory_component`, `get_energy_component`) y no mediante nombres de nodos internos.
+- `StorageProvider.scope_id` limita redes de almacenamiento por contexto/zona.
+- Los sistemas externos acceden a capacidades del actor mediante contratos y no mediante nombres de nodos internos.
 - Dependencias entre escenas deben preferir inyección tipada o grupos con semántica explícita frente a `NodePath` relativos frágiles.
 - La UI observa modelos/servicios; no posee estado de gameplay.
 - Datos de gameplay deben ser Resources tipados cuando corresponda.
@@ -92,18 +95,18 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - El estado local persistente usa providers `save_provider`.
 - Mantener timeout explícito de CI para evitar bloqueos headless silenciosos.
 - `gdscript-quality` es un gate adicional; la autoridad funcional continúa siendo importación/smoke/tests de Godot.
-- El gate de gdtoolkit se aplica por ahora a los scripts endurecidos; ampliar cobertura de forma incremental evitando una migración masiva de formato ajena a la fase activa.
+- Ampliar cobertura de gdtoolkit incrementalmente con cada bloque nuevo.
 - No entrar en diálogo, relaciones, quests, economía ni tecnologías hasta Fase 6.
 
 ## Próximo bloque — Fase 5
 
-1. Implementar ciclo día/noche mínimo observable con un controlador local del mundo.
-2. Usar las referencias 06:00 amanecer, 12:00 mediodía, 18:00 atardecer y 22:00 noche.
-3. Hacer que el controlador observe `TimeManager`/`EventBus` y module el mundo sin duplicar el reloj.
-4. Añadir tests de cálculo/interpolación y aceptación de escena.
-5. Validar `gdscript-quality` y CI Godot antes de empezar `NPCData`.
-6. Después crear primer NPC data-driven con `NavigationAgent2D` y rutina mínima.
-7. Mantener Fase 5 abierta hasta persistencia de NPCs y CI final verde.
+1. Crear `NPCData` data-driven con la información mínima requerida para un NPC de prueba.
+2. Crear un primer NPC local en el mundo con `NavigationAgent2D` y movimiento básico hacia destinos explícitos.
+3. Mantener la lógica de navegación separada de diálogos/quests y sin entrar todavía en Fase 6.
+4. Añadir tests de datos, escena y transición básica de navegación.
+5. Incluir los nuevos scripts en `gdscript-quality` y validar CI completo.
+6. Después implementar horarios/rutinas con estados mínimos Idle/Walking/Working/Sleeping.
+7. Mantener Fase 5 abierta hasta persistencia mínima de posición/estado de NPCs y CI final verde.
 
 ## Regla de continuidad
 
