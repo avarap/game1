@@ -62,21 +62,21 @@ func get_weekday_index() -> int:
 
 
 func get_weekday_name() -> String:
+	var weekday_name := ""
 	match get_weekday_index():
 		0:
-			return "Día del Sol"
+			weekday_name = "Día del Sol"
 		1:
-			return "Día de la Luna"
+			weekday_name = "Día de la Luna"
 		2:
-			return "Día del Hierro"
+			weekday_name = "Día del Hierro"
 		3:
-			return "Día del Bosque"
+			weekday_name = "Día del Bosque"
 		4:
-			return "Día del Espíritu"
+			weekday_name = "Día del Espíritu"
 		5:
-			return "Día del Comercio"
-		_:
-			return ""
+			weekday_name = "Día del Comercio"
+	return weekday_name
 
 
 func snapshot() -> Dictionary:
