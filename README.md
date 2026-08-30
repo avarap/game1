@@ -10,13 +10,13 @@ El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_
 - Siguiente bloque obligatorio: **#17 — contrato visual pre-Fase 7**.
 - Fase 7 — Mundo permanece bloqueada hasta cerrar #17; #16 — `TileMapLayer` foundation depende de ese contrato.
 - PR #32 (`Phase 7: world zones foundation`) permanece fuera de `main` y no debe mergearse antes de #17.
-- Godot objetivo de CI: **4.5**.
+- Godot objetivo de CI: **4.7.2**.
 - Rama principal: `main`.
 - Memoria de desarrollo: `DEV_MEMORY.md`.
 
 ## Ejecutar
 
-1. Instala Godot 4.x.
+1. Instala Godot 4.7.2.
 2. Clona el repositorio.
 3. Abre `project.godot`.
 4. Ejecuta la escena principal con F5.
@@ -60,7 +60,7 @@ Los sistemas RPG permanecen locales/contextuales y usan Resources tipados. `Ques
 El CI ejecuta dos gates independientes:
 
 - `gdscript-quality`: descubre todos los `*.gd` del repositorio y ejecuta `gdlint` + `gdformat --check` globalmente.
-- `validate-and-test`: importación Godot 4.5, smoke test y suite headless.
+- `validate-and-test`: importación Godot 4.7.2, smoke test y suite headless.
 
 Validaciones recientes:
 
