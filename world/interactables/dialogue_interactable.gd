@@ -12,6 +12,9 @@ func _on_interact(_actor: Node) -> void:
 		return
 	var context: Dictionary = {}
 	var relationship_controller := get_tree().get_first_node_in_group("relationship_controller")
-	if relationship_controller != null and relationship_controller.has_method("get_dialogue_context"):
+	if (
+		relationship_controller != null
+		and relationship_controller.has_method("get_dialogue_context")
+	):
 		context = relationship_controller.call("get_dialogue_context")
 	controller.call("start_dialogue", dialogue, context)
