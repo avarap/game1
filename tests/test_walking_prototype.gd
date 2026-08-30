@@ -40,7 +40,10 @@ static func run() -> Array[String]:
 			failures.append("Player should preserve the capsule collision footprint")
 		else:
 			var capsule := collision.shape as CapsuleShape2D
-			if not is_equal_approx(capsule.radius, 10.0) or not is_equal_approx(capsule.height, 28.0):
+			if (
+				not is_equal_approx(capsule.radius, 10.0)
+				or not is_equal_approx(capsule.height, 28.0)
+			):
 				failures.append("Player collision footprint should remain 20x28")
 
 		var camera := player.get_node_or_null("Camera2D") as Camera2D
