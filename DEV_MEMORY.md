@@ -13,7 +13,8 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Aceptación #24: PR #54, acceptance HEAD `d4489ddae0467afeb262c2994e8b71f0f2afd311`, run `33331207740`, `success`.
 - Merge funcional de #24 en `main`: `7e281255322b6c7444d4177d85295b353babb38f`.
 - Fase 8 — Polish: **ACTIVA**.
-- Próximo trabajo debe salir de #25–#31 respetando dependencias y `ART_DIRECTION.md`.
+- #25 — Tileset exterior: implementado en PR #56; atlas original `256 x 256`, 64 celdas de `32 x 32`; run funcional `33333578933`, `success`.
+- Próximo bloque recomendado: **#26 — Player spritesheet + animaciones**, sin iniciar #29 antes de completar también #28.
 
 ## Fuentes de verdad
 
@@ -76,6 +77,18 @@ El mundo integrado usa `world/world.tscn` como shell persistente. `ZoneManager` 
 
 La suite final valida también save/load de ubicación, camera bounds, colisiones, spawns y transiciones mediante las suites especializadas que agrega. CI `33331207740` pasó `gdlint`, `gdformat --check`, import Godot 4.7.2, smoke y suite headless completa.
 
+## Fase 8 — #25 tileset exterior
+
+PR #56 introduce únicamente `art/environment/tilesets/*`, respetando ownership y sin tocar mapas/gameplay:
+
+- `exterior_tileset.svg`: atlas original `256 x 256`, cuadrícula `8 x 8`, tile nativo `32 x 32`;
+- familias de hierba/tierra, caminos y transiciones, suelo de cementerio, bosque, plaza/pueblo, bordes de terreno y decoración baja;
+- geometría alineada a píxel entero con `crispEdges` y paleta derivada de `ART_DIRECTION.md`;
+- `README.md` local documenta coordenadas estables del atlas y prohíbe codificar gameplay/colisión/navegación en arte;
+- no se copiaron assets, formas distintivas, paletas propietarias ni composiciones de Graveyard Keeper.
+
+Validación funcional del atlas en run `33333578933`: quality gate global, import Godot 4.7.2, smoke y suite headless completos en verde. La integración del atlas en mapas pertenece a #29 y permanece bloqueada por #28.
+
 ## Incidencias relevantes resueltas en Fase 7
 
 - Los tests legacy dejaron de retener referencias a interactables de zonas destruidas durante reconstrucción por load.
@@ -86,10 +99,10 @@ La suite final valida también save/load de ubicación, camera bounds, colisione
 
 ## Próximo paso — Fase 8
 
-1. Revisar las issues #25–#31 y sus dependencias antes de empezar.
-2. Elegir el primer bloque visual/polish desbloqueado.
-3. Mantener `ART_DIRECTION.md` como contrato obligatorio.
-4. No reabrir alcance funcional de Fases 0–7 salvo bug crítico demostrado por tests/CI.
+1. Cerrar/mergear #25 solo con CI final verde del HEAD documentado.
+2. Iniciar **#26 — Player spritesheet + animaciones de movimiento** como siguiente P0 independiente.
+3. Mantener velocidad, colisión e interacción del Player sin cambios; sustituir únicamente presentación según #26 y `ART_DIRECTION.md`.
+4. #27 y #28 siguen independientes; #29 no se inicia hasta que #25 y #28 estén cerradas.
 5. Mantener Godot 4.7.2, quality gate global, import, smoke y suite headless verdes.
 
 ## Regla de continuidad
