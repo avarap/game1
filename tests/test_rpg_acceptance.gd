@@ -13,6 +13,11 @@ static func run() -> Array[String]:
 		failures.append("RPG acceptance requires SceneTree, world and plank data")
 		return failures
 
+	var save_manager := tree.root.get_node_or_null("SaveManager")
+	if save_manager == null:
+		failures.append("RPG acceptance requires the SaveManager autoload")
+		return failures
+
 	var world := world_scene.instantiate()
 	tree.root.add_child(world)
 	var player := world.get_node_or_null("Player") as PlayerController
@@ -58,7 +63,7 @@ static func run() -> Array[String]:
 	var expected_stock := int(economy.call("get_merchant_stock", &"wood"))
 	var expected_red := technology.get_points(TechnologyService.PointType.RED)
 	var expected_green := technology.get_points(TechnologyService.PointType.GREEN)
-	if not SaveManager.save_game(SAVE_PATH):
+	if not bool(save_manager.call("save_game", SAVE_PATH)):
 		failures.append("SaveManager should persist the integrated RPG state")
 		_cleanup(world)
 		return failures
@@ -67,7 +72,12 @@ static func run() -> Array[String]:
 	quests.apply_save_data({})
 	economy.call("buy", &"yard_wood", 1, inventory)
 	technology.reset_progress_for_tests()
-	var payload := SaveManager.load_game(SAVE_PATH)
+	var loaded: Variant = save_manager.call("load_game", SAVE_PATH)
+	if typeof(loaded) != TYPE_DICTIONARY:
+		failures.append("SaveManager should load a dictionary payload")
+		_cleanup(world)
+		return failures
+	var payload := loaded as Dictionary
 	if payload.is_empty():
 		failures.append("SaveManager should load the integrated RPG save")
 		_cleanup(world)
