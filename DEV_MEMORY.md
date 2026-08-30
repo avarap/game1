@@ -8,12 +8,13 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Rama principal: `main`.
 - Fase completada más reciente: **Fase 6 — RPG**.
 - Cierre funcional de Fase 6: PR #39, merge `1efe0bc9a47c2a434c597276bc326d24713720aa`; aceptación HEAD `ea3543aba5b6d859266553a964d817f54670b9a3`, run `33308814397`.
-- Runtime/CI objetivo actualizado a **Godot 4.7.2** por PR #41, merge `1b4ff623b45c465bfb9bd57f2b96b6ecec88a2ad`; run de `main` `33309144543`, ambos jobs `success`.
-- **#17 — contrato visual pre-Fase 7 resuelto en PR #42** mediante `ART_DIRECTION.md`: perspectiva cenital 3/4 ortográfica, tile 32 px, escala de personajes, footprints, cámara, pivotes/Y-sort, capas, paleta, luz, pixel-art, carpetas y spritesheets.
-- El contrato conserva como referencia el footprint actual del player (`20 x 28 px`) y el zoom actual (`1.5x`) para no introducir gameplay en #17.
-- **Siguiente bloque obligatorio: #16 — foundation técnica de mapas con `TileMapLayer`**.
-- Fase 7 pasa de bloqueada a **activa**, pero no está completada; debe avanzar por sus issues y criterios de aceptación.
-- PR #32 (`Phase 7: world zones foundation`) sigue fuera de `main`; no debe mergearse automáticamente porque nació antes del contrato visual y debe reevaluarse contra #17/#16.
+- Runtime/CI objetivo: **Godot 4.7.2** por PR #41, merge `1b4ff623b45c465bfb9bd57f2b96b6ecec88a2ad`.
+- **#17 — contrato visual** resuelto mediante `ART_DIRECTION.md`.
+- **#16 — foundation técnica `TileMapLayer` validada en PR #43**: `technical_map.tscn` + `TechnicalMap`, seis capas contractuales, tiles de 32 px, bounds `1600 x 1024`, colisión tile-based e integración mínima en `world.tscn`.
+- HEAD funcional validado de #16: `00264c1e3ff920a46bad908182a8a89fbbb20263`, run `33313715794`, ambos jobs `success` en Godot 4.7.2.
+- Fase 7 — Mundo permanece **ACTIVA**; #16 no cierra la fase.
+- **Siguiente bloque obligatorio: #18 — mapa exterior cementerio + taller del jugador (P0)**. #19 — bosque es P1 y también queda desbloqueada tras #16/#17, pero no adelantarla antes de #18 en la ejecución secuencial actual.
+- PR #32 está cerrado sin merge y marcado superseded; no reutilizarlo como implementación de Fase 7.
 - Fuente funcional/arquitectónica: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 - Fuente de planificación: `ROADMAP.md` + issues activas.
 - Contrato visual: `ART_DIRECTION.md`.
@@ -61,10 +62,38 @@ El test de cierre usa `world.tscn` real y cubre en un único flujo relación→d
 - capas: `ground`, `paths`, `decoration_low`, `collision`, `objects_y_sorted`, `foreground_occlusion`;
 - paleta base original y rangos de valor por cementerio/bosque/pueblo/interiores;
 - luz diurna desde arriba-izquierda y sombras abajo-derecha;
-- reglas de contorno, detalle, dithering, nombres, carpetas y spritesheets;
-- ejemplos numéricos de footprint de personaje y árbol Y-sorted.
+- reglas de contorno, detalle, dithering, nombres, carpetas y spritesheets.
 
-#17 no modifica escenas, gameplay, Autoloads ni assets finales. Su función es eliminar decisiones visuales incompatibles antes de #16.
+## Fase 7 — Mundo — ACTIVA
+
+### #16 — Foundation técnica de mapas — VALIDADA
+
+Implementación:
+
+- `world/maps/technical_map.tscn` define exactamente las seis capas de `ART_DIRECTION.md` como `TileMapLayer`.
+- `world/maps/technical_map.gd` crea un TileSet técnico runtime de 32 px únicamente para diagnóstico/foundation; no es arte final ni debe convertirse en lógica de gameplay.
+- Mapa técnico: `50 x 32` tiles = `1600 x 1024` px; `get_world_rect()` expone bounds estables.
+- `ground`, `paths` y `decoration_low` no crean colisión; `collision` posee la physics layer y tiles de perímetro/obstáculo; `objects_y_sorted` mantiene Y-sort y `foreground_occlusion` queda por encima.
+- `world.tscn` instancia `TechnicalMap` y elimina el blockout legacy `Ground`, `Boundaries` y `WorkshopBlock`; todos los sistemas de gameplay existentes permanecen.
+- La Camera2D conserva límites compatibles con el mapa (`1600 x 1000`, dentro de `1600 x 1024`) y zoom `1.5x`.
+- `NavigationRegion2D` conserva su comportamiento existente; tests de navegación/NPC siguen verdes.
+
+TDD / validación:
+
+- RED inicial `33313004010`: todos los sistemas previos verdes y único fallo `Technical TileMapLayer map should exist`.
+- RED ampliado `33313174308`: 9 fallos exactamente ligados a bounds, tiles/physics e integración todavía ausentes; sin regresiones previas.
+- Primer GREEN funcional detectó dos incidencias reales: `TileData` configuraba collision polygon antes de registrar el atlas en el `TileSet`, y `test_walking_prototype.gd` mantenía una aserción obsoleta que exigía el nodo legacy `Boundaries`.
+- Se corrigió el orden de registro del atlas y el test legacy pasó a verificar la nueva colisión `TechnicalMap/collision` sin rebajar cobertura.
+- El quality gate detectó únicamente formato de `technical_map.gd`; se obtuvo el diff canónico con un run diagnóstico temporal y el workflow estricto fue restaurado antes de validar.
+- HEAD funcional final `00264c1e3ff920a46bad908182a8a89fbbb20263`, run `33313715794`: `gdlint` global, `gdformat --check` global, importación Godot 4.7.2, smoke y suite completa `success`; `MapFoundation` y `WalkingPrototype` 0 fallos.
+- Los mensajes `fontconfig` del contenedor 4.7.2 son ruido baseline del image CI; no hubo errores de `TechnicalMap`, TileSet, física o tests en el run final.
+
+### Restricciones para mapas posteriores
+
+- Reutilizar las seis capas y tile lógico de 32 px; no reintroducir Polygon2D/StaticBody blockout como foundation principal.
+- La lógica de mundo no se incrusta en `TileMapLayer`; las capas presentan/componen y la lógica sigue en escenas/componentes/sistemas.
+- El TileSet de colores de `TechnicalMap` es diagnóstico, no asset final ni paleta de producción cerrada.
+- #18/#19/#20/#21/#22 deben trabajar en sus carpetas/ownership y respetar #16 + `ART_DIRECTION.md`.
 
 ## Decisiones vigentes
 
@@ -80,11 +109,11 @@ El test de cierre usa `world.tscn` real y cubre en un único flujo relación→d
 - El quality gate descubre todos los `*.gd` automáticamente; no volver a listas blancas manuales.
 - Fase 7 debe respetar `ART_DIRECTION.md`; cualquier excepción de escala/pivote/capa debe justificarse explícitamente.
 - `TileMapLayer` es la base técnica obligatoria de mapas; la lógica de mundo no debe incrustarse en sus tiles.
-- No reutilizar PR #32 sin revisar su compatibilidad con el contrato visual y los criterios de #16.
+- PR #32 queda solo como referencia histórica; está superseded y cerrado sin merge.
 
 ## Próximo paso
 
-Implementar **#16 — Foundation técnica de mapas con `TileMapLayer`**. Debe crear al menos un mapa técnico cargable con las seis capas contractuales, preservar movimiento, colisión, navegación, Y-sort/occlusion y camera bounds, y cerrar con smoke + suite headless + quality gate verdes. No producir todavía mapas o assets finales de #18/#19/#20/#21/#22.
+Implementar **#18 — Mapa exterior: cementerio + taller del jugador**. Debe vivir bajo `world/maps/cemetery/*`, reutilizar #16/#17, mantener accesibles las interacciones actuales y validar carga, colisión, navegación, Y-sort y posiciones críticas. No tocar `world/world.tscn`, otros mapas ni ampliar narrativa/gameplay fuera de la adaptación mínima permitida por la issue.
 
 ## Regla de continuidad
 
