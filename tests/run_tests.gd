@@ -39,8 +39,11 @@ func _run_all_tests() -> void:
 	_run_suite("TechnologyGameplay", TestTechnologyGameplay.run(), failures)
 	_run_suite("TechnologyQuestIntegration", TestTechnologyQuestIntegration.run(), failures)
 	_run_suite("MapFoundation", TestMapFoundation.run(), failures)
+	_run_suite("MapForest", TestMapForest.run(), failures)
+	_run_suite("CemeteryMap", TestCemeteryMap.run(), failures)
 	_run_suite("MapVillage", TestMapVillage.run(), failures)
 	_run_suite("MapMine", TestMapMine.run(), failures)
+	_run_suite("MapInteriors", TestMapInteriors.run(), failures)
 
 	if failures.is_empty():
 		print("[TEST] All core tests passed")
