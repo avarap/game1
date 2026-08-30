@@ -30,20 +30,25 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if data == null or not navigation_started:
+	var agent := get_navigation_agent()
+	if data == null or not navigation_started or agent == null:
 		velocity = Vector2.ZERO
 		return
-	if navigation_agent.is_navigation_finished():
+	if agent.is_navigation_finished():
 		_stop_navigation()
 		return
 
-	var next_position := navigation_agent.get_next_path_position()
+	var next_position := agent.get_next_path_position()
 	velocity = NPCNavigationMath.velocity_toward(global_position, next_position, data.move_speed)
 	move_and_slide()
 
 
 func set_destination(target: Vector2) -> void:
-	navigation_agent.target_position = target
+	var agent := get_navigation_agent()
+	if agent == null:
+		navigation_started = false
+		return
+	agent.target_position = target
 	navigation_started = true
 
 
@@ -59,13 +64,16 @@ func apply_current_schedule() -> void:
 func apply_schedule(weekday_index: int, hour: int, minute: int) -> void:
 	if schedule == null:
 		return
+	var agent := get_navigation_agent()
+	if agent == null:
+		return
 	var entry := schedule.find_entry(weekday_index, hour, minute)
 	if entry == null:
 		_set_activity_state(NPCStateMachine.IDLE)
 		return
 
 	var needs_movement := not NPCNavigationMath.has_arrived(
-		global_position, entry.target_position, navigation_agent.target_desired_distance
+		global_position, entry.target_position, agent.target_desired_distance
 	)
 	var previous_state := state_machine.current_state
 	state_machine.begin_route(entry.activity_state, needs_movement)
@@ -78,7 +86,9 @@ func apply_schedule(weekday_index: int, hour: int, minute: int) -> void:
 
 
 func get_navigation_agent() -> NavigationAgent2D:
-	return navigation_agent
+	if navigation_agent != null:
+		return navigation_agent
+	return get_node_or_null("NavigationAgent2D") as NavigationAgent2D
 
 
 func get_current_state() -> StringName:
