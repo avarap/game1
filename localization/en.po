@@ -107,3 +107,9 @@ msgstr "Inventory is full."
 
 msgid "UI_TRADE_ERROR"
 msgstr "Trade rejected."
+
+msgid "UI_HUD_ENERGY"
+msgstr "Energy"
+
+msgid "UI_HUD_STATUS_READY"
+msgstr "Ready"
