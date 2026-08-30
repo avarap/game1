@@ -7,6 +7,7 @@ func _initialize() -> void:
 	_run_suite("SimulationTime", TestSimulationTime.run(), failures)
 	_run_suite("DayNightCycle", TestDayNightCycle.run(), failures)
 	_run_suite("NPCNavigation", TestNPCNavigation.run(), failures)
+	_run_suite("NPCRoutines", TestNPCRoutines.run(), failures)
 	_run_suite("PlayerMovement", TestPlayerMovement.run(), failures)
 	_run_suite("WalkingPrototype", TestWalkingPrototype.run(), failures)
 	_run_suite("InventoryModel", TestInventoryModel.run(), failures)
