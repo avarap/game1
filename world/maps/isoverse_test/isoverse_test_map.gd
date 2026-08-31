@@ -4,9 +4,7 @@ extends Node2D
 const MAP_SIZE := Vector2i(30, 20)
 const TILE_HALF := Vector2(16, 8)
 const MAP_ORIGIN := Vector2(480, 96)
-const ATLAS_PATH := (
-	"res://art/external/isoverse_medieval_outdoors/assets_free_version.png"
-)
+const ATLAS_PATH := "res://art/external/isoverse_medieval_outdoors/assets_free_version.png"
 
 const TREE_REGION := Rect2i(96, 65, 32, 76)
 const ROCK_REGION := Rect2i(131, 68, 25, 25)
@@ -150,9 +148,12 @@ func _rock_cells() -> Array[Vector2i]:
 
 
 func _cell_to_world(cell: Vector2i) -> Vector2:
-	return MAP_ORIGIN + Vector2(
-		(cell.x - cell.y) * TILE_HALF.x,
-		(cell.x + cell.y) * TILE_HALF.y,
+	return (
+		MAP_ORIGIN
+		+ Vector2(
+			(cell.x - cell.y) * TILE_HALF.x,
+			(cell.x + cell.y) * TILE_HALF.y,
+		)
 	)
 
 
