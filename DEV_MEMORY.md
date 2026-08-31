@@ -6,19 +6,21 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 - Repositorio: `avarap/game1`.
 - Rama principal: `main`.
+- HEAD de referencia de esta sincronización: `81021973025302213dc64ef8f4a4744673c5dd75`.
+- Último CI de `main` para ese HEAD: run `33350515654`, success.
 - Runtime/CI objetivo: **Godot 4.7.2**.
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
-- #25 — Tileset exterior: completado en PR #56; run `33333578933`, success.
-- #28 — Props/edificios/cementerio: integrado en PR #79; main run `33340142216`, success.
-- Track **8A — Gameplay Depth & Feel**: diseño aprobado y en implementación.
-- **8A.1 — Descomposición acelerada:** implementado en PR #57.
-- **8A.2 — Conservación:** implementado en PR #59; CI funcional `33336387360`, success.
-- **8A.3 — Agricultura mínima:** integrado en PR #76; merge `b10146d12d5c6f0251b61ec779f4ecc7351e9257`; main run `33342619691`, success.
-- Diseño 8A: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
-- Biblioteca de ideas/diseño: `docs/design/`.
-- Próximo bloque del track de profundidad: **8A.4 — recurso multiuso** (#61).
-- PRs abiertos observados por integrador: #75 (#26), #80 (#29) y #78 (#68); todos requieren resincronización con el HEAD actual antes de integrar. #78 además es solo un incremento parcial de #68.
+- No declarar Fase 8 completa salvo cierre real de #70 sobre el mismo HEAD final.
+
+## Gate P0 temporal
+
+Auditoría sobre HEAD `8102197` detectó dos cabos sueltos antes de seguir integrando Fase 8:
+
+1. **#82** — falta test de regresión de save/load de Brother Aldren en cementerio. Debe verificar posición y estado/rutina persistentes y fallar si se revierte la protección de restore.
+2. **#83** — sincronización de `ROADMAP.md`, `DEV_MEMORY.md`, `CHANGELOG.md` y `README.md` con el HEAD real.
+
+Mientras #82 o #83 sigan abiertas, los workers pueden preparar trabajo independiente pero el supervisor **no fusiona** otros PRs de Fase 8. Tras cerrar ambos, exigir `main` verde antes de reanudar merges.
 
 ## Fuentes de verdad
 
@@ -26,157 +28,133 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Diseño jugable: `GAME_DESIGN.md` + spec 8A.
 - Planificación: `ROADMAP.md` + issues activas.
 - Contrato visual: `ART_DIRECTION.md`.
-- Narrativa: `HISTORIA_PRINCIPAL.md` — **El Cementerio de Valdeniebla**.
+- Narrativa: `HISTORIA_PRINCIPAL.md`.
 - Idiomas: `LOCALIZATION.md`.
-- `docs/design/` es dirección secundaria/backlog; nunca permite adelantar una fase ni sustituye criterios de aceptación.
-
-## Fases completadas
-
-- Fase 0 — Bootstrap: run `33278173612`.
-- Fase 1 — Core: run `33280758441`.
-- Fase 2 — Items: run `33285578050`.
-- Fase 3 — Crafting: run `33292481990`.
-- Fase 4 — Cementerio: run `33294286014`.
-- Fase 5 — Simulación: run `33297774458`.
-- Fase 6 — RPG: PR #39, run `33308814397`.
-- Fase 7 — Mundo: PR #54, run `33331207740`.
+- `docs/design/` es backlog/dirección secundaria; nunca sustituye roadmap ni gates.
 
 ## Arquitectura estable
 
 - Exactamente cinco Autoloads: `EventBus`, `GameManager`, `TimeManager`, `SaveManager`, `AudioManager`.
 - `TimeManager` es la única fuente de reloj/calendario.
-- RPG permanece local/contextual: diálogo, relaciones, quests, economía y tecnología.
 - `SaveManager` agrega providers del grupo `save_provider`.
 - UI observa controllers/modelos y emite intents; no contiene lógica de negocio.
 - Quality gate descubre todos los `*.gd` y ejecuta `gdlint` + `gdformat --check` globalmente.
 - Runtime y CI usan Godot 4.7.2.
+- `world/world.tscn` es el shell persistente; `ZoneManager` mantiene una sola zona activa bajo `ZoneContainer`.
+- `WorldLocationProvider` persiste zona/marker/posición y el restore no debe reinicializar actores persistentes como Brother Aldren.
 
-## Contrato de mundo estable tras Fase 7
+## Fase 7 — mundo estable
 
-`ART_DIRECTION.md` + #16 fijan proyección 2D ortográfica cenital 3/4, tile lógico `32 x 32 px`, seis `TileMapLayer`, pivote/Y-sort en pies, resolución `1280 x 720`, zoom base `1.5x` y gameplay fuera de tiles.
+Fase 7 quedó cerrada mediante #24 / PR #54. El mundo modular conecta cementerio/propiedad, bosque, pueblo, interiores y mina, preservando Player, controllers y Brother Aldren durante viajes. La cámara adopta bounds de la zona activa.
 
-`world/world.tscn` es el shell persistente. `ZoneManager` mantiene una sola zona bajo `ZoneContainer` y conecta cementerio/propiedad, bosque, pueblo, dos interiores y mina. Player, controllers y Brother Aldren preservan identidad lógica durante viajes. `WorldLocationProvider` persiste zona/marker/posición, la cámara adopta bounds de la zona activa y comercio/NPC se activan según zona.
+## Fase 8A — estado integrado
 
-## Fase 8 — visual
+### 8A.1 — Descomposición acelerada
 
-- #25 introdujo el atlas exterior original `256 x 256`, 64 celdas de `32 x 32`, desacoplado de gameplay/colisión/navegación.
-- #28 añadió props, fachadas y assets de cementerio desacoplados del gameplay.
-- #26–#31 siguen su propio sub-track visual; pueden avanzar en trabajo independiente siempre que no pisen contratos de gameplay 8A.
-- #29 ya tiene dependencias funcionales satisfechas (#25 y #28), pero su PR #80 debe sincronizarse con `main` y volver a pasar CI antes de integración.
+- `decay_percent: int` 0..100 y `age_minutes: int`.
+- Estados: Fresh, Fading, Decomposed, Rotten.
+- Tasas crecientes por edad y saltos temporales deterministas.
+- Acumulador entero privado para progreso subporcentual.
 
-## Fase 8A — decisiones aprobadas
+### 8A.2 — Conservación
 
-### Cadáveres
-- Estado canónico: `decay_percent: int` `0..100` y `age_minutes: int`.
-- No existe obligación de compatibilidad con saves legacy porque aún no hay saves de jugadores en circulación.
-- Estados visibles: Fresh `0–24`, Fading `25–49`, Decomposed `50–74`, Rotten `75–100`.
-- Ritmo por edad: 0–24 h lento, 24–48 h medio, 48–72 h rápido, >72 h muy rápido.
-- La implementación 8A.1 usa acumulador privado entero para conservar progreso subporcentual sin persistir floats.
-- Calidad efectiva pierde 0/1/2/3 puntos según estado, con mínimo 0.
-- Grandes saltos de tiempo producen el mismo resultado que avances equivalentes pequeños.
-- Preparar no reduce edad ni descomposición.
-- Objetivo posterior: preparar, enterrar, cremar e investigar con trade-offs distintos.
+- `PreservationModifiers` usa basis points enteros (`10000 = 1.0`).
+- Factores de tecnología/instalación/utensilio neutrales por defecto y multiplicativos.
+- Conservación solo ralentiza deterioro futuro; no rejuvenece.
+- `_preservation_remainder` persiste para mantener determinismo.
 
-### Conservación — implementada en 8A.2
-- `effective_rate = age_rate × technology_modifier × facility_modifier × tool_modifier`.
-- `PreservationModifiers` usa basis points enteros (`10000 = 1.0`) para tecnología, instalación y utensilio.
-- Los tres factores son neutrales por defecto, se normalizan a `1..10000` y se componen multiplicativamente.
-- La conservación solo ralentiza deterioro futuro; nunca reduce `age_minutes`, `decay_percent`, unidades acumuladas ni el resto fraccional pendiente.
-- `CorpseState` persiste los modificadores y `_preservation_remainder` para mantener determinismo y round-trip exacto.
-- Cambiar de modificadores conserva el resto fraccional previo; descartarlo equivaldría a perdonar deterioro subporcentual.
-- La rampa de entrega sigue siendo logística únicamente, sin bonus de conservación.
+### 8A.3 — Agricultura mínima
 
-### Agricultura — implementada en 8A.3
-- Stable IDs: `fodder_turnip_seed` y `fodder_turnip`.
-- `CropData` y `FarmPlotState` son data-driven y deterministas.
-- Plantar consume exactamente una semilla solo si la parcela acepta la acción.
-- Crecimiento usa tiempo lógico de `TimeManager`; saltos grandes y refrescos pequeños son equivalentes.
-- Cosecha concede una sola vez el item configurado, respeta capacidad y deja la parcela reutilizable.
-- Snapshot/restore conserva cultivo, tiempo plantado y estado cosechable sin duplicación.
-- Integración: PR #76; main run `33342619691` verde.
+- IDs estables `fodder_turnip_seed` y `fodder_turnip`.
+- Plantado atómico, crecimiento gobernado por `TimeManager`, cosecha exactly-once y snapshot/restore determinista.
+- PR #76; main run `33342619691` verde.
 
-### Servicio funerario
-- Entrega diaria determinista al atardecer; objetivo inicial **18:00**.
-- Cruzar las 18:00 mediante juego normal, sueño o salto de tiempo procesa como máximo una entrega por día.
-- Save/load no puede duplicar entregas.
-- Introducción temporalmente gratuita; tras quest requiere alimento cultivable desde un comedero.
-- Sin alimento suficiente: entrega suspendida, sin inventario negativo.
-- Personaje/animal/quest/textos/assets serán originales.
+### 8A.4 — Recurso multiuso — INTEGRADO
 
-### Recurso multiuso
-- `fodder_turnip` debe conectarse ahora con inventory/storage, economía y crafting reutilizando APIs existentes.
-- Debe ser comprable/vendible y tener al menos una receta útil sin introducir hambre ni supply/demand.
-- Cultivar debe resultar más sostenible que depender de compra continua.
+- #61 cerrado mediante PR #81.
+- `fodder_turnip` integrado en items/storage, economía y crafting.
+- `fodder_turnip_mash` reutiliza `CraftingService`.
+- Economía fija inicial: semilla 3 cobre, compra directa de nabo 5, venta 2; una semilla produce 2 unidades, por lo que cultivar es la ruta sostenible.
+- Merge `3cab1b15c0e990a76d0e40df42362ff2b0f0dfb1`.
 
-### Logística, economía y feedback
-- Inicio: descarga junto al camino; progresión: rampa desbloqueable al área de recepción.
-- Pipeline futuro de precios: base × global × merchant × relationship, neutral `1.0` por defecto; sin supply/demand complejo.
-- Feedback placeholder reutiliza EventBus/AudioManager.
+### Pendiente 8A
 
-## Integración y coordinación actual
+- #62 — servicio funerario 18:00.
+- #63 — logística progresiva.
+- #64 — cremar/investigar.
+- #65 — feedback/hooks.
+- #66 — aceptación integral.
+- Tracker #71 ya refleja #60/#61 cerradas.
 
-- Solo el integrador actualiza `ROADMAP.md`, `DEV_MEMORY.md`, `CHANGELOG.md` y `README.md` durante trabajo paralelo.
-- No iniciar nuevas features desde el integrador.
-- PR #75 (#26): scope correcto y CI previo verde, pero branch stale frente a `main`; se dejó diagnóstico para resincronizar y revalidar.
-- PR #80 (#29): scope correcto y CI previo verde, pero draft/unmergeable y stale; requiere sync + CI nuevo.
-- PR #78 (#68): incremento UI coherente pero no satisface toda #68; requiere sync y completar la issue o subdividir formalmente el trabajo restante.
-- No marcar Fase 8 completa salvo cierre real de #70 sobre el HEAD final.
+## Fase 8 — visual integrado
 
-## Biblioteca de diseño (`docs/design/`)
+- #25 — tileset exterior integrado.
+- #28 — props/edificios/cementerio integrado.
+- #29 — integración artística de mapas integrada mediante PR #80, merge `0e60751bf7346b597bbeba5fcd495b2b27445a27`, main run `33350442187` verde.
+- #26 — player spritesheet + animaciones integrado mediante PR #75, HEAD `8102197`, main run `33350515654` verde.
+- Pendientes: #27 Brother Aldren visual, #30 atmósfera/lighting/FX, #31 aceptación visual.
+- Tracker #72 ya refleja #25/#26/#28/#29 cerradas.
 
-- Captura todas las ideas discutidas a partir de referencias visuales y análisis del proyecto.
-- Categorías: visión, orden de ejecución, loops, mundo, recursos, crafting, tecnología, construcción, economía, farming, NPCs, cementerio, tiempo/clima, exploración, automatización, UI, arte, progresión y arquitectura data-driven.
-- `19_IDEA_BACKLOG.md` separa MVP/post-MVP/expansión.
-- `20_IMPLEMENTATION_PROMPTS.md` contiene prompts listos para profundizar o ejecutar bloques futuros.
-- Orden recomendado futuro: cerrar Fase 8/8A → consolidar items/recetas/cadenas → grafo tecnológico/economía profesional → construcción/restauración/logística → clima/pesca → automatización.
-- Principios nuevos consolidados: densidad antes que tamaño, progreso visible en el mundo, fricción que luego pueda eliminarse, recetas N→N con subproductos, merchants por profesión y contenido extensible mediante Resources/stable IDs/tags.
+## UI integrado
 
-## Expansiones post-MVP registradas
+- #68 sigue abierta.
+- PR #78 ya integró theme reutilizable, HUD de estado y base de pause/settings con localización EN/ES.
+- Merge `1536ece0e28a3c8da99aa415a557f951bed9613d`.
+- El PR #78 no cierra #68; quedan paneles/UX y aceptación final.
+
+## Quality bar visual obligatorio
+
+Referencia aprobada por el usuario: mockup pixel-art oscuro del cuidador del cementerio.
+
+Exigir:
+- personajes detallados, silueta clara y 8 direcciones coherentes;
+- ropa/equipamiento legibles;
+- paleta medieval oscura rica pero controlada;
+- iluminación cálida localizada y sombras profundas;
+- entorno denso, vegetación y props integrados;
+- acabado profesional sin apariencia de placeholder/blockout.
+
+Un PR visual no se acepta solo por tests verdes. Si el contrato humano 32x48 fuerza una degradación evidente, abrir una decisión de arquitectura visual para reevaluar escala/resolución antes de bajar calidad.
+
+## Cola autónoma actual
+
+- #82 — `[AUTO][GAMEPLAY][P0]` regresión save/load de Aldren; prioridad absoluta del Gameplay Worker.
+- #84 — `[AUTO][CHARACTERS][P0]` Brother Aldren visual, referencia #27.
+- #85 — `[AUTO][WORLD][P1]` atmósfera/lighting/FX, referencia #30.
+- #86 — `[AUTO][UI][P0]` visual/UX pass de paneles core, referencia #68.
+
+Los workers pueden preparar estos PRs en paralelo por ownership separado; solo el supervisor integra y debe respetar el gate #82/#83.
+
+## Coordinación del supervisor
+
+- Solo el supervisor actualiza `ROADMAP.md`, `DEV_MEMORY.md`, `CHANGELOG.md` y `README.md`.
+- Revisa scope, ownership, dependencias lógicas, tests, Godot 4.7.2, lint/format, smoke, suite y mergeabilidad.
+- Integra PRs uno a uno y reevalúa cola después de cada merge.
+- No fuerza merges ni relaja quality gates.
+- Diferencia siempre estado de `main` frente a ramas/PRs aún no integrados.
+
+## Trackers
+
+- #71 — M8A Gameplay Depth, objetivo 3 Sep 2026.
+- #72 — M8V Visual slice, objetivo 8 Sep 2026.
+- #73 — M8-RC Release Candidate, objetivo 14 Sep 2026.
+- #70 es el único gate autorizado para declarar Fase 8 completada.
+
+## Post-MVP registrado
 
 ### Economía local por profesión
-- Todo objeto producido que sea vendible debe tener al menos un comprador válido.
-- No todos los aldeanos comercian; la capacidad de comerciar es explícita por NPC.
-- Los compradores usan `MerchantProfile` data-driven con `accept_tags`/categorías por profesión, no condicionales hardcodeados por item.
-- Ejemplo contractual: el herrero compra `iron`, `ore`, `metal_part` y `tool`, pero no acepta cultivos, comida o madera ajena a su oficio.
-- Puede existir un comerciante general con mayor cobertura pero peor precio para dar salida económica a recursos comunes.
-- La afinidad profesional puede afectar el precio y cada comerciante puede tener límites de demanda/cupo para impedir venta infinita.
-- Excepciones explícitas a la obligación de comprador: `quest_only`, `key_item`, `non_sellable`.
-- Debe existir validación automática que detecte cualquier `ItemData` vendible sin un `MerchantProfile` compatible.
-- Añadir/modificar recursos y comerciantes debe ser principalmente configuración/contenido.
+
+Comerciantes opt-in mediante `MerchantProfile` data-driven; todo item vendible debe tener comprador compatible salvo excepciones explícitas.
 
 ### Automatización avanzada
-- Expansión posterior al primer vertical slice/MVP.
-- Trabajadores originales del mundo de `game1`, sin copiar zombies del benchmark.
-- Tareas previstas: `HARVEST`, `MINE`, `CHOP`, `TRANSPORT`, `PROCESS`.
-- Evolución manual → automatización parcial → cadenas de producción completas.
-- Requiere infraestructura, rutas, almacenamiento y mantenimiento/energía.
 
-## Scope fuera de 8A
-
-- Hambre/sed.
-- Estaciones/clima agrícola.
-- Riego/fertilizante complejo.
-- Mercado supply/demand.
-- Combate nuevo.
-- Mapas grandes nuevos.
-- Copiar elementos específicos/protegidos del benchmark.
-
-## Próximo paso
-
-1. Mantener `main` verde tras cada integración.
-2. Siguiente issue funcional habilitada: **#61 — 8A.4 recurso multiuso**; el integrador no la implementa.
-3. Esperar PRs workers actualizados para #26/#29/#68 y revisar uno a uno.
-4. Mantener trackers #71/#72/#73 alineados con issues realmente cerradas.
-5. No marcar Fase 8 ni Track 8A como completos antes de sus gates #70/#66.
+Trabajadores originales del mundo de `game1`, sin copiar zombies del benchmark. Tareas previstas: `HARVEST`, `MINE`, `CHOP`, `TRANSPORT`, `PROCESS`, evolucionando de trabajo manual a cadenas automatizadas con infraestructura, rutas, storage y mantenimiento/energía.
 
 ## Regla de continuidad
 
 Al retomar:
-1. Leer `DEV_MEMORY.md`, `ROADMAP.md`, `GAME_DESIGN.md`, spec 8A, `ART_DIRECTION.md` y la issue/PR activo.
-2. Revisar `main`, PRs abiertos y último CI.
-3. Comprobar dependencias antes de iniciar trabajo nuevo.
-4. El integrador no implementa features; revisa ownership/scope/dependencias/tests/CI y solo integra PRs conformes y actualizados.
-5. Ejecutar o exigir quality gate, importación, smoke y suite headless sobre Godot 4.7.2.
-6. Corregir errores críticos antes de avanzar.
-7. Solo el integrador sincroniza documentación global durante trabajo paralelo.
-8. No marcar una fase completada antes de cumplir todos sus criterios de aceptación.
+1. Leer `DEV_MEMORY.md`, `ROADMAP.md`, spec activa, `ART_DIRECTION.md` e issue/PR activo.
+2. Revisar HEAD de `main`, CI, issues y PRs.
+3. Resolver gates P0 antes de integración normal.
+4. Exigir quality/import/smoke/suite sobre Godot 4.7.2.
+5. Mantener documentación y trackers alineados con código realmente integrado.
