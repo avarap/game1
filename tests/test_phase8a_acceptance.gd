@@ -156,7 +156,8 @@ static func _check_delivery_decay_logistics_and_decision(
 	if corpse == null:
 		failures.append("Phase 8A delivered corpse should be reachable from cemetery state")
 		return
-	if cemetery.funeral_service.reception_point_for(corpse_id) != FuneralDeliveryService.ROADSIDE_DROPOFF:
+	var first_reception := cemetery.funeral_service.reception_point_for(corpse_id)
+	if first_reception != FuneralDeliveryService.ROADSIDE_DROPOFF:
 		failures.append("Phase 8A first corpse should use the roadside dropoff")
 
 	var preservation_script := load("res://systems/cemetery/preservation_modifiers.gd") as Script
@@ -184,7 +185,8 @@ static func _check_delivery_decay_logistics_and_decision(
 	cemetery.apply_save_data(after_ramp)
 	if not cemetery.funeral_service.is_ramp_unlocked():
 		failures.append("Phase 8A logistics upgrade should survive save/load")
-	if cemetery.funeral_service.reception_point_for(corpse_id) != FuneralDeliveryService.ROADSIDE_DROPOFF:
+	var restored_reception := cemetery.funeral_service.reception_point_for(corpse_id)
+	if restored_reception != FuneralDeliveryService.ROADSIDE_DROPOFF:
 		failures.append("Phase 8A ramp unlock must not relocate an existing corpse")
 
 	var decisions := load("res://data/cemetery/default_final_decisions.tres") as CorpseDecisionConfig
