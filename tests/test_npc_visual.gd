@@ -11,6 +11,17 @@ const REQUIRED_DIRECTIONS: Array[StringName] = [
 	&"w",
 	&"nw",
 ]
+const ALDREN_ATLAS_SOURCE := "res://art/characters/npcs/brother_aldren_idle_walk.svg"
+const DISTINCT_ROW_IDS: Array[String] = [
+	"row_n",
+	"row_ne",
+	"row_e",
+	"row_se",
+	"row_s",
+	"row_sw",
+	"row_w",
+	"row_nw",
+]
 
 
 static func run() -> Array[String]:
@@ -38,6 +49,7 @@ static func run() -> Array[String]:
 				var animation := StringName("%s_%s" % [state, direction])
 				if not visual.sprite_frames.has_animation(animation):
 					failures.append("Brother Aldren should define %s" % animation)
+	_check_distinct_direction_source_rows(failures)
 	if visual.get_script() == null:
 		failures.append("Brother Aldren visual should use a reusable presentation script")
 	if aldren.get_node_or_null("CollisionShape2D") == null:
@@ -48,3 +60,15 @@ static func run() -> Array[String]:
 		failures.append("Brother Aldren dialogue interaction should remain present")
 	aldren.free()
 	return failures
+
+
+static func _check_distinct_direction_source_rows(failures: Array[String]) -> void:
+	if not FileAccess.file_exists(ALDREN_ATLAS_SOURCE):
+		failures.append("Brother Aldren atlas source should exist")
+		return
+	var source := FileAccess.get_file_as_string(ALDREN_ATLAS_SOURCE)
+	for row_id in DISTINCT_ROW_IDS:
+		if source.find('id="%s"' % row_id) == -1:
+			failures.append("Brother Aldren atlas should define distinct %s artwork" % row_id)
+		if source.find('href="#%s"' % row_id) == -1:
+			failures.append("Brother Aldren atlas should render distinct %s artwork" % row_id)
