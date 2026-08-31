@@ -58,7 +58,9 @@ static func run() -> Array[String]:
 	return failures
 
 
-static func _check_seed_to_fodder(cemetery: CemeteryController, failures: Array[String]) -> void:
+static func _check_seed_to_fodder(
+	cemetery: CemeteryController, failures: Array[String]
+) -> void:
 	var seed := load("res://data/farming/fodder_turnip_seed.tres") as ItemData
 	var harvest_item := load("res://data/items/fodder_turnip.tres") as ItemData
 	var merchant := load("res://data/economy/yard_supplier.tres") as MerchantData
@@ -70,7 +72,10 @@ static func _check_seed_to_fodder(cemetery: CemeteryController, failures: Array[
 	var wallet := WalletState.new(100)
 	var merchant_state := merchant.create_state()
 	var tx := EconomyService.simulate_buy(wallet, merchant_state, seed_offer, 1)
-	if not tx.is_success() or not EconomyService.apply_transaction(tx, wallet, merchant_state):
+	if (
+		not tx.is_success()
+		or not EconomyService.apply_transaction(tx, wallet, merchant_state)
+	):
 		failures.append("Phase 8A should obtain fodder_turnip_seed through the economy route")
 		return
 
@@ -160,7 +165,9 @@ static func _check_delivery_decay_logistics_and_decision(
 	if first_reception != FuneralDeliveryService.ROADSIDE_DROPOFF:
 		failures.append("Phase 8A first corpse should use the roadside dropoff")
 
-	var preservation_script := load("res://systems/cemetery/preservation_modifiers.gd") as Script
+	var preservation_script := (
+		load("res://systems/cemetery/preservation_modifiers.gd") as Script
+	)
 	var modifiers: RefCounted = preservation_script.new()
 	modifiers.set("technology_bp", 8000)
 	modifiers.set("facility_bp", 7500)
@@ -171,7 +178,10 @@ static func _check_delivery_decay_logistics_and_decision(
 	stepped.advance_decomposition(60)
 	stepped.advance_decomposition(60)
 	jumped.advance_decomposition(120)
-	if stepped.age_minutes != jumped.age_minutes or stepped.decay_percent != jumped.decay_percent:
+	if (
+		stepped.age_minutes != jumped.age_minutes
+		or stepped.decay_percent != jumped.decay_percent
+	):
 		failures.append("Phase 8A preserved decay should be deterministic for steps and jumps")
 	corpse.advance_decomposition(24 * 60)
 	if corpse.age_minutes != 24 * 60 or corpse.decay_percent <= 0:
@@ -189,7 +199,9 @@ static func _check_delivery_decay_logistics_and_decision(
 	if restored_reception != FuneralDeliveryService.ROADSIDE_DROPOFF:
 		failures.append("Phase 8A ramp unlock must not relocate an existing corpse")
 
-	var decisions := load("res://data/cemetery/default_final_decisions.tres") as CorpseDecisionConfig
+	var decisions := (
+		load("res://data/cemetery/default_final_decisions.tres") as CorpseDecisionConfig
+	)
 	var expected_reward := decisions.reward_for(&"research", corpse)
 	var blue_before := technology.get_points(TechnologyService.PointType.BLUE)
 	var result := cemetery.service.finalize_corpse(corpse_id, &"research")
