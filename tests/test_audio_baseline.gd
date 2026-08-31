@@ -58,11 +58,16 @@ static func _check_feedback_listener(failures: Array[String]) -> void:
 		failures.append("Audio event listener should own a feedback player")
 		listener.queue_free()
 		return
-	EventBus.funeral_delivery_completed.emit(&"audio_test", 1, &"roadside_dropoff")
+	var event_bus := tree.root.get_node_or_null("EventBus")
+	if event_bus == null:
+		failures.append("Audio tests require the EventBus autoload")
+		listener.queue_free()
+		return
+	event_bus.emit_signal("funeral_delivery_completed", &"audio_test", 1, &"roadside_dropoff")
 	if player.stream == null or player.bus != "SFX":
 		failures.append("Funeral delivery feedback should route to SFX")
 	var delivery_stream := player.stream
-	EventBus.corpse_final_decision_completed.emit(&"audio_test", &"research", 0, 1, 0)
+	event_bus.emit_signal("corpse_final_decision_completed", &"audio_test", &"research", 0, 1, 0)
 	if player.stream == null or player.stream == delivery_stream:
 		failures.append("Terminal decision feedback should select decision-specific SFX")
 	listener.queue_free()
