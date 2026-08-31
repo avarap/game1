@@ -2,13 +2,6 @@ class_name TestAudioBaseline
 extends RefCounted
 
 const REQUIRED_BUSES := ["Master", "Music", "Ambience", "SFX"]
-const REQUIRED_STREAMS := [
-	"res://audio/ambience/cemetery_ambience.wav",
-	"res://audio/ambience/interior_ambience.wav",
-	"res://audio/sfx/funeral_delivery.wav",
-	"res://audio/sfx/decision_cremate.wav",
-	"res://audio/sfx/decision_research.wav",
-]
 
 
 static func run() -> Array[String]:
@@ -32,13 +25,23 @@ static func _check_bus_routing(failures: Array[String]) -> void:
 
 
 static func _check_audio_resources(failures: Array[String]) -> void:
-	for path in REQUIRED_STREAMS:
-		if not ResourceLoader.exists(path):
-			failures.append("Audio resource should exist: %s" % path)
-			continue
-		var stream := load(path) as AudioStream
+	if not ResourceLoader.exists("res://audio/synthesis/audio_library.gd"):
+		failures.append("Procedural audio library should exist")
+		return
+	var streams: Array[AudioStream] = [
+		AudioLibrary.cemetery_ambience(),
+		AudioLibrary.interior_ambience(),
+		AudioLibrary.funeral_delivery(),
+		AudioLibrary.decision_cremate(),
+		AudioLibrary.decision_research(),
+		AudioLibrary.graveyard_theme(),
+	]
+	for stream in streams:
 		if stream == null:
-			failures.append("Audio resource should load as AudioStream: %s" % path)
+			failures.append("Every baseline audio asset should generate a valid AudioStream")
+			break
+	if not FileAccess.file_exists("res://audio/ASSET_LICENSES.md"):
+		failures.append("Audio assets should include provenance and license metadata")
 
 
 static func _check_feedback_listener(failures: Array[String]) -> void:
@@ -56,12 +59,12 @@ static func _check_feedback_listener(failures: Array[String]) -> void:
 	var player := listener.get_node_or_null("FeedbackPlayer") as AudioStreamPlayer
 	if player == null:
 		failures.append("Audio event listener should own a feedback player")
-		listener.queue_free()
+		listener.free()
 		return
 	var event_bus := tree.root.get_node_or_null("EventBus")
 	if event_bus == null:
 		failures.append("Audio tests require the EventBus autoload")
-		listener.queue_free()
+		listener.free()
 		return
 	event_bus.emit_signal("funeral_delivery_completed", &"audio_test", 1, &"roadside_dropoff")
 	if player.stream == null or player.bus != "SFX":
@@ -70,7 +73,7 @@ static func _check_feedback_listener(failures: Array[String]) -> void:
 	event_bus.emit_signal("corpse_final_decision_completed", &"audio_test", &"research", 0, 1, 0)
 	if player.stream == null or player.stream == delivery_stream:
 		failures.append("Terminal decision feedback should select decision-specific SFX")
-	listener.queue_free()
+	listener.free()
 
 
 static func _check_ambience_profiles(failures: Array[String]) -> void:
@@ -89,10 +92,10 @@ static func _check_ambience_profiles(failures: Array[String]) -> void:
 	var player := presenter.get_node_or_null("AmbiencePlayer") as AudioStreamPlayer
 	if player == null or player.stream == null or player.bus != "Ambience":
 		failures.append("Cemetery ambience should route to Ambience")
-		presenter.queue_free()
+		presenter.free()
 		return
 	var cemetery_stream := player.stream
 	presenter.call("apply_zone", &"home_interior")
 	if player.stream == null or player.stream == cemetery_stream:
 		failures.append("Interior zones should use differentiated ambience")
-	presenter.queue_free()
+	presenter.free()
