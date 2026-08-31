@@ -1,12 +1,13 @@
-[gd_scene load_steps=50 format=3]
+[gd_scene load_steps=51 format=3]
 
 [ext_resource type="Script" path="res://world/npcs/npc_controller.gd" id="1_controller"]
 [ext_resource type="Resource" path="res://data/npcs/brother_aldren.tres" id="2_data"]
 [ext_resource type="Resource" path="res://data/npcs/brother_aldren_schedule.tres" id="3_schedule"]
 [ext_resource type="Script" path="res://world/interactables/dialogue_interactable.gd" id="4_dialogue_interactable"]
 [ext_resource type="Resource" path="res://data/dialogues/brother_aldren/introduction.tres" id="5_dialogue"]
-[ext_resource type="Texture2D" path="res://art/characters/npcs/brother_aldren_idle_walk.svg" id="6_sheet"]
+[ext_resource type="Texture2D" path="res://art/characters/npcs/brother_aldren_idle_walk_64x96.png" id="6_sheet"]
 [ext_resource type="Script" path="res://art/characters/npcs/npc_visual.gd" id="7_visual"]
+[ext_resource type="Texture2D" path="res://art/characters/common/contact_shadow_40x16.png" id="8_shadow"]
 
 [sub_resource type="CapsuleShape2D" id="NPC_shape"]
 radius = 10.0
@@ -17,131 +18,131 @@ radius = 28.0
 
 [sub_resource type="AtlasTexture" id="n_i"]
 atlas = ExtResource("6_sheet")
-region = Rect2(0, 0, 32, 48)
+region = Rect2(0, 0, 64, 96)
 [sub_resource type="AtlasTexture" id="n_w1"]
 atlas = ExtResource("6_sheet")
-region = Rect2(32, 0, 32, 48)
+region = Rect2(64, 0, 64, 96)
 [sub_resource type="AtlasTexture" id="n_w2"]
 atlas = ExtResource("6_sheet")
-region = Rect2(64, 0, 32, 48)
+region = Rect2(128, 0, 64, 96)
 [sub_resource type="AtlasTexture" id="n_w3"]
 atlas = ExtResource("6_sheet")
-region = Rect2(96, 0, 32, 48)
+region = Rect2(192, 0, 64, 96)
 [sub_resource type="AtlasTexture" id="n_w4"]
 atlas = ExtResource("6_sheet")
-region = Rect2(128, 0, 32, 48)
+region = Rect2(256, 0, 64, 96)
 
 [sub_resource type="AtlasTexture" id="ne_i"]
 atlas = ExtResource("6_sheet")
-region = Rect2(0, 48, 32, 48)
+region = Rect2(0, 96, 64, 96)
 [sub_resource type="AtlasTexture" id="ne_w1"]
 atlas = ExtResource("6_sheet")
-region = Rect2(32, 48, 32, 48)
+region = Rect2(64, 96, 64, 96)
 [sub_resource type="AtlasTexture" id="ne_w2"]
 atlas = ExtResource("6_sheet")
-region = Rect2(64, 48, 32, 48)
+region = Rect2(128, 96, 64, 96)
 [sub_resource type="AtlasTexture" id="ne_w3"]
 atlas = ExtResource("6_sheet")
-region = Rect2(96, 48, 32, 48)
+region = Rect2(192, 96, 64, 96)
 [sub_resource type="AtlasTexture" id="ne_w4"]
 atlas = ExtResource("6_sheet")
-region = Rect2(128, 48, 32, 48)
+region = Rect2(256, 96, 64, 96)
 
 [sub_resource type="AtlasTexture" id="e_i"]
 atlas = ExtResource("6_sheet")
-region = Rect2(0, 96, 32, 48)
+region = Rect2(0, 192, 64, 96)
 [sub_resource type="AtlasTexture" id="e_w1"]
 atlas = ExtResource("6_sheet")
-region = Rect2(32, 96, 32, 48)
+region = Rect2(64, 192, 64, 96)
 [sub_resource type="AtlasTexture" id="e_w2"]
 atlas = ExtResource("6_sheet")
-region = Rect2(64, 96, 32, 48)
+region = Rect2(128, 192, 64, 96)
 [sub_resource type="AtlasTexture" id="e_w3"]
 atlas = ExtResource("6_sheet")
-region = Rect2(96, 96, 32, 48)
+region = Rect2(192, 192, 64, 96)
 [sub_resource type="AtlasTexture" id="e_w4"]
 atlas = ExtResource("6_sheet")
-region = Rect2(128, 96, 32, 48)
+region = Rect2(256, 192, 64, 96)
 
 [sub_resource type="AtlasTexture" id="se_i"]
 atlas = ExtResource("6_sheet")
-region = Rect2(0, 144, 32, 48)
+region = Rect2(0, 288, 64, 96)
 [sub_resource type="AtlasTexture" id="se_w1"]
 atlas = ExtResource("6_sheet")
-region = Rect2(32, 144, 32, 48)
+region = Rect2(64, 288, 64, 96)
 [sub_resource type="AtlasTexture" id="se_w2"]
 atlas = ExtResource("6_sheet")
-region = Rect2(64, 144, 32, 48)
+region = Rect2(128, 288, 64, 96)
 [sub_resource type="AtlasTexture" id="se_w3"]
 atlas = ExtResource("6_sheet")
-region = Rect2(96, 144, 32, 48)
+region = Rect2(192, 288, 64, 96)
 [sub_resource type="AtlasTexture" id="se_w4"]
 atlas = ExtResource("6_sheet")
-region = Rect2(128, 144, 32, 48)
+region = Rect2(256, 288, 64, 96)
 
 [sub_resource type="AtlasTexture" id="s_i"]
 atlas = ExtResource("6_sheet")
-region = Rect2(0, 192, 32, 48)
+region = Rect2(0, 384, 64, 96)
 [sub_resource type="AtlasTexture" id="s_w1"]
 atlas = ExtResource("6_sheet")
-region = Rect2(32, 192, 32, 48)
+region = Rect2(64, 384, 64, 96)
 [sub_resource type="AtlasTexture" id="s_w2"]
 atlas = ExtResource("6_sheet")
-region = Rect2(64, 192, 32, 48)
+region = Rect2(128, 384, 64, 96)
 [sub_resource type="AtlasTexture" id="s_w3"]
 atlas = ExtResource("6_sheet")
-region = Rect2(96, 192, 32, 48)
+region = Rect2(192, 384, 64, 96)
 [sub_resource type="AtlasTexture" id="s_w4"]
 atlas = ExtResource("6_sheet")
-region = Rect2(128, 192, 32, 48)
+region = Rect2(256, 384, 64, 96)
 
 [sub_resource type="AtlasTexture" id="sw_i"]
 atlas = ExtResource("6_sheet")
-region = Rect2(0, 240, 32, 48)
+region = Rect2(0, 480, 64, 96)
 [sub_resource type="AtlasTexture" id="sw_w1"]
 atlas = ExtResource("6_sheet")
-region = Rect2(32, 240, 32, 48)
+region = Rect2(64, 480, 64, 96)
 [sub_resource type="AtlasTexture" id="sw_w2"]
 atlas = ExtResource("6_sheet")
-region = Rect2(64, 240, 32, 48)
+region = Rect2(128, 480, 64, 96)
 [sub_resource type="AtlasTexture" id="sw_w3"]
 atlas = ExtResource("6_sheet")
-region = Rect2(96, 240, 32, 48)
+region = Rect2(192, 480, 64, 96)
 [sub_resource type="AtlasTexture" id="sw_w4"]
 atlas = ExtResource("6_sheet")
-region = Rect2(128, 240, 32, 48)
+region = Rect2(256, 480, 64, 96)
 
 [sub_resource type="AtlasTexture" id="w_i"]
 atlas = ExtResource("6_sheet")
-region = Rect2(0, 288, 32, 48)
+region = Rect2(0, 576, 64, 96)
 [sub_resource type="AtlasTexture" id="w_w1"]
 atlas = ExtResource("6_sheet")
-region = Rect2(32, 288, 32, 48)
+region = Rect2(64, 576, 64, 96)
 [sub_resource type="AtlasTexture" id="w_w2"]
 atlas = ExtResource("6_sheet")
-region = Rect2(64, 288, 32, 48)
+region = Rect2(128, 576, 64, 96)
 [sub_resource type="AtlasTexture" id="w_w3"]
 atlas = ExtResource("6_sheet")
-region = Rect2(96, 288, 32, 48)
+region = Rect2(192, 576, 64, 96)
 [sub_resource type="AtlasTexture" id="w_w4"]
 atlas = ExtResource("6_sheet")
-region = Rect2(128, 288, 32, 48)
+region = Rect2(256, 576, 64, 96)
 
 [sub_resource type="AtlasTexture" id="nw_i"]
 atlas = ExtResource("6_sheet")
-region = Rect2(0, 336, 32, 48)
+region = Rect2(0, 672, 64, 96)
 [sub_resource type="AtlasTexture" id="nw_w1"]
 atlas = ExtResource("6_sheet")
-region = Rect2(32, 336, 32, 48)
+region = Rect2(64, 672, 64, 96)
 [sub_resource type="AtlasTexture" id="nw_w2"]
 atlas = ExtResource("6_sheet")
-region = Rect2(64, 336, 32, 48)
+region = Rect2(128, 672, 64, 96)
 [sub_resource type="AtlasTexture" id="nw_w3"]
 atlas = ExtResource("6_sheet")
-region = Rect2(96, 336, 32, 48)
+region = Rect2(192, 672, 64, 96)
 [sub_resource type="AtlasTexture" id="nw_w4"]
 atlas = ExtResource("6_sheet")
-region = Rect2(128, 336, 32, 48)
+region = Rect2(256, 672, 64, 96)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_aldren"]
 animations = [{"frames":[{"duration":1.0,"texture":SubResource("e_i")}],"loop":true,"name":&"idle_e","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("n_i")}],"loop":true,"name":&"idle_n","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("ne_i")}],"loop":true,"name":&"idle_ne","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("nw_i")}],"loop":true,"name":&"idle_nw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("s_i")}],"loop":true,"name":&"idle_s","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("se_i")}],"loop":true,"name":&"idle_se","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("sw_i")}],"loop":true,"name":&"idle_sw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("w_i")}],"loop":true,"name":&"idle_w","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("e_w1")},{"duration":1.0,"texture":SubResource("e_w2")},{"duration":1.0,"texture":SubResource("e_w3")},{"duration":1.0,"texture":SubResource("e_w4")}],"loop":true,"name":&"walk_e","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("n_w1")},{"duration":1.0,"texture":SubResource("n_w2")},{"duration":1.0,"texture":SubResource("n_w3")},{"duration":1.0,"texture":SubResource("n_w4")}],"loop":true,"name":&"walk_n","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("ne_w1")},{"duration":1.0,"texture":SubResource("ne_w2")},{"duration":1.0,"texture":SubResource("ne_w3")},{"duration":1.0,"texture":SubResource("ne_w4")}],"loop":true,"name":&"walk_ne","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("nw_w1")},{"duration":1.0,"texture":SubResource("nw_w2")},{"duration":1.0,"texture":SubResource("nw_w3")},{"duration":1.0,"texture":SubResource("nw_w4")}],"loop":true,"name":&"walk_nw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("s_w1")},{"duration":1.0,"texture":SubResource("s_w2")},{"duration":1.0,"texture":SubResource("s_w3")},{"duration":1.0,"texture":SubResource("s_w4")}],"loop":true,"name":&"walk_s","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("se_w1")},{"duration":1.0,"texture":SubResource("se_w2")},{"duration":1.0,"texture":SubResource("se_w3")},{"duration":1.0,"texture":SubResource("se_w4")}],"loop":true,"name":&"walk_se","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("sw_w1")},{"duration":1.0,"texture":SubResource("sw_w2")},{"duration":1.0,"texture":SubResource("sw_w3")},{"duration":1.0,"texture":SubResource("sw_w4")}],"loop":true,"name":&"walk_sw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("w_w1")},{"duration":1.0,"texture":SubResource("w_w2")},{"duration":1.0,"texture":SubResource("w_w3")},{"duration":1.0,"texture":SubResource("w_w4")}],"loop":true,"name":&"walk_w","speed":6.666667}]
@@ -153,11 +154,17 @@ script = ExtResource("1_controller")
 data = ExtResource("2_data")
 schedule = ExtResource("3_schedule")
 
+[node name="ContactShadow" type="Sprite2D" parent="."]
+texture_filter = 1
+z_index = -1
+position = Vector2(3, -3)
+texture = ExtResource("8_shadow")
+
 [node name="Visual" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_aldren")
 animation = &"idle_s"
-offset = Vector2(0, -24)
+offset = Vector2(0, -48)
 script = ExtResource("7_visual")
 default_facing = &"s"
 

@@ -1,10 +1,11 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=48 format=3]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://core/components/inventory_component.gd" id="2_inventory"]
 [ext_resource type="Script" path="res://core/components/energy_component.gd" id="3_energy"]
-[ext_resource type="Texture2D" path="res://art/characters/player/player_idle_walk_64x96.svg" id="4_sheet"]
+[ext_resource type="Texture2D" path="res://art/characters/player/player_idle_walk_64x96.png" id="4_sheet"]
 [ext_resource type="Script" path="res://player/player_visual.gd" id="5_visual"]
+[ext_resource type="Texture2D" path="res://art/characters/common/contact_shadow_40x16.png" id="6_shadow"]
 
 [sub_resource type="CapsuleShape2D" id="Capsule_player"]
 radius = 10.0
@@ -15,58 +16,144 @@ radius = 42.0
 [sub_resource type="AtlasTexture" id="n_i"]
 atlas = ExtResource("4_sheet")
 region = Rect2(0, 0, 64, 96)
-[sub_resource type="AtlasTexture" id="n_w"]
+[sub_resource type="AtlasTexture" id="n_w1"]
 atlas = ExtResource("4_sheet")
 region = Rect2(64, 0, 64, 96)
+[sub_resource type="AtlasTexture" id="n_w2"]
+atlas = ExtResource("4_sheet")
+region = Rect2(128, 0, 64, 96)
+[sub_resource type="AtlasTexture" id="n_w3"]
+atlas = ExtResource("4_sheet")
+region = Rect2(192, 0, 64, 96)
+[sub_resource type="AtlasTexture" id="n_w4"]
+atlas = ExtResource("4_sheet")
+region = Rect2(256, 0, 64, 96)
+
 [sub_resource type="AtlasTexture" id="ne_i"]
 atlas = ExtResource("4_sheet")
 region = Rect2(0, 96, 64, 96)
-[sub_resource type="AtlasTexture" id="ne_w"]
+[sub_resource type="AtlasTexture" id="ne_w1"]
 atlas = ExtResource("4_sheet")
 region = Rect2(64, 96, 64, 96)
+[sub_resource type="AtlasTexture" id="ne_w2"]
+atlas = ExtResource("4_sheet")
+region = Rect2(128, 96, 64, 96)
+[sub_resource type="AtlasTexture" id="ne_w3"]
+atlas = ExtResource("4_sheet")
+region = Rect2(192, 96, 64, 96)
+[sub_resource type="AtlasTexture" id="ne_w4"]
+atlas = ExtResource("4_sheet")
+region = Rect2(256, 96, 64, 96)
+
 [sub_resource type="AtlasTexture" id="e_i"]
 atlas = ExtResource("4_sheet")
 region = Rect2(0, 192, 64, 96)
-[sub_resource type="AtlasTexture" id="e_w"]
+[sub_resource type="AtlasTexture" id="e_w1"]
 atlas = ExtResource("4_sheet")
 region = Rect2(64, 192, 64, 96)
+[sub_resource type="AtlasTexture" id="e_w2"]
+atlas = ExtResource("4_sheet")
+region = Rect2(128, 192, 64, 96)
+[sub_resource type="AtlasTexture" id="e_w3"]
+atlas = ExtResource("4_sheet")
+region = Rect2(192, 192, 64, 96)
+[sub_resource type="AtlasTexture" id="e_w4"]
+atlas = ExtResource("4_sheet")
+region = Rect2(256, 192, 64, 96)
+
 [sub_resource type="AtlasTexture" id="se_i"]
 atlas = ExtResource("4_sheet")
 region = Rect2(0, 288, 64, 96)
-[sub_resource type="AtlasTexture" id="se_w"]
+[sub_resource type="AtlasTexture" id="se_w1"]
 atlas = ExtResource("4_sheet")
 region = Rect2(64, 288, 64, 96)
+[sub_resource type="AtlasTexture" id="se_w2"]
+atlas = ExtResource("4_sheet")
+region = Rect2(128, 288, 64, 96)
+[sub_resource type="AtlasTexture" id="se_w3"]
+atlas = ExtResource("4_sheet")
+region = Rect2(192, 288, 64, 96)
+[sub_resource type="AtlasTexture" id="se_w4"]
+atlas = ExtResource("4_sheet")
+region = Rect2(256, 288, 64, 96)
+
 [sub_resource type="AtlasTexture" id="s_i"]
 atlas = ExtResource("4_sheet")
 region = Rect2(0, 384, 64, 96)
-[sub_resource type="AtlasTexture" id="s_w"]
+[sub_resource type="AtlasTexture" id="s_w1"]
 atlas = ExtResource("4_sheet")
 region = Rect2(64, 384, 64, 96)
+[sub_resource type="AtlasTexture" id="s_w2"]
+atlas = ExtResource("4_sheet")
+region = Rect2(128, 384, 64, 96)
+[sub_resource type="AtlasTexture" id="s_w3"]
+atlas = ExtResource("4_sheet")
+region = Rect2(192, 384, 64, 96)
+[sub_resource type="AtlasTexture" id="s_w4"]
+atlas = ExtResource("4_sheet")
+region = Rect2(256, 384, 64, 96)
+
 [sub_resource type="AtlasTexture" id="sw_i"]
 atlas = ExtResource("4_sheet")
 region = Rect2(0, 480, 64, 96)
-[sub_resource type="AtlasTexture" id="sw_w"]
+[sub_resource type="AtlasTexture" id="sw_w1"]
 atlas = ExtResource("4_sheet")
 region = Rect2(64, 480, 64, 96)
+[sub_resource type="AtlasTexture" id="sw_w2"]
+atlas = ExtResource("4_sheet")
+region = Rect2(128, 480, 64, 96)
+[sub_resource type="AtlasTexture" id="sw_w3"]
+atlas = ExtResource("4_sheet")
+region = Rect2(192, 480, 64, 96)
+[sub_resource type="AtlasTexture" id="sw_w4"]
+atlas = ExtResource("4_sheet")
+region = Rect2(256, 480, 64, 96)
+
 [sub_resource type="AtlasTexture" id="w_i"]
 atlas = ExtResource("4_sheet")
 region = Rect2(0, 576, 64, 96)
-[sub_resource type="AtlasTexture" id="w_w"]
+[sub_resource type="AtlasTexture" id="w_w1"]
 atlas = ExtResource("4_sheet")
 region = Rect2(64, 576, 64, 96)
+[sub_resource type="AtlasTexture" id="w_w2"]
+atlas = ExtResource("4_sheet")
+region = Rect2(128, 576, 64, 96)
+[sub_resource type="AtlasTexture" id="w_w3"]
+atlas = ExtResource("4_sheet")
+region = Rect2(192, 576, 64, 96)
+[sub_resource type="AtlasTexture" id="w_w4"]
+atlas = ExtResource("4_sheet")
+region = Rect2(256, 576, 64, 96)
+
 [sub_resource type="AtlasTexture" id="nw_i"]
 atlas = ExtResource("4_sheet")
 region = Rect2(0, 672, 64, 96)
-[sub_resource type="AtlasTexture" id="nw_w"]
+[sub_resource type="AtlasTexture" id="nw_w1"]
 atlas = ExtResource("4_sheet")
 region = Rect2(64, 672, 64, 96)
+[sub_resource type="AtlasTexture" id="nw_w2"]
+atlas = ExtResource("4_sheet")
+region = Rect2(128, 672, 64, 96)
+[sub_resource type="AtlasTexture" id="nw_w3"]
+atlas = ExtResource("4_sheet")
+region = Rect2(192, 672, 64, 96)
+[sub_resource type="AtlasTexture" id="nw_w4"]
+atlas = ExtResource("4_sheet")
+region = Rect2(256, 672, 64, 96)
+
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_player"]
-animations = [{"frames":[{"duration":1.0,"texture":SubResource("e_i")}],"loop":true,"name":&"idle_e","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("n_i")}],"loop":true,"name":&"idle_n","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("ne_i")}],"loop":true,"name":&"idle_ne","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("nw_i")}],"loop":true,"name":&"idle_nw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("s_i")}],"loop":true,"name":&"idle_s","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("se_i")}],"loop":true,"name":&"idle_se","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("sw_i")}],"loop":true,"name":&"idle_sw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("w_i")}],"loop":true,"name":&"idle_w","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("e_w")}],"loop":true,"name":&"walk_e","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("n_w")}],"loop":true,"name":&"walk_n","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("ne_w")}],"loop":true,"name":&"walk_ne","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("nw_w")}],"loop":true,"name":&"walk_nw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("s_w")}],"loop":true,"name":&"walk_s","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("se_w")}],"loop":true,"name":&"walk_se","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("sw_w")}],"loop":true,"name":&"walk_sw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("w_w")}],"loop":true,"name":&"walk_w","speed":6.666667}]
+animations = [{"frames":[{"duration":1.0,"texture":SubResource("e_i")}],"loop":true,"name":&"idle_e","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("n_i")}],"loop":true,"name":&"idle_n","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("ne_i")}],"loop":true,"name":&"idle_ne","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("nw_i")}],"loop":true,"name":&"idle_nw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("s_i")}],"loop":true,"name":&"idle_s","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("se_i")}],"loop":true,"name":&"idle_se","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("sw_i")}],"loop":true,"name":&"idle_sw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("w_i")}],"loop":true,"name":&"idle_w","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("e_w1")},{"duration":1.0,"texture":SubResource("e_w2")},{"duration":1.0,"texture":SubResource("e_w3")},{"duration":1.0,"texture":SubResource("e_w4")}],"loop":true,"name":&"walk_e","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("n_w1")},{"duration":1.0,"texture":SubResource("n_w2")},{"duration":1.0,"texture":SubResource("n_w3")},{"duration":1.0,"texture":SubResource("n_w4")}],"loop":true,"name":&"walk_n","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("ne_w1")},{"duration":1.0,"texture":SubResource("ne_w2")},{"duration":1.0,"texture":SubResource("ne_w3")},{"duration":1.0,"texture":SubResource("ne_w4")}],"loop":true,"name":&"walk_ne","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("nw_w1")},{"duration":1.0,"texture":SubResource("nw_w2")},{"duration":1.0,"texture":SubResource("nw_w3")},{"duration":1.0,"texture":SubResource("nw_w4")}],"loop":true,"name":&"walk_nw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("s_w1")},{"duration":1.0,"texture":SubResource("s_w2")},{"duration":1.0,"texture":SubResource("s_w3")},{"duration":1.0,"texture":SubResource("s_w4")}],"loop":true,"name":&"walk_s","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("se_w1")},{"duration":1.0,"texture":SubResource("se_w2")},{"duration":1.0,"texture":SubResource("se_w3")},{"duration":1.0,"texture":SubResource("se_w4")}],"loop":true,"name":&"walk_se","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("sw_w1")},{"duration":1.0,"texture":SubResource("sw_w2")},{"duration":1.0,"texture":SubResource("sw_w3")},{"duration":1.0,"texture":SubResource("sw_w4")}],"loop":true,"name":&"walk_sw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("w_w1")},{"duration":1.0,"texture":SubResource("w_w2")},{"duration":1.0,"texture":SubResource("w_w3")},{"duration":1.0,"texture":SubResource("w_w4")}],"loop":true,"name":&"walk_w","speed":6.666667}]
 
 [node name="Player" type="CharacterBody2D"]
 y_sort_enabled = true
 script = ExtResource("1_player")
+
+[node name="ContactShadow" type="Sprite2D" parent="."]
+texture_filter = 1
+z_index = -1
+position = Vector2(3, -3)
+texture = ExtResource("6_shadow")
 
 [node name="Body" type="AnimatedSprite2D" parent="."]
 texture_filter = 1

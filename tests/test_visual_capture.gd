@@ -49,6 +49,7 @@ static func run() -> Array[String]:
 	var specs: Array = manifest.call("capture_specs")
 	_check_specs(specs, failures)
 	_check_real_player_camera(failures)
+	_check_character_visual_resolution(failures)
 	return failures
 
 
@@ -100,3 +101,11 @@ static func _check_real_player_camera(failures: Array[String]) -> void:
 	elif camera.zoom != EXPECTED_ZOOM:
 		failures.append("Capture zoom should track the real player Camera2D zoom")
 	player.free()
+
+
+static func _check_character_visual_resolution(failures: Array[String]) -> void:
+	var source := FileAccess.get_file_as_string(RUNNER_PATH)
+	if source.find('get_node_or_null("Body")') == -1:
+		failures.append("Capture runner should resolve player Body visuals")
+	if source.find('get_node_or_null("Visual")') == -1:
+		failures.append("Capture runner should resolve NPC Visual visuals")
