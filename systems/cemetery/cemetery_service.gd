@@ -170,12 +170,7 @@ func _emit_final_decision_completed(
 	if bus == null:
 		return
 	bus.emit_signal(
-		"corpse_final_decision_completed",
-		corpse_id,
-		decision,
-		reward.x,
-		reward.y,
-		reward.z,
+		"corpse_final_decision_completed", corpse_id, decision, reward.x, reward.y, reward.z
 	)
 
 
