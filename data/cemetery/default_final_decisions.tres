@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CorpseDecisionConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/cemetery/corpse_decision_config.gd" id="1_decisions"]
+
+[resource]
+script = ExtResource("1_decisions")
+cremate_red_points = 1
+cremate_green_points = 0
+cremate_blue_points = 0
+research_red_points = 0
+research_green_points = 0
+research_blue_points = 2
