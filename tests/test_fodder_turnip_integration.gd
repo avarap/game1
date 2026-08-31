@@ -24,15 +24,19 @@ static func run() -> Array[String]:
 	if turnip_offer.sell_price_copper <= 0 or seed_offer.buy_price_copper <= 0:
 		failures.append("Fodder turnip offers should use positive fixed prices")
 	if seed_offer.buy_price_copper >= turnip_offer.sell_price_copper * 2:
-		failures.append("Growing turnips should be more sustainable than buying equivalent produce")
+		failures.append(
+			"Growing turnips should be more sustainable than buying equivalent produce"
+		)
 
 	var wallet := WalletState.new(100)
 	var merchant_state := merchant.create_state()
 	var buy_tx := EconomyService.simulate_buy(wallet, merchant_state, seed_offer, 1)
-	if not buy_tx.is_success() or not EconomyService.apply_transaction(buy_tx, wallet, merchant_state):
+	var buy_applied := EconomyService.apply_transaction(buy_tx, wallet, merchant_state)
+	if not buy_tx.is_success() or not buy_applied:
 		failures.append("Seed purchase should use the existing atomic economy service")
 	var seller_tx := EconomyService.simulate_sell(wallet, merchant_state, turnip_offer, 1, 1)
-	if not seller_tx.is_success() or not EconomyService.apply_transaction(seller_tx, wallet, merchant_state):
+	var sell_applied := EconomyService.apply_transaction(seller_tx, wallet, merchant_state)
+	if not seller_tx.is_success() or not sell_applied:
 		failures.append("Turnip sale should use the existing atomic economy service")
 
 	if recipe == null or not recipe.is_valid():
