@@ -29,21 +29,6 @@ jobs:
       - name: Lint all GDScript files
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
 
-      - name: Format new Isoverse files for diagnostics
-        run: |
-          gdformat tests/test_isoverse_test_map.gd world/maps/isoverse_test/isoverse_test_map.gd
-          mkdir -p /tmp/gdformat-output/tests
-          mkdir -p /tmp/gdformat-output/world/maps/isoverse_test
-          cp tests/test_isoverse_test_map.gd /tmp/gdformat-output/tests/
-          cp world/maps/isoverse_test/isoverse_test_map.gd \
-            /tmp/gdformat-output/world/maps/isoverse_test/
-
-      - name: Upload formatted files
-        uses: actions/upload-artifact@v4
-        with:
-          name: gdformat-output
-          path: /tmp/gdformat-output
-
       - name: Check formatting of all GDScript files
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat --check
 
