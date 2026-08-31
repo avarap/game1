@@ -58,6 +58,7 @@ func _run_all_tests() -> void:
 	_run_suite("WorldAtmosphere", TestWorldAtmosphere.run(), failures)
 	_run_suite("FarmingMinimum", TestFarmingMinimum.run(), failures)
 	_run_suite("FodderTurnipIntegration", TestFodderTurnipIntegration.run(), failures)
+	_run_suite("Phase8AAcceptance", TestPhase8AAcceptance.run(), failures)
 
 	if failures.is_empty():
 		print("[TEST] All core tests passed")
