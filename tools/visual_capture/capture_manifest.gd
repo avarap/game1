@@ -27,10 +27,7 @@ static func capture_specs() -> Array[Dictionary]:
 
 	specs.append(
 		_world_spec(
-			&"cemetery_day",
-			"cemetery_day.png",
-			Vector2(960, 480),
-			Color(1.0, 1.0, 1.0, 1.0)
+			&"cemetery_day", "cemetery_day.png", Vector2(960, 480), Color(1.0, 1.0, 1.0, 1.0)
 		)
 	)
 	specs.append(
@@ -52,35 +49,21 @@ static func capture_specs() -> Array[Dictionary]:
 
 	specs.append(
 		_ui_spec(
-			&"ui_inventory",
-			"res://ui/inventory/inventory_panel.tscn",
-			"ui_inventory.png",
-			&"ready"
+			&"ui_inventory", "res://ui/inventory/inventory_panel.tscn", "ui_inventory.png", &"ready"
 		)
 	)
 	specs.append(
 		_ui_spec(
-			&"ui_storage",
-			"res://ui/storage/storage_panel.tscn",
-			"ui_storage.png",
-			&"empty"
+			&"ui_storage", "res://ui/storage/storage_panel.tscn", "ui_storage.png", &"empty"
 		)
 	)
 	specs.append(
 		_ui_spec(
-			&"ui_crafting",
-			"res://ui/crafting/crafting_panel.tscn",
-			"ui_crafting.png",
-			&"blocked"
+			&"ui_crafting", "res://ui/crafting/crafting_panel.tscn", "ui_crafting.png", &"blocked"
 		)
 	)
 	specs.append(
-		_ui_spec(
-			&"ui_trade",
-			"res://ui/economy/trade_layer.tscn",
-			"ui_trade.png",
-			&"ready"
-		)
+		_ui_spec(&"ui_trade", "res://ui/economy/trade_layer.tscn", "ui_trade.png", &"ready")
 	)
 	return specs
 
