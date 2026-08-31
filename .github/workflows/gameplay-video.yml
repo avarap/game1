@@ -1,0 +1,96 @@
+name: Gameplay Video Capture
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/gameplay-video.yml"
+      - "tools/gameplay_capture/**"
+      - "tests/test_gameplay_video_capture.py"
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate gameplay capture contract
+        run: python -m pytest -q tests/test_gameplay_video_capture.py
+
+  render:
+    needs: contract
+    runs-on: ubuntu-24.04
+    env:
+      GODOT_VERSION: "4.7.2"
+      CAPTURE_RESOLUTION: "1280x720"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install capture dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg unzip xvfb libgl1 libasound2t64
+
+      - name: Install Godot 4.7.2
+        run: |
+          curl -L --fail --retry 3 \
+            -o "$RUNNER_TEMP/godot.zip" \
+            "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          GODOT_BIN="$(find "$RUNNER_TEMP/godot" -maxdepth 1 -type f -name 'Godot_v4.7.2-stable_linux.x86_64*' | head -1)"
+          chmod +x "$GODOT_BIN"
+          echo "GODOT_BIN=$GODOT_BIN" >> "$GITHUB_ENV"
+          "$GODOT_BIN" --version
+
+      - name: Import project
+        run: xvfb-run -a "$GODOT_BIN" --path . --editor --quit
+
+      - name: Record deterministic gameplay
+        env:
+          GAMEPLAY_CAPTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/gameplay-video"
+          xvfb-run -a "$GODOT_BIN" \
+            --path . \
+            --fixed-fps 30 \
+            --write-movie "$RUNNER_TEMP/gameplay-video/gameplay.avi" \
+            --script res://tools/gameplay_capture/gameplay_capture.gd
+
+      - name: Convert capture to MP4
+        run: |
+          ffmpeg -y \
+            -i "$RUNNER_TEMP/gameplay-video/gameplay.avi" \
+            -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p \
+            -movflags +faststart \
+            "$RUNNER_TEMP/gameplay-video/gameplay-current-main.mp4"
+
+      - name: Write capture metadata
+        env:
+          GAMEPLAY_CAPTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          cat > "$RUNNER_TEMP/gameplay-video/metadata.txt" <<EOF
+          source_sha=$GAMEPLAY_CAPTURE_SHA
+          godot_version=$GODOT_VERSION
+          resolution=1280x720
+          fps=30
+          source_scene=res://main.tscn
+          sequence=idle,move_up,move_right,move_down,move_left,inventory_toggle,close_inventory,final_idle
+          EOF
+
+      - name: Upload gameplay MP4
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-current-main-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/gameplay-video/gameplay-current-main.mp4
+            ${{ runner.temp }}/gameplay-video/metadata.txt
+          if-no-files-found: error
+          retention-days: 14
