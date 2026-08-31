@@ -30,7 +30,9 @@ static func graveyard_theme() -> AudioStreamWAV:
 	return _make_stream(MUSIC_SECONDS, _music_sample, true)
 
 
-static func _make_stream(duration: float, sampler: Callable, looped: bool) -> AudioStreamWAV:
+static func _make_stream(
+	duration: float, sampler: Callable, looped: bool
+) -> AudioStreamWAV:
 	var sample_count := int(duration * SAMPLE_RATE)
 	var bytes := PackedByteArray()
 	bytes.resize(sample_count * 2)
@@ -54,7 +56,10 @@ static func _make_stream(duration: float, sampler: Callable, looped: bool) -> Au
 
 
 static func _cemetery_sample(time: float) -> float:
-	var wind := sin(TAU * 0.19 * time) * 0.035 + sin(TAU * 0.31 * time + 1.1) * 0.02
+	var wind := (
+		sin(TAU * 0.19 * time) * 0.035
+		+ sin(TAU * 0.31 * time + 1.1) * 0.02
+	)
 	var drone := sin(TAU * 82.0 * time) * 0.012 + sin(TAU * 123.0 * time) * 0.006
 	return wind + drone
 
@@ -67,7 +72,9 @@ static func _interior_sample(time: float) -> float:
 
 static func _funeral_sample(time: float) -> float:
 	var envelope := exp(-7.0 * time)
-	return envelope * (sin(TAU * 392.0 * time) * 0.18 + sin(TAU * 588.0 * time) * 0.11)
+	return envelope * (
+		sin(TAU * 392.0 * time) * 0.18 + sin(TAU * 588.0 * time) * 0.11
+	)
 
 
 static func _cremate_sample(time: float) -> float:
