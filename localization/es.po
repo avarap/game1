@@ -113,3 +113,21 @@ msgstr "Energía"
 
 msgid "UI_HUD_STATUS_READY"
 msgstr "Listo"
+
+msgid "UI_SETTINGS_TITLE"
+msgstr "Pausa"
+
+msgid "UI_SETTINGS_MASTER_VOLUME"
+msgstr "Volumen general"
+
+msgid "UI_SETTINGS_LANGUAGE"
+msgstr "Idioma"
+
+msgid "UI_SETTINGS_LANGUAGE_EN"
+msgstr "Inglés"
+
+msgid "UI_SETTINGS_LANGUAGE_ES"
+msgstr "Español"
+
+msgid "UI_SETTINGS_RESUME"
+msgstr "Continuar"
