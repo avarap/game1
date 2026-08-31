@@ -6,8 +6,8 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 - Repositorio: `avarap/game1`.
 - Rama principal: `main`.
-- HEAD de referencia de esta sincronización: `98045f4cfe4d8ee1b6c7f8061c7bb17356f81001`.
-- CI de `main` para ese HEAD: run `33395789790`, **success**.
+- HEAD de referencia de esta sincronización: `a0a54f5ede3d37602bed5594957305b92577bb96`.
+- CI de `main`: run `33400411975`, **success**.
 - Runtime/CI objetivo: **Godot 4.7.2**.
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
@@ -24,9 +24,9 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Planificación: `ROADMAP.md` + issues activas.
 - Contrato visual: `ART_DIRECTION.md`, sujeto al reset visual y a la decisión validada de #94.
 - Benchmark perceptual oficial: screenshots existentes en `docs/`.
+- Política de prompts visuales: `art/PROMPT_POLICY.md` + `PROMPT.md` por categoría, integrados por PR #118.
 - Narrativa: `HISTORIA_PRINCIPAL.md`.
 - Idiomas: `LOCALIZATION.md`.
-- `docs/design/` es backlog/dirección secundaria; nunca sustituye roadmap ni gates.
 
 ## Arquitectura estable
 
@@ -46,20 +46,32 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - 8A.4 recurso multiuso: #61 / PR #81.
 - 8A.5 servicio funerario: #62 / PR #99.
 - 8A.6 logística progresiva: #63 / PR #103.
-- 8A.7 decisiones de cadáver: #64 / #104 integradas mediante PR #106. `cremate`/`research` son terminales, mutuamente excluyentes, idempotentes, persistentes y conceden recompensas data-driven mediante APIs públicas existentes.
-- 8A.8 feedback/hooks: #65 / #111 integradas mediante PR #112. Los eventos de entrega funeraria y decisión terminal se emiten post-éxito, exactly-once y desacoplados de listeners; #65 y #111 cerradas.
-- 8A.9 #66 aceptación integral: desbloqueada; #115 `[AUTO][GAMEPLAY][P0]` preparada/asignada como gate end-to-end del track.
+- 8A.7 decisiones de cadáver: #64 / #104 / PR #106.
+- 8A.8 feedback/hooks: #65 / #111 / PR #112; eventos post-éxito, exactly-once y desacoplados.
+- 8A.9 #66 aceptación integral: #115 activa mediante PR draft #121.
+
+### Regresión P0 actual de 8A
+
+PR #121 está en TDD RED sobre el HEAD actual de `main`. Import y smoke pasan, pero `Phase8AAcceptance` detecta un fallo funcional real: el cadáver entregado por el flujo WORLD no puede ejecutar la decisión terminal `research`. La hipótesis confirmada apunta a la integración real `CemeteryController`/`CemeteryService` con configuración de decisión/tecnología. Existe además un fallo separado de `gdformat --check`, que no puede tratarse como RED intencional.
+
+No integrar #121 hasta:
+- corregir formato global;
+- aplicar únicamente la corrección productiva mínima demostrada por el RED;
+- conservar exactly-once/save-load;
+- dejar gdlint, gdformat, Godot 4.7.2 import, smoke, test integral y suite completa verdes sobre el mismo HEAD.
 
 ## Reset visual — estado real
 
 Los screenshots de `docs/` son el benchmark oficial. El arte integrado anteriormente puede seguir siendo funcional pero no se considera visualmente aceptado por el mero hecho de estar en `main`.
 
-- #96 QA visual: **integrada y cerrada** mediante PR #108. Existe tooling determinista para capturas 1280x720 asociado a SHA, con cámara/zoom reales, manifest de personajes/NPCs, cementerio día/noche, arquitectura/props y UI core. El render perceptual se ejecuta localmente con display; CI valida contrato/smoke del flujo.
-- PR #107 ARCH: **integrado**; documenta la recomendación de rechazar 32x48 como baseline hero, preferir 64x96 nativo para player/key NPCs y desacoplar canvas visual de colisión/navegación.
-- #94 ARCH: **abierta intencionadamente**. La arquitectura está integrada, pero la aceptación perceptual requiere evidencia in-game real de #109.
-- #109 CHARACTERS: activa mediante PR draft #114. El head actual añade primero el contrato TDD del player 64x96; CI falla intencionadamente en 17 aserciones de `PlayerProductionVisual` contra el placeholder actual. Además existe un fallo no aceptable de `gdformat` en el test nuevo; el worker debe corregir formato, sustituir realmente el asset, aportar capturas #96 y dejar todos los gates verdes antes de readiness/merge.
-- #113 WORLD: preparada/asignada para reemplazar los assets reales `player_workshop.svg` y `village_house.svg` por arquitectura de producción. No existe restricción 160x128 y puede migrar de SVG a raster/layers si mejora calidad.
-- `ART_DIRECTION.md` todavía contiene el contrato histórico 32x48/1.5x. **No modificarlo hasta que #94 quede validada**; después el supervisor debe actualizarlo para reflejar la decisión final.
+- #96 QA visual: **integrada y cerrada** mediante PR #108; tooling determinista para capturas 1280x720 asociado a SHA, cámara/zoom reales y manifest visual.
+- PR #107 ARCH: **integrado**; recomendación de rechazar 32x48 como baseline hero, preferir 64x96 nativo para player/key NPCs y desacoplar canvas visual de colisión/navegación.
+- PR #118: **integrado**; política P0 de prompts visuales y `docs/` como quality benchmark obligatorio.
+- #94 ARCH: **abierta intencionadamente**; aceptación perceptual requiere evidencia in-game real de #109.
+- #109 CHARACTERS: PR draft #114, head `2a16e221fd5a52ea9a6951753bde6719f45a5c35`, CI `33403132720` verde. El PR está basado en `98045f4...`, por lo que debe resincronizarse con `main`. Aunque el asset 64x96 está técnicamente cableado, no se integra hasta revisar capturas #96 contra `docs/`.
+- #113 WORLD: PR draft #116, head `00c4f2308fac9a31396dec35f3cbd08077f1382e`, CI técnico `33399134960` verde sobre base antigua. Está basado en `98045f4...` y actualmente no es mergeable; requiere resync/conflict resolution y evidencia perceptual #96 antes de readiness.
+- #119 QA gameplay-video: **completada/cerrada**; PR #120 cerrada sin merge después de producir el MP4 solicitado del baseline `98045f4...`.
+- `ART_DIRECTION.md` todavía contiene el contrato histórico 32x48/1.5x. **No modificarlo hasta que #94 quede validada**; entonces el supervisor debe actualizarlo.
 
 ## Estado visual/UI integrado frente a aceptación
 
@@ -71,9 +83,10 @@ Los screenshots de `docs/` son el benchmark oficial. El arte integrado anteriorm
 
 ## Audio — estado real
 
-- Los hooks requeridos por audio ya están integrados mediante #65/#111/PR #112.
-- #93 ha sido desbloqueada y convertida en `[AUTO][AUDIO][P1]`; ownership AUDIO, sin tocar gameplay/UI/maps/personajes.
+- Hooks requeridos por audio integrados mediante #65/#111/PR #112.
+- #93 `[AUTO][AUDIO][P1]` está desbloqueada y asignada.
 - Debe consumir EventBus existente, establecer buses Master/Music/Ambience/SFX, ambiente diferenciado y SFX mínimos, con licencias verificables y gates completos.
+- No existe PR AUDIO abierto en esta sincronización.
 
 ## Quality bar visual obligatorio
 
@@ -83,12 +96,12 @@ No existe restricción heredada de tamaño. Si 32x48, 160x128 para edificios, 32
 
 ## Cola autónoma actual
 
-- GAMEPLAY: #115 `[AUTO][GAMEPLAY][P0]` asignada para #66; gate integral de Track 8A.
-- CHARACTERS: #109 activa mediante PR draft #114; no preparar otra CHARACTERS mientras esté abierta.
-- WORLD: #113 preparada/asignada; no preparar otra WORLD mientras siga activa o exista su PR.
-- AUDIO: #93 preparada/asignada; ya no está bloqueada por #65.
-- ARCH: #94 abierta pero bloqueada por evidencia de #109; no duplicar trabajo.
-- UI/POLISH: sin slot mientras las cuatro unidades prioritarias anteriores estén activas.
+- GAMEPLAY: #115 / PR #121; worker debe permanecer hasta corregir/resincronizar/validar el PR.
+- CHARACTERS: #109 / PR #114; worker debe permanecer hasta resync + evidencia visual + gates completos.
+- WORLD: #113 / PR #116; worker debe permanecer hasta resolver mergeabilidad/resync + evidencia visual + gates completos.
+- AUDIO: #93 preparada/asignada; sin PR todavía.
+- ARCH: #94 abierta pero bloqueada por evidencia de #109.
+- UI/POLISH: sin slot mientras las cuatro unidades anteriores ocupen capacidad.
 
 ## Coordinación del supervisor
 
@@ -102,7 +115,7 @@ No existe restricción heredada de tamaño. Si 32x48, 160x128 para edificios, 32
 
 ## Trackers
 
-- #71 — M8A Gameplay Depth: #65 completada, #66 siguiente vía #115.
+- #71 — M8A Gameplay Depth: #66 siguiente vía #115/#121.
 - #72 — M8V Visual slice.
 - #73 — M8-RC Release Candidate.
 - #70 — gate final único de Fase 8.
