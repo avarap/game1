@@ -35,10 +35,7 @@ static func run() -> Array[String]:
 	service.receive_corpse(researched)
 	if service.finalize_corpse(&"research_once", &"research") != CemeteryService.RESULT_OK:
 		failures.append("Research should finalize a pending corpse")
-	if (
-		technology.get_points(TechnologyService.PointType.BLUE)
-		!= expected_research_reward.z
-	):
+	if technology.get_points(TechnologyService.PointType.BLUE) != expected_research_reward.z:
 		failures.append("Research should grant its data-driven differentiated reward")
 	var blue_before_retry := technology.get_points(TechnologyService.PointType.BLUE)
 	if (
@@ -58,11 +55,14 @@ static func run() -> Array[String]:
 
 	var snapshot := service.snapshot()
 	var restored_technology := TechnologyService.new()
-	var restored := CemeteryService.from_snapshot(
-		config,
-		snapshot,
-		decisions,
-		restored_technology,
+	var restored := (
+		CemeteryService
+		. from_snapshot(
+			config,
+			snapshot,
+			decisions,
+			restored_technology,
+		)
 	)
 	if restored.final_decision_for(&"cremate_once") != &"cremate":
 		failures.append("Save/load should preserve cremation final decision")
