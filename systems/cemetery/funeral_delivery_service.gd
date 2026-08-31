@@ -105,12 +105,11 @@ func _deliver_corpse(logical_day: int) -> bool:
 
 
 func _delivery_total_minutes(logical_day: int) -> int:
-	return (maxi(logical_day, 1) - 1) * MINUTES_PER_DAY + DELIVERY_HOUR * 60 + DELIVERY_MINUTE
+	var day_offset := (maxi(logical_day, 1) - 1) * MINUTES_PER_DAY
+	return day_offset + DELIVERY_HOUR * 60 + DELIVERY_MINUTE
 
 
 func _to_total_minutes(day: int, hour: int, minute: int) -> int:
-	return (
-		(maxi(day, 1) - 1) * MINUTES_PER_DAY
-		+ clampi(hour, 0, 23) * 60
-		+ clampi(minute, 0, 59)
-	)
+	var day_offset := (maxi(day, 1) - 1) * MINUTES_PER_DAY
+	var hour_offset := clampi(hour, 0, 23) * 60
+	return day_offset + hour_offset + clampi(minute, 0, 59)
