@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="MerchantData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="MerchantData" load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://systems/economy/merchant_data.gd" id="1_merchant"]
 [ext_resource type="Script" path="res://systems/economy/merchant_offer_data.gd" id="2_offer"]
 [ext_resource type="Resource" path="res://data/items/wood.tres" id="3_wood"]
 [ext_resource type="Resource" path="res://data/items/plank.tres" id="4_plank"]
+[ext_resource type="Resource" path="res://data/farming/fodder_turnip_seed.tres" id="5_seed"]
+[ext_resource type="Resource" path="res://data/items/fodder_turnip.tres" id="6_turnip"]
 
 [sub_resource type="Resource" id="OfferWood"]
 script = ExtResource("2_offer")
@@ -21,11 +23,29 @@ item = ExtResource("4_plank")
 buy_price_copper = 20
 sell_price_copper = 10
 
+[sub_resource type="Resource" id="OfferTurnipSeed"]
+script = ExtResource("2_offer")
+offer_id = &"yard_fodder_turnip_seed"
+item_id = &"fodder_turnip_seed"
+item = ExtResource("5_seed")
+buy_price_copper = 3
+sell_price_copper = 1
+
+[sub_resource type="Resource" id="OfferTurnip"]
+script = ExtResource("2_offer")
+offer_id = &"yard_fodder_turnip"
+item_id = &"fodder_turnip"
+item = ExtResource("6_turnip")
+buy_price_copper = 5
+sell_price_copper = 2
+
 [resource]
 script = ExtResource("1_merchant")
 merchant_id = &"yard_supplier"
-offers = Array[ExtResource("2_offer")]([SubResource("OfferWood"), SubResource("OfferPlank")])
+offers = Array[ExtResource("2_offer")]([SubResource("OfferWood"), SubResource("OfferPlank"), SubResource("OfferTurnipSeed"), SubResource("OfferTurnip")])
 starting_stock = {
+"fodder_turnip": 8,
+"fodder_turnip_seed": 10,
 "plank": 6,
 "wood": 12
 }
