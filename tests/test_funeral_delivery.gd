@@ -17,6 +17,7 @@ static func run() -> Array[String]:
 
 	_check_daily(funeral_script, failures)
 	_check_persistence(funeral_script, failures)
+	_check_controller_integration(failures)
 	return failures
 
 
@@ -60,10 +61,7 @@ static func _check_daily(funeral_script: Script, failures: Array[String]) -> voi
 	if cemetery.pending_corpses.size() != 3:
 		failures.append("Wake-time resync should not duplicate a delivery")
 
-	var ids := cemetery.pending_ids()
-	if ids.size() != ids.duplicate().size():
-		failures.append("Funeral deliveries should use unique corpse ids")
-	for corpse_id in ids:
+	for corpse_id in cemetery.pending_ids():
 		var corpse := cemetery.pending_corpses.get(corpse_id) as CorpseState
 		if corpse == null or corpse.age_minutes != 0 or corpse.decay_percent != 0:
 			failures.append("Delivered corpses should use the fresh corpse model")
@@ -92,6 +90,34 @@ static func _check_persistence(funeral_script: Script, failures: Array[String]) 
 	restored_after.call("sync_time", 7, 20, 0)
 	if cemetery.pending_corpses.size() != 1:
 		failures.append("Save/load after 18:00 should not duplicate delivery")
+
+
+static func _check_controller_integration(failures: Array[String]) -> void:
+	var controller := CemeteryController.new()
+	controller.initialize()
+	if not controller.has_method("sync_funeral_time"):
+		failures.append("Cemetery controller should drive funeral delivery from world time")
+		return
+	if not controller.has_method("deposit_funeral_fodder"):
+		failures.append("Cemetery controller should expose the funeral fodder storage")
+		return
+
+	controller.call("sync_funeral_time", 10, 17, 59)
+	controller.call("sync_funeral_time", 10, 18, 0)
+	if controller.service.pending_corpses.size() != 1:
+		failures.append("Cemetery controller should route the 18:00 delivery into its service")
+
+	var save_data := controller.get_save_data()
+	if not save_data.has("funeral_delivery"):
+		failures.append("Cemetery save data should include funeral delivery state")
+		return
+
+	var restored := CemeteryController.new()
+	restored.initialize()
+	restored.apply_save_data(save_data)
+	restored.call("sync_funeral_time", 10, 20, 0)
+	if restored.service.pending_corpses.size() != 1:
+		failures.append("Controller save/load should not duplicate an already resolved delivery")
 
 
 static func _new_cemetery_service() -> CemeteryService:
