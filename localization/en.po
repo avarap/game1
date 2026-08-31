@@ -107,3 +107,27 @@ msgstr "Inventory is full."
 
 msgid "UI_TRADE_ERROR"
 msgstr "Trade rejected."
+
+msgid "UI_HUD_ENERGY"
+msgstr "Energy"
+
+msgid "UI_HUD_STATUS_READY"
+msgstr "Ready"
+
+msgid "UI_SETTINGS_TITLE"
+msgstr "Pause"
+
+msgid "UI_SETTINGS_MASTER_VOLUME"
+msgstr "Master volume"
+
+msgid "UI_SETTINGS_LANGUAGE"
+msgstr "Language"
+
+msgid "UI_SETTINGS_LANGUAGE_EN"
+msgstr "English"
+
+msgid "UI_SETTINGS_LANGUAGE_ES"
+msgstr "Spanish"
+
+msgid "UI_SETTINGS_RESUME"
+msgstr "Resume"
