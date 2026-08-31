@@ -2,9 +2,7 @@ class_name TestPlayerProductionVisual
 extends RefCounted
 
 
-const DIRECTIONS: Array[StringName] = [
-	&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"
-]
+const DIRECTIONS: Array[StringName] = [&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"]
 const EXPECTED_FRAME_SIZE := Vector2i(64, 96)
 
 
@@ -19,7 +17,7 @@ static func run() -> Array[String]:
 	var body := player.get_node_or_null("Body") as AnimatedSprite2D
 	if body == null or body.sprite_frames == null:
 		failures.append("Production player should expose AnimatedSprite2D Body frames")
-		player.queue_free()
+		player.free()
 		return failures
 
 	if body.offset != Vector2(0, -48):
@@ -36,7 +34,9 @@ static func run() -> Array[String]:
 				continue
 			var texture := body.sprite_frames.get_frame_texture(animation, 0)
 			if texture == null or texture.get_size() != Vector2(EXPECTED_FRAME_SIZE):
-				failures.append("Production player animation %s should use native 64x96 frames" % animation)
+				failures.append(
+					"Production player animation %s should use native 64x96 frames" % animation
+				)
 
-	player.queue_free()
+	player.free()
 	return failures
