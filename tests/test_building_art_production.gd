@@ -27,7 +27,10 @@ static func _validate_production_texture(
 	if texture == null:
 		failures.append("%s production art should load as Texture2D" % label)
 		return
-	if texture.get_width() < MIN_BUILDING_SIZE.x or texture.get_height() < MIN_BUILDING_SIZE.y:
+	if (
+		texture.get_width() < MIN_BUILDING_SIZE.x
+		or texture.get_height() < MIN_BUILDING_SIZE.y
+	):
 		failures.append(
 			"%s art should exceed placeholder scale (%dx%d minimum)"
 			% [label, MIN_BUILDING_SIZE.x, MIN_BUILDING_SIZE.y]
