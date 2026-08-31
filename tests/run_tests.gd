@@ -41,6 +41,7 @@ func _run_all_tests() -> void:
 	_run_suite("EconomyGameplay", TestEconomyGameplay.run(), failures)
 	_run_suite("TradingUI", TestTradingUI.run(), failures)
 	_run_suite("UIPolish", TestUIPolish.run(), failures)
+	_run_suite("VisualCapture", TestVisualCapture.run(), failures)
 	_run_suite("TechnologyFoundation", TestTechnologyFoundation.run(), failures)
 	_run_suite("TechnologyGameplay", TestTechnologyGameplay.run(), failures)
 	_run_suite("TechnologyQuestIntegration", TestTechnologyQuestIntegration.run(), failures)

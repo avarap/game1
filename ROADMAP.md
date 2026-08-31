@@ -5,8 +5,8 @@
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
 - Runtime/CI contractual: **Godot 4.7.2**.
-- HEAD de referencia para esta sincronización: `16f13eeaa306a048c7c397cc6b6687585b15b3f1`.
-- CI de `main` para ese HEAD: run `33372934693`, success.
+- HEAD de referencia para esta sincronización: `0a16c3e53a0691227d6e73ae38c3cbb056f3a822`.
+- CI de `main` para ese HEAD: run `33379879695`, success.
 - Gate P0 temporal de auditoría **SUPERADO**: #82 y #83 cerradas y `main` verde.
 
 ## Fases 0–6 — COMPLETADAS
@@ -43,11 +43,11 @@ Fuente: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
 
 - [x] **8A.1 — Descomposición acelerada:** estado entero 0–100, edad en minutos, bandas crecientes y saltos temporales deterministas. PR #57.
 - [x] **8A.2 — Conservación:** basis points enteros, composición multiplicativa y remainder persistente. PR #59.
-- [x] **8A.3 — Agricultura mínima:** `fodder_turnip_seed` → plantar → crecer → cosechar → persistir. PR #76, main run `33342619691`.
+- [x] **8A.3 — Agricultura mínima:** `fodder_turnip_seed` → plantar → crecer → cosechar → persistir. PR #76.
 - [x] **8A.4 — Recurso multiuso (#61):** `fodder_turnip` integrado en items/storage, economía y crafting mediante PR #81.
-- [x] **8A.5 — Servicio funerario (#62):** entrega determinista a las 18:00, primera gratuita y consumo posterior de `fodder_turnip` real vía storage; PR #99.
-- [ ] **8A.6 — Logística progresiva (#63):** implementación preparada en #100 / PR #101; CI del head resincronizado verde, pendiente de actualización contra el HEAD actual y revisión/merge.
-- [ ] **8A.7 — Decisiones de cadáver (#64):** cremar/investigar además de preparar/enterrar.
+- [x] **8A.5 — Servicio funerario (#62):** entrega determinista a las 18:00, primera gratuita y consumo posterior de `fodder_turnip`; PR #99.
+- [x] **8A.6 — Logística progresiva (#63):** descarga inicial `roadside_dropoff`, rampa desbloqueable y destino persistente por cadáver; PR #103, main run `33379879695`.
+- [ ] **8A.7 — Decisiones de cadáver (#64):** cremar/investigar además de preparar/enterrar. Trabajo preparado: #104 `[AUTO][GAMEPLAY][P0]`.
 - [ ] **8A.8 — Feedback/hooks (#65):** eventos desacoplados para audio/FX.
 - [ ] **8A.9 — Aceptación integral (#66):** farming→comedero→18:00→cadáver→decisión→save/load.
 
@@ -57,18 +57,18 @@ Tracker: #71.
 
 - [x] **#25 — Tileset exterior pixel-art original** — PR #56.
 - [x] **#26 — Player spritesheet + animaciones** — PR #75.
-- [ ] **#27 — NPC visual base + Brother Aldren animado** — implementación de #84 integrada mediante PR #89, pero la aceptación visual permanece pendiente de evidencia verificable y de #94/#96.
+- [ ] **#27 — NPC visual base + Brother Aldren animado** — implementación integrada mediante PR #89, aceptación visual pendiente de #94/#96 y evidencia verificable.
 - [x] **#28 — Props, edificios y cementerio** — PR #79.
 - [x] **#29 — Integración artística de mapas** — PR #80.
-- [ ] **#30 — Atmósfera, iluminación, vegetación y partículas** — implementación WORLD integrada mediante PR #90; PR #102 corrigió la densidad runtime de `CPUParticles2D`. La aceptación visual sigue pendiente de evidencia reproducible.
+- [ ] **#30 — Atmósfera, iluminación, vegetación y partículas** — implementación integrada mediante PR #90 y corrección runtime PR #102; aceptación visual pendiente.
 - [ ] **#31 — Aceptación visual del vertical slice**.
 
 Tracker: #72.
 
 ### UI / audio / estabilidad
 
-- [ ] **#68 — UI final y UX:** PR #78 integró HUD/pause/settings y PR #91 integró paneles core; aceptación final todavía pendiente.
-- [ ] **#67 — Audio final y mezcla básica** — #93 preparado.
+- [ ] **#68 — UI final y UX:** PR #78 integró HUD/pause/settings y PR #91 paneles core; aceptación visual final pendiente.
+- [ ] **#67 — Audio final y mezcla básica** — bloqueada hasta #65; issue preparatoria #93 permanece `[BLOCKED]`.
 - [ ] **#69 — Optimización, estabilidad y export**.
 - [ ] **#70 — Aceptación integral / release candidate** — único gate autorizado para cerrar Fase 8.
 
@@ -78,28 +78,33 @@ Tracker final: #73.
 
 La auditoría iniciada sobre HEAD `81021973025302213dc64ef8f4a4744673c5dd75` queda resuelta:
 
-- [x] **#82 — Regression test Brother Aldren cemetery save/load** — integrado mediante PR #92.
-- [x] **#83 — Sincronización documental** — cerrada.
-- [x] `main` verde — HEAD `16f13eeaa306a048c7c397cc6b6687585b15b3f1`, run `33372934693`, success.
+- [x] #82 — regression test Brother Aldren cemetery save/load — PR #92.
+- [x] #83 — sincronización documental.
+- [x] `main` verde — HEAD `0a16c3e53a0691227d6e73ae38c3cbb056f3a822`, run `33379879695`, success.
 
-La integración normal de Fase 8 continúa uno a uno, manteniendo todos los quality gates.
+## Reset visual y quality bar obligatorio
 
-## Quality bar visual obligatorio
+Los screenshots existentes en `docs/` son la referencia oficial de calidad percibida. El estado visual actual no se considera aceptado hasta demostrar comparabilidad mediante evidencia in-game reproducible.
 
-La referencia aprobada es el mockup pixel-art oscuro del cuidador del cementerio: personajes detallados y legibles, 8 direcciones coherentes, ropa/equipamiento reconocibles, paleta medieval oscura, iluminación cálida localizada, sombras profundas, entorno denso y props/vegetación integrados. No se aceptan downgrades a sprites planos, placeholders, blockout o escenarios vacíos aunque los tests técnicos estén verdes. Si 32x48 impide mantener el detalle exigido, debe reevaluarse la escala antes de aceptar una degradación.
+**No existe restricción de escala heredada.** `32x48` no es un contrato obligatorio. Si hace falta aumentar resolución/escala de personajes, NPCs, casas, edificios, tiles, props, vegetación u objetos, o ajustar cámara/zoom, debe hacerse de forma planificada. No se preserva una escala histórica a costa de bajar calidad.
 
-Las capturas JPG añadidas en `docs/` por el commit `16f13ee` se conservan como material visual de referencia. No sustituyen el gate #96 ni se consideran evidencia determinista de aceptación hasta disponer de captura/procedencia reproducible y asociación explícita al HEAD evaluado.
+Quality bar: pixel-art oscuro de alto detalle, siluetas claras, 8 direcciones realmente coherentes, ropa/equipamiento/materiales legibles, arquitectura con personalidad, entorno denso y artesanal, vegetación/props integrados, iluminación cálida localizada, sombras profundas y acabado profesional. CI verde no equivale a aceptación visual.
+
+Prioridad P0 visual:
+- #94 `[AUTO][ARCH][P0]` — decidir escala/pipeline correctos para personajes + arquitectura + props + tiles/cámara.
+- #96 `[AUTO][QA][P0]` — captura reproducible para comparaciones before/after contra `docs/`.
+- Tras #94/#96, preparar reworks independientes CHARACTERS/WORLD/UI/POLISH según evidencia.
+- `ART_DIRECTION.md` se actualizará solo cuando #94 produzca una decisión validada.
 
 ## Cola autónoma
 
-- GAMEPLAY: #100 tiene PR activo #101; no preparar otra tarea hasta resolverlo.
-- AUDIO: #93 — `[AUTO][AUDIO][P1]` routing/ambiente/mezcla.
-- ARCH: #94 — `[AUTO][ARCH][P0]` decisión de escala/resolución visual.
-- QA: #96 — `[AUTO][QA][P0]` capturas visuales deterministas para aceptación.
-- CHARACTERS: sin tarea preparada mientras #94/#96 bloqueen el siguiente paso.
-- WORLD/UI: los incrementos ya están integrados; su aceptación visual se mantiene abierta pero no debe presentarse como trabajo autónomo desbloqueado mientras dependa de #96.
+- GAMEPLAY: #104 — decisiones finales de cadáver (#64).
+- ARCH: #94 — escala/pipeline visual P0.
+- QA: #96 — baseline/captura visual P0.
+- AUDIO: #93 bloqueada hasta #65.
+- CHARACTERS/WORLD/UI/POLISH: no preparar rework final hasta disponer de decisión/evidencia suficiente de #94/#96.
 
-No preparar una segunda tarea del mismo carril mientras exista una issue preparada o PR activo de ese carril.
+Máximo una tarea preparada por carril y ningún worker abandona un PR abierto para tomar trabajo nuevo.
 
 ## Biblioteca de diseño y backlog
 
