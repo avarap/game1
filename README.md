@@ -35,9 +35,9 @@ El objetivo es un vertical slice original y pulido. Las fuentes de verdad son `M
 
 La build integrada incluye movimiento, recolección, inventario, energía, crafting/producción, cementerio, tiempo/día-noche, sueño, NPC con navegación/horarios persistentes, diálogo EN/ES, relaciones, quests, economía/comercio, tecnologías y mundo modular con cementerio/propiedad, bosque, pueblo, interiores y mina.
 
-Track 8A tiene integrados deterioro/conservación, agricultura mínima, `fodder_turnip`, servicio funerario 18:00, logística progresiva, decisiones terminales de cadáver y feedback hooks exactly-once. La aceptación integral #66 está activa mediante #115 / PR draft #121.
+Track 8A tiene integrados deterioro/conservación, agricultura mínima, `fodder_turnip`, servicio funerario 18:00, logística progresiva, decisiones terminales de cadáver y feedback hooks exactly-once. La aceptación integral #66 está activa mediante #115 / PR #121.
 
-El RED de #121 ha descubierto una regresión real: en el flujo WORLD, un cadáver entregado no puede ejecutar la decisión terminal `research`. Import y smoke pasan, pero la suite falla en `Phase8AAcceptance`; además existe un fallo de `gdformat --check`. No se integra hasta corregir ambos y dejar todos los gates verdes sobre el mismo HEAD.
+El RED de #121 descubrió una regresión real en la integración WORLD de decisiones terminales. Ya existe una corrección mínima y el head `e37dc433...` está completamente verde en CI `33404377011`, incluyendo `Phase8AAcceptance`. El PR permanece sin integrar únicamente porque sigue marcado draft y la transición automática a ready está bloqueada por un fallo del conector GitHub; no se fuerza el merge.
 
 ## Reset visual obligatorio
 
@@ -53,11 +53,11 @@ PR #107 integró la recomendación arquitectónica de usar **64x96 nativo** para
 
 ## Trabajo visual activo
 
-- **CHARACTERS #109 / PR #114:** player 64x96 técnicamente integrado en la rama y CI verde, pero el PR debe resincronizarse con `main` y aportar/revisar capturas #96 contra `docs/` antes de merge.
-- **WORLD #113 / PR #116:** nuevos edificios en rama, CI técnico previo verde, pero base antigua y mergeabilidad no válida; requiere resync/conflict resolution y aceptación perceptual #96.
+- **CHARACTERS #109 / PR #114:** sincronizado con `main`, mergeable y CI `33405431151` verde. El candidato visual actual está **rechazado**: aún lee como placeholder ampliado. Debe rehacerse/mejorarse y aportar capturas #96 comparadas contra `docs/`.
+- **WORLD #113 / PR #116:** sincronizado con `main`, mergeable y CI `33403543515` verde. Sigue bloqueado por aceptación perceptual y capturas #96; si SVG limita el acabado deberá migrarse a raster/layers.
 - **QA #119:** completada. PR #120 se cerró sin merge después de generar el gameplay MP4 solicitado del baseline `98045f4...`.
 - **ARCH #94:** abierta y bloqueada por la evidencia perceptual de #109.
-- **AUDIO #93:** desbloqueada/asignada; sin PR abierto todavía.
+- **AUDIO #93 / PR #122:** import, smoke y suite pasan, pero `gdformat --check` falla en el head actual; no es integrable todavía.
 
 CI verde por sí solo no acepta ningún PR visual.
 
@@ -85,10 +85,10 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 ## Cola autónoma
 
-- GAMEPLAY: #115 / PR #121 — P0, corregir RED real y format gate.
-- CHARACTERS: #109 / PR #114 — resync + evidencia visual.
-- WORLD: #113 / PR #116 — resync/mergeabilidad + evidencia visual.
-- AUDIO: #93 — asignada.
+- GAMEPLAY: #115 / PR #121 — P0 técnicamente verde; pendiente readiness/integración supervisada.
+- CHARACTERS: #109 / PR #114 — rework visual + evidencia #96.
+- WORLD: #113 / PR #116 — evidencia perceptual #96.
+- AUDIO: #93 / PR #122 — corregir `gdformat --check` y revalidar.
 - ARCH: #94 bloqueada por #109.
 - UI/POLISH: sin nuevo slot mientras estas cuatro unidades ocupen capacidad.
 
