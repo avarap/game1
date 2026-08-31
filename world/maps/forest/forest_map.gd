@@ -4,12 +4,12 @@ extends Node2D
 const TILE_SIZE := Vector2i(32, 32)
 const MAP_SIZE_TILES := Vector2i(48, 32)
 const SOURCE_ID := 0
-const GROUND_TILE := Vector2i(0, 0)
-const PATH_TILE := Vector2i(1, 0)
-const COLLISION_TILE := Vector2i(2, 0)
-const OBJECT_TILE := Vector2i(3, 0)
-const FOREGROUND_TILE := Vector2i(4, 0)
-const DECORATION_TILE := Vector2i(5, 0)
+const GROUND_TILE := Vector2i(0, 3)
+const PATH_TILE := Vector2i(3, 3)
+const COLLISION_TILE := Vector2i(7, 7)
+const OBJECT_TILE := Vector2i(2, 6)
+const FOREGROUND_TILE := Vector2i(5, 7)
+const DECORATION_TILE := Vector2i(3, 6)
 const NAVIGATION_MARGIN := 64.0
 
 @onready var ground: TileMapLayer = $ground
@@ -22,7 +22,7 @@ const NAVIGATION_MARGIN := 64.0
 
 
 func _ready() -> void:
-	var forest_tileset := _build_forest_tileset()
+	var forest_tileset := MapArtTileset.build()
 	_configure_layers(forest_tileset)
 	_populate_ground()
 	_populate_paths()
@@ -30,6 +30,7 @@ func _ready() -> void:
 	_populate_collision()
 	_populate_landmarks()
 	_ensure_navigation_polygon()
+	MapArtPresenter.apply(self)
 
 
 func get_world_rect() -> Rect2:
@@ -37,42 +38,6 @@ func get_world_rect() -> Rect2:
 		Vector2.ZERO,
 		Vector2(MAP_SIZE_TILES.x * TILE_SIZE.x, MAP_SIZE_TILES.y * TILE_SIZE.y),
 	)
-
-
-func _build_forest_tileset() -> TileSet:
-	var tile_set := TileSet.new()
-	tile_set.tile_size = TILE_SIZE
-	tile_set.add_physics_layer()
-	tile_set.set_physics_layer_collision_layer(0, 1)
-	tile_set.set_physics_layer_collision_mask(0, 1)
-
-	var image := Image.create(TILE_SIZE.x * 6, TILE_SIZE.y, false, Image.FORMAT_RGBA8)
-	_fill_tile(image, 0, Color("566b45"))
-	_fill_tile(image, 1, Color("715845"))
-	_fill_tile(image, 2, Color("344536"))
-	_fill_tile(image, 3, Color("4a3b32"))
-	_fill_tile(image, 4, Color("303947"))
-	_fill_tile(image, 5, Color("75835a"))
-
-	var source := TileSetAtlasSource.new()
-	source.texture = ImageTexture.create_from_image(image)
-	source.texture_region_size = TILE_SIZE
-	for atlas_x in range(6):
-		source.create_tile(Vector2i(atlas_x, 0))
-	tile_set.add_source(source, SOURCE_ID)
-
-	var collision_data := source.get_tile_data(COLLISION_TILE, 0)
-	var collision_points := PackedVector2Array(
-		[
-			Vector2(-16, -16),
-			Vector2(16, -16),
-			Vector2(16, 16),
-			Vector2(-16, 16),
-		]
-	)
-	collision_data.add_collision_polygon(0)
-	collision_data.set_collision_polygon_points(0, 0, collision_points)
-	return tile_set
 
 
 func _configure_layers(tile_set: TileSet) -> void:
@@ -170,7 +135,3 @@ func _ensure_navigation_polygon() -> void:
 	)
 	polygon.add_polygon(PackedInt32Array([0, 1, 2, 3]))
 	navigation_region.navigation_polygon = polygon
-
-
-func _fill_tile(image: Image, atlas_x: int, color: Color) -> void:
-	image.fill_rect(Rect2i(atlas_x * TILE_SIZE.x, 0, TILE_SIZE.x, TILE_SIZE.y), color)
