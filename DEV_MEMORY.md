@@ -6,8 +6,8 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 - Repositorio: `avarap/game1`.
 - Rama principal: `main`.
-- HEAD de referencia de esta sincronización: `adc78483e79661298a2fc36e49976325b35855b3`.
-- Último CI de `main` para ese HEAD: run `33369187753`, success.
+- HEAD de referencia de esta sincronización: `16f13eeaa306a048c7c397cc6b6687585b15b3f1`.
+- Último CI de `main` para ese HEAD: run `33372934693`, success.
 - Runtime/CI objetivo: **Godot 4.7.2**.
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
@@ -44,7 +44,7 @@ La auditoría iniciada sobre HEAD `8102197` queda cerrada: #82 se integró media
 - 8A.3 agricultura mínima: integrada mediante PR #76.
 - 8A.4 recurso multiuso: #61 cerrado mediante PR #81; `fodder_turnip` participa en storage, economía y crafting.
 - 8A.5 servicio funerario: #62 cerrado tras PR #99, merge `bab397eca3f85d7d62af882751d250a2bc473248`. Consume `fodder_turnip` real mediante storage, entrega a las 18:00, primera gratuita y persiste exactly-once.
-- 8A.6 logística progresiva: #100 tiene implementación en PR #101, actualmente pendiente de resincronización con el `main` real antes de revisión/merge.
+- 8A.6 logística progresiva: #100 tiene implementación en PR #101; el head `0ef0d900...` tiene CI verde, pero debe actualizarse contra el `main` real antes de revisión/merge.
 - 8A.7 #64, 8A.8 #65 y 8A.9 #66: pendientes.
 
 ## Fase 8 — visual/UI integrado frente a aceptación
@@ -54,6 +54,7 @@ La auditoría iniciada sobre HEAD `8102197` queda cerrada: #82 se integró media
 - PR #90 (atmósfera/lighting/FX) está integrado; PR #102 corrigió el uso inválido de densidad de `CPUParticles2D` en runtime y añadió regresión live SceneTree. #30 sigue pendiente de aceptación visual verificable.
 - PR #91 (paneles core UI) está integrado; #68 sigue pendiente de aceptación UI/visual final.
 - #31 aceptación visual integral sigue pendiente.
+- Commit `16f13ee` añadió capturas JPG bajo `docs/`; se tratan como material de referencia, no como evidencia determinista hasta que #96 establezca captura/procedencia reproducible asociada al HEAD evaluado.
 
 ## Quality bar visual obligatorio
 
