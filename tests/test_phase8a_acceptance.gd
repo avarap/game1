@@ -58,9 +58,7 @@ static func run() -> Array[String]:
 	return failures
 
 
-static func _check_seed_to_fodder(
-	cemetery: CemeteryController, failures: Array[String]
-) -> void:
+static func _check_seed_to_fodder(cemetery: CemeteryController, failures: Array[String]) -> void:
 	var seed := load("res://data/farming/fodder_turnip_seed.tres") as ItemData
 	var harvest_item := load("res://data/items/fodder_turnip.tres") as ItemData
 	var merchant := load("res://data/economy/yard_supplier.tres") as MerchantData
