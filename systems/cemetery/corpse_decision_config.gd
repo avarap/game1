@@ -18,8 +18,6 @@ func reward_for(decision: StringName, corpse: CorpseState) -> Vector3i:
 			return Vector3i(cremate_red_points, cremate_green_points, cremate_blue_points)
 		&"research":
 			return Vector3i(
-				research_red_points,
-				research_green_points,
-				research_blue_points + quality_bonus
+				research_red_points, research_green_points, research_blue_points + quality_bonus
 			)
 	return Vector3i.ZERO
