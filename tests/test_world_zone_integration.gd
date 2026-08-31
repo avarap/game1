@@ -250,9 +250,12 @@ static func _check_aldren_cemetery_restore(
 
 	zone_manager.call("travel_to", &"forest", &"CemeteryEntrance")
 	zone_manager.call("travel_to", &"cemetery", &"ForestExit")
-	var spawn_position := aldren.global_position
-	if spawn_position.is_equal_approx(expected_position):
-		failures.append("Regression setup should disturb Aldren before restore")
+	aldren.global_position = Vector2(1216, 640)
+	aldren.apply_current_schedule()
+	if aldren.global_position.is_equal_approx(expected_position):
+		failures.append("Regression setup should move Aldren away from persisted position")
+	if aldren.get_current_state() == expected_state:
+		failures.append("Regression setup should replace Aldren persisted routine state")
 
 	var loaded: Variant = save_manager.call("load_game", SAVE_PATH, true)
 	if typeof(loaded) != TYPE_DICTIONARY:
