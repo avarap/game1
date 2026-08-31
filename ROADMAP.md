@@ -5,8 +5,8 @@
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
 - Runtime/CI contractual: **Godot 4.7.2**.
-- HEAD de referencia para esta sincronización: `2f1f9a0345fb782bf67c18f09714ab674cc78981`.
-- CI de `main` para ese HEAD: run `33386976569`, **success**.
+- HEAD de referencia para esta sincronización: `98045f4cfe4d8ee1b6c7f8061c7bb17356f81001`.
+- CI de `main` para ese HEAD: run `33395789790`, **success**.
 - Gate P0 histórico **SUPERADO**: #82 y #83 cerradas.
 - No declarar Fase 8 completa hasta #70 sobre el mismo HEAD final con gates funcionales, técnicos y visuales cumplidos.
 
@@ -36,8 +36,8 @@ Fuente: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
 - [x] **8A.5 — Servicio funerario (#62)** — PR #99.
 - [x] **8A.6 — Logística progresiva (#63)** — PR #103.
 - [x] **8A.7 — Decisiones de cadáver (#64)** — PR #106; #104 y #64 cerradas.
-- [ ] **8A.8 — Feedback/hooks (#65)** — issue automática #111 preparada y asignada a GAMEPLAY.
-- [ ] **8A.9 — Aceptación integral (#66)** — farming→comedero→18:00→cadáver→decisión→save/load; bloqueada hasta #65.
+- [x] **8A.8 — Feedback/hooks (#65)** — #111 / PR #112 integrados; #65 y #111 cerradas.
+- [ ] **8A.9 — Aceptación integral (#66)** — desbloqueada y preparada mediante #115 `[AUTO][GAMEPLAY][P0]`.
 
 Tracker: #71.
 
@@ -56,7 +56,7 @@ Tracker: #72.
 ### UI / audio / estabilidad
 
 - [ ] **#68 — UI final y UX** — PR #78 y #91 integrados; aceptación visual final pendiente.
-- [ ] **#67 — Audio final y mezcla básica** — #93 bloqueada hasta #65/#111.
+- [ ] **#67 — Audio final y mezcla básica** — #93 `[AUTO][AUDIO][P1]` ya desbloqueada tras integrar #65/#111.
 - [ ] **#69 — Optimización, estabilidad y export**.
 - [ ] **#70 — Aceptación integral / release candidate** — único gate autorizado para cerrar Fase 8.
 
@@ -66,7 +66,7 @@ Tracker final: #73.
 
 - [x] #82 — regression test Brother Aldren cemetery save/load — PR #92.
 - [x] #83 — sincronización documental.
-- [x] `main` verde en HEAD actual `2f1f9a0345fb782bf67c18f09714ab674cc78981`, run `33386976569` success.
+- [x] `main` verde en HEAD actual `98045f4cfe4d8ee1b6c7f8061c7bb17356f81001`, run `33395789790` success.
 
 Si #82 o #83 reaparecen abiertas, queda bloqueada cualquier integración adicional de Fase 8 hasta resolverlas y recuperar `main` verde.
 
@@ -82,20 +82,19 @@ Quality bar: pixel-art oscuro de alto detalle, siluetas claras, 8 direcciones re
 
 - #96 `[AUTO][QA][P0]` — **integrada y cerrada** mediante PR #108. Proporciona captura determinista 1280x720, cámara/zoom real, metadata por SHA y runner local reproducible.
 - PR #107 ARCH — **integrado**. Establece la recomendación fuerte de abandonar 32x48 como baseline hero y preferir 64x96 nativo, con canvas visual desacoplado de colisión/navegación.
-- #94 `[AUTO][ARCH][P0]` — **abierta intencionadamente**: arquitectura integrada, aceptación perceptual bloqueada por #109 hasta disponer de comparación in-game real 32x48/48x72/64x96.
-- #109 `[AUTO][CHARACTERS][P0]` — preparado y asignado para producir candidatos nativos 48x72/64x96 y probarlos con #96 contra `docs/`, incluyendo zooms 1.0/1.25/1.5.
-- `ART_DIRECTION.md` no se actualiza todavía: la actualización contractual queda condicionada a la validación final de #94 con evidencia #109/#96.
-
-Tras validar #94, preparar reworks independientes de CHARACTERS/WORLD/UI/POLISH según evidencia; máximo una tarea preparada por carril.
+- #94 `[AUTO][ARCH][P0]` — **abierta intencionadamente**: arquitectura integrada, aceptación perceptual bloqueada por evidencia real de #109.
+- #109 `[AUTO][CHARACTERS][P0]` — en ejecución mediante PR draft #114. El PR está deliberadamente en TDD RED contra el placeholder 32x48 y no puede integrarse hasta sustituir el asset real, aportar capturas #96 y dejar todos los gates verdes.
+- #113 `[AUTO][WORLD][P0]` — preparada/asignada para sustituir `player_workshop.svg` y `village_house.svg` por arquitectura de producción, sin conservar la limitación 160x128.
+- `ART_DIRECTION.md` no se actualiza todavía: la actualización contractual queda condicionada a la validación final de #94 con evidencia real de #109/#96.
 
 ## Cola autónoma actual
 
-- GAMEPLAY: #111 preparado para #65; no iniciar otra issue GAMEPLAY hasta integrarlo.
-- CHARACTERS: #109 preparado y asignado; su evidencia desbloquea la aceptación perceptual #94.
+- GAMEPLAY: #115 `[AUTO][GAMEPLAY][P0]` asignada como gate integral de #66.
+- CHARACTERS: #109 activa mediante PR draft #114; mantener el worker hasta corregir RED técnico, integrar el asset real y completar evidencia visual.
+- WORLD: #113 preparada/asignada; no preparar otra WORLD mientras siga activa o exista su PR.
+- AUDIO: #93 preparada/asignada y ya desbloqueada por #65/#111.
 - ARCH: #94 abierta pero bloqueada por #109; no duplicar trabajo arquitectónico.
-- AUDIO: #93 bloqueada hasta integrar #65/#111.
-- WORLD/UI/POLISH: no asignar reworks finales adicionales hasta que #94/#109 aporten evidencia suficiente y el supervisor prepare issues separadas.
-- Dos slots generales pueden permanecer en STANDBY mientras no exista trabajo independiente preparado adicional.
+- UI/POLISH: no preparar otro rework final mientras los cuatro slots estén ocupados y no exista una unidad independiente de mayor prioridad.
 
 ## Post-MVP / Expansiones previstas
 
