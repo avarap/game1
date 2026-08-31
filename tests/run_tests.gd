@@ -35,6 +35,7 @@ func _run_all_tests() -> void:
 	_run_suite("CemeteryFlow", TestCemeteryFlow.run(), failures)
 	_run_suite("CemeteryPersistence", TestCemeteryPersistence.run(), failures)
 	_run_suite("CemeteryGameplay", TestCemeteryGameplay.run(), failures)
+	_run_suite("CorpseFinalDecisions", TestCorpseFinalDecisions.run(), failures)
 	_run_suite("FuneralDelivery", TestFuneralDelivery.run(), failures)
 	_run_suite("EconomyFoundation", TestEconomyFoundation.run(), failures)
 	_run_suite("EconomyGameplay", TestEconomyGameplay.run(), failures)
