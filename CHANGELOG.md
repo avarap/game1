@@ -13,6 +13,7 @@
 - **8A.5 Servicio funerario (#62):** integrado mediante PR #99; entrega diaria determinista a las 18:00, primera gratuita y entregas posteriores consumiendo `fodder_turnip` real desde storage, con persistencia exactly-once.
 - **#82 Regresión Aldren save/load:** cobertura integrada mediante PR #92 para preservar posición y estado/rutina persistentes en cementerio.
 - Incrementos visuales de Brother Aldren (#84/PR #89), atmósfera/lighting/FX (PR #90) y paneles core UI (PR #91) están en `main`; su aceptación visual final sigue sujeta a evidencia verificable y quality bar.
+- Commit `16f13ee` añadió capturas JPG bajo `docs/` como material de referencia visual; no sustituyen el gate de captura reproducible #96.
 - Biblioteca `docs/design/` y backlog Post-MVP para economía local por profesión y automatización avanzada.
 
 ### Changed
@@ -20,7 +21,7 @@
 - Quality gate global descubre todos los `*.gd` y ejecuta `gdlint` + `gdformat --check`.
 - `world/world.tscn` es shell persistente y `ZoneManager` mantiene una sola zona activa.
 - Fases 0–7 quedan completadas; Fase 8 — Polish permanece **ACTIVA**.
-- Track 8A tiene integrados 8A.1–8A.5; 8A.6 tiene implementación en PR #101 pendiente de resincronización/integración.
+- Track 8A tiene integrados 8A.1–8A.5; 8A.6 tiene implementación en PR #101 con CI verde en su head previo, pendiente de actualización/revisión contra el HEAD actual de `main`.
 - El estándar visual exige calidad percibida comparable al mockup oscuro aprobado y evidencia renderizada; integración técnica no equivale automáticamente a aceptación visual.
 
 ### Fixed
@@ -30,8 +31,8 @@
 - PR #102 corrige el error runtime de densidad de `CPUParticles2D` usando `amount` entero y añade una regresión live SceneTree.
 
 ### Project State / Gates
-- HEAD sincronizado por esta documentación: `adc78483e79661298a2fc36e49976325b35855b3`.
-- CI de ese HEAD: run `33369187753`, success.
+- HEAD sincronizado por esta documentación: `16f13eeaa306a048c7c397cc6b6687585b15b3f1`.
+- CI de ese HEAD: run `33372934693`, success.
 - Gate P0 temporal #82/#83: **superado**.
 - #94 ARCH y #96 QA permanecen abiertos para resolver escala de personajes y capturas deterministas.
 - #93 AUDIO está preparado; GAMEPLAY #100 tiene PR activo #101.
@@ -46,7 +47,8 @@
 - #82 Aldren cemetery save/load: main run `33356344828`, success.
 - PR #99 funeral service exact head: run `33359942851`, success.
 - Main tras PR #90/#91: run `33364746590`, success.
-- Main tras PR #102: HEAD `adc78483e79661298a2fc36e49976325b35855b3`, run `33369187753`, success.
+- Main tras PR #102: run `33369187753`, success.
+- Main tras incorporación de referencias visuales `docs/`: HEAD `16f13eeaa306a048c7c397cc6b6687585b15b3f1`, run `33372934693`, success.
 
 ### Design Decisions — Phase 8A
 - Descomposición integer 0–100 con estados Fresh/Fading/Decomposed/Rotten y aceleración con edad.
