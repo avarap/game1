@@ -12,6 +12,7 @@ func _run_all_tests() -> void:
 	_run_suite("DayNightCycle", TestDayNightCycle.run(), failures)
 	_run_suite("NPCNavigation", TestNPCNavigation.run(), failures)
 	_run_suite("NPCRoutines", TestNPCRoutines.run(), failures)
+	_run_suite("NPCVisual", TestNPCVisual.run(), failures)
 	_run_suite("SimulationAcceptance", TestSimulationAcceptance.run(), failures)
 	_run_suite("DialogueFoundation", TestDialogueFoundation.run(), failures)
 	_run_suite("DialogueGameplay", TestDialogueGameplay.run(), failures)
