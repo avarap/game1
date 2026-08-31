@@ -4,6 +4,7 @@ extends RefCounted
 const CAPTURE_SIZE := Vector2i(1280, 720)
 const CAMERA_ZOOM := Vector2(1.5, 1.5)
 const CEMETERY_SCENE := "res://world/maps/cemetery/cemetery_map.tscn"
+const VILLAGE_SCENE := "res://world/maps/village/village_map.tscn"
 const PLAYER_SCENE := "res://player/player.tscn"
 const ALDREN_SCENE := "res://world/npcs/brother_aldren.tscn"
 const DIRECTIONS: Array[StringName] = [
@@ -20,6 +21,7 @@ const WORLD_IDS: Array[StringName] = [
 	&"cemetery_day",
 	&"cemetery_night",
 	&"cemetery_architecture_props",
+	&"village_architecture",
 ]
 const UI_SCENES := {
 	&"ui_inventory": "res://ui/inventory/inventory_panel.tscn",
@@ -71,15 +73,20 @@ static func _character_spec(actor: StringName, direction: StringName) -> Diction
 static func _world_spec(capture_id: StringName) -> Dictionary:
 	var camera_position := Vector2(960, 480)
 	var lighting := Color.WHITE
+	var scene_path := CEMETERY_SCENE
 	if capture_id == &"cemetery_night":
 		lighting = Color(0.42, 0.48, 0.62, 1.0)
 	elif capture_id == &"cemetery_architecture_props":
 		camera_position = Vector2(480, 680)
 		lighting = Color(0.92, 0.88, 0.82, 1.0)
+	elif capture_id == &"village_architecture":
+		scene_path = VILLAGE_SCENE
+		camera_position = Vector2(1088, 392)
+		lighting = Color(0.92, 0.88, 0.82, 1.0)
 	return {
 		"id": capture_id,
 		"kind": &"world",
-		"scene": CEMETERY_SCENE,
+		"scene": scene_path,
 		"camera_position": camera_position,
 		"size": CAPTURE_SIZE,
 		"camera_zoom": CAMERA_ZOOM,
