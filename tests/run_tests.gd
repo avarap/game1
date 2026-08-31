@@ -39,6 +39,7 @@ func _run_all_tests() -> void:
 	_run_suite("CorpseFinalDecisions", TestCorpseFinalDecisions.run(), failures)
 	_run_suite("FuneralDelivery", TestFuneralDelivery.run(), failures)
 	_run_suite("FeedbackHooks", TestFeedbackHooks.run(), failures)
+	_run_suite("AudioBaseline", TestAudioBaseline.run(), failures)
 	_run_suite("EconomyFoundation", TestEconomyFoundation.run(), failures)
 	_run_suite("EconomyGameplay", TestEconomyGameplay.run(), failures)
 	_run_suite("TradingUI", TestTradingUI.run(), failures)
