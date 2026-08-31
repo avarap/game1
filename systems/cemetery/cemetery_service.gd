@@ -73,6 +73,7 @@ func finalize_corpse(corpse_id: StringName, decision: StringName) -> StringName:
 		return RESULT_INVALID_DECISION
 	final_decisions[corpse_id] = decision
 	pending_corpses.erase(corpse_id)
+	_emit_final_decision_completed(corpse_id, decision, reward)
 	return RESULT_OK
 
 
@@ -160,6 +161,27 @@ static func from_snapshot(
 			if decision == &"cremate" or decision == &"research":
 				restored.final_decisions[StringName(str(corpse_id))] = decision
 	return restored
+
+
+func _emit_final_decision_completed(
+	corpse_id: StringName, decision: StringName, reward: Vector3i
+) -> void:
+	var bus := _event_bus()
+	if bus == null:
+		return
+	bus.emit_signal(
+		"corpse_final_decision_completed", corpse_id, decision, reward.x, reward.y, reward.z
+	)
+
+
+func _event_bus() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop == null:
+		return null
+	var tree := loop as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("EventBus")
 
 
 func _grave_at(index: int) -> GraveRecord:

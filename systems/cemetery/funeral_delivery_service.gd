@@ -106,30 +106,53 @@ func _resolve_day(logical_day: int) -> void:
 
 	if not intro_delivered:
 		intro_delivered = true
-		_deliver_corpse(logical_day)
+		var intro_corpse_id := _deliver_corpse(logical_day)
+		if intro_corpse_id != &"":
+			_emit_delivery_completed(intro_corpse_id, logical_day)
 		return
 
 	if storage == null or not storage.has_item(FODDER_ITEM_ID, fodder_cost):
 		return
 
-	if _deliver_corpse(logical_day):
+	var corpse_id := _deliver_corpse(logical_day)
+	if corpse_id != &"":
 		storage.consume(FODDER_ITEM_ID, fodder_cost)
+		_emit_delivery_completed(corpse_id, logical_day)
 
 
-func _deliver_corpse(logical_day: int) -> bool:
+func _deliver_corpse(logical_day: int) -> StringName:
 	if cemetery_service == null:
-		return false
+		return &""
 
 	var data := CorpseData.new()
 	data.id = StringName("funeral_%04d_%04d" % [logical_day, next_corpse_serial])
 	data.burial_value = 2
 	var result := cemetery_service.receive_corpse(CorpseState.new(data))
 	if result != CemeteryService.RESULT_OK:
-		return false
+		return &""
 
 	reception_points[data.id] = RAMP_DROPOFF if ramp_unlocked else ROADSIDE_DROPOFF
 	next_corpse_serial += 1
-	return true
+	return data.id
+
+
+func _emit_delivery_completed(corpse_id: StringName, logical_day: int) -> void:
+	var bus := _event_bus()
+	if bus == null:
+		return
+	bus.emit_signal(
+		"funeral_delivery_completed", corpse_id, logical_day, reception_point_for(corpse_id)
+	)
+
+
+func _event_bus() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop == null:
+		return null
+	var tree := loop as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("EventBus")
 
 
 func _delivery_total_minutes(logical_day: int) -> int:
