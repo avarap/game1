@@ -5,8 +5,8 @@
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
 - Runtime/CI contractual: **Godot 4.7.2**.
-- HEAD de referencia para esta sincronización: `e77885bd189221d64f5bfc01b3aaa158abe3d6e8`.
-- CI de `main` para ese HEAD: run `33385482169`, **success**.
+- HEAD de referencia para esta sincronización: `9ff20a44db34cfa46b7b0cee7576735c6f283534`.
+- CI de `main` para ese HEAD: run `33386137356`, **success**.
 - Gate P0 histórico **SUPERADO**: #82 y #83 cerradas.
 - No declarar Fase 8 completa hasta #70 sobre el mismo HEAD final con gates funcionales, técnicos y visuales cumplidos.
 
@@ -66,7 +66,7 @@ Tracker final: #73.
 
 - [x] #82 — regression test Brother Aldren cemetery save/load — PR #92.
 - [x] #83 — sincronización documental.
-- [x] `main` verde en HEAD actual `e77885bd189221d64f5bfc01b3aaa158abe3d6e8`, run `33385482169` success.
+- [x] `main` verde en HEAD actual `9ff20a44db34cfa46b7b0cee7576735c6f283534`, run `33386137356` success.
 
 Si #82 o #83 reaparecen abiertas, queda bloqueada cualquier integración adicional de Fase 8 hasta resolverlas y recuperar `main` verde.
 
@@ -81,7 +81,8 @@ Quality bar: pixel-art oscuro de alto detalle, siluetas claras, 8 direcciones re
 ### P0 visual actual
 
 - #96 `[AUTO][QA][P0]` — **integrada y cerrada** mediante PR #108. Proporciona captura determinista 1280x720, cámara/zoom real, metadata por SHA y runner local reproducible.
-- #94 `[AUTO][ARCH][P0]` — PR #107 abierto. Arquitectura recomienda abandonar 32x48 como baseline hero y evaluar 64x96; no cerrar #94 hasta disponer de evidencia in-game comparable, no solo SVG/CI.
+- PR #107 ARCH — **integrado** en `main` `9ff20a44...`; establece una recomendación arquitectónica fuerte de abandonar 32x48 como baseline hero y preferir 64x96 nativo, con canvas visual desacoplado de colisión/navegación.
+- #94 `[AUTO][ARCH][P0]` — **reabierta por supervisor** tras el merge de #107: la arquitectura está integrada, pero la aceptación perceptual sigue pendiente porque falta comparación in-game real 32x48/48x72/64x96. Queda bloqueada por #109.
 - #109 `[AUTO][CHARACTERS][P0]` — preparado para crear candidatos nativos 48x72/64x96 y probarlos con el tooling #96 contra `docs/`, incluyendo zooms 1.0/1.25/1.5.
 - `ART_DIRECTION.md` no se actualiza todavía: la actualización contractual queda condicionada a la validación final de #94 con evidencia #109/#96.
 
@@ -90,8 +91,8 @@ Tras validar #94, preparar reworks independientes de CHARACTERS/WORLD/UI/POLISH 
 ## Cola autónoma actual
 
 - GAMEPLAY: #104 / PR #106 abierto; worker permanece en el PR hasta dejarlo verde y actualizado.
-- ARCH: #94 / PR #107 abierto; worker permanece en el PR hasta completar decisión y evidencia.
 - CHARACTERS: #109 preparado, desbloqueado por #96 y asignado a un único worker.
+- ARCH: #94 abierta pero bloqueada por #109; slot ARCH en STANDBY para no duplicar trabajo.
 - AUDIO: #93 bloqueada hasta #65.
 - WORLD/UI/POLISH: no asignar reworks finales adicionales hasta que #94/#109 aporten evidencia suficiente y el supervisor prepare issues separadas.
 
