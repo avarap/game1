@@ -30,6 +30,7 @@ static func run() -> Array[String]:
 		failures.append("Cremation reward should be granted exactly once")
 
 	var researched := _corpse(&"research_once", 4, 20, 3)
+	# Research may include a data-driven effective-quality bonus.
 	var expected_research_reward := decisions.reward_for(&"research", researched)
 	service.receive_corpse(researched)
 	if service.finalize_corpse(&"research_once", &"research") != CemeteryService.RESULT_OK:
