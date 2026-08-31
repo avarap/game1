@@ -62,9 +62,16 @@ static func _test_pause_settings(tree: SceneTree) -> Array[String]:
 	tree.root.add_child(pause_menu)
 	if pause_menu.theme == null:
 		failures.append("Pause/settings should use the shared UI theme")
-	for signal_name in [&"resume_requested", &"audio_volume_requested", &"locale_requested"]:
+	var intent_signals := [
+		&"resume_requested",
+		&"audio_volume_requested",
+		&"locale_requested",
+	]
+	for signal_name in intent_signals:
 		if not pause_menu.has_signal(signal_name):
-			failures.append("Pause/settings should expose presentation intent signal %s" % signal_name)
+			failures.append(
+				"Pause/settings should expose presentation intent signal %s" % signal_name
+			)
 	if not pause_menu.has_method("set_master_volume_percent"):
 		failures.append("Pause/settings should expose presentation-only volume state")
 	if not pause_menu.has_method("get_master_volume_text"):
@@ -82,8 +89,11 @@ static func _test_pause_settings(tree: SceneTree) -> Array[String]:
 		failures.append("Pause/settings volume should refresh after locale change")
 	pause_menu.call("set_master_volume_percent", 150)
 	if not str(pause_menu.call("get_master_volume_text")).ends_with("100%"):
-		failures.append("Pause/settings should clamp displayed volume without applying audio logic")
-	var resume_button := pause_menu.get_node_or_null("Panel/Margin/VBox/ResumeButton") as Button
+		failures.append(
+			"Pause/settings should clamp displayed volume without applying audio logic"
+		)
+	var resume_path := "Panel/Margin/VBox/ResumeButton"
+	var resume_button := pause_menu.get_node_or_null(resume_path) as Button
 	if resume_button == null or resume_button.focus_mode != Control.FOCUS_ALL:
 		failures.append("Pause/settings primary action should be keyboard focusable")
 	pause_menu.free()
