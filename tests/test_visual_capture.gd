@@ -26,6 +26,7 @@ const REQUIRED_IDS: Array[StringName] = [
 	&"cemetery_day",
 	&"cemetery_night",
 	&"cemetery_architecture_props",
+	&"village_architecture",
 	&"ui_inventory",
 	&"ui_storage",
 	&"ui_crafting",
