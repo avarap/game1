@@ -6,21 +6,16 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 - Repositorio: `avarap/game1`.
 - Rama principal: `main`.
-- HEAD de referencia de esta sincronización: `81021973025302213dc64ef8f4a4744673c5dd75`.
-- Último CI de `main` para ese HEAD: run `33350515654`, success.
+- HEAD de referencia de esta sincronización: `adc78483e79661298a2fc36e49976325b35855b3`.
+- Último CI de `main` para ese HEAD: run `33369187753`, success.
 - Runtime/CI objetivo: **Godot 4.7.2**.
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
 - No declarar Fase 8 completa salvo cierre real de #70 sobre el mismo HEAD final.
 
-## Gate P0 temporal
+## Gate P0 temporal — RESUELTO
 
-Auditoría sobre HEAD `8102197` detectó dos cabos sueltos antes de seguir integrando Fase 8:
-
-1. **#82** — falta test de regresión de save/load de Brother Aldren en cementerio. Debe verificar posición y estado/rutina persistentes y fallar si se revierte la protección de restore.
-2. **#83** — sincronización de `ROADMAP.md`, `DEV_MEMORY.md`, `CHANGELOG.md` y `README.md` con el HEAD real.
-
-Mientras #82 o #83 sigan abiertas, los workers pueden preparar trabajo independiente pero el supervisor **no fusiona** otros PRs de Fase 8. Tras cerrar ambos, exigir `main` verde antes de reanudar merges.
+La auditoría iniciada sobre HEAD `8102197` queda cerrada: #82 se integró mediante PR #92, #83 está cerrada y `main` permanece verde. La integración normal de Fase 8 continúa uno a uno sin relajar quality gates.
 
 ## Fuentes de verdad
 
@@ -43,101 +38,51 @@ Mientras #82 o #83 sigan abiertas, los workers pueden preparar trabajo independi
 - `world/world.tscn` es el shell persistente; `ZoneManager` mantiene una sola zona activa bajo `ZoneContainer`.
 - `WorldLocationProvider` persiste zona/marker/posición y el restore no debe reinicializar actores persistentes como Brother Aldren.
 
-## Fase 7 — mundo estable
-
-Fase 7 quedó cerrada mediante #24 / PR #54. El mundo modular conecta cementerio/propiedad, bosque, pueblo, interiores y mina, preservando Player, controllers y Brother Aldren durante viajes. La cámara adopta bounds de la zona activa.
-
 ## Fase 8A — estado integrado
 
-### 8A.1 — Descomposición acelerada
+- 8A.1 descomposición acelerada y 8A.2 conservación determinista: integradas.
+- 8A.3 agricultura mínima: integrada mediante PR #76.
+- 8A.4 recurso multiuso: #61 cerrado mediante PR #81; `fodder_turnip` participa en storage, economía y crafting.
+- 8A.5 servicio funerario: #62 cerrado tras PR #99, merge `bab397eca3f85d7d62af882751d250a2bc473248`. Consume `fodder_turnip` real mediante storage, entrega a las 18:00, primera gratuita y persiste exactly-once.
+- 8A.6 logística progresiva: #100 tiene implementación en PR #101, actualmente pendiente de resincronización con el `main` real antes de revisión/merge.
+- 8A.7 #64, 8A.8 #65 y 8A.9 #66: pendientes.
 
-- `decay_percent: int` 0..100 y `age_minutes: int`.
-- Estados: Fresh, Fading, Decomposed, Rotten.
-- Tasas crecientes por edad y saltos temporales deterministas.
-- Acumulador entero privado para progreso subporcentual.
+## Fase 8 — visual/UI integrado frente a aceptación
 
-### 8A.2 — Conservación
-
-- `PreservationModifiers` usa basis points enteros (`10000 = 1.0`).
-- Factores de tecnología/instalación/utensilio neutrales por defecto y multiplicativos.
-- Conservación solo ralentiza deterioro futuro; no rejuvenece.
-- `_preservation_remainder` persiste para mantener determinismo.
-
-### 8A.3 — Agricultura mínima
-
-- IDs estables `fodder_turnip_seed` y `fodder_turnip`.
-- Plantado atómico, crecimiento gobernado por `TimeManager`, cosecha exactly-once y snapshot/restore determinista.
-- PR #76; main run `33342619691` verde.
-
-### 8A.4 — Recurso multiuso — INTEGRADO
-
-- #61 cerrado mediante PR #81.
-- `fodder_turnip` integrado en items/storage, economía y crafting.
-- `fodder_turnip_mash` reutiliza `CraftingService`.
-- Economía fija inicial: semilla 3 cobre, compra directa de nabo 5, venta 2; una semilla produce 2 unidades, por lo que cultivar es la ruta sostenible.
-- Merge `3cab1b15c0e990a76d0e40df42362ff2b0f0dfb1`.
-
-### Pendiente 8A
-
-- #62 — servicio funerario 18:00.
-- #63 — logística progresiva.
-- #64 — cremar/investigar.
-- #65 — feedback/hooks.
-- #66 — aceptación integral.
-- Tracker #71 ya refleja #60/#61 cerradas.
-
-## Fase 8 — visual integrado
-
-- #25 — tileset exterior integrado.
-- #28 — props/edificios/cementerio integrado.
-- #29 — integración artística de mapas integrada mediante PR #80, merge `0e60751bf7346b597bbeba5fcd495b2b27445a27`, main run `33350442187` verde.
-- #26 — player spritesheet + animaciones integrado mediante PR #75, HEAD `8102197`, main run `33350515654` verde.
-- Pendientes: #27 Brother Aldren visual, #30 atmósfera/lighting/FX, #31 aceptación visual.
-- Tracker #72 ya refleja #25/#26/#28/#29 cerradas.
-
-## UI integrado
-
-- #68 sigue abierta.
-- PR #78 ya integró theme reutilizable, HUD de estado y base de pause/settings con localización EN/ES.
-- Merge `1536ece0e28a3c8da99aa415a557f951bed9613d`.
-- El PR #78 no cierra #68; quedan paneles/UX y aceptación final.
+- #25, #26, #28 y #29: integrados.
+- PR #89 / #84 (Brother Aldren visual) está integrado, pero #27 no debe declararse visualmente aceptado hasta resolver #94/#96 y disponer de evidencia renderizada suficiente.
+- PR #90 (atmósfera/lighting/FX) está integrado; PR #102 corrigió el uso inválido de densidad de `CPUParticles2D` en runtime y añadió regresión live SceneTree. #30 sigue pendiente de aceptación visual verificable.
+- PR #91 (paneles core UI) está integrado; #68 sigue pendiente de aceptación UI/visual final.
+- #31 aceptación visual integral sigue pendiente.
 
 ## Quality bar visual obligatorio
 
-Referencia aprobada por el usuario: mockup pixel-art oscuro del cuidador del cementerio.
-
-Exigir:
-- personajes detallados, silueta clara y 8 direcciones coherentes;
-- ropa/equipamiento legibles;
-- paleta medieval oscura rica pero controlada;
-- iluminación cálida localizada y sombras profundas;
-- entorno denso, vegetación y props integrados;
-- acabado profesional sin apariencia de placeholder/blockout.
-
-Un PR visual no se acepta solo por tests verdes. Si el contrato humano 32x48 fuerza una degradación evidente, abrir una decisión de arquitectura visual para reevaluar escala/resolución antes de bajar calidad.
+Referencia aprobada: mockup pixel-art oscuro del cuidador del cementerio. Exigir personajes detallados y 8 direcciones coherentes, ropa/equipamiento legibles, paleta medieval oscura rica/controlada, iluminación cálida localizada, sombras profundas, entorno denso y acabado profesional. Tests verdes no sustituyen la revisión visual. Si 32x48 fuerza un downgrade, resolver #94 antes de aceptarlo.
 
 ## Cola autónoma actual
 
-- #82 — `[AUTO][GAMEPLAY][P0]` regresión save/load de Aldren; prioridad absoluta del Gameplay Worker.
-- #84 — `[AUTO][CHARACTERS][P0]` Brother Aldren visual, referencia #27.
-- #85 — `[AUTO][WORLD][P1]` atmósfera/lighting/FX, referencia #30.
-- #86 — `[AUTO][UI][P0]` visual/UX pass de paneles core, referencia #68.
+- GAMEPLAY: #100 tiene PR activo #101; no preparar otra tarea hasta resolverlo.
+- #93 — `[AUTO][AUDIO][P1]` routing/ambiente/mezcla.
+- #94 — `[AUTO][ARCH][P0]` reevaluación de escala/resolución visual.
+- #96 — `[AUTO][QA][P0]` capturas visuales deterministas.
+- CHARACTERS no recibe nueva tarea mientras #94/#96 bloqueen el siguiente paso.
+- WORLD/UI: el código incremental está integrado; la aceptación visual pendiente no debe presentarse como trabajo autónomo desbloqueado mientras dependa de #96.
 
-Los workers pueden preparar estos PRs en paralelo por ownership separado; solo el supervisor integra y debe respetar el gate #82/#83.
+No preparar una segunda tarea del mismo carril mientras exista una issue preparada o PR activo.
 
 ## Coordinación del supervisor
 
 - Solo el supervisor actualiza `ROADMAP.md`, `DEV_MEMORY.md`, `CHANGELOG.md` y `README.md`.
-- Revisa scope, ownership, dependencias lógicas, tests, Godot 4.7.2, lint/format, smoke, suite y mergeabilidad.
-- Integra PRs uno a uno y reevalúa cola después de cada merge.
-- No fuerza merges ni relaja quality gates.
-- Diferencia siempre estado de `main` frente a ramas/PRs aún no integrados.
+- Revisar scope, ownership, dependencias, tests, Godot 4.7.2, lint/format, smoke, suite y mergeabilidad.
+- Integrar PRs uno a uno y reevaluar la cola tras cada merge.
+- Diferenciar siempre estado integrado en `main` de aceptación pendiente o trabajo en ramas.
+- No forzar merges ni relajar quality gates.
 
 ## Trackers
 
-- #71 — M8A Gameplay Depth, objetivo 3 Sep 2026.
-- #72 — M8V Visual slice, objetivo 8 Sep 2026.
-- #73 — M8-RC Release Candidate, objetivo 14 Sep 2026.
+- #71 — M8A Gameplay Depth.
+- #72 — M8V Visual slice.
+- #73 — M8-RC Release Candidate.
 - #70 es el único gate autorizado para declarar Fase 8 completada.
 
 ## Post-MVP registrado
@@ -152,9 +97,4 @@ Trabajadores originales del mundo de `game1`, sin copiar zombies del benchmark. 
 
 ## Regla de continuidad
 
-Al retomar:
-1. Leer `DEV_MEMORY.md`, `ROADMAP.md`, spec activa, `ART_DIRECTION.md` e issue/PR activo.
-2. Revisar HEAD de `main`, CI, issues y PRs.
-3. Resolver gates P0 antes de integración normal.
-4. Exigir quality/import/smoke/suite sobre Godot 4.7.2.
-5. Mantener documentación y trackers alineados con código realmente integrado.
+Al retomar: leer memoria/roadmap/spec/arte; revisar HEAD, CI, issues y PRs; mantener el gate P0 cerrado; exigir quality/import/smoke/suite sobre Godot 4.7.2; mantener documentación y trackers alineados con código realmente integrado y con aceptación visual realmente demostrada.
