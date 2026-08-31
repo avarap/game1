@@ -26,12 +26,14 @@ func _connect_event_bus() -> void:
 		return
 	var funeral_listener := Callable(self, "_on_funeral_delivery_completed")
 	var decision_listener := Callable(self, "_on_corpse_final_decision_completed")
-	if _event_bus.has_signal("funeral_delivery_completed") and not _event_bus.is_connected(
-		"funeral_delivery_completed", funeral_listener
+	if (
+		_event_bus.has_signal("funeral_delivery_completed")
+		and not _event_bus.is_connected("funeral_delivery_completed", funeral_listener)
 	):
 		_event_bus.connect("funeral_delivery_completed", funeral_listener)
-	if _event_bus.has_signal("corpse_final_decision_completed") and not _event_bus.is_connected(
-		"corpse_final_decision_completed", decision_listener
+	if (
+		_event_bus.has_signal("corpse_final_decision_completed")
+		and not _event_bus.is_connected("corpse_final_decision_completed", decision_listener)
 	):
 		_event_bus.connect("corpse_final_decision_completed", decision_listener)
 
