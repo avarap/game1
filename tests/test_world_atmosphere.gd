@@ -11,6 +11,7 @@ static func run() -> Array[String]:
 	var failures: Array[String] = []
 	_check_resources(failures)
 	_check_world_integration(failures)
+	_check_live_cpu_particles(failures)
 	return failures
 
 
@@ -60,3 +61,32 @@ static func _check_world_integration(failures: Array[String]) -> void:
 		failures.append("Interiors should use a clearly warmer atmosphere profile")
 
 	world.free()
+
+
+static func _check_live_cpu_particles(failures: Array[String]) -> void:
+	var atmosphere_scene := load(SCENE_PATH) as PackedScene
+	if atmosphere_scene == null:
+		return
+	var atmosphere := atmosphere_scene.instantiate()
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		failures.append("Atmosphere runtime test requires an active SceneTree")
+		atmosphere.free()
+		return
+
+	tree.root.add_child(atmosphere)
+	var motes := atmosphere.get_node_or_null("Motes") as CPUParticles2D
+	if motes == null:
+		failures.append("Atmosphere motes should remain CPUParticles2D")
+		atmosphere.queue_free()
+		return
+
+	atmosphere.call("apply_zone", &"cemetery")
+	var cemetery_amount := motes.amount
+	atmosphere.call("apply_zone", &"village_interior")
+	var interior_amount := motes.amount
+	if cemetery_amount <= interior_amount:
+		failures.append("CPU mote density should be higher in cemetery than warm interiors")
+	if cemetery_amount < 1 or interior_amount < 1:
+		failures.append("CPU mote amount should always remain a valid positive integer")
+	atmosphere.queue_free()
