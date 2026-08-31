@@ -27,15 +27,16 @@
 - Restaurar `world_location` no debe sobreescribir el estado persistente de Brother Aldren.
 - El servicio funerario consume `fodder_turnip` real mediante storage.
 - PR #102 corrige el error runtime de densidad de `CPUParticles2D` usando `amount` entero y añade regresión live SceneTree.
+- PR #121 contiene una corrección mínima, todavía no integrada, para que `CemeteryController` inyecte configuración de decisiones terminales y el `TechnologyService` real del mundo en `CemeteryService`, cerrando el RED de `research` del flujo 8A.
 
 ### Current Work / Gates
 - HEAD sincronizado por esta documentación: `a0a54f5ede3d37602bed5594957305b92577bb96`.
 - CI de ese HEAD: run `33400411975`, **success**.
 - Gate P0 histórico #82/#83: **superado**.
-- #115 / PR #121: aceptación integral 8A en RED. El test integral confirma una regresión real: un cadáver entregado por el flujo WORLD no puede ejecutar la decisión terminal `research`; además `gdformat --check` falla. No integrar hasta corrección mínima TDD y todos los gates verdes.
-- #109 / PR #114: player 64x96 técnicamente verde en la rama, pero basado en `98045f4...`; requiere resync con `main` y evidencia visual #96 revisada contra `docs/`.
-- #113 / PR #116: edificios de producción en rama con CI técnico previo verde, pero base antigua y PR no mergeable; requiere resync/conflict resolution y evidencia visual #96.
-- #93 AUDIO: desbloqueada/asignada; sin PR abierto en esta sincronización.
+- #115 / PR #121: head `e37dc433...`, mergeable/sincronizado y CI `33404377011` completamente verde, incluido `Phase8AAcceptance`. No integrado aún porque el PR continúa draft y el conector GitHub falla al pasarlo a ready; no forzar merge.
+- #109 / PR #114: sincronizado/mergeable y CI `33405431151` verde. El candidato visual actual está rechazado por seguir leyendo como placeholder ampliado; requiere rework y evidencia #96 contra `docs/`.
+- #113 / PR #116: sincronizado/mergeable y CI `33403543515` verde; requiere evidencia perceptual #96 y posible migración a raster si SVG no alcanza el quality bar.
+- #93 / PR #122: import, smoke, suite y gdlint verdes, pero `gdformat --check` falla en CI `33404640239`; mantener worker hasta corrección y revalidación.
 - #94 ARCH: abierta y bloqueada por evidencia perceptual de #109.
 - #70 sigue siendo el único gate autorizado para cerrar Fase 8.
 
@@ -52,6 +53,9 @@
 - PR #106 decisiones terminales: integrada.
 - PR #112 feedback hooks: main run `33395789790`, success.
 - PR #118 política visual: main run `33400411975`, success.
+- PR #121 pre-merge acceptance: run `33404377011`, success.
+- PR #114 technical gate: run `33405431151`, success; visual gate remains open.
+- PR #116 technical gate: run `33403543515`, success; visual gate remains open.
 
 ### Design Decisions — Phase 8A
 - Descomposición integer 0–100 con estados Fresh/Fading/Decomposed/Rotten y aceleración con edad.
@@ -65,7 +69,7 @@
 ### Design Decisions — Visual Reset
 - `docs/` es la referencia oficial de calidad percibida.
 - CI verde no equivale a aceptación visual.
-- 32x48 no es contrato de producción para personajes hero/key NPCs; 64x96 nativo es la recomendación provisional fuerte de #107.
+- 32x48 no es contrato de producción para personajes hero/key NPCs; 64x96 nativo es la recomendación provisional fuerte de #107, no un techo si la calidad exige más resolución.
 - Pivote de pies, colisión, navegación e interacción se mantienen desacoplados del canvas visible.
 - Arquitectura, props, tiles y VFX pueden aumentar resolución/escala si el resultado heredado obliga a un aspecto plano/blockout.
 
