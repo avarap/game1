@@ -58,7 +58,9 @@ static func run() -> Array[String]:
 	return failures
 
 
-static func _check_seed_to_fodder(cemetery: CemeteryController, failures: Array[String]) -> void:
+static func _check_seed_to_fodder(
+	cemetery: CemeteryController, failures: Array[String]
+) -> void:
 	var seed := load("res://data/farming/fodder_turnip_seed.tres") as ItemData
 	var harvest_item := load("res://data/items/fodder_turnip.tres") as ItemData
 	var merchant := load("res://data/economy/yard_supplier.tres") as MerchantData
@@ -189,18 +191,22 @@ static func _check_delivery_decay_logistics_and_decision(
 	if restored_reception != FuneralDeliveryService.ROADSIDE_DROPOFF:
 		failures.append("Phase 8A ramp unlock must not relocate an existing corpse")
 
+	var fodder_before_regular := cemetery.funeral_fodder_count()
+	var configured_fodder_cost := cemetery.funeral_service.fodder_cost
 	cemetery.sync_funeral_time(11, 17, 59)
 	cemetery.sync_funeral_time(11, 18, 0)
 	if cemetery.service.pending_corpses.size() != 2 or recorder.delivery_count != 2:
 		failures.append("Phase 8A upgraded next-day delivery should occur exactly once")
 		return
-	if cemetery.funeral_fodder_count() != 0:
-		failures.append("Phase 8A feeder should consume harvested fodder for regular delivery")
+	var expected_fodder := fodder_before_regular - configured_fodder_cost
+	if cemetery.funeral_fodder_count() != expected_fodder:
+		failures.append("Phase 8A regular delivery should consume its configured fodder cost")
 	var second_id := _other_pending_id(cemetery.service, corpse_id)
 	if second_id == &"":
 		failures.append("Phase 8A upgraded delivery should create a distinct corpse")
 		return
-	if cemetery.funeral_service.reception_point_for(second_id) != FuneralDeliveryService.RAMP_DROPOFF:
+	var second_reception := cemetery.funeral_service.reception_point_for(second_id)
+	if second_reception != FuneralDeliveryService.RAMP_DROPOFF:
 		failures.append("Phase 8A logistics upgrade should route future corpses to the ramp")
 	cemetery.sync_funeral_time(11, 18, 0)
 	cemetery.sync_funeral_time(11, 22, 0)
