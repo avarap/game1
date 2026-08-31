@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://systems/crafting/recipe_data.gd" id="1_recipe"]
+[ext_resource type="Script" path="res://systems/crafting/recipe_ingredient.gd" id="2_ingredient"]
+[ext_resource type="Resource" path="res://data/items/fodder_turnip.tres" id="3_turnip"]
+[ext_resource type="Resource" path="res://data/items/fodder_turnip_mash.tres" id="4_mash"]
+
+[sub_resource type="Resource" id="InputTurnip"]
+script = ExtResource("2_ingredient")
+item = ExtResource("3_turnip")
+amount = 2
+
+[sub_resource type="Resource" id="OutputMash"]
+script = ExtResource("2_ingredient")
+item = ExtResource("4_mash")
+amount = 1
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"fodder_turnip_mash"
+display_name = "Fodder Turnip Mash"
+station = &"workbench"
+inputs = Array[ExtResource("2_ingredient")]([SubResource("InputTurnip")])
+outputs = Array[ExtResource("2_ingredient")]([SubResource("OutputMash")])
+duration_seconds = 0.0
+energy_cost = 1
