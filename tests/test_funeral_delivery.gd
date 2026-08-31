@@ -135,14 +135,20 @@ static func _check_persistence(funeral_script: Script, failures: Array[String]) 
 		failures.append("Save/load after 18:00 should not duplicate delivery")
 
 
-static func _check_progressive_unloading(funeral_script: Script, failures: Array[String]) -> void:
+static func _check_progressive_unloading(
+	funeral_script: Script, failures: Array[String]
+) -> void:
 	var cemetery := _new_cemetery_service()
 	var storage := _new_fodder_storage()
 	var funeral: Variant = funeral_script.new(cemetery, storage, 1)
+	var missing_api := false
 	for method_name in [&"reception_point_for", &"unlock_ramp", &"is_ramp_unlocked"]:
 		if not funeral.has_method(method_name):
-			failures.append("Funeral delivery should expose %s for progressive unloading" % method_name)
-	if not failures.is_empty():
+			failures.append(
+				"Funeral delivery should expose %s for progressive unloading" % method_name
+			)
+			missing_api = true
+	if missing_api:
 		return
 
 	funeral.call("sync_time", 30, 17, 59)
