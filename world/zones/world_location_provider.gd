@@ -29,8 +29,8 @@ func get_save_data() -> Dictionary:
 func apply_save_data(data: Dictionary) -> void:
 	var zone_id := StringName(str(data.get("zone_id", FALLBACK_ZONE)))
 	var marker_id := StringName(str(data.get("marker_id", FALLBACK_MARKER)))
-	if not zone_manager.travel_to(zone_id, marker_id):
-		zone_manager.travel_to(FALLBACK_ZONE, FALLBACK_MARKER)
+	if not zone_manager.travel_to(zone_id, marker_id, false):
+		zone_manager.travel_to(FALLBACK_ZONE, FALLBACK_MARKER, false)
 		return
 	var position_value: Variant = data.get("position", {})
 	if typeof(position_value) != TYPE_DICTIONARY:
