@@ -1,7 +1,11 @@
 # Godot 4
 .godot/
+*.translation
 /export/
 /build/
+
+# Documentation-only visual references (not game assets)
+docs/art_example/*.import
 
 # OS / editors
 .DS_Store
