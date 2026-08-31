@@ -6,99 +6,60 @@
 - Bootstrap Godot 4.x, cinco Autoloads globales, InputMap, logging, debug, guardado versionado, tests y CI headless.
 - Walking prototype, items/inventario, energía, recursos, crafting, `StorageNetwork`, producción temporizada y cementerio persistente.
 - Simulación: reloj/calendario, sueño, ciclo día/noche, `NPCData`, navegación, horarios/estados y persistencia NPC.
-- Localización EN/ES, diálogo data-driven, relaciones, quests, economía y tecnologías como sistemas locales/contextuales.
-- **#6 Comercio UI:** `TradeLayer`/`TradePanel`, `TradeInteractable` reutilizable, punto de comercio integrado, prompts/textos EN/ES y `test_trading_ui.gd`.
-- **#8 Tecnología ↔ quests:** recompensa tipada `TECHNOLOGY_POINTS`, compatibilidad `QUEST_FLAG` e idempotencia tras save/load.
-- **#9 Aceptación RPG final:** flujo integral relación→diálogo→quest→recompensa→unlock→compra/venta→save/load.
-- **#17 Contrato visual:** `ART_DIRECTION.md` fija proyección, tiles de 32 px, escala, pivotes/Y-sort, capas, paleta, luz y convenciones.
-- **#16 Foundation `TileMapLayer`:** `technical_map.tscn` + `TechnicalMap`, seis capas, bounds y colisión tile-based.
-- **#18–#24 Mundo:** cementerio/taller, bosque, pueblo, interiores, mina, integración de zonas y aceptación integral.
-- **#25 Tileset exterior:** atlas original `256 x 256` con 64 tiles de `32 x 32` y documentación estable de celdas.
-- **#28 Props/edificios/cementerio:** assets originales de entorno, tumbas, mobiliario funcional y fachadas integrados vía PR #79 sin mover autoridad de gameplay.
-- **8A.1 Descomposición acelerada:** `CorpseState` incorpora edad en minutos enteros, deterioro entero 0–100, cuatro estados legibles, aceleración por edad, calidad efectiva y persistencia determinista.
-- `TestCorpseDecomposition` valida bandas 0–24/24–48/48–72/>72 h, equivalencia entre saltos grandes y pequeños, thresholds y round-trip integer.
-- **8A.2 Conservación:** `PreservationModifiers` añade factores data-driven en basis points enteros para tecnología, instalación y utensilio, neutrales por defecto y multiplicativos.
-- `CorpseState` aplica conservación solo al deterioro futuro y persiste modificadores y resto fraccional; `TestCorpsePreservation` cubre neutralidad, reducción, composición, no-rewind, determinismo y round-trip.
-- **8A.3 Agricultura mínima:** `CropData` y `FarmPlotState` implementan plantado atómico, crecimiento determinista con `TimeManager`, cosecha exactly-once, parcela reutilizable y snapshot/restore sin duplicación.
-- Datos estables `fodder_turnip_seed` y `fodder_turnip` bajo `data/farming/*`; `TestFarmingMinimum` registrado en la suite global.
-- Spec detallado de Phase 8A para conservación, agricultura/nabo multiuso, servicio funerario a las 18:00, comedero, rampa, cremación/investigación y aceptación integral.
-- **Post-MVP economía local por profesión:** todo item vendible debe tener comprador compatible; comerciantes opt-in por NPC y `MerchantProfile` data-driven basado en tags/categorías, con afinidad de precio, cupos y validación de items sin salida económica.
-- **Post-MVP automatización:** trabajadores originales con tareas `HARVEST`, `MINE`, `CHOP`, `TRANSPORT` y `PROCESS`, dependientes de infraestructura y cadenas productivas.
-- **Biblioteca `docs/design/`:** documentación categorizada de visión, orden de ejecución, loops, mundo, recursos, crafting, tecnología, construcción, economía, farming, NPCs, cementerio, tiempo/clima, exploración, automatización, UI, arte, progresión y arquitectura data-driven.
-- **Backlog y prompts de diseño:** `19_IDEA_BACKLOG.md` clasifica ideas por MVP/post-MVP/expansión y `20_IMPLEMENTATION_PROMPTS.md` añade prompts reutilizables para elaborar e implementar bloques futuros sin saltar fases.
+- Localización EN/ES, diálogo data-driven, relaciones, quests, economía, comercio UI y tecnologías.
+- Fase 7 completa: cementerio/taller, bosque, pueblo, interiores, mina, zonas, transiciones y persistencia de ubicación.
+- **#25 Tileset exterior** y **#28 props/edificios/cementerio** como base visual original.
+- **#29 Integración artística de mapas:** tileset/props aplicados a mapas de Fase 7 sin mover autoridad de gameplay; PR #80, merge `0e60751bf7346b597bbeba5fcd495b2b27445a27`.
+- **#26 Player visual:** `AnimatedSprite2D`, personaje original y animaciones idle/walk en 8 direcciones; PR #75, integrado en HEAD `81021973025302213dc64ef8f4a4744673c5dd75`.
+- **8A.1 Descomposición acelerada:** edad/minutos y deterioro entero 0–100 con bandas crecientes y determinismo temporal.
+- **8A.2 Conservación:** modificadores enteros en basis points y remainder persistente para conservar precisión sin floats persistidos.
+- **8A.3 Agricultura mínima:** `fodder_turnip_seed`/`fodder_turnip`, plantado atómico, crecimiento determinista y cosecha exactly-once.
+- **8A.4 Recurso multiuso (#61):** `fodder_turnip` integrado en items/storage, economía y crafting; `fodder_turnip_mash` reutiliza `CraftingService`; PR #81, merge `3cab1b15c0e990a76d0e40df42362ff2b0f0dfb1`.
+- **UI #68 incremento integrado:** theme reutilizable, HUD de estado y base de pause/settings localizados EN/ES mediante PR #78. #68 permanece abierta.
+- Biblioteca `docs/design/` y backlog Post-MVP para economía local por profesión y automatización avanzada.
 
 ### Changed
-- `SaveManager` agrega/aplica providers locales sin convertir sistemas RPG en Autoloads.
-- Dinero y precios usan cobre entero; tecnologías usan puntos rojo/verde/azul enteros no negativos.
+- Runtime/CI objetivo: **Godot 4.7.2**.
 - Quality gate global descubre todos los `*.gd` y ejecuta `gdlint` + `gdformat --check`.
-- Runtime/CI objetivo actualizado a **Godot 4.7.2**.
-- `world/world.tscn` es un shell persistente; el mapa activo vive bajo `ZoneContainer`.
-- Brother Aldren permanece persistente y se oculta/pausa fuera del cementerio; `TradePoint` se activa solo en pueblo.
-- **Fase 6 — RPG COMPLETADA** tras #6, #8 y #9.
-- **Fase 7 — Mundo COMPLETADA** tras #16/#17/#18–#24.
-- **Fase 8 — Polish ACTIVA**.
-- #25 mantiene arte de terreno desacoplado de gameplay, colisión, navegación y escenas de mapa; su integración queda reservada a #29.
-- El contrato legacy de descomposición float lineal (`current_decay`/`decay_rate_per_hour`) se sustituye por `decay_percent: int` y `age_minutes: int`.
-- `CorpseData` usa `decay_percent` entero 0–100; los tests históricos de cementerio se migran al nuevo comportamiento.
-- No se implementa migración de saves legacy: no existen saves de jugadores que conservar.
-- Cambiar modificadores de conservación conserva el resto fraccional de deterioro acumulado para que aplicar una mejora no rejuvenezca ni perdone progreso previo.
-- `docs/design/` queda explícitamente como dirección secundaria/backlog: no sustituye `ROADMAP.md` ni autoriza adelantar sistemas post-MVP.
-- Tras integrar 8A.3, el siguiente bloque funcional habilitado es #61 / 8A.4; el integrador no inicia features y solo sincroniza estado global.
-
-### Design Decisions — Phase 8A
-- Descomposición híbrida: almacenamiento integer 0–100, estados Fresh/Fading/Decomposed/Rotten y aceleración con la edad.
-- Un acumulador privado entero conserva progreso subporcentual y evita depender de floats persistentes.
-- Conservación mediante multiplicadores enteros de tecnología, utensilios e instalaciones; nunca rejuvenece y la rampa de entrega no aporta bonus.
-- Transporte funerario original al atardecer, objetivo 18:00; tras quest requiere alimento cultivable y debe ser exactly-once con sueño/time-jump/save-load.
-- Descarga inicial junto al camino; rampa desbloqueable dirige entregas al depósito sin bonus de conservación.
-- `fodder_turnip` será cultivable, comprable, vendible, almacenable y utilizable en cocina; cultivar es la estrategia sostenible y comprar una salida de emergencia.
-- Cocina reutiliza crafting y recupera energía; no se añade hambre.
-- Cremar e investigar se añaden como decisiones distintas a enterrar; investigar consume tiempo mientras continúa el deterioro.
-- Economía preparada para modificadores multiplicativos neutrales por defecto; no se añade supply/demand complejo.
-- Feedback placeholder reutiliza EventBus/AudioManager; arte/audio final permanece en el sub-track visual.
-
-### Design Decisions — Post-MVP
-- Todo producto vendible debe tener al menos un `MerchantProfile` compatible salvo `quest_only`, `key_item` o `non_sellable`.
-- No todos los aldeanos comercian; los comerciantes aceptan familias de recursos según profesión mediante tags/categorías.
-- El herrero es el caso de referencia: acepta `iron`, `ore`, `metal_part` y `tool`, pero no productos agrícolas o madera no relacionada.
-- Un comerciante general puede actuar como salida de seguridad con peores precios; la afinidad profesional y los cupos evitan que todos los NPCs sean equivalentes.
-- Añadir o modificar recursos/comerciantes debe ser data-driven y validable, sin lógica específica dispersa por item.
-- El diseño futuro prioriza recetas `N inputs → N outputs`, subproductos reutilizables, progreso visible del mundo, construcción/estaciones extensibles, logística que evoluciona de manual a automatizada y densidad de contenido antes que tamaño de mapa.
+- `world/world.tscn` es shell persistente y `ZoneManager` mantiene una sola zona activa.
+- El contrato legacy de descomposición float lineal fue sustituido por estado entero y acumulación determinista.
+- Fases 0–7 quedan completadas; Fase 8 — Polish permanece **ACTIVA**.
+- Track 8A tiene integrados 8A.1–8A.4; el siguiente bloque funcional es #62.
+- Sub-track visual tiene integrados #25, #26, #28 y #29; quedan #27, #30 y #31.
+- El estándar visual de aceptación exige calidad percibida comparable al mockup oscuro aprobado: personajes detallados, iluminación cálida localizada, sombras profundas, entorno denso y ausencia de placeholders/blockout visibles.
 
 ### Fixed
-- Inferencias `Variant`, problemas de atomicidad y lifecycle detectados en fases anteriores.
-- `ScheduleEntryData` dejó de comparar resultados normalizados de tiempo con enteros incorrectamente.
-- El prompt del comercio se localiza con `UI_TRADE_PROMPT` y responde a cambio de idioma.
-- #16 corrigió el orden de registro del atlas antes de crear geometría de colisión.
-- Tests legacy ya no retienen `SleepSpot` de una zona destruida durante load.
-- Restaurar `world_location` no sobreescribe el estado persistente de Brother Aldren.
-- `zone_manager.gd` quedó normalizado por `gdformat` sin relajar el gate global.
-- Durante 8A.1 se corrigieron únicamente discrepancias mecánicas de longitud/formato detectadas por el gate antes de aceptar el bloque.
-- **8A.2:** `set_preservation_modifiers()` ya no reinicia `_preservation_remainder`; se evita descartar deterioro subporcentual acumulado al cambiar mejoras de conservación.
+- Restaurar `world_location` no debe sobreescribir el estado persistente de Brother Aldren.
+- El restore puede omitir el refresco de actores persistentes para evitar reposicionarlos en spawn.
+- **Pendiente de blindaje:** issue #82 añade el test de regresión específico para save/load de Aldren en cementerio.
+- Cambiar modificadores de conservación conserva el remainder fraccional y no perdona deterioro acumulado.
+
+### Project State / Gates
+- HEAD sincronizado por esta documentación: `81021973025302213dc64ef8f4a4744673c5dd75`.
+- CI de ese HEAD: run `33350515654`, success.
+- Gate P0 temporal: cerrar #82 y #83 y dejar `main` verde antes de integrar más PRs de Fase 8.
+- Trackers sincronizados: #71 refleja #60/#61 cerradas; #72 refleja #25/#26/#28/#29 cerradas.
+- Cola preparada por supervisor: #82 GAMEPLAY/QA, #84 CHARACTERS, #85 WORLD y #86 UI.
 
 ### Validated
-- Fase 0: run `33278173612`, success.
-- Fase 1: run `33280758441`, success.
-- Fase 2: run `33285578050`, success.
-- Fase 3: run `33292481990`, success.
-- Fase 4: run `33294286014`, success.
-- Fase 5: run `33297774458`, success.
-- Comercio UI #6: run `33307358527`, success.
-- Quality gate global #38: run `33308014015`, success.
-- Cierre RPG #9: run `33308814397`, success.
+- Cierre Fase 6: PR #39, run `33308814397`, success.
 - Godot 4.7.2: PR #41, run `33309144543`, success.
-- Contrato visual #17: run `33311594061`, success.
-- Foundation `TileMapLayer` #16: run `33313715794`, success.
-- Cementerio/taller #18: PR #47, run `33316327221`, success.
-- Bosque #19: PR #48, run `33316454888`, success.
-- Pueblo #20: PR #46, run `33315626881`, success.
-- Interiores #21: PR #49, run `33318051580`, success.
-- Mina #22: PR #50, run `33318407597`, success.
-- Integración #23: PR #53, run `33331094583`, success.
-- Cierre #24: PR #54, run `33331207740`, success.
-- Tileset exterior #25: PR #56, run `33333578933`, success.
-- **8A.1 descomposición integer:** PR #57, run funcional `33334955947`: `gdlint`, `gdformat --check`, Godot 4.7.2 import, main-scene smoke y suite headless completa en success.
-- **8A.2 conservación:** PR #59, run previo `33335651778` verde; RED de regresión `33336306728` falló exactamente por pérdida del resto fraccional; GREEN funcional `33336387360` pasó quality, import Godot 4.7.2, smoke y suite headless completa.
-- **#28 props/edificios/cementerio:** PR #79, merge `d5014467e439d96e4aca7f53ce2d3cb1b7e108f5`, main run `33340142216`, success.
-- **8A.3 agricultura mínima:** PR #76, merge `b10146d12d5c6f0251b61ec779f4ecc7351e9257`, main run `33342619691`, success.
-- Cambio documental `docs/design/`: no modifica GDScript, escenas ni assets; validación requerida es integridad/relectura de documentación y estado de `main`.
+- Cierre Fase 7: PR #54, run `33331207740`, success.
+- #28 props/edificios/cementerio: main run `33340142216`, success.
+- 8A.3 agricultura mínima: main run `33342619691`, success.
+- #29 integración artística de mapas: main run `33350442187`, success.
+- #26 player visual / HEAD `8102197`: main run `33350515654`, success.
+
+### Design Decisions — Phase 8A
+- Descomposición integer 0–100 con estados Fresh/Fading/Decomposed/Rotten y aceleración con edad.
+- Conservación mediante basis points enteros, sin rejuvenecimiento.
+- Transporte funerario original al atardecer, objetivo 18:00; tras introducción requiere alimento cultivable y debe ser exactly-once con sueño/time-jump/save-load.
+- Descarga inicial junto al camino y rampa desbloqueable posterior.
+- `fodder_turnip` es cultivable, comprable, vendible, almacenable y reutilizable en crafting/cocina; cultivar es la estrategia sostenible.
+- Cremar e investigar serán decisiones alternativas a enterrar.
+- Feedback reutiliza EventBus/AudioManager sin acoplar reglas de gameplay.
+
+### Design Decisions — Post-MVP
+- Comerciantes por profesión mediante `MerchantProfile` data-driven y tags/categorías.
+- Todo producto vendible debe tener salida económica salvo excepciones explícitas.
+- Trabajadores originales para `HARVEST`, `MINE`, `CHOP`, `TRANSPORT` y `PROCESS`, evolucionando de trabajo manual a cadenas automatizadas.
