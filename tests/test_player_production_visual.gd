@@ -2,9 +2,6 @@ class_name TestPlayerProductionVisual
 extends RefCounted
 
 
-const EXPECTED_FRAME_SIZE := Vector2i(64, 96)
-
-
 static func run() -> Array[String]:
 	var failures: Array[String] = []
 	var packed := load("res://player/player.tscn") as PackedScene
@@ -22,19 +19,36 @@ static func run() -> Array[String]:
 	if body.offset != Vector2(0, -48):
 		failures.append("64x96 player should keep feet pivot at y=0")
 
-	for direction_value in "n,ne,e,se,s,sw,w,nw".split(","):
-		var direction := StringName(direction_value)
-		for state in [&"idle", &"walk"]:
-			var animation := StringName("%s_%s" % [state, direction])
-			if not body.sprite_frames.has_animation(animation):
-				failures.append("Missing player animation %s" % animation)
-				continue
-			if body.sprite_frames.get_frame_count(animation) < 1:
-				failures.append("Player animation %s has no frames" % animation)
-				continue
-			var texture := body.sprite_frames.get_frame_texture(animation, 0)
-			if texture == null or texture.get_size() != Vector2(EXPECTED_FRAME_SIZE):
-				failures.append("Player animation %s is not 64x96" % animation)
+	_check_animation(body, &"idle_n", failures)
+	_check_animation(body, &"walk_n", failures)
+	_check_animation(body, &"idle_ne", failures)
+	_check_animation(body, &"walk_ne", failures)
+	_check_animation(body, &"idle_e", failures)
+	_check_animation(body, &"walk_e", failures)
+	_check_animation(body, &"idle_se", failures)
+	_check_animation(body, &"walk_se", failures)
+	_check_animation(body, &"idle_s", failures)
+	_check_animation(body, &"walk_s", failures)
+	_check_animation(body, &"idle_sw", failures)
+	_check_animation(body, &"walk_sw", failures)
+	_check_animation(body, &"idle_w", failures)
+	_check_animation(body, &"walk_w", failures)
+	_check_animation(body, &"idle_nw", failures)
+	_check_animation(body, &"walk_nw", failures)
 
 	player.free()
 	return failures
+
+
+static func _check_animation(
+	body: AnimatedSprite2D, animation: StringName, failures: Array[String]
+) -> void:
+	if not body.sprite_frames.has_animation(animation):
+		failures.append("Missing player animation %s" % animation)
+		return
+	if body.sprite_frames.get_frame_count(animation) < 1:
+		failures.append("Player animation %s has no frames" % animation)
+		return
+	var texture := body.sprite_frames.get_frame_texture(animation, 0)
+	if texture == null or texture.get_size() != Vector2(64, 96):
+		failures.append("Player animation %s is not 64x96" % animation)
