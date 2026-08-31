@@ -27,7 +27,19 @@ jobs:
           echo "GDScript files: $(find . -type f -name '*.gd' -not -path './.git/*' | wc -l)"
 
       - name: Lint all GDScript files
-        run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
+        run: |
+          set -o pipefail
+          find . -type f -name '*.gd' -not -path './.git/*' -print0 \
+            | sort -z \
+            | xargs -0 gdlint 2>&1 \
+            | tee /tmp/gdlint-report.txt
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdlint-report
+          path: /tmp/gdlint-report.txt
 
       - name: Check formatting of all GDScript files
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat --check
