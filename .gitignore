@@ -7,6 +7,9 @@
 # Documentation-only visual references (not game assets)
 docs/art_example/*.import
 
+# Licensed third-party art kept local (do not redistribute)
+art/external/isoverse_medieval_outdoors/*.png
+
 # OS / editors
 .DS_Store
 Thumbs.db
