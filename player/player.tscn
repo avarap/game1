@@ -1,47 +1,95 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://core/components/inventory_component.gd" id="2_inventory"]
 [ext_resource type="Script" path="res://core/components/energy_component.gd" id="3_energy"]
+[ext_resource type="Texture2D" path="res://art/characters/player/player_idle_walk.svg" id="4_sheet"]
+[ext_resource type="Script" path="res://player/player_visual.gd" id="5_visual"]
 
 [sub_resource type="CapsuleShape2D" id="Capsule_player"]
 radius = 10.0
 height = 28.0
-
 [sub_resource type="CircleShape2D" id="Circle_interaction"]
 radius = 42.0
 
-[sub_resource type="Gradient" id="Gradient_player"]
-colors = PackedColorArray(0.73, 0.82, 0.52, 1, 0.32, 0.39, 0.22, 1)
+[sub_resource type="AtlasTexture" id="n_i"]
+atlas = ExtResource("4_sheet")
+region = Rect2(0, 0, 32, 48)
+[sub_resource type="AtlasTexture" id="n_w"]
+atlas = ExtResource("4_sheet")
+region = Rect2(32, 0, 32, 48)
+[sub_resource type="AtlasTexture" id="ne_i"]
+atlas = ExtResource("4_sheet")
+region = Rect2(0, 48, 32, 48)
+[sub_resource type="AtlasTexture" id="ne_w"]
+atlas = ExtResource("4_sheet")
+region = Rect2(32, 48, 32, 48)
+[sub_resource type="AtlasTexture" id="e_i"]
+atlas = ExtResource("4_sheet")
+region = Rect2(0, 96, 32, 48)
+[sub_resource type="AtlasTexture" id="e_w"]
+atlas = ExtResource("4_sheet")
+region = Rect2(32, 96, 32, 48)
+[sub_resource type="AtlasTexture" id="se_i"]
+atlas = ExtResource("4_sheet")
+region = Rect2(0, 144, 32, 48)
+[sub_resource type="AtlasTexture" id="se_w"]
+atlas = ExtResource("4_sheet")
+region = Rect2(32, 144, 32, 48)
+[sub_resource type="AtlasTexture" id="s_i"]
+atlas = ExtResource("4_sheet")
+region = Rect2(0, 192, 32, 48)
+[sub_resource type="AtlasTexture" id="s_w"]
+atlas = ExtResource("4_sheet")
+region = Rect2(32, 192, 32, 48)
+[sub_resource type="AtlasTexture" id="sw_i"]
+atlas = ExtResource("4_sheet")
+region = Rect2(0, 240, 32, 48)
+[sub_resource type="AtlasTexture" id="sw_w"]
+atlas = ExtResource("4_sheet")
+region = Rect2(32, 240, 32, 48)
+[sub_resource type="AtlasTexture" id="w_i"]
+atlas = ExtResource("4_sheet")
+region = Rect2(0, 288, 32, 48)
+[sub_resource type="AtlasTexture" id="w_w"]
+atlas = ExtResource("4_sheet")
+region = Rect2(32, 288, 32, 48)
+[sub_resource type="AtlasTexture" id="nw_i"]
+atlas = ExtResource("4_sheet")
+region = Rect2(0, 336, 32, 48)
+[sub_resource type="AtlasTexture" id="nw_w"]
+atlas = ExtResource("4_sheet")
+region = Rect2(32, 336, 32, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_player"]
+animations = [{"frames":[{"duration":1.0,"texture":SubResource("e_i")}],"loop":true,"name":&"idle_e","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("n_i")}],"loop":true,"name":&"idle_n","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("ne_i")}],"loop":true,"name":&"idle_ne","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("nw_i")}],"loop":true,"name":&"idle_nw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("s_i")}],"loop":true,"name":&"idle_s","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("se_i")}],"loop":true,"name":&"idle_se","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("sw_i")}],"loop":true,"name":&"idle_sw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("w_i")}],"loop":true,"name":&"idle_w","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("e_w")}],"loop":true,"name":&"walk_e","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("n_w")}],"loop":true,"name":&"walk_n","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("ne_w")}],"loop":true,"name":&"walk_ne","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("nw_w")}],"loop":true,"name":&"walk_nw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("s_w")}],"loop":true,"name":&"walk_s","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("se_w")}],"loop":true,"name":&"walk_se","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("sw_w")}],"loop":true,"name":&"walk_sw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("w_w")}],"loop":true,"name":&"walk_w","speed":6.666667}]
 
 [node name="Player" type="CharacterBody2D"]
 y_sort_enabled = true
 script = ExtResource("1_player")
 
-[node name="Body" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-10, -14, 10, -14, 12, 10, 0, 16, -12, 10)
-color = Color(0.53, 0.68, 0.36, 1)
+[node name="Body" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_player")
+animation = &"idle_s"
+offset = Vector2(0, -24)
+script = ExtResource("5_visual")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2)
 shape = SubResource("Capsule_player")
-
 [node name="InteractionArea" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 2
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("Circle_interaction")
-
 [node name="InventoryComponent" type="Node" parent="."]
 script = ExtResource("2_inventory")
 capacity_slots = 20
-
 [node name="EnergyComponent" type="Node" parent="."]
 script = ExtResource("3_energy")
 max_energy = 100
 current_energy = 100
-
 [node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true
 position_smoothing_speed = 7.0

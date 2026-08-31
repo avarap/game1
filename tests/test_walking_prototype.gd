@@ -14,9 +14,37 @@ static func run() -> Array[String]:
 	if not player is CharacterBody2D:
 		failures.append("Player scene root should be CharacterBody2D")
 	else:
+		var body := player.get_node_or_null("Body") as AnimatedSprite2D
+		if body == null:
+			failures.append("Player Body should be an AnimatedSprite2D visual")
+		else:
+			if body.sprite_frames == null:
+				failures.append("Player Body should define SpriteFrames")
+			else:
+				for direction in ["n", "ne", "e", "se", "s", "sw", "w", "nw"]:
+					var idle_name := StringName("idle_%s" % direction)
+					var walk_name := StringName("walk_%s" % direction)
+					if not body.sprite_frames.has_animation(idle_name):
+						failures.append("Player should define %s" % idle_name)
+					if not body.sprite_frames.has_animation(walk_name):
+						failures.append("Player should define %s" % walk_name)
+			if body.position != Vector2(0, 0):
+				failures.append("Player visual pivot should remain at the feet/origin")
+
 		var interaction_area := player.get_node_or_null("InteractionArea")
 		if not interaction_area is Area2D:
 			failures.append("Player should expose an InteractionArea")
+
+		var collision := player.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if collision == null or not collision.shape is CapsuleShape2D:
+			failures.append("Player should preserve the capsule collision footprint")
+		else:
+			var capsule := collision.shape as CapsuleShape2D
+			if (
+				not is_equal_approx(capsule.radius, 10.0)
+				or not is_equal_approx(capsule.height, 28.0)
+			):
+				failures.append("Player collision footprint should remain 20x28")
 
 		var camera := player.get_node_or_null("Camera2D") as Camera2D
 		if camera == null:
