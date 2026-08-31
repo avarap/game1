@@ -20,6 +20,7 @@ static func run() -> Array[String]:
 	_check_daily(funeral_script, failures)
 	_check_real_fodder_storage_contract(funeral_script, failures)
 	_check_persistence(funeral_script, failures)
+	_check_progressive_unloading(funeral_script, failures)
 	_check_controller_integration(failures)
 	return failures
 
@@ -132,6 +133,58 @@ static func _check_persistence(funeral_script: Script, failures: Array[String]) 
 	restored_after.call("sync_time", 7, 20, 0)
 	if cemetery.pending_corpses.size() != 1:
 		failures.append("Save/load after 18:00 should not duplicate delivery")
+
+
+static func _check_progressive_unloading(funeral_script: Script, failures: Array[String]) -> void:
+	var cemetery := _new_cemetery_service()
+	var storage := _new_fodder_storage()
+	var funeral: Variant = funeral_script.new(cemetery, storage, 1)
+	var missing_api := false
+	for method_name in [&"reception_point_for", &"unlock_ramp", &"is_ramp_unlocked"]:
+		if not funeral.has_method(method_name):
+			failures.append(
+				"Funeral delivery should expose %s for progressive unloading" % method_name
+			)
+			missing_api = true
+	if missing_api:
+		return
+
+	funeral.call("sync_time", 30, 17, 59)
+	funeral.call("sync_time", 30, 18, 0)
+	var first_id := cemetery.first_pending_id()
+	if StringName(funeral.call("reception_point_for", first_id)) != &"roadside_dropoff":
+		failures.append("Before ramp unlock, funeral corpses should use the roadside dropoff")
+
+	if not bool(funeral.call("unlock_ramp")):
+		failures.append("Ramp unlock should transition once from the initial state")
+	if bool(funeral.call("unlock_ramp")):
+		failures.append("Ramp unlock should be idempotent after the first transition")
+
+	_deposit_fodder(storage, 1)
+	funeral.call("sync_time", 31, 17, 59)
+	funeral.call("sync_time", 31, 18, 0)
+	var ids := cemetery.pending_ids()
+	if ids.size() != 2:
+		failures.append("Ramp unlock must not alter funeral delivery count")
+		return
+	var second_id := ids[1]
+	if StringName(funeral.call("reception_point_for", second_id)) != &"ramp_dropoff":
+		failures.append("After ramp unlock, future corpses should use the ramp dropoff")
+	if StringName(funeral.call("reception_point_for", first_id)) != &"roadside_dropoff":
+		failures.append("Unlocking the ramp must not move corpses delivered earlier")
+
+	var snapshot: Dictionary = funeral.call("snapshot")
+	var restored: Variant = funeral_script.new(cemetery, storage, 1)
+	restored.call("apply_snapshot", snapshot)
+	if not bool(restored.call("is_ramp_unlocked")):
+		failures.append("Ramp unlock should persist across save/load")
+	if StringName(restored.call("reception_point_for", second_id)) != &"ramp_dropoff":
+		failures.append("Per-corpse reception destinations should persist across save/load")
+
+	var legacy: Variant = funeral_script.new(cemetery, storage, 1)
+	legacy.call("apply_snapshot", {"intro_delivered": true, "last_resolved_day": 31})
+	if bool(legacy.call("is_ramp_unlocked")):
+		failures.append("Older saves without ramp data should default to the roadside state")
 
 
 static func _check_controller_integration(failures: Array[String]) -> void:

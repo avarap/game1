@@ -5,6 +5,8 @@ const MINUTES_PER_DAY := 24 * 60
 const DELIVERY_HOUR := 18
 const DELIVERY_MINUTE := 0
 const FODDER_ITEM_ID := &"fodder_turnip"
+const ROADSIDE_DROPOFF := &"roadside_dropoff"
+const RAMP_DROPOFF := &"ramp_dropoff"
 
 var cemetery_service: CemeteryService
 var storage: StorageNetwork
@@ -12,6 +14,8 @@ var fodder_cost: int = 1
 var intro_delivered: bool = false
 var last_resolved_day: int = 0
 var next_corpse_serial: int = 1
+var ramp_unlocked: bool = false
+var reception_points: Dictionary = {}
 var _has_observed_time: bool = false
 var _last_observed_total_minutes: int = 0
 
@@ -41,11 +45,31 @@ func sync_time(day: int, hour: int, minute: int = 0) -> void:
 	_last_observed_total_minutes = current_total
 
 
+func unlock_ramp() -> bool:
+	if ramp_unlocked:
+		return false
+	ramp_unlocked = true
+	return true
+
+
+func is_ramp_unlocked() -> bool:
+	return ramp_unlocked
+
+
+func reception_point_for(corpse_id: StringName) -> StringName:
+	return StringName(str(reception_points.get(corpse_id, "")))
+
+
 func snapshot() -> Dictionary:
+	var serialized_reception_points: Dictionary = {}
+	for corpse_id in reception_points:
+		serialized_reception_points[String(corpse_id)] = String(reception_points[corpse_id])
 	return {
 		"intro_delivered": intro_delivered,
 		"last_resolved_day": last_resolved_day,
 		"next_corpse_serial": next_corpse_serial,
+		"ramp_unlocked": ramp_unlocked,
+		"reception_points": serialized_reception_points,
 		"has_observed_time": _has_observed_time,
 		"last_observed_total_minutes": _last_observed_total_minutes,
 	}
@@ -55,6 +79,13 @@ func apply_snapshot(data: Dictionary) -> void:
 	intro_delivered = bool(data.get("intro_delivered", false))
 	last_resolved_day = maxi(int(data.get("last_resolved_day", 0)), 0)
 	next_corpse_serial = maxi(int(data.get("next_corpse_serial", 1)), 1)
+	ramp_unlocked = bool(data.get("ramp_unlocked", false))
+	reception_points.clear()
+	var restored_points: Dictionary = data.get("reception_points", {})
+	for corpse_id in restored_points:
+		var point := StringName(str(restored_points[corpse_id]))
+		if point == ROADSIDE_DROPOFF or point == RAMP_DROPOFF:
+			reception_points[StringName(str(corpse_id))] = point
 	_has_observed_time = bool(data.get("has_observed_time", false))
 	_last_observed_total_minutes = maxi(int(data.get("last_observed_total_minutes", 0)), 0)
 
@@ -96,6 +127,7 @@ func _deliver_corpse(logical_day: int) -> bool:
 	if result != CemeteryService.RESULT_OK:
 		return false
 
+	reception_points[data.id] = RAMP_DROPOFF if ramp_unlocked else ROADSIDE_DROPOFF
 	next_corpse_serial += 1
 	return true
 
