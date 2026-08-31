@@ -37,7 +37,7 @@ Fuente: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
 - [x] **8A.6 — Logística progresiva (#63)** — PR #103.
 - [x] **8A.7 — Decisiones de cadáver (#64)** — PR #106.
 - [x] **8A.8 — Feedback/hooks (#65)** — #111 / PR #112.
-- [ ] **8A.9 — Aceptación integral (#66)** — #115 activa mediante PR draft #121. El RED actual ha confirmado una regresión real: el cadáver entregado por el flujo WORLD no puede ejecutar la decisión terminal `research`; además `gdformat --check` falla. No integrar hasta corrección mínima demostrada por TDD y todos los gates verdes sobre el mismo HEAD.
+- [ ] **8A.9 — Aceptación integral (#66)** — #115 activa mediante PR #121. Head `e37dc433...`, CI `33404377011` completamente verde y PR mergeable/sincronizado. La integración está pendiente únicamente porque el PR continúa en estado draft y la transición automática a ready está bloqueada por un fallo del conector GitHub; no rebajar gates ni forzar merge.
 
 Tracker: #71.
 
@@ -56,7 +56,7 @@ Tracker: #72.
 ### UI / audio / estabilidad
 
 - [ ] **#68 — UI final y UX** — PR #78 y #91 integrados; aceptación visual final pendiente.
-- [ ] **#67 — Audio final y mezcla básica** — #93 `[AUTO][AUDIO][P1]` desbloqueada/asignada.
+- [ ] **#67 — Audio final y mezcla básica** — #93 activa mediante PR draft #122. Import, smoke y suite pasan; `gdformat --check` falla en el head actual, por lo que no es integrable.
 - [ ] **#69 — Optimización, estabilidad y export**.
 - [ ] **#70 — Aceptación integral / release candidate** — único gate autorizado para cerrar Fase 8.
 
@@ -84,17 +84,17 @@ Quality bar: pixel-art oscuro de alto detalle, siluetas claras, 8 direcciones re
 - PR #107 ARCH — **integrado**; recomendación fuerte: abandonar 32x48 como baseline hero, preferir 64x96 nativo y desacoplar canvas visual de colisión/navegación.
 - PR #118 — **integrado**; establece `docs/` como benchmark obligatorio y prompts de producción por categoría.
 - #94 ARCH — **abierta intencionadamente**, bloqueada por evidencia real de #109.
-- #109 CHARACTERS — PR draft #114. El head `2a16e221...` tiene CI técnico verde, pero el PR está basado en `98045f4...`; debe resincronizarse con `main` y aportar/revisar evidencia #96 contra `docs/` antes de integrarse.
-- #113 WORLD — PR draft #116. El head técnico anterior está verde, pero el PR está basado en `98045f4...`, actualmente no es mergeable y carece de aceptación perceptual; debe resincronizarse y aportar evidencia #96.
+- #109 CHARACTERS — PR draft #114, sincronizado con `main`, mergeable y CI técnico `33405431151` verde en head `4c3f26d5...`. **No aceptado visualmente**: el candidato actual sigue leyendo como placeholder ampliado; debe sustituirse/mejorarse y aportar capturas #96 comparadas contra `docs/`.
+- #113 WORLD — PR draft #116, sincronizado con `main`, mergeable y CI `33403543515` verde en head `3233226e...`. Sigue bloqueado por aceptación perceptual: faltan capturas #96 revisadas contra `docs/`; migrar a raster si el SVG no alcanza el quality bar.
 - #119 QA gameplay-video — **completada y cerrada**. PR #120 cerrada sin merge por diseño tras producir el MP4 solicitado del baseline `98045f4...`.
 - `ART_DIRECTION.md` conserva todavía el contrato histórico 32x48/1.5x y **no debe actualizarse hasta validar #94** con evidencia real.
 
 ## Cola autónoma actual
 
-- GAMEPLAY: #115 / PR #121 — P0, RED real confirmado; mantener worker hasta corrección y validación completa.
-- CHARACTERS: #109 / PR #114 — mantener worker; resync + evidencia visual obligatoria.
-- WORLD: #113 / PR #116 — mantener worker; resolver mergeabilidad/resync + evidencia visual obligatoria.
-- AUDIO: #93 — preparada/asignada; no existe PR AUDIO abierto todavía.
+- GAMEPLAY: #115 / PR #121 — P0 técnicamente verde; mantener worker hasta resolver estado draft/readiness e integración supervisada.
+- CHARACTERS: #109 / PR #114 — mantener worker; rework visual + evidencia #96 obligatoria pese a CI verde.
+- WORLD: #113 / PR #116 — mantener worker; evidencia perceptual #96 obligatoria pese a CI verde.
+- AUDIO: #93 / PR #122 — mantener worker; corregir `gdformat --check` y revalidar todos los gates.
 - ARCH: #94 abierta pero bloqueada por #109.
 - UI/POLISH: no preparar otro rework mientras los cuatro slots estén ocupados y no exista una unidad independiente de mayor prioridad.
 
@@ -103,6 +103,7 @@ Quality bar: pixel-art oscuro de alto detalle, siluetas claras, 8 direcciones re
 - Integrar PRs uno a uno únicamente cuando estén actualizados con `main`, mergeables, dentro de scope y verdes en `gdlint`, `gdformat --check`, Godot 4.7.2 import, smoke y suite completa/relevante.
 - Tras cada merge, reevaluar `main`, CI, issues y cola.
 - Para PRs visuales, CI verde es necesario pero no suficiente: exigir evidencia in-game reproducible y comparación humana contra `docs/`.
+- No forzar un PR draft ni rebajar gates por limitaciones del conector.
 
 ## Post-MVP / Expansiones previstas
 
