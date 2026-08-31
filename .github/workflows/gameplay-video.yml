@@ -82,7 +82,7 @@ jobs:
           resolution=1280x720
           fps=30
           source_scene=res://main.tscn
-          sequence=idle,move_up,move_right,move_down,move_left,inventory_toggle,close_inventory,final_idle
+          sequence=settle,move_right,move_up,move_left,move_down,inventory_toggle,inventory_close,debug_panel_toggle,debug_panel_close,final_idle
           EOF
 
       - name: Upload gameplay MP4
