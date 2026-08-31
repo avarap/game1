@@ -60,9 +60,7 @@ func apply_snapshot(data: Dictionary) -> void:
 	last_resolved_day = maxi(int(data.get("last_resolved_day", 0)), 0)
 	next_corpse_serial = maxi(int(data.get("next_corpse_serial", 1)), 1)
 	_has_observed_time = bool(data.get("has_observed_time", false))
-	_last_observed_total_minutes = maxi(
-		int(data.get("last_observed_total_minutes", 0)), 0
-	)
+	_last_observed_total_minutes = maxi(int(data.get("last_observed_total_minutes", 0)), 0)
 
 
 func _resolve_crossed_deliveries(previous_total: int, current_total: int) -> void:
@@ -107,11 +105,7 @@ func _deliver_corpse(logical_day: int) -> bool:
 
 
 func _delivery_total_minutes(logical_day: int) -> int:
-	return (
-		(maxi(logical_day, 1) - 1) * MINUTES_PER_DAY
-		+ DELIVERY_HOUR * 60
-		+ DELIVERY_MINUTE
-	)
+	return (maxi(logical_day, 1) - 1) * MINUTES_PER_DAY + DELIVERY_HOUR * 60 + DELIVERY_MINUTE
 
 
 func _to_total_minutes(day: int, hour: int, minute: int) -> int:
