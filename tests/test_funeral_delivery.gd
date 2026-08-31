@@ -20,7 +20,9 @@ static func run() -> Array[String]:
 	return failures
 
 
-static func _check_daily_delivery_contract(funeral_script: Script, failures: Array[String]) -> void:
+static func _check_daily_delivery_contract(
+	funeral_script: Script, failures: Array[String]
+) -> void:
 	var cemetery := _new_cemetery_service()
 	var funeral: Variant = funeral_script.new(cemetery, 2)
 
@@ -41,7 +43,9 @@ static func _check_daily_delivery_contract(funeral_script: Script, failures: Arr
 	if cemetery.pending_corpses.size() != 2:
 		failures.append("17:00 -> 20:00 should create exactly one later delivery when fed")
 	if int(funeral.call("fodder_count")) != 0:
-		failures.append("Later funeral delivery should consume exactly the configured fodder amount")
+		failures.append(
+			"Later funeral delivery should consume exactly the configured fodder amount"
+		)
 
 	funeral.call("sync_time", 3, 17, 0)
 	funeral.call("sync_time", 3, 20, 0)
@@ -66,11 +70,15 @@ static func _check_daily_delivery_contract(funeral_script: Script, failures: Arr
 	for corpse_id in ids:
 		var corpse := cemetery.pending_corpses.get(corpse_id) as CorpseState
 		if corpse == null or corpse.age_minutes != 0 or corpse.decay_percent != 0:
-			failures.append("Delivered corpses should enter the existing deterministic corpse model fresh")
+			failures.append(
+				"Delivered corpses should enter the existing deterministic corpse model fresh"
+			)
 			break
 
 
-static func _check_save_load_contract(funeral_script: Script, failures: Array[String]) -> void:
+static func _check_save_load_contract(
+	funeral_script: Script, failures: Array[String]
+) -> void:
 	var cemetery := _new_cemetery_service()
 	var before_save: Variant = funeral_script.new(cemetery, 1)
 	before_save.call("sync_time", 7, 17, 59)
