@@ -10,6 +10,7 @@ const MAP_PATHS := [
 	"res://world/maps/interiors/village_building.tscn",
 ]
 const EXTERIOR_ATLAS := "res://art/environment/tilesets/exterior_tileset.svg"
+const CEMETERY_ATLAS := "res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png"
 
 
 static func run() -> Array[String]:
@@ -45,7 +46,12 @@ static func _validate_map(map_path: String, failures: Array[String]) -> void:
 		var source := ground.tile_set.get_source(0) as TileSetAtlasSource
 		if source == null or source.texture == null:
 			failures.append("Map should expose atlas-backed tiles: %s" % map_path)
-		elif source.texture.resource_path != EXTERIOR_ATLAS:
+		var expected_atlas := CEMETERY_ATLAS if map_path.contains("cemetery") else EXTERIOR_ATLAS
+		if (
+			source != null
+			and source.texture != null
+			and source.texture.resource_path != expected_atlas
+		):
 			failures.append("Map should use the approved exterior atlas: %s" % map_path)
 
 	map.free()

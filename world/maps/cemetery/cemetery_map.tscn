@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3]
 
-[ext_resource type="Script" path="res://world/maps/technical_map.gd" id="1_map"]
+[ext_resource type="Script" path="res://world/maps/cemetery/cemetery_map.gd" id="1_map"]
 [ext_resource type="Script" path="res://world/navigation/world_navigation_region.gd" id="2_navigation"]
 [ext_resource type="PackedScene" path="res://world/buildings/workbench.tscn" id="3_workbench"]
 [ext_resource type="PackedScene" path="res://world/storage/storage_chest.tscn" id="4_chest"]
