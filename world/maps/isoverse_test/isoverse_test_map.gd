@@ -16,13 +16,13 @@ const GRASS_REGION := Rect2i(0, 0, 32, 32)
 const DIRT_REGION := Rect2i(32, 0, 32, 32)
 const PATH_REGION := Rect2i(64, 32, 32, 32)
 
+var _external_art_available := false
+
 @onready var ground: Node2D = $Ground
 @onready var paths: Node2D = $Paths
 @onready var objects: Node2D = $Objects
 @onready var player_spawn: Marker2D = $PlayerSpawn
 @onready var player: CharacterBody2D = $Player
-
-var _external_art_available := false
 
 
 func _ready() -> void:
