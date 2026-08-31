@@ -8,10 +8,10 @@ El objetivo es un vertical slice original y pulido. El desarrollo sigue `MASTER_
 
 - Fases **0–7 completadas**.
 - Fase 8 — Polish está **activa**.
-- HEAD de referencia de esta sincronización: `adc78483e79661298a2fc36e49976325b35855b3`.
-- CI de ese HEAD: run `33369187753`, success.
+- HEAD de referencia de esta sincronización: `16f13eeaa306a048c7c397cc6b6687585b15b3f1`.
+- CI de ese HEAD: run `33372934693`, success.
 - Gate P0 temporal #82/#83: **superado**.
-- Track 8A tiene integradas 8A.1–8A.5; 8A.6 tiene implementación en PR #101 pendiente de resincronización/integración.
+- Track 8A tiene integradas 8A.1–8A.5; 8A.6 tiene implementación en PR #101 con CI verde en su head previo y pendiente de actualización/revisión contra el HEAD actual.
 - Godot objetivo de runtime/CI: **4.7.2**.
 - Rama principal: `main`.
 
@@ -44,6 +44,8 @@ El mundo modular conecta cementerio/propiedad, bosque, pueblo, interiores y mina
 
 En `main` están integrados tileset exterior (#25), props/edificios/cementerio (#28), integración artística de mapas (#29), player 8 direcciones (#26), el incremento visual de Brother Aldren de PR #89, atmósfera/lighting/FX de PR #90 y paneles core UI de PR #91. PR #102 corrigió el error runtime de densidad de las motas `CPUParticles2D` y añadió regresión live SceneTree.
 
+El commit `16f13ee` añadió capturas JPG bajo `docs/`. Se conservan como referencias visuales, pero no se consideran por sí mismas evidencia determinista de aceptación: #96 debe proporcionar un flujo reproducible y asociar explícitamente las capturas al HEAD evaluado.
+
 La integración técnica no implica aceptación visual final: #94 debe decidir si 32x48 puede sostener el estándar de personaje y #96 debe proporcionar capturas reproducibles. #27/#30/#31 y la aceptación UI global no deben darse por completadas hasta satisfacer esos gates.
 
 ### Quality bar visual obligatorio
@@ -56,7 +58,7 @@ PR #78 integró theme reutilizable, HUD y base de pause/settings EN/ES. PR #91 i
 
 ## Gate P0 temporal
 
-El gate iniciado sobre HEAD `8102197` está **cerrado**: #82 se integró mediante PR #92, #83 está cerrada y el `main` actual `adc78483e79661298a2fc36e49976325b35855b3` tiene CI run `33369187753` en success.
+El gate iniciado sobre HEAD `8102197` está **cerrado**: #82 se integró mediante PR #92, #83 está cerrada y el `main` actual `16f13eeaa306a048c7c397cc6b6687585b15b3f1` tiene CI run `33372934693` en success.
 
 ## Arquitectura
 
@@ -76,6 +78,7 @@ Validaciones recientes:
 - Servicio funerario PR #99: exact head run `33359942851`.
 - Main tras PR #90/#91: run `33364746590`.
 - Main tras PR #102: run `33369187753`.
+- Main actual tras incorporación de referencias visuales `docs/`: run `33372934693`.
 
 ```bash
 godot --headless --path . --script res://tests/run_tests.gd
