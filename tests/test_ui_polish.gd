@@ -46,6 +46,7 @@ static func run() -> Array[String]:
 	if not str(hud.call("get_energy_text")).contains("0 / 1"):
 		failures.append("Status HUD should clamp display values without changing gameplay state")
 
+	failures.append_array(TestPauseSettingsUI.run())
 	_cleanup(hud, previous_locale)
 	return failures
 
