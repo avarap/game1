@@ -131,3 +131,24 @@ msgstr "Spanish"
 
 msgid "UI_SETTINGS_RESUME"
 msgstr "Resume"
+
+msgid "UI_PANEL_INVENTORY_TITLE"
+msgstr "Inventory"
+
+msgid "UI_PANEL_STORAGE_TITLE"
+msgstr "Storage"
+
+msgid "UI_PANEL_CRAFTING_TITLE"
+msgstr "Crafting"
+
+msgid "UI_PANEL_STATE_READY"
+msgstr "Select an entry."
+
+msgid "UI_PANEL_STATE_EMPTY"
+msgstr "Nothing here yet."
+
+msgid "UI_PANEL_STATE_BLOCKED"
+msgstr "Unavailable right now."
+
+msgid "UI_PANEL_STATE_ERROR"
+msgstr "Unable to load this view."

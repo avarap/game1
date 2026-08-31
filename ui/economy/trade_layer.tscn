@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://ui/economy/trade_panel.gd" id="1_trade_panel"]
+[ext_resource type="Theme" path="res://ui/theme/game_ui_theme.tres" id="2_theme"]
 
 [node name="TradeLayer" type="CanvasLayer"]
 layer = 25
@@ -11,6 +12,7 @@ offset_left = 180.0
 offset_top = 120.0
 offset_right = 1100.0
 offset_bottom = 620.0
+theme = ExtResource("2_theme")
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
 theme_override_constants/margin_left = 18
@@ -22,6 +24,7 @@ theme_override_constants/margin_bottom = 14
 theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Panel/Margin/VBox"]
+theme_type_variation = &"PanelTitle"
 text = "Trade"
 
 [node name="Balance" type="Label" parent="Panel/Margin/VBox"]
@@ -29,6 +32,7 @@ text = "0g 0s 0c"
 
 [node name="Offers" type="VBoxContainer" parent="Panel/Margin/VBox"]
 size_flags_vertical = 3
+focus_mode = 2
 theme_override_constants/separation = 6
 
 [node name="Feedback" type="Label" parent="Panel/Margin/VBox"]

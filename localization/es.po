@@ -131,3 +131,24 @@ msgstr "Español"
 
 msgid "UI_SETTINGS_RESUME"
 msgstr "Continuar"
+
+msgid "UI_PANEL_INVENTORY_TITLE"
+msgstr "Inventario"
+
+msgid "UI_PANEL_STORAGE_TITLE"
+msgstr "Almacén"
+
+msgid "UI_PANEL_CRAFTING_TITLE"
+msgstr "Fabricación"
+
+msgid "UI_PANEL_STATE_READY"
+msgstr "Selecciona una entrada."
+
+msgid "UI_PANEL_STATE_EMPTY"
+msgstr "Aún no hay nada aquí."
+
+msgid "UI_PANEL_STATE_BLOCKED"
+msgstr "No disponible ahora."
+
+msgid "UI_PANEL_STATE_ERROR"
+msgstr "No se pudo cargar esta vista."
