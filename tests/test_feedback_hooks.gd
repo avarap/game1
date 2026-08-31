@@ -76,7 +76,7 @@ static func _check_corpse_decision_events(failures: Array[String]) -> void:
 		)
 	EventBus.connect("corpse_final_decision_completed", listener)
 
-	var config := load("res://data/cemetery/default_rating.tres") as CemeteryRatingConfig
+	var config := _rating_config()
 	var decisions := (
 		load("res://data/cemetery/default_final_decisions.tres") as CorpseDecisionConfig
 	)
@@ -128,8 +128,11 @@ static func _check_corpse_decision_events(failures: Array[String]) -> void:
 
 
 static func _new_cemetery_service() -> CemeteryService:
-	var config := load("res://data/cemetery/default_rating.tres") as CemeteryRatingConfig
-	return CemeteryService.new(CemeteryModel.new(config))
+	return CemeteryService.new(CemeteryModel.new(_rating_config()))
+
+
+static func _rating_config() -> CemeteryRatingConfig:
+	return load("res://data/cemetery/default_rating.tres") as CemeteryRatingConfig
 
 
 static func _new_storage() -> StorageNetwork:
