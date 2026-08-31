@@ -2,6 +2,7 @@ class_name CemeteryController
 extends Node
 
 const FODDER_ITEM_PATH := "res://data/items/fodder_turnip.tres"
+const FINAL_DECISIONS_PATH := "res://data/cemetery/default_final_decisions.tres"
 const FUNERAL_FEEDER_ID := &"funeral_feeder"
 const FUNERAL_FEEDER_SCOPE := &"cemetery"
 
@@ -11,6 +12,7 @@ var service: CemeteryService
 var funeral_service: FuneralDeliveryService
 var funeral_storage: StorageNetwork
 var funeral_feeder_inventory: InventoryModel
+var fallback_technology_service: TechnologyService
 
 
 func _enter_tree() -> void:
@@ -35,7 +37,9 @@ func initialize() -> void:
 	if rating_config == null:
 		rating_config = load("res://data/cemetery/default_rating.tres") as CemeteryRatingConfig
 	if service == null:
-		service = CemeteryService.new(CemeteryModel.new(rating_config))
+		service = CemeteryService.new(
+			CemeteryModel.new(rating_config), _decision_config(), _technology_service()
+		)
 	if funeral_storage == null:
 		_reset_funeral_storage()
 	if funeral_service == null:
@@ -56,7 +60,9 @@ func get_save_data() -> Dictionary:
 
 func apply_save_data(data: Dictionary) -> void:
 	initialize()
-	service = CemeteryService.from_snapshot(rating_config, data)
+	service = CemeteryService.from_snapshot(
+		rating_config, data, _decision_config(), _technology_service()
+	)
 	_reset_funeral_storage(int(data.get("funeral_feeder_fodder", 0)))
 	funeral_service = FuneralDeliveryService.new(service, funeral_storage)
 	var funeral_data: Dictionary = data.get("funeral_delivery", {})
@@ -125,6 +131,21 @@ func upgrade_first_grave() -> StringName:
 func total_rating() -> int:
 	initialize()
 	return service.total_rating()
+
+
+func _decision_config() -> CorpseDecisionConfig:
+	return load(FINAL_DECISIONS_PATH) as CorpseDecisionConfig
+
+
+func _technology_service() -> TechnologyService:
+	var technology_controller := get_node_or_null("../TechnologyController") as TechnologyController
+	if technology_controller != null:
+		technology_controller.get_points(TechnologyService.PointType.RED)
+		if technology_controller.service != null:
+			return technology_controller.service
+	if fallback_technology_service == null:
+		fallback_technology_service = TechnologyService.new()
+	return fallback_technology_service
 
 
 func _reset_funeral_storage(fodder_amount: int = 0) -> void:
