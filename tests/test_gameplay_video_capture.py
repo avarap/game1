@@ -25,3 +25,8 @@ def test_gameplay_video_capture_contract() -> None:
     require_token(workflow_text, 'ffmpeg', "MP4 conversion")
     require_token(workflow_text, 'actions/upload-artifact@v4', "artifact upload")
     require_token(workflow_text, '1280x720', "capture resolution metadata")
+
+
+if __name__ == "__main__":
+    test_gameplay_video_capture_contract()
+    print("gameplay video capture contract: ok")
