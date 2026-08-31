@@ -141,10 +141,7 @@ func _emit_delivery_completed(corpse_id: StringName, logical_day: int) -> void:
 	if bus == null:
 		return
 	bus.emit_signal(
-		"funeral_delivery_completed",
-		corpse_id,
-		logical_day,
-		reception_point_for(corpse_id),
+		"funeral_delivery_completed", corpse_id, logical_day, reception_point_for(corpse_id)
 	)
 
 
