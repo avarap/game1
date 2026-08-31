@@ -5,8 +5,8 @@
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
 - Runtime/CI contractual: **Godot 4.7.2**.
-- HEAD de referencia para esta sincronización: `adc78483e79661298a2fc36e49976325b35855b3`.
-- CI de `main` para ese HEAD: run `33369187753`, success.
+- HEAD de referencia para esta sincronización: `16f13eeaa306a048c7c397cc6b6687585b15b3f1`.
+- CI de `main` para ese HEAD: run `33372934693`, success.
 - Gate P0 temporal de auditoría **SUPERADO**: #82 y #83 cerradas y `main` verde.
 
 ## Fases 0–6 — COMPLETADAS
@@ -46,7 +46,7 @@ Fuente: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
 - [x] **8A.3 — Agricultura mínima:** `fodder_turnip_seed` → plantar → crecer → cosechar → persistir. PR #76, main run `33342619691`.
 - [x] **8A.4 — Recurso multiuso (#61):** `fodder_turnip` integrado en items/storage, economía y crafting mediante PR #81.
 - [x] **8A.5 — Servicio funerario (#62):** entrega determinista a las 18:00, primera gratuita y consumo posterior de `fodder_turnip` real vía storage; PR #99.
-- [ ] **8A.6 — Logística progresiva (#63):** implementación preparada en #100 / PR #101; pendiente de resincronización con `main` y revisión/merge.
+- [ ] **8A.6 — Logística progresiva (#63):** implementación preparada en #100 / PR #101; CI del head resincronizado verde, pendiente de actualización contra el HEAD actual y revisión/merge.
 - [ ] **8A.7 — Decisiones de cadáver (#64):** cremar/investigar además de preparar/enterrar.
 - [ ] **8A.8 — Feedback/hooks (#65):** eventos desacoplados para audio/FX.
 - [ ] **8A.9 — Aceptación integral (#66):** farming→comedero→18:00→cadáver→decisión→save/load.
@@ -80,13 +80,15 @@ La auditoría iniciada sobre HEAD `81021973025302213dc64ef8f4a4744673c5dd75` que
 
 - [x] **#82 — Regression test Brother Aldren cemetery save/load** — integrado mediante PR #92.
 - [x] **#83 — Sincronización documental** — cerrada.
-- [x] `main` verde — HEAD `adc78483e79661298a2fc36e49976325b35855b3`, run `33369187753`, success.
+- [x] `main` verde — HEAD `16f13eeaa306a048c7c397cc6b6687585b15b3f1`, run `33372934693`, success.
 
 La integración normal de Fase 8 continúa uno a uno, manteniendo todos los quality gates.
 
 ## Quality bar visual obligatorio
 
 La referencia aprobada es el mockup pixel-art oscuro del cuidador del cementerio: personajes detallados y legibles, 8 direcciones coherentes, ropa/equipamiento reconocibles, paleta medieval oscura, iluminación cálida localizada, sombras profundas, entorno denso y props/vegetación integrados. No se aceptan downgrades a sprites planos, placeholders, blockout o escenarios vacíos aunque los tests técnicos estén verdes. Si 32x48 impide mantener el detalle exigido, debe reevaluarse la escala antes de aceptar una degradación.
+
+Las capturas JPG añadidas en `docs/` por el commit `16f13ee` se conservan como material visual de referencia. No sustituyen el gate #96 ni se consideran evidencia determinista de aceptación hasta disponer de captura/procedencia reproducible y asociación explícita al HEAD evaluado.
 
 ## Cola autónoma
 
