@@ -46,7 +46,47 @@ static func run() -> Array[String]:
 	if not str(hud.call("get_energy_text")).contains("0 / 1"):
 		failures.append("Status HUD should clamp display values without changing gameplay state")
 
+	failures.append_array(_test_pause_settings(tree))
 	_cleanup(hud, previous_locale)
+	return failures
+
+
+static func _test_pause_settings(tree: SceneTree) -> Array[String]:
+	var failures: Array[String] = []
+	var pause_scene := load("res://ui/settings/pause_menu.tscn") as PackedScene
+	if pause_scene == null:
+		failures.append("UI polish should provide reusable pause/settings scene")
+		return failures
+
+	var pause_menu := pause_scene.instantiate()
+	tree.root.add_child(pause_menu)
+	if pause_menu.theme == null:
+		failures.append("Pause/settings should use the shared UI theme")
+	for signal_name in [&"resume_requested", &"audio_volume_requested", &"locale_requested"]:
+		if not pause_menu.has_signal(signal_name):
+			failures.append("Pause/settings should expose presentation intent signal %s" % signal_name)
+	if not pause_menu.has_method("set_master_volume_percent"):
+		failures.append("Pause/settings should expose presentation-only volume state")
+	if not pause_menu.has_method("get_master_volume_text"):
+		failures.append("Pause/settings should expose localized volume text")
+	if not failures.is_empty():
+		pause_menu.free()
+		return failures
+
+	LocalizationService.set_locale("en")
+	pause_menu.call("set_master_volume_percent", 65)
+	if str(pause_menu.call("get_master_volume_text")) != "Master volume: 65%":
+		failures.append("Pause/settings volume should localize to English")
+	LocalizationService.set_locale("es")
+	if str(pause_menu.call("get_master_volume_text")) != "Volumen general: 65%":
+		failures.append("Pause/settings volume should refresh after locale change")
+	pause_menu.call("set_master_volume_percent", 150)
+	if not str(pause_menu.call("get_master_volume_text")).ends_with("100%"):
+		failures.append("Pause/settings should clamp displayed volume without applying audio logic")
+	var resume_button := pause_menu.get_node_or_null("Panel/Margin/VBox/ResumeButton") as Button
+	if resume_button == null or resume_button.focus_mode != Control.FOCUS_ALL:
+		failures.append("Pause/settings primary action should be keyboard focusable")
+	pause_menu.free()
 	return failures
 
 
