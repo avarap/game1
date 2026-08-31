@@ -53,6 +53,9 @@ script = ExtResource("2_navigation")
 
 [node name="WorkshopArea" type="Node2D" parent="."]
 
+[node name="BuildingVisualAnchor" type="Marker2D" parent="WorkshopArea"]
+position = Vector2(384, 576)
+
 [node name="Workbench" parent="WorkshopArea" instance=ExtResource("3_workbench")]
 position = Vector2(448, 704)
 

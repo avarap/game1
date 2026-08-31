@@ -12,18 +12,26 @@ const PLAYER_WORKSHOP := "res://art/environment/buildings/player_workshop.svg"
 const VILLAGE_HOUSE := "res://art/environment/buildings/village_house.svg"
 const TREE := "res://art/environment/props/tree.svg"
 const ROCK := "res://art/environment/props/rock.svg"
+const WORKSHOP_PIVOT := Vector2(192, 248)
+const VILLAGE_HOUSE_PIVOT := Vector2(176, 216)
 
 
 static func apply(root: Node) -> void:
 	_apply_path(root, "WorkshopArea/Workbench", WORKBENCH, Vector2(32, 42))
 	_apply_path(root, "WorkshopArea/StorageChest", STORAGE_CHEST, Vector2(24, 34))
 	_apply_path(root, "WorkshopArea/SleepSpot", BED, Vector2(32, 56))
+	_apply_path(
+		root,
+		"WorkshopArea/BuildingVisualAnchor",
+		PLAYER_WORKSHOP,
+		WORKSHOP_PIVOT,
+	)
 	_apply_path(root, "CemeteryArea/CorpseDelivery", SIGN, Vector2(16, 42))
 	_apply_path(root, "CemeteryArea/PreparationTable", PREPARATION_TABLE, Vector2(32, 42))
 	_apply_path(root, "CemeteryArea/GravePlot", GRAVE_FRESH, Vector2(24, 38))
 	_apply_path(root, "CemeteryArea/GraveUpgrade", GRAVE_WORN, Vector2(24, 38))
-	_apply_path(root, "BuildingPlots/Workshop", PLAYER_WORKSHOP, Vector2(64, 92))
-	_apply_path(root, "BuildingPlots/Inn", VILLAGE_HOUSE, Vector2(64, 92))
+	_apply_path(root, "BuildingPlots/Workshop", PLAYER_WORKSHOP, WORKSHOP_PIVOT)
+	_apply_path(root, "BuildingPlots/Inn", VILLAGE_HOUSE, VILLAGE_HOUSE_PIVOT)
 	_apply_resources(root)
 
 
