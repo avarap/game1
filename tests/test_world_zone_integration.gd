@@ -87,6 +87,7 @@ static func run() -> Array[String]:
 			failures.append("Invalid travel should preserve Player position")
 
 	_check_location_persistence(world, zone_manager, failures)
+	_check_aldren_cemetery_restore(world, zone_manager, failures)
 	_cleanup(world)
 	return failures
 
@@ -212,6 +213,56 @@ static func _check_location_persistence(
 		failures.append("Save/load should restore the active mine zone")
 	if not player.global_position.is_equal_approx(expected_position):
 		failures.append("Save/load should restore a valid Player world position")
+
+
+static func _check_aldren_cemetery_restore(
+	world: Node, zone_manager: Node, failures: Array[String]
+) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var save_manager := tree.root.get_node_or_null("SaveManager")
+	var time_manager := tree.root.get_node_or_null("TimeManager")
+	var aldren := world.get_node_or_null("BrotherAldren") as NPCController
+	if save_manager == null or time_manager == null or aldren == null:
+		failures.append("Aldren cemetery persistence requires SaveManager, TimeManager and NPC")
+		return
+	if not zone_manager.call("travel_to", &"cemetery", &"PlayerSpawn"):
+		failures.append("Aldren persistence setup should enter cemetery")
+		return
+
+	time_manager.call("set_time", 10, 0)
+	var expected_position := Vector2(1096, 696)
+	aldren.global_position = expected_position
+	aldren.state_machine.set_activity(&"Sleeping")
+	aldren.navigation_started = false
+	aldren.velocity = Vector2.ZERO
+	var expected_state := aldren.get_current_state()
+
+	if not bool(save_manager.call("save_game", SAVE_PATH)):
+		failures.append("SaveManager should persist Aldren cemetery state")
+		return
+	var payload: Variant = save_manager.call("load_game", SAVE_PATH, false)
+	if typeof(payload) != TYPE_DICTIONARY:
+		failures.append("Aldren cemetery save should load as a dictionary")
+		return
+	var world_data: Dictionary = (payload as Dictionary).get("world", {})
+	if not world_data.has("npc:brother_aldren"):
+		failures.append("Integrated save should contain Brother Aldren provider")
+
+	zone_manager.call("travel_to", &"forest", &"CemeteryEntrance")
+	zone_manager.call("travel_to", &"cemetery", &"ForestExit")
+	var spawn_position := aldren.global_position
+	if spawn_position.is_equal_approx(expected_position):
+		failures.append("Regression setup should disturb Aldren before restore")
+
+	var loaded: Variant = save_manager.call("load_game", SAVE_PATH, true)
+	if typeof(loaded) != TYPE_DICTIONARY:
+		failures.append("Aldren cemetery load should return save payload")
+	if zone_manager.call("get_active_zone_id") != &"cemetery":
+		failures.append("Save/load should restore the cemetery zone")
+	if not aldren.global_position.is_equal_approx(expected_position):
+		failures.append("Save/load should preserve Aldren persisted cemetery position")
+	if aldren.get_current_state() != expected_state:
+		failures.append("Save/load should preserve Aldren persisted routine state")
 
 
 static func _cleanup(world: Node) -> void:
