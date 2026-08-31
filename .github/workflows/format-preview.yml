@@ -1,0 +1,21 @@
+name: Format Preview
+
+on:
+  push:
+    branches:
+      - feat/phase8a-corpse-decisions-auto
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'gdtoolkit>=4.3,<5'
+      - run: gdformat systems/cemetery/corpse_decision_config.gd tests/test_corpse_final_decisions.gd
+      - run: git diff -- systems/cemetery/corpse_decision_config.gd tests/test_corpse_final_decisions.gd
