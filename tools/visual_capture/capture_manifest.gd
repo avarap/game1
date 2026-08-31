@@ -16,67 +16,47 @@ const DIRECTIONS: Array[StringName] = [
 	&"w",
 	&"nw",
 ]
+const WORLD_IDS: Array[StringName] = [
+	&"cemetery_day",
+	&"cemetery_night",
+	&"cemetery_architecture_props",
+]
+const UI_SCENES := {
+	&"ui_inventory": "res://ui/inventory/inventory_panel.tscn",
+	&"ui_storage": "res://ui/storage/storage_panel.tscn",
+	&"ui_crafting": "res://ui/crafting/crafting_panel.tscn",
+	&"ui_trade": "res://ui/economy/trade_layer.tscn",
+}
+const UI_STATES := {
+	&"ui_inventory": &"ready",
+	&"ui_storage": &"empty",
+	&"ui_crafting": &"blocked",
+	&"ui_trade": &"ready",
+}
 
 
 static func capture_specs() -> Array[Dictionary]:
 	var specs: Array[Dictionary] = []
 	for direction in DIRECTIONS:
-		specs.append(_character_spec(&"player", PLAYER_SCENE, direction, Vector2(544, 640)))
+		specs.append(_character_spec(&"player", direction))
 	for direction in DIRECTIONS:
-		specs.append(_character_spec(&"aldren", ALDREN_SCENE, direction, Vector2(1216, 640)))
-
-	specs.append(
-		_world_spec(
-			&"cemetery_day", "cemetery_day.png", Vector2(960, 480), Color(1.0, 1.0, 1.0, 1.0)
-		)
-	)
-	specs.append(
-		_world_spec(
-			&"cemetery_night",
-			"cemetery_night.png",
-			Vector2(960, 480),
-			Color(0.42, 0.48, 0.62, 1.0)
-		)
-	)
-	specs.append(
-		_world_spec(
-			&"cemetery_architecture_props",
-			"cemetery_architecture_props.png",
-			Vector2(480, 680),
-			Color(0.92, 0.88, 0.82, 1.0)
-		)
-	)
-
-	specs.append(
-		_ui_spec(
-			&"ui_inventory", "res://ui/inventory/inventory_panel.tscn", "ui_inventory.png", &"ready"
-		)
-	)
-	specs.append(
-		_ui_spec(
-			&"ui_storage", "res://ui/storage/storage_panel.tscn", "ui_storage.png", &"empty"
-		)
-	)
-	specs.append(
-		_ui_spec(
-			&"ui_crafting", "res://ui/crafting/crafting_panel.tscn", "ui_crafting.png", &"blocked"
-		)
-	)
-	specs.append(
-		_ui_spec(&"ui_trade", "res://ui/economy/trade_layer.tscn", "ui_trade.png", &"ready")
-	)
+		specs.append(_character_spec(&"aldren", direction))
+	for capture_id in WORLD_IDS:
+		specs.append(_world_spec(capture_id))
+	for capture_id in UI_SCENES:
+		specs.append(_ui_spec(capture_id))
 	return specs
 
 
-static func _character_spec(
-	actor: StringName, scene_path: String, direction: StringName, position: Vector2
-) -> Dictionary:
+static func _character_spec(actor: StringName, direction: StringName) -> Dictionary:
 	var capture_id := StringName("%s_%s" % [actor, direction])
+	var is_player := actor == &"player"
+	var position := Vector2(544, 640) if is_player else Vector2(1216, 640)
 	return {
 		"id": capture_id,
 		"kind": &"character",
 		"actor": actor,
-		"scene": scene_path,
+		"scene": PLAYER_SCENE if is_player else ALDREN_SCENE,
 		"context_scene": CEMETERY_SCENE,
 		"direction": direction,
 		"actor_position": position,
@@ -84,13 +64,18 @@ static func _character_spec(
 		"size": CAPTURE_SIZE,
 		"camera_zoom": CAMERA_ZOOM,
 		"lighting": Color(0.92, 0.88, 0.82, 1.0),
-		"filename": "%s_%s.png" % [actor, direction],
+		"filename": "%s.png" % capture_id,
 	}
 
 
-static func _world_spec(
-	capture_id: StringName, filename: String, camera_position: Vector2, lighting: Color
-) -> Dictionary:
+static func _world_spec(capture_id: StringName) -> Dictionary:
+	var camera_position := Vector2(960, 480)
+	var lighting := Color.WHITE
+	if capture_id == &"cemetery_night":
+		lighting = Color(0.42, 0.48, 0.62, 1.0)
+	elif capture_id == &"cemetery_architecture_props":
+		camera_position = Vector2(480, 680)
+		lighting = Color(0.92, 0.88, 0.82, 1.0)
 	return {
 		"id": capture_id,
 		"kind": &"world",
@@ -99,19 +84,17 @@ static func _world_spec(
 		"size": CAPTURE_SIZE,
 		"camera_zoom": CAMERA_ZOOM,
 		"lighting": lighting,
-		"filename": filename,
+		"filename": "%s.png" % capture_id,
 	}
 
 
-static func _ui_spec(
-	capture_id: StringName, scene_path: String, filename: String, state: StringName
-) -> Dictionary:
+static func _ui_spec(capture_id: StringName) -> Dictionary:
 	return {
 		"id": capture_id,
 		"kind": &"ui",
-		"scene": scene_path,
+		"scene": str(UI_SCENES[capture_id]),
 		"size": CAPTURE_SIZE,
 		"camera_zoom": CAMERA_ZOOM,
-		"ui_state": state,
-		"filename": filename,
+		"ui_state": StringName(UI_STATES[capture_id]),
+		"filename": "%s.png" % capture_id,
 	}
