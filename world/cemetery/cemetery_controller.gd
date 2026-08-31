@@ -4,6 +4,7 @@ extends Node
 @export var rating_config: CemeteryRatingConfig
 
 var service: CemeteryService
+var funeral_service: FuneralDeliveryService
 
 
 func _enter_tree() -> void:
@@ -15,11 +16,19 @@ func _ready() -> void:
 	add_to_group("save_provider")
 
 
+func _process(_delta: float) -> void:
+	if not is_inside_tree():
+		return
+	sync_funeral_time(TimeManager.day, TimeManager.hour, TimeManager.minute)
+
+
 func initialize() -> void:
 	if rating_config == null:
 		rating_config = load("res://data/cemetery/default_rating.tres") as CemeteryRatingConfig
 	if service == null:
 		service = CemeteryService.new(CemeteryModel.new(rating_config))
+	if funeral_service == null:
+		funeral_service = FuneralDeliveryService.new(service)
 
 
 func get_save_key() -> StringName:
@@ -28,12 +37,33 @@ func get_save_key() -> StringName:
 
 func get_save_data() -> Dictionary:
 	initialize()
-	return service.snapshot()
+	var data := service.snapshot()
+	data["funeral_delivery"] = funeral_service.snapshot()
+	return data
 
 
 func apply_save_data(data: Dictionary) -> void:
 	initialize()
 	service = CemeteryService.from_snapshot(rating_config, data)
+	funeral_service = FuneralDeliveryService.new(service)
+	var funeral_data: Dictionary = data.get("funeral_delivery", {})
+	if not funeral_data.is_empty():
+		funeral_service.apply_snapshot(funeral_data)
+
+
+func sync_funeral_time(day: int, hour: int, minute: int = 0) -> void:
+	initialize()
+	funeral_service.sync_time(day, hour, minute)
+
+
+func deposit_funeral_fodder(amount: int) -> void:
+	initialize()
+	funeral_service.deposit_fodder(amount)
+
+
+func funeral_fodder_count() -> int:
+	initialize()
+	return funeral_service.fodder_count()
 
 
 func receive_demo_corpse() -> StringName:
