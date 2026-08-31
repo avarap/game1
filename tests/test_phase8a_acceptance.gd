@@ -58,9 +58,7 @@ static func run() -> Array[String]:
 	return failures
 
 
-static func _check_seed_to_fodder(
-	cemetery: CemeteryController, failures: Array[String]
-) -> void:
+static func _check_seed_to_fodder(cemetery: CemeteryController, failures: Array[String]) -> void:
 	var seed := load("res://data/farming/fodder_turnip_seed.tres") as ItemData
 	var harvest_item := load("res://data/items/fodder_turnip.tres") as ItemData
 	var merchant := load("res://data/economy/yard_supplier.tres") as MerchantData
@@ -72,10 +70,7 @@ static func _check_seed_to_fodder(
 	var wallet := WalletState.new(100)
 	var merchant_state := merchant.create_state()
 	var tx := EconomyService.simulate_buy(wallet, merchant_state, seed_offer, 1)
-	if (
-		not tx.is_success()
-		or not EconomyService.apply_transaction(tx, wallet, merchant_state)
-	):
+	if not tx.is_success() or not EconomyService.apply_transaction(tx, wallet, merchant_state):
 		failures.append("Phase 8A should obtain fodder_turnip_seed through the economy route")
 		return
 
@@ -165,9 +160,7 @@ static func _check_delivery_decay_logistics_and_decision(
 	if first_reception != FuneralDeliveryService.ROADSIDE_DROPOFF:
 		failures.append("Phase 8A first corpse should use the roadside dropoff")
 
-	var preservation_script := (
-		load("res://systems/cemetery/preservation_modifiers.gd") as Script
-	)
+	var preservation_script := load("res://systems/cemetery/preservation_modifiers.gd") as Script
 	var modifiers: RefCounted = preservation_script.new()
 	modifiers.set("technology_bp", 8000)
 	modifiers.set("facility_bp", 7500)
@@ -178,10 +171,7 @@ static func _check_delivery_decay_logistics_and_decision(
 	stepped.advance_decomposition(60)
 	stepped.advance_decomposition(60)
 	jumped.advance_decomposition(120)
-	if (
-		stepped.age_minutes != jumped.age_minutes
-		or stepped.decay_percent != jumped.decay_percent
-	):
+	if stepped.age_minutes != jumped.age_minutes or stepped.decay_percent != jumped.decay_percent:
 		failures.append("Phase 8A preserved decay should be deterministic for steps and jumps")
 	corpse.advance_decomposition(24 * 60)
 	if corpse.age_minutes != 24 * 60 or corpse.decay_percent <= 0:
@@ -199,10 +189,31 @@ static func _check_delivery_decay_logistics_and_decision(
 	if restored_reception != FuneralDeliveryService.ROADSIDE_DROPOFF:
 		failures.append("Phase 8A ramp unlock must not relocate an existing corpse")
 
-	var decisions := (
-		load("res://data/cemetery/default_final_decisions.tres") as CorpseDecisionConfig
-	)
-	var expected_reward := decisions.reward_for(&"research", corpse)
+	cemetery.sync_funeral_time(11, 17, 59)
+	cemetery.sync_funeral_time(11, 18, 0)
+	if cemetery.service.pending_corpses.size() != 2 or recorder.delivery_count != 2:
+		failures.append("Phase 8A upgraded next-day delivery should occur exactly once")
+		return
+	if cemetery.funeral_fodder_count() != 0:
+		failures.append("Phase 8A feeder should consume harvested fodder for regular delivery")
+	var second_id := _other_pending_id(cemetery.service, corpse_id)
+	if second_id == &"":
+		failures.append("Phase 8A upgraded delivery should create a distinct corpse")
+		return
+	if cemetery.funeral_service.reception_point_for(second_id) != FuneralDeliveryService.RAMP_DROPOFF:
+		failures.append("Phase 8A logistics upgrade should route future corpses to the ramp")
+	cemetery.sync_funeral_time(11, 18, 0)
+	cemetery.sync_funeral_time(11, 22, 0)
+	if cemetery.service.pending_corpses.size() != 2 or recorder.delivery_count != 2:
+		failures.append("Phase 8A upgraded delivery retries must not duplicate state or feedback")
+
+	var before_decision := cemetery.get_save_data()
+	cemetery.apply_save_data(before_decision)
+	if recorder.delivery_count != 2 or cemetery.service.pending_corpses.size() != 2:
+		failures.append("Phase 8A restore must not replay a successful delivery")
+	var restored_corpse := cemetery.service.pending_corpses.get(corpse_id) as CorpseState
+	var decisions := load("res://data/cemetery/default_final_decisions.tres") as CorpseDecisionConfig
+	var expected_reward := decisions.reward_for(&"research", restored_corpse)
 	var blue_before := technology.get_points(TechnologyService.PointType.BLUE)
 	var result := cemetery.service.finalize_corpse(corpse_id, &"research")
 	if result != CemeteryService.RESULT_OK:
@@ -223,6 +234,17 @@ static func _check_delivery_decay_logistics_and_decision(
 		failures.append("Phase 8A restore/retry must not duplicate technology rewards")
 	if recorder.decision_count != 1:
 		failures.append("Phase 8A restore/retry must not replay terminal feedback")
-	cemetery.sync_funeral_time(10, 22, 0)
-	if recorder.delivery_count != 1 or not cemetery.service.pending_corpses.is_empty():
+	cemetery.sync_funeral_time(11, 23, 0)
+	if recorder.delivery_count != 2 or cemetery.service.pending_corpses.size() != 1:
 		failures.append("Phase 8A restore must not replay delivery or resurrect finalized corpses")
+	if cemetery.service.pending_corpses.has(corpse_id):
+		failures.append("Phase 8A finalized corpse must remain absent after restore")
+	if not cemetery.service.pending_corpses.has(second_id):
+		failures.append("Phase 8A unrelated pending corpse must survive restore")
+
+
+static func _other_pending_id(service: CemeteryService, excluded_id: StringName) -> StringName:
+	for pending_id in service.pending_ids():
+		if pending_id != excluded_id:
+			return pending_id
+	return &""
