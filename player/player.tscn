@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://core/components/inventory_component.gd" id="2_inventory"]
 [ext_resource type="Script" path="res://core/components/energy_component.gd" id="3_energy"]
-[ext_resource type="Texture2D" path="res://art/characters/player/player_idle_walk.svg" id="4_sheet"]
+[ext_resource type="Texture2D" path="res://art/characters/player/player_idle_walk_64x96.svg" id="4_sheet"]
 [ext_resource type="Script" path="res://player/player_visual.gd" id="5_visual"]
 
 [sub_resource type="CapsuleShape2D" id="Capsule_player"]
@@ -14,52 +14,52 @@ radius = 42.0
 
 [sub_resource type="AtlasTexture" id="n_i"]
 atlas = ExtResource("4_sheet")
-region = Rect2(0, 0, 32, 48)
+region = Rect2(0, 0, 64, 96)
 [sub_resource type="AtlasTexture" id="n_w"]
 atlas = ExtResource("4_sheet")
-region = Rect2(32, 0, 32, 48)
+region = Rect2(64, 0, 64, 96)
 [sub_resource type="AtlasTexture" id="ne_i"]
 atlas = ExtResource("4_sheet")
-region = Rect2(0, 48, 32, 48)
+region = Rect2(0, 96, 64, 96)
 [sub_resource type="AtlasTexture" id="ne_w"]
 atlas = ExtResource("4_sheet")
-region = Rect2(32, 48, 32, 48)
+region = Rect2(64, 96, 64, 96)
 [sub_resource type="AtlasTexture" id="e_i"]
 atlas = ExtResource("4_sheet")
-region = Rect2(0, 96, 32, 48)
+region = Rect2(0, 192, 64, 96)
 [sub_resource type="AtlasTexture" id="e_w"]
 atlas = ExtResource("4_sheet")
-region = Rect2(32, 96, 32, 48)
+region = Rect2(64, 192, 64, 96)
 [sub_resource type="AtlasTexture" id="se_i"]
 atlas = ExtResource("4_sheet")
-region = Rect2(0, 144, 32, 48)
+region = Rect2(0, 288, 64, 96)
 [sub_resource type="AtlasTexture" id="se_w"]
 atlas = ExtResource("4_sheet")
-region = Rect2(32, 144, 32, 48)
+region = Rect2(64, 288, 64, 96)
 [sub_resource type="AtlasTexture" id="s_i"]
 atlas = ExtResource("4_sheet")
-region = Rect2(0, 192, 32, 48)
+region = Rect2(0, 384, 64, 96)
 [sub_resource type="AtlasTexture" id="s_w"]
 atlas = ExtResource("4_sheet")
-region = Rect2(32, 192, 32, 48)
+region = Rect2(64, 384, 64, 96)
 [sub_resource type="AtlasTexture" id="sw_i"]
 atlas = ExtResource("4_sheet")
-region = Rect2(0, 240, 32, 48)
+region = Rect2(0, 480, 64, 96)
 [sub_resource type="AtlasTexture" id="sw_w"]
 atlas = ExtResource("4_sheet")
-region = Rect2(32, 240, 32, 48)
+region = Rect2(64, 480, 64, 96)
 [sub_resource type="AtlasTexture" id="w_i"]
 atlas = ExtResource("4_sheet")
-region = Rect2(0, 288, 32, 48)
+region = Rect2(0, 576, 64, 96)
 [sub_resource type="AtlasTexture" id="w_w"]
 atlas = ExtResource("4_sheet")
-region = Rect2(32, 288, 32, 48)
+region = Rect2(64, 576, 64, 96)
 [sub_resource type="AtlasTexture" id="nw_i"]
 atlas = ExtResource("4_sheet")
-region = Rect2(0, 336, 32, 48)
+region = Rect2(0, 672, 64, 96)
 [sub_resource type="AtlasTexture" id="nw_w"]
 atlas = ExtResource("4_sheet")
-region = Rect2(32, 336, 32, 48)
+region = Rect2(64, 672, 64, 96)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_player"]
 animations = [{"frames":[{"duration":1.0,"texture":SubResource("e_i")}],"loop":true,"name":&"idle_e","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("n_i")}],"loop":true,"name":&"idle_n","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("ne_i")}],"loop":true,"name":&"idle_ne","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("nw_i")}],"loop":true,"name":&"idle_nw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("s_i")}],"loop":true,"name":&"idle_s","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("se_i")}],"loop":true,"name":&"idle_se","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("sw_i")}],"loop":true,"name":&"idle_sw","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("w_i")}],"loop":true,"name":&"idle_w","speed":1.0},{"frames":[{"duration":1.0,"texture":SubResource("e_w")}],"loop":true,"name":&"walk_e","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("n_w")}],"loop":true,"name":&"walk_n","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("ne_w")}],"loop":true,"name":&"walk_ne","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("nw_w")}],"loop":true,"name":&"walk_nw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("s_w")}],"loop":true,"name":&"walk_s","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("se_w")}],"loop":true,"name":&"walk_se","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("sw_w")}],"loop":true,"name":&"walk_sw","speed":6.666667},{"frames":[{"duration":1.0,"texture":SubResource("w_w")}],"loop":true,"name":&"walk_w","speed":6.666667}]
@@ -72,7 +72,7 @@ script = ExtResource("1_player")
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_player")
 animation = &"idle_s"
-offset = Vector2(0, -24)
+offset = Vector2(0, -48)
 script = ExtResource("5_visual")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
