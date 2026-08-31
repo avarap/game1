@@ -39,6 +39,10 @@ static func run() -> Array[String]:
 	if not failures.is_empty():
 		return failures
 
+	var runner_script := load(RUNNER_PATH) as Script
+	if runner_script == null or not runner_script.can_instantiate():
+		failures.append("Visual capture runner should be a loadable executable Godot script")
+
 	var manifest_script := load(MANIFEST_PATH) as Script
 	var manifest: Variant = manifest_script.new()
 	var specs: Array = manifest.call("capture_specs")
