@@ -22,7 +22,7 @@ jobs:
           python-version: "3.12"
 
       - name: Validate gameplay capture contract
-        run: python -m pytest -q tests/test_gameplay_video_capture.py
+        run: python tests/test_gameplay_video_capture.py
 
   render:
     needs: contract
