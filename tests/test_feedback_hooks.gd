@@ -13,20 +13,14 @@ class Recorder:
 	var last_decision: StringName = &""
 	var last_reward: Vector3i = Vector3i.ZERO
 
-	func on_delivery(
-		corpse_id: StringName, logical_day: int, reception_point: StringName
-	) -> void:
+	func on_delivery(id: StringName, day: int, point: StringName) -> void:
 		delivery_count += 1
-		last_delivery_id = corpse_id
-		last_delivery_day = logical_day
-		last_reception_point = reception_point
+		last_delivery_id = id
+		last_delivery_day = day
+		last_reception_point = point
 
 	func on_decision(
-		_corpse_id: StringName,
-		decision: StringName,
-		red: int,
-		green: int,
-		blue: int,
+		_id: StringName, decision: StringName, red: int, green: int, blue: int
 	) -> void:
 		decision_count += 1
 		last_decision = decision
@@ -56,9 +50,12 @@ static func _check_funeral_delivery_events(failures: Array[String]) -> void:
 	funeral.sync_time(1, 18, 0)
 	if recorder.delivery_count != 1:
 		failures.append("A valid funeral delivery should emit exactly one event")
-	if recorder.last_delivery_id == &"" or recorder.last_delivery_day != 1:
-		failures.append("Funeral delivery event should expose corpse ID and day")
-	if recorder.last_reception_point != FuneralDeliveryService.ROADSIDE_DROPOFF:
+	if recorder.last_delivery_id == &"":
+		failures.append("Funeral delivery event should expose the corpse ID")
+	if recorder.last_delivery_day != 1:
+		failures.append("Funeral delivery event should expose its logical day")
+	var expected_point := FuneralDeliveryService.ROADSIDE_DROPOFF
+	if recorder.last_reception_point != expected_point:
 		failures.append("Funeral delivery event should expose its reception point")
 
 	funeral.sync_time(1, 18, 0)
@@ -75,7 +72,8 @@ static func _check_funeral_delivery_events(failures: Array[String]) -> void:
 
 	EventBus.disconnect("funeral_delivery_completed", listener)
 	var silent_cemetery := _new_cemetery_service()
-	var silent_funeral := FuneralDeliveryService.new(silent_cemetery, _new_storage(), 1)
+	var silent_storage := _new_storage()
+	var silent_funeral := FuneralDeliveryService.new(silent_cemetery, silent_storage, 1)
 	silent_funeral.sync_time(40, 17, 59)
 	silent_funeral.sync_time(40, 18, 0)
 	if silent_cemetery.pending_corpses.size() != 1:
@@ -91,17 +89,18 @@ static func _check_corpse_decision_events(failures: Array[String]) -> void:
 	var listener := Callable(recorder, "on_decision")
 	EventBus.connect("corpse_final_decision_completed", listener)
 	var config := _rating_config()
-	var decision_config := _decision_config()
-	var service := CemeteryService.new(
-		CemeteryModel.new(config), decision_config, TechnologyService.new()
-	)
+	var choices := _decision_config()
+	var service := _new_decision_service(config, choices)
 
 	var cremated := _corpse(&"feedback_cremate", 3)
 	service.receive_corpse(cremated)
 	service.finalize_corpse(cremated.data.id, &"cremate")
-	if recorder.decision_count != 1 or recorder.last_decision != &"cremate":
+	if recorder.decision_count != 1:
 		failures.append("Valid cremate should emit exactly one decision event")
-	if recorder.last_reward != decision_config.reward_for(&"cremate", cremated):
+	if recorder.last_decision != &"cremate":
+		failures.append("Cremate event should expose the terminal decision")
+	var cremate_reward := choices.reward_for(&"cremate", cremated)
+	if recorder.last_reward != cremate_reward:
 		failures.append("Cremate event should expose the committed reward")
 
 	service.finalize_corpse(cremated.data.id, &"cremate")
@@ -111,9 +110,12 @@ static func _check_corpse_decision_events(failures: Array[String]) -> void:
 	var researched := _corpse(&"feedback_research", 4)
 	service.receive_corpse(researched)
 	service.finalize_corpse(researched.data.id, &"research")
-	if recorder.decision_count != 2 or recorder.last_decision != &"research":
+	if recorder.decision_count != 2:
 		failures.append("Valid research should emit exactly one decision event")
-	if recorder.last_reward != decision_config.reward_for(&"research", researched):
+	if recorder.last_decision != &"research":
+		failures.append("Research event should expose the terminal decision")
+	var research_reward := choices.reward_for(&"research", researched)
+	if recorder.last_reward != research_reward:
 		failures.append("Research event should expose the committed reward")
 
 	service.finalize_corpse(researched.data.id, &"cremate")
@@ -121,16 +123,12 @@ static func _check_corpse_decision_events(failures: Array[String]) -> void:
 		failures.append("Second terminal decision must not emit success feedback")
 
 	var snapshot := service.snapshot()
-	CemeteryService.from_snapshot(
-		config, snapshot, decision_config, TechnologyService.new()
-	)
+	CemeteryService.from_snapshot(config, snapshot, choices, TechnologyService.new())
 	if recorder.decision_count != 2:
 		failures.append("Restore must not replay terminal-decision events")
 
 	EventBus.disconnect("corpse_final_decision_completed", listener)
-	var silent_service := CemeteryService.new(
-		CemeteryModel.new(config), decision_config, TechnologyService.new()
-	)
+	var silent_service := _new_decision_service(config, choices)
 	var silent_corpse := _corpse(&"feedback_no_listener", 2)
 	silent_service.receive_corpse(silent_corpse)
 	var result := silent_service.finalize_corpse(silent_corpse.data.id, &"research")
@@ -140,6 +138,14 @@ static func _check_corpse_decision_events(failures: Array[String]) -> void:
 
 static func _new_cemetery_service() -> CemeteryService:
 	return CemeteryService.new(CemeteryModel.new(_rating_config()))
+
+
+static func _new_decision_service(
+	config: CemeteryRatingConfig, choices: CorpseDecisionConfig
+) -> CemeteryService:
+	var model := CemeteryModel.new(config)
+	var technology := TechnologyService.new()
+	return CemeteryService.new(model, choices, technology)
 
 
 static func _rating_config() -> CemeteryRatingConfig:
