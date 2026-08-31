@@ -139,6 +139,11 @@ static func _check_progressive_unloading(funeral_script: Script, failures: Array
 	var cemetery := _new_cemetery_service()
 	var storage := _new_fodder_storage()
 	var funeral: Variant = funeral_script.new(cemetery, storage, 1)
+	for method_name in [&"reception_point_for", &"unlock_ramp", &"is_ramp_unlocked"]:
+		if not funeral.has_method(method_name):
+			failures.append("Funeral delivery should expose %s for progressive unloading" % method_name)
+	if not failures.is_empty():
+		return
 
 	funeral.call("sync_time", 30, 17, 59)
 	funeral.call("sync_time", 30, 18, 0)
