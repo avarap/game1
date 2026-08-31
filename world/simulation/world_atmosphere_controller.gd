@@ -8,6 +8,7 @@ const DUSK_START := 18 * 60
 const NIGHT_START := 20 * 60
 
 @export var motes_enabled := true
+@export_range(1, 256, 1) var base_mote_amount: int = 28
 
 var night_strength: float = 0.0
 var fog_strength: float = 0.68
@@ -119,7 +120,8 @@ func _apply_visual_state() -> void:
 		shader_material.set_shader_parameter("warmth", warmth)
 		shader_material.set_shader_parameter("tint_color", _zone_tint())
 	motes.emitting = motes_enabled
-	motes.amount_ratio = clampf(fog_strength + night_strength * 0.15, 0.12, 1.0)
+	var mote_density := clampf(fog_strength + night_strength * 0.15, 0.12, 1.0)
+	motes.amount = maxi(1, roundi(float(base_mote_amount) * mote_density))
 	motes.modulate = Color(0.72, 0.78, 0.78, 0.16 + night_strength * 0.10)
 
 
@@ -134,5 +136,6 @@ func _zone_tint() -> Color:
 		&"home_interior", &"village_interior":
 			return Color("#a27b53")
 		&"mine":
-			return Color("#5f6268")
-	return Color("#737873")
+			return Color("#5a6268")
+		_:
+			return Color("#707070")
