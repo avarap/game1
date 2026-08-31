@@ -4,10 +4,11 @@ extends RefCounted
 const MINUTES_PER_DAY := 24 * 60
 const DELIVERY_HOUR := 18
 const DELIVERY_MINUTE := 0
+const FODDER_ITEM_ID := &"fodder_turnip"
 
 var cemetery_service: CemeteryService
+var storage: StorageNetwork
 var fodder_cost: int = 1
-var fodder_units: int = 0
 var intro_delivered: bool = false
 var last_resolved_day: int = 0
 var next_corpse_serial: int = 1
@@ -15,8 +16,13 @@ var _has_observed_time: bool = false
 var _last_observed_total_minutes: int = 0
 
 
-func _init(p_cemetery_service: CemeteryService, p_fodder_cost: int = 1) -> void:
+func _init(
+	p_cemetery_service: CemeteryService,
+	p_storage: StorageNetwork,
+	p_fodder_cost: int = 1,
+) -> void:
 	cemetery_service = p_cemetery_service
+	storage = p_storage
 	fodder_cost = maxi(p_fodder_cost, 1)
 
 
@@ -35,17 +41,8 @@ func sync_time(day: int, hour: int, minute: int = 0) -> void:
 	_last_observed_total_minutes = current_total
 
 
-func deposit_fodder(amount: int) -> void:
-	fodder_units += maxi(amount, 0)
-
-
-func fodder_count() -> int:
-	return fodder_units
-
-
 func snapshot() -> Dictionary:
 	return {
-		"fodder_units": fodder_units,
 		"intro_delivered": intro_delivered,
 		"last_resolved_day": last_resolved_day,
 		"next_corpse_serial": next_corpse_serial,
@@ -55,7 +52,6 @@ func snapshot() -> Dictionary:
 
 
 func apply_snapshot(data: Dictionary) -> void:
-	fodder_units = maxi(int(data.get("fodder_units", 0)), 0)
 	intro_delivered = bool(data.get("intro_delivered", false))
 	last_resolved_day = maxi(int(data.get("last_resolved_day", 0)), 0)
 	next_corpse_serial = maxi(int(data.get("next_corpse_serial", 1)), 1)
@@ -82,11 +78,11 @@ func _resolve_day(logical_day: int) -> void:
 		_deliver_corpse(logical_day)
 		return
 
-	if fodder_units < fodder_cost:
+	if storage == null or not storage.has_item(FODDER_ITEM_ID, fodder_cost):
 		return
 
 	if _deliver_corpse(logical_day):
-		fodder_units -= fodder_cost
+		storage.consume(FODDER_ITEM_ID, fodder_cost)
 
 
 func _deliver_corpse(logical_day: int) -> bool:
