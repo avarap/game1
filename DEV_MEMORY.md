@@ -10,12 +10,15 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
 - #25 — Tileset exterior: completado en PR #56; run `33333578933`, success.
+- #28 — Props/edificios/cementerio: integrado en PR #79; main run `33340142216`, success.
 - Track **8A — Gameplay Depth & Feel**: diseño aprobado y en implementación.
 - **8A.1 — Descomposición acelerada:** implementado en PR #57.
 - **8A.2 — Conservación:** implementado en PR #59; CI funcional `33336387360`, success.
+- **8A.3 — Agricultura mínima:** integrado en PR #76; merge `b10146d12d5c6f0251b61ec779f4ecc7351e9257`; main run `33342619691`, success.
 - Diseño 8A: `docs/superpowers/specs/2026-08-30-phase8a-cemetery-depth-design.md`.
 - Biblioteca de ideas/diseño: `docs/design/`.
-- Próximo bloque del track de profundidad: **8A.3 — agricultura mínima**.
+- Próximo bloque del track de profundidad: **8A.4 — recurso multiuso** (#61).
+- PRs abiertos observados por integrador: #75 (#26), #80 (#29) y #78 (#68); todos requieren resincronización con el HEAD actual antes de integrar. #78 además es solo un incremento parcial de #68.
 
 ## Fuentes de verdad
 
@@ -57,8 +60,9 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 ## Fase 8 — visual
 
 - #25 introdujo el atlas exterior original `256 x 256`, 64 celdas de `32 x 32`, desacoplado de gameplay/colisión/navegación.
+- #28 añadió props, fachadas y assets de cementerio desacoplados del gameplay.
 - #26–#31 siguen su propio sub-track visual; pueden avanzar en trabajo independiente siempre que no pisen contratos de gameplay 8A.
-- #29 permanece dependiente de los assets previos definidos en el roadmap.
+- #29 ya tiene dependencias funcionales satisfechas (#25 y #28), pero su PR #80 debe sincronizarse con `main` y volver a pasar CI antes de integración.
 
 ## Fase 8A — decisiones aprobadas
 
@@ -82,6 +86,15 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Cambiar de modificadores conserva el resto fraccional previo; descartarlo equivaldría a perdonar deterioro subporcentual.
 - La rampa de entrega sigue siendo logística únicamente, sin bonus de conservación.
 
+### Agricultura — implementada en 8A.3
+- Stable IDs: `fodder_turnip_seed` y `fodder_turnip`.
+- `CropData` y `FarmPlotState` son data-driven y deterministas.
+- Plantar consume exactamente una semilla solo si la parcela acepta la acción.
+- Crecimiento usa tiempo lógico de `TimeManager`; saltos grandes y refrescos pequeños son equivalentes.
+- Cosecha concede una sola vez el item configurado, respeta capacidad y deja la parcela reutilizable.
+- Snapshot/restore conserva cultivo, tiempo plantado y estado cosechable sin duplicación.
+- Integración: PR #76; main run `33342619691` verde.
+
 ### Servicio funerario
 - Entrega diaria determinista al atardecer; objetivo inicial **18:00**.
 - Cruzar las 18:00 mediante juego normal, sueño o salto de tiempo procesa como máximo una entrega por día.
@@ -90,40 +103,24 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - Sin alimento suficiente: entrega suspendida, sin inventario negativo.
 - Personaje/animal/quest/textos/assets serán originales.
 
-### Agricultura y recurso multiuso
-- Stable IDs: `fodder_turnip_seed` y `fodder_turnip`.
-- Loop mínimo: semilla → parcela → crecimiento por TimeManager → cosecha → inventario → persistencia.
-- Usos: alimentar transporte, vender, comprar de emergencia, cocinar y almacenar.
-- Cultivar debe ser más sostenible que comprar continuamente.
-- Cocina reutiliza `RecipeData`/crafting y recupera energía; no introducir hambre.
+### Recurso multiuso
+- `fodder_turnip` debe conectarse ahora con inventory/storage, economía y crafting reutilizando APIs existentes.
+- Debe ser comprable/vendible y tener al menos una receta útil sin introducir hambre ni supply/demand.
+- Cultivar debe resultar más sostenible que depender de compra continua.
 
 ### Logística, economía y feedback
 - Inicio: descarga junto al camino; progresión: rampa desbloqueable al área de recepción.
 - Pipeline futuro de precios: base × global × merchant × relationship, neutral `1.0` por defecto; sin supply/demand complejo.
 - Feedback placeholder reutiliza EventBus/AudioManager.
 
-## Implementación 8A.1
+## Integración y coordinación actual
 
-Archivos principales:
-- `systems/cemetery/corpse_data.gd`: `decay_percent` entero 0–100.
-- `systems/cemetery/corpse_state.gd`: `age_minutes`, integración acelerada por bandas, estados, calidad efectiva y snapshot integer.
-- `world/cemetery/cemetery_controller.gd`: demo corpse migrado al nuevo contrato.
-- `tests/test_corpse_decomposition.gd`: contrato específico de aceleración, thresholds, determinismo y persistencia.
-- Tests legacy de cementerio actualizados para validar el nuevo contrato en vez del modelo float lineal eliminado.
-
-## Implementación 8A.2
-
-Archivos principales:
-- `systems/cemetery/preservation_modifiers.gd`: Resource data-driven con factores technology/facility/tool en basis points enteros y composición multiplicativa.
-- `systems/cemetery/corpse_state.gd`: aplica el factor compuesto a nuevas unidades de deterioro y persiste factor/resto sin rewind.
-- `tests/test_corpse_preservation.gd`: neutralidad, reducción de velocidad, composición, no-rewind visible y subporcentual, determinismo y snapshot/restore.
-- `tests/run_tests.gd`: registra la suite de conservación.
-
-TDD/validación:
-- El PR llegó a GREEN funcional en run `33335651778` antes de la auditoría adicional.
-- Se detectó que `set_preservation_modifiers()` reiniciaba `_preservation_remainder`, descartando progreso fraccional ya acumulado.
-- RED de regresión: run `33336306728` mantuvo import/smoke y todas las demás suites verdes y falló exactamente en `Changing preservation should preserve fractional decomposition progress`.
-- GREEN tras corregir el reset: run `33336387360` pasó `gdlint`, `gdformat --check`, import Godot 4.7.2, smoke y suite headless completa.
+- Solo el integrador actualiza `ROADMAP.md`, `DEV_MEMORY.md`, `CHANGELOG.md` y `README.md` durante trabajo paralelo.
+- No iniciar nuevas features desde el integrador.
+- PR #75 (#26): scope correcto y CI previo verde, pero branch stale frente a `main`; se dejó diagnóstico para resincronizar y revalidar.
+- PR #80 (#29): scope correcto y CI previo verde, pero draft/unmergeable y stale; requiere sync + CI nuevo.
+- PR #78 (#68): incremento UI coherente pero no satisface toda #68; requiere sync y completar la issue o subdividir formalmente el trabajo restante.
+- No marcar Fase 8 completa salvo cierre real de #70 sobre el HEAD final.
 
 ## Biblioteca de diseño (`docs/design/`)
 
@@ -166,11 +163,11 @@ TDD/validación:
 
 ## Próximo paso
 
-1. Empezar **8A.3 — agricultura mínima** con TDD: semilla → parcela → crecimiento por `TimeManager` → cosecha → persistencia.
-2. Mantener independencia con el sub-track visual #26–#31.
-3. Consultar `docs/design/` solo para decisiones compatibles con la fase activa.
-4. No promover ideas post-MVP al roadmap activo sin dependencias y criterios de aceptación.
-5. No marcar Fase 8 ni Track 8A como completos antes de sus criterios.
+1. Mantener `main` verde tras cada integración.
+2. Siguiente issue funcional habilitada: **#61 — 8A.4 recurso multiuso**; el integrador no la implementa.
+3. Esperar PRs workers actualizados para #26/#29/#68 y revisar uno a uno.
+4. Mantener trackers #71/#72/#73 alineados con issues realmente cerradas.
+5. No marcar Fase 8 ni Track 8A como completos antes de sus gates #70/#66.
 
 ## Regla de continuidad
 
@@ -178,8 +175,8 @@ Al retomar:
 1. Leer `DEV_MEMORY.md`, `ROADMAP.md`, `GAME_DESIGN.md`, spec 8A, `ART_DIRECTION.md` y la issue/PR activo.
 2. Revisar `main`, PRs abiertos y último CI.
 3. Comprobar dependencias antes de iniciar trabajo nuevo.
-4. Implementar un bloque coherente y pequeño mediante TDD cuando cambie comportamiento.
-5. Ejecutar quality gate, importación, smoke y suite headless.
+4. El integrador no implementa features; revisa ownership/scope/dependencias/tests/CI y solo integra PRs conformes y actualizados.
+5. Ejecutar o exigir quality gate, importación, smoke y suite headless sobre Godot 4.7.2.
 6. Corregir errores críticos antes de avanzar.
-7. Actualizar `DEV_MEMORY.md`, `ROADMAP.md` y `CHANGELOG.md`.
+7. Solo el integrador sincroniza documentación global durante trabajo paralelo.
 8. No marcar una fase completada antes de cumplir todos sus criterios de aceptación.

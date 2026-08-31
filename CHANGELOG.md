@@ -14,10 +14,13 @@
 - **#16 Foundation `TileMapLayer`:** `technical_map.tscn` + `TechnicalMap`, seis capas, bounds y colisión tile-based.
 - **#18–#24 Mundo:** cementerio/taller, bosque, pueblo, interiores, mina, integración de zonas y aceptación integral.
 - **#25 Tileset exterior:** atlas original `256 x 256` con 64 tiles de `32 x 32` y documentación estable de celdas.
+- **#28 Props/edificios/cementerio:** assets originales de entorno, tumbas, mobiliario funcional y fachadas integrados vía PR #79 sin mover autoridad de gameplay.
 - **8A.1 Descomposición acelerada:** `CorpseState` incorpora edad en minutos enteros, deterioro entero 0–100, cuatro estados legibles, aceleración por edad, calidad efectiva y persistencia determinista.
 - `TestCorpseDecomposition` valida bandas 0–24/24–48/48–72/>72 h, equivalencia entre saltos grandes y pequeños, thresholds y round-trip integer.
 - **8A.2 Conservación:** `PreservationModifiers` añade factores data-driven en basis points enteros para tecnología, instalación y utensilio, neutrales por defecto y multiplicativos.
 - `CorpseState` aplica conservación solo al deterioro futuro y persiste modificadores y resto fraccional; `TestCorpsePreservation` cubre neutralidad, reducción, composición, no-rewind, determinismo y round-trip.
+- **8A.3 Agricultura mínima:** `CropData` y `FarmPlotState` implementan plantado atómico, crecimiento determinista con `TimeManager`, cosecha exactly-once, parcela reutilizable y snapshot/restore sin duplicación.
+- Datos estables `fodder_turnip_seed` y `fodder_turnip` bajo `data/farming/*`; `TestFarmingMinimum` registrado en la suite global.
 - Spec detallado de Phase 8A para conservación, agricultura/nabo multiuso, servicio funerario a las 18:00, comedero, rampa, cremación/investigación y aceptación integral.
 - **Post-MVP economía local por profesión:** todo item vendible debe tener comprador compatible; comerciantes opt-in por NPC y `MerchantProfile` data-driven basado en tags/categorías, con afinidad de precio, cupos y validación de items sin salida económica.
 - **Post-MVP automatización:** trabajadores originales con tareas `HARVEST`, `MINE`, `CHOP`, `TRANSPORT` y `PROCESS`, dependientes de infraestructura y cadenas productivas.
@@ -40,6 +43,7 @@
 - No se implementa migración de saves legacy: no existen saves de jugadores que conservar.
 - Cambiar modificadores de conservación conserva el resto fraccional de deterioro acumulado para que aplicar una mejora no rejuvenezca ni perdone progreso previo.
 - `docs/design/` queda explícitamente como dirección secundaria/backlog: no sustituye `ROADMAP.md` ni autoriza adelantar sistemas post-MVP.
+- Tras integrar 8A.3, el siguiente bloque funcional habilitado es #61 / 8A.4; el integrador no inicia features y solo sincroniza estado global.
 
 ### Design Decisions — Phase 8A
 - Descomposición híbrida: almacenamiento integer 0–100, estados Fresh/Fading/Decomposed/Rotten y aceleración con la edad.
@@ -95,4 +99,6 @@
 - Tileset exterior #25: PR #56, run `33333578933`, success.
 - **8A.1 descomposición integer:** PR #57, run funcional `33334955947`: `gdlint`, `gdformat --check`, Godot 4.7.2 import, main-scene smoke y suite headless completa en success.
 - **8A.2 conservación:** PR #59, run previo `33335651778` verde; RED de regresión `33336306728` falló exactamente por pérdida del resto fraccional; GREEN funcional `33336387360` pasó quality, import Godot 4.7.2, smoke y suite headless completa.
+- **#28 props/edificios/cementerio:** PR #79, merge `d5014467e439d96e4aca7f53ce2d3cb1b7e108f5`, main run `33340142216`, success.
+- **8A.3 agricultura mínima:** PR #76, merge `b10146d12d5c6f0251b61ec779f4ecc7351e9257`, main run `33342619691`, success.
 - Cambio documental `docs/design/`: no modifica GDScript, escenas ni assets; validación requerida es integridad/relectura de documentación y estado de `main`.
