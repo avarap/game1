@@ -35,13 +35,14 @@ static func run() -> Array[String]:
 
 
 static func _check_funeral_delivery_events(failures: Array[String]) -> void:
-	if not EventBus.has_signal("funeral_delivery_completed"):
+	var bus := _event_bus()
+	if bus == null or not bus.has_signal("funeral_delivery_completed"):
 		failures.append("EventBus should expose funeral_delivery_completed")
 		return
 
 	var recorder := Recorder.new()
 	var listener := Callable(recorder, "on_delivery")
-	EventBus.connect("funeral_delivery_completed", listener)
+	bus.connect("funeral_delivery_completed", listener)
 	var cemetery := _new_cemetery_service()
 	var storage := _new_storage()
 	var funeral := FuneralDeliveryService.new(cemetery, storage, 1)
@@ -70,7 +71,7 @@ static func _check_funeral_delivery_events(failures: Array[String]) -> void:
 	if recorder.delivery_count != 1:
 		failures.append("Restore must not replay completed-delivery events")
 
-	EventBus.disconnect("funeral_delivery_completed", listener)
+	bus.disconnect("funeral_delivery_completed", listener)
 	var silent_cemetery := _new_cemetery_service()
 	var silent_storage := _new_storage()
 	var silent_funeral := FuneralDeliveryService.new(silent_cemetery, silent_storage, 1)
@@ -81,13 +82,14 @@ static func _check_funeral_delivery_events(failures: Array[String]) -> void:
 
 
 static func _check_corpse_decision_events(failures: Array[String]) -> void:
-	if not EventBus.has_signal("corpse_final_decision_completed"):
+	var bus := _event_bus()
+	if bus == null or not bus.has_signal("corpse_final_decision_completed"):
 		failures.append("EventBus should expose corpse_final_decision_completed")
 		return
 
 	var recorder := Recorder.new()
 	var listener := Callable(recorder, "on_decision")
-	EventBus.connect("corpse_final_decision_completed", listener)
+	bus.connect("corpse_final_decision_completed", listener)
 	var config := _rating_config()
 	var choices := _decision_config()
 	var service := _new_decision_service(config, choices)
@@ -127,13 +129,23 @@ static func _check_corpse_decision_events(failures: Array[String]) -> void:
 	if recorder.decision_count != 2:
 		failures.append("Restore must not replay terminal-decision events")
 
-	EventBus.disconnect("corpse_final_decision_completed", listener)
+	bus.disconnect("corpse_final_decision_completed", listener)
 	var silent_service := _new_decision_service(config, choices)
 	var silent_corpse := _corpse(&"feedback_no_listener", 2)
 	silent_service.receive_corpse(silent_corpse)
 	var result := silent_service.finalize_corpse(silent_corpse.data.id, &"research")
 	if result != CemeteryService.RESULT_OK:
 		failures.append("Corpse decisions should work with zero listeners")
+
+
+static func _event_bus() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop == null:
+		return null
+	var tree := loop as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("EventBus")
 
 
 static func _new_cemetery_service() -> CemeteryService:
