@@ -6,8 +6,8 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 
 - Repositorio: `avarap/game1`.
 - Rama principal: `main`.
-- HEAD de referencia de esta sincronización: `e77885bd189221d64f5bfc01b3aaa158abe3d6e8`.
-- CI de `main` para ese HEAD: run `33385482169`, **success**.
+- HEAD de referencia de esta sincronización: `9ff20a44db34cfa46b7b0cee7576735c6f283534`.
+- CI de `main` para ese HEAD: run `33386137356`, **success**.
 - Runtime/CI objetivo: **Godot 4.7.2**.
 - Fases 0–7: **COMPLETADAS**.
 - Fase 8 — Polish: **ACTIVA**.
@@ -46,7 +46,7 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 - 8A.4 recurso multiuso: #61 / PR #81.
 - 8A.5 servicio funerario: #62 / PR #99.
 - 8A.6 logística progresiva: #63 integrada mediante PR #103; ya no hay trabajo activo en #100/#101.
-- 8A.7 decisiones de cadáver: #104 abierta con PR #106 activo. El PR está actualizado contra `main`; run `33385915562` deja import/smoke/suite verdes pero falla `gdformat --check`, por lo que NO es integrable todavía.
+- 8A.7 decisiones de cadáver: #104 abierta con PR #106 activo. Run `33385915562` deja import/smoke/suite verdes pero falla `gdformat --check`; no integrar hasta nueva validación completamente verde y resincronización con el HEAD actual de `main` si fuera necesaria.
 - 8A.8 #65 y 8A.9 #66: pendientes.
 
 ## Reset visual — estado real
@@ -54,8 +54,9 @@ Memoria operativa del proyecto. Leer antes de continuar y actualizar después de
 Los screenshots de `docs/` son el benchmark oficial. El arte integrado anteriormente puede seguir siendo funcional pero no se considera visualmente aceptado por el mero hecho de estar en `main`.
 
 - #96 QA visual: **integrada y cerrada** mediante PR #108. Existe tooling determinista para capturas 1280x720 asociado a SHA, con cámara/zoom reales, manifest de personajes/NPCs, cementerio día/noche, arquitectura/props y UI core. El render perceptual se ejecuta localmente con display; CI valida contrato/smoke del flujo.
-- #94 ARCH: abierta con PR #107. Recomendación actual: rechazar 32x48 como baseline hero y preferir 64x96 nativo para player/key NPCs, desacoplando canvas visual de colisión/navegación. No cerrar #94 hasta validar con evidencia in-game comparable contra `docs/`.
-- #109 CHARACTERS: preparada y desbloqueada. Debe producir candidatos nativos 48x72 y 64x96, 8 direcciones coherentes y capturas deterministas con zoom 1.0/1.25/1.5 usando #96. No vale escalar el arte 32x48 existente.
+- PR #107 ARCH: **integrado** en `main` `9ff20a44...`; documenta la recomendación de rechazar 32x48 como baseline hero, preferir 64x96 nativo para player/key NPCs y desacoplar canvas visual de colisión/navegación.
+- #94 ARCH: **reabierta por supervisor tras el merge de #107**. El cierre producido al mergear no satisface la aceptación perceptual porque #107 no incluye la comparación in-game requerida. #94 está bloqueada por #109 hasta disponer de baseline 32x48 frente a candidatos nativos 48x72/64x96 con zoom 1.0/1.25/1.5.
+- #109 CHARACTERS: preparada y desbloqueada. Debe producir candidatos nativos 48x72 y 64x96, 8 direcciones coherentes y capturas deterministas usando #96. No vale escalar el arte 32x48 existente.
 - `ART_DIRECTION.md` todavía contiene el contrato histórico 32x48/1.5x. **No modificarlo hasta que #94 quede validada**; después el supervisor debe actualizarlo para reflejar la decisión final.
 
 ## Estado visual/UI integrado frente a aceptación
@@ -74,12 +75,12 @@ No existe restricción heredada de tamaño. Si 32x48, 32 px de tile visual u otr
 
 ## Cola autónoma actual
 
-- GAMEPLAY: #104 / PR #106. El worker debe permanecer en este PR hasta corregir `gdformat --check`, revalidar todos los gates y mantenerlo actualizado.
-- ARCH: #94 / PR #107. CI de la resincronización está verde, pero la aceptación sigue bloqueada por evidencia in-game real; no cerrar solo por SVG/CI.
+- GAMEPLAY: #104 / PR #106. Worker permanece en este PR hasta corregir `gdformat --check`, revalidar todos los gates y resincronizar con `main` cuando corresponda.
 - CHARACTERS: #109 asignada como siguiente P0 visual para producir la prueba nativa 48x72/64x96.
+- ARCH: #94 está abierta pero bloqueada por #109; el slot ARCH queda en STANDBY para evitar duplicar trabajo hasta que existan capturas.
 - AUDIO: #93 permanece bloqueada hasta #65.
 - WORLD/UI/POLISH: no preparar/duplicar reworks finales hasta que #94/#109 generen evidencia suficiente; después crear issues independientes por ownership.
-- Un slot worker permanece STANDBY mientras no exista otra issue preparada y desbloqueada.
+- Existe además otro slot general en STANDBY mientras no haya una issue preparada y desbloqueada adicional.
 
 ## Coordinación del supervisor
 
