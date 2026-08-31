@@ -48,6 +48,7 @@ func _run_all_tests() -> void:
 	_run_suite("MapInteriors", TestMapInteriors.run(), failures)
 	_run_suite("WorldZoneIntegration", TestWorldZoneIntegration.run(), failures)
 	_run_suite("WorldPhase7Acceptance", TestWorldPhase7Acceptance.run(), failures)
+	_run_suite("WorldArtIntegration", TestWorldArtIntegration.run(), failures)
 	_run_suite("FarmingMinimum", TestFarmingMinimum.run(), failures)
 
 	if failures.is_empty():
