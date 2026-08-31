@@ -17,9 +17,12 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if not is_inside_tree():
+	var time_manager := get_node_or_null("/root/TimeManager")
+	if time_manager == null:
 		return
-	sync_funeral_time(TimeManager.day, TimeManager.hour, TimeManager.minute)
+	sync_funeral_time(
+		int(time_manager.get("day")), int(time_manager.get("hour")), int(time_manager.get("minute"))
+	)
 
 
 func initialize() -> void:
