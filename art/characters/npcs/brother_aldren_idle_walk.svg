@@ -2,58 +2,99 @@
 <!-- Original Valdeniebla Brother Aldren atlas. 5 columns: idle + 4 walk frames. 8 rows: N,NE,E,SE,S,SW,W,NW. -->
 <defs>
   <g id="shadow"><rect x="7" y="43" width="18" height="3" fill="#30312D" opacity="0.55"/></g>
-  <g id="body">
+  <g id="body_front">
     <use href="#shadow"/>
-    <rect x="11" y="34" width="4" height="9" fill="#2B2925"/>
-    <rect x="17" y="34" width="4" height="9" fill="#2B2925"/>
-    <rect x="10" y="40" width="6" height="3" fill="#4A3B32"/>
-    <rect x="16" y="40" width="6" height="3" fill="#4A3B32"/>
-    <rect x="8" y="18" width="16" height="19" fill="#24231F"/>
-    <rect x="9" y="18" width="14" height="18" fill="#4B443B"/>
-    <rect x="10" y="20" width="12" height="15" fill="#5E5548"/>
-    <rect x="9" y="27" width="14" height="3" fill="#3B332D"/>
-    <rect x="11" y="27" width="2" height="3" fill="#A77B45"/>
-    <rect x="18" y="28" width="3" height="5" fill="#715845"/>
-    <rect x="7" y="20" width="3" height="11" fill="#4A3B32"/>
-    <rect x="22" y="20" width="3" height="11" fill="#4A3B32"/>
-    <rect x="7" y="29" width="3" height="3" fill="#C9BE9B"/>
-    <rect x="22" y="29" width="3" height="3" fill="#C9BE9B"/>
-    <rect x="9" y="7" width="14" height="12" fill="#24231F"/>
-    <rect x="10" y="8" width="12" height="10" fill="#B8AA8B"/>
-    <rect x="11" y="9" width="10" height="8" fill="#C9BE9B"/>
-    <rect x="8" y="5" width="16" height="6" fill="#24231F"/>
-    <rect x="9" y="5" width="14" height="5" fill="#563E36"/>
-    <rect x="10" y="4" width="12" height="3" fill="#715845"/>
-    <rect x="12" y="13" width="8" height="2" fill="#6D5947"/>
-    <rect x="14" y="16" width="4" height="2" fill="#8C755D"/>
-    <rect x="11" y="18" width="2" height="9" fill="#8A9290"/>
-    <rect x="20" y="18" width="2" height="8" fill="#344536"/>
-    <rect x="20" y="24" width="4" height="8" fill="#715845"/>
-    <rect x="21" y="25" width="2" height="2" fill="#E0B66C"/>
+    <rect x="11" y="34" width="4" height="9" fill="#2B2925"/><rect x="17" y="34" width="4" height="9" fill="#2B2925"/>
+    <rect x="10" y="40" width="6" height="3" fill="#4A3B32"/><rect x="16" y="40" width="6" height="3" fill="#4A3B32"/>
+    <rect x="8" y="18" width="16" height="19" fill="#24231F"/><rect x="9" y="18" width="14" height="18" fill="#4B443B"/><rect x="10" y="20" width="12" height="15" fill="#5E5548"/>
+    <rect x="9" y="27" width="14" height="3" fill="#3B332D"/><rect x="11" y="27" width="2" height="3" fill="#A77B45"/><rect x="18" y="28" width="3" height="5" fill="#715845"/>
+    <rect x="7" y="20" width="3" height="11" fill="#4A3B32"/><rect x="22" y="20" width="3" height="11" fill="#4A3B32"/>
+    <rect x="7" y="29" width="3" height="3" fill="#C9BE9B"/><rect x="22" y="29" width="3" height="3" fill="#C9BE9B"/>
+    <rect x="9" y="7" width="14" height="12" fill="#24231F"/><rect x="10" y="8" width="12" height="10" fill="#B8AA8B"/><rect x="11" y="9" width="10" height="8" fill="#C9BE9B"/>
+    <rect x="8" y="5" width="16" height="6" fill="#24231F"/><rect x="9" y="5" width="14" height="5" fill="#563E36"/><rect x="10" y="4" width="12" height="3" fill="#715845"/>
+    <rect x="12" y="13" width="8" height="2" fill="#6D5947"/><rect x="14" y="16" width="4" height="2" fill="#8C755D"/>
+    <rect x="11" y="18" width="2" height="9" fill="#8A9290"/><rect x="20" y="18" width="2" height="8" fill="#344536"/>
+    <rect x="20" y="24" width="4" height="8" fill="#715845"/><rect x="21" y="25" width="2" height="2" fill="#E0B66C"/>
   </g>
-  <g id="face_front">
-    <rect x="12" y="11" width="2" height="2" fill="#24231F"/>
-    <rect x="18" y="11" width="2" height="2" fill="#24231F"/>
-    <rect x="15" y="13" width="2" height="1" fill="#9A5140"/>
+  <g id="body_profile_right">
+    <use href="#shadow"/>
+    <rect x="13" y="34" width="4" height="9" fill="#2B2925"/><rect x="18" y="35" width="4" height="8" fill="#24231F"/>
+    <rect x="11" y="19" width="13" height="18" fill="#24231F"/><rect x="12" y="19" width="11" height="17" fill="#51483D"/><rect x="13" y="21" width="9" height="14" fill="#625748"/>
+    <rect x="12" y="27" width="11" height="3" fill="#3B332D"/><rect x="19" y="27" width="3" height="6" fill="#715845"/>
+    <rect x="21" y="21" width="4" height="10" fill="#4A3B32"/><rect x="23" y="29" width="3" height="3" fill="#C9BE9B"/>
+    <rect x="11" y="7" width="12" height="12" fill="#24231F"/><rect x="12" y="8" width="10" height="10" fill="#B8AA8B"/><rect x="13" y="9" width="9" height="8" fill="#C9BE9B"/>
+    <rect x="10" y="5" width="14" height="6" fill="#24231F"/><rect x="11" y="5" width="12" height="5" fill="#563E36"/><rect x="12" y="4" width="11" height="3" fill="#715845"/>
+    <rect x="19" y="11" width="2" height="2" fill="#24231F"/><rect x="21" y="13" width="2" height="1" fill="#9A5140"/>
+    <rect x="12" y="18" width="2" height="8" fill="#8A9290"/><rect x="21" y="18" width="2" height="9" fill="#344536"/>
+    <rect x="22" y="23" width="4" height="8" fill="#715845"/><rect x="23" y="24" width="2" height="2" fill="#E0B66C"/>
   </g>
-  <g id="face_left"><rect x="11" y="11" width="2" height="2" fill="#24231F"/><rect x="15" y="11" width="2" height="2" fill="#24231F"/></g>
-  <g id="face_right"><rect x="15" y="11" width="2" height="2" fill="#24231F"/><rect x="19" y="11" width="2" height="2" fill="#24231F"/></g>
-  <g id="back"><rect x="12" y="8" width="8" height="8" fill="#715845"/><rect x="13" y="9" width="6" height="7" fill="#563E36"/><rect x="11" y="19" width="10" height="4" fill="#3B332D"/></g>
-  <g id="walk1"><use href="#body"/><rect x="9" y="38" width="7" height="3" fill="#2B2925"/><rect x="19" y="35" width="3" height="5" fill="#2B2925"/></g>
-  <g id="walk2"><use href="#body" transform="translate(0 1)"/><rect x="10" y="36" width="4" height="5" fill="#2B2925"/><rect x="18" y="36" width="4" height="5" fill="#2B2925"/></g>
-  <g id="walk3"><use href="#body"/><rect x="10" y="35" width="3" height="5" fill="#2B2925"/><rect x="16" y="38" width="7" height="3" fill="#2B2925"/></g>
-  <g id="walk4"><use href="#body" transform="translate(0 -1)"/><rect x="10" y="36" width="4" height="5" fill="#2B2925"/><rect x="18" y="36" width="4" height="5" fill="#2B2925"/></g>
-  <g id="row_front"><use href="#body"/><use href="#face_front"/><use href="#walk1" x="32"/><use href="#face_front" x="32"/><use href="#walk2" x="64"/><use href="#face_front" x="64"/><use href="#walk3" x="96"/><use href="#face_front" x="96"/><use href="#walk4" x="128"/><use href="#face_front" x="128"/></g>
-  <g id="row_left"><use href="#body"/><use href="#face_left"/><rect x="8" y="20" width="2" height="9" fill="#E0B66C"/><use href="#walk1" x="32"/><use href="#face_left" x="32"/><use href="#walk2" x="64"/><use href="#face_left" x="64"/><use href="#walk3" x="96"/><use href="#face_left" x="96"/><use href="#walk4" x="128"/><use href="#face_left" x="128"/></g>
-  <g id="row_right"><use href="#body"/><use href="#face_right"/><rect x="22" y="20" width="2" height="9" fill="#E0B66C"/><use href="#walk1" x="32"/><use href="#face_right" x="32"/><use href="#walk2" x="64"/><use href="#face_right" x="64"/><use href="#walk3" x="96"/><use href="#face_right" x="96"/><use href="#walk4" x="128"/><use href="#face_right" x="128"/></g>
-  <g id="row_back"><use href="#body"/><use href="#back"/><use href="#walk1" x="32"/><use href="#back" x="32"/><use href="#walk2" x="64"/><use href="#back" x="64"/><use href="#walk3" x="96"/><use href="#back" x="96"/><use href="#walk4" x="128"/><use href="#back" x="128"/></g>
+  <g id="body_diag_front_right">
+    <use href="#shadow"/>
+    <rect x="12" y="34" width="4" height="9" fill="#2B2925"/><rect x="18" y="35" width="4" height="8" fill="#24231F"/>
+    <rect x="9" y="18" width="15" height="19" fill="#24231F"/><rect x="10" y="18" width="13" height="18" fill="#50473C"/><rect x="11" y="20" width="11" height="15" fill="#625748"/>
+    <rect x="10" y="27" width="13" height="3" fill="#3B332D"/><rect x="18" y="28" width="4" height="5" fill="#715845"/>
+    <rect x="8" y="21" width="3" height="10" fill="#4A3B32"/><rect x="22" y="20" width="4" height="11" fill="#4A3B32"/><rect x="23" y="29" width="3" height="3" fill="#C9BE9B"/>
+    <rect x="10" y="7" width="13" height="12" fill="#24231F"/><rect x="11" y="8" width="11" height="10" fill="#B8AA8B"/><rect x="12" y="9" width="10" height="8" fill="#C9BE9B"/>
+    <rect x="9" y="5" width="15" height="6" fill="#24231F"/><rect x="10" y="5" width="13" height="5" fill="#563E36"/><rect x="11" y="4" width="12" height="3" fill="#715845"/>
+    <rect x="14" y="11" width="2" height="2" fill="#24231F"/><rect x="19" y="11" width="2" height="2" fill="#24231F"/><rect x="18" y="14" width="2" height="1" fill="#9A5140"/>
+    <rect x="11" y="18" width="2" height="9" fill="#8A9290"/><rect x="20" y="18" width="2" height="8" fill="#344536"/>
+    <rect x="21" y="24" width="4" height="8" fill="#715845"/><rect x="22" y="25" width="2" height="2" fill="#E0B66C"/>
+  </g>
+  <g id="body_back">
+    <use href="#shadow"/>
+    <rect x="11" y="34" width="4" height="9" fill="#2B2925"/><rect x="17" y="34" width="4" height="9" fill="#2B2925"/>
+    <rect x="8" y="18" width="16" height="19" fill="#24231F"/><rect x="9" y="18" width="14" height="18" fill="#474139"/><rect x="10" y="20" width="12" height="15" fill="#554D42"/>
+    <rect x="9" y="27" width="14" height="3" fill="#3B332D"/><rect x="18" y="28" width="3" height="5" fill="#715845"/>
+    <rect x="9" y="7" width="14" height="12" fill="#24231F"/><rect x="10" y="8" width="12" height="10" fill="#715845"/><rect x="11" y="9" width="10" height="8" fill="#563E36"/>
+    <rect x="8" y="5" width="16" height="6" fill="#24231F"/><rect x="9" y="5" width="14" height="5" fill="#563E36"/><rect x="10" y="4" width="12" height="3" fill="#715845"/>
+    <rect x="11" y="19" width="10" height="4" fill="#3B332D"/><rect x="12" y="23" width="8" height="8" fill="#433A31"/>
+    <rect x="20" y="24" width="4" height="8" fill="#715845"/><rect x="21" y="25" width="2" height="2" fill="#E0B66C"/>
+  </g>
+  <g id="body_diag_back_right">
+    <use href="#shadow"/>
+    <rect x="12" y="34" width="4" height="9" fill="#2B2925"/><rect x="18" y="35" width="4" height="8" fill="#24231F"/>
+    <rect x="9" y="18" width="15" height="19" fill="#24231F"/><rect x="10" y="18" width="13" height="18" fill="#494239"/><rect x="11" y="20" width="11" height="15" fill="#574E43"/>
+    <rect x="10" y="27" width="13" height="3" fill="#3B332D"/>
+    <rect x="10" y="7" width="13" height="12" fill="#24231F"/><rect x="11" y="8" width="11" height="10" fill="#715845"/><rect x="12" y="9" width="10" height="8" fill="#563E36"/>
+    <rect x="9" y="5" width="15" height="6" fill="#24231F"/><rect x="10" y="5" width="13" height="5" fill="#563E36"/><rect x="11" y="4" width="12" height="3" fill="#715845"/>
+    <rect x="12" y="19" width="9" height="4" fill="#3B332D"/><rect x="13" y="23" width="8" height="8" fill="#433A31"/>
+    <rect x="21" y="23" width="4" height="9" fill="#715845"/><rect x="22" y="24" width="2" height="2" fill="#E0B66C"/>
+  </g>
+  <g id="walk_front_1"><use href="#body_front"/><rect x="9" y="38" width="7" height="3" fill="#2B2925"/><rect x="19" y="35" width="3" height="5" fill="#2B2925"/></g>
+  <g id="walk_front_2"><use href="#body_front" transform="translate(0 1)"/></g>
+  <g id="walk_front_3"><use href="#body_front"/><rect x="10" y="35" width="3" height="5" fill="#2B2925"/><rect x="16" y="38" width="7" height="3" fill="#2B2925"/></g>
+  <g id="walk_front_4"><use href="#body_front" transform="translate(0 -1)"/></g>
+  <g id="walk_right_1"><use href="#body_profile_right"/><rect x="12" y="38" width="6" height="3" fill="#2B2925"/></g>
+  <g id="walk_right_2"><use href="#body_profile_right" transform="translate(0 1)"/></g>
+  <g id="walk_right_3"><use href="#body_profile_right"/><rect x="18" y="38" width="6" height="3" fill="#2B2925"/></g>
+  <g id="walk_right_4"><use href="#body_profile_right" transform="translate(0 -1)"/></g>
+  <g id="walk_diag_fr_1"><use href="#body_diag_front_right"/><rect x="10" y="38" width="6" height="3" fill="#2B2925"/></g>
+  <g id="walk_diag_fr_2"><use href="#body_diag_front_right" transform="translate(0 1)"/></g>
+  <g id="walk_diag_fr_3"><use href="#body_diag_front_right"/><rect x="18" y="38" width="6" height="3" fill="#2B2925"/></g>
+  <g id="walk_diag_fr_4"><use href="#body_diag_front_right" transform="translate(0 -1)"/></g>
+  <g id="walk_back_1"><use href="#body_back"/><rect x="9" y="38" width="7" height="3" fill="#2B2925"/></g>
+  <g id="walk_back_2"><use href="#body_back" transform="translate(0 1)"/></g>
+  <g id="walk_back_3"><use href="#body_back"/><rect x="17" y="38" width="7" height="3" fill="#2B2925"/></g>
+  <g id="walk_back_4"><use href="#body_back" transform="translate(0 -1)"/></g>
+  <g id="walk_diag_br_1"><use href="#body_diag_back_right"/><rect x="10" y="38" width="6" height="3" fill="#2B2925"/></g>
+  <g id="walk_diag_br_2"><use href="#body_diag_back_right" transform="translate(0 1)"/></g>
+  <g id="walk_diag_br_3"><use href="#body_diag_back_right"/><rect x="18" y="38" width="6" height="3" fill="#2B2925"/></g>
+  <g id="walk_diag_br_4"><use href="#body_diag_back_right" transform="translate(0 -1)"/></g>
+  <g id="row_s"><use href="#body_front"/><use href="#walk_front_1" x="32"/><use href="#walk_front_2" x="64"/><use href="#walk_front_3" x="96"/><use href="#walk_front_4" x="128"/></g>
+  <g id="row_se"><use href="#body_diag_front_right"/><use href="#walk_diag_fr_1" x="32"/><use href="#walk_diag_fr_2" x="64"/><use href="#walk_diag_fr_3" x="96"/><use href="#walk_diag_fr_4" x="128"/></g>
+  <g id="row_e"><use href="#body_profile_right"/><use href="#walk_right_1" x="32"/><use href="#walk_right_2" x="64"/><use href="#walk_right_3" x="96"/><use href="#walk_right_4" x="128"/></g>
+  <g id="row_ne"><use href="#body_diag_back_right"/><rect x="20" y="18" width="2" height="7" fill="#344536"/><use href="#walk_diag_br_1" x="32"/><use href="#walk_diag_br_2" x="64"/><use href="#walk_diag_br_3" x="96"/><use href="#walk_diag_br_4" x="128"/></g>
+  <g id="row_n"><use href="#body_back"/><use href="#walk_back_1" x="32"/><use href="#walk_back_2" x="64"/><use href="#walk_back_3" x="96"/><use href="#walk_back_4" x="128"/></g>
+  <g id="row_sw"><use href="#body_diag_front_right" transform="translate(32 0) scale(-1 1)"/><use href="#walk_diag_fr_1" x="32" transform="translate(64 0) scale(-1 1)"/><use href="#walk_diag_fr_2" x="64" transform="translate(128 0) scale(-1 1)"/><use href="#walk_diag_fr_3" x="96" transform="translate(192 0) scale(-1 1)"/><use href="#walk_diag_fr_4" x="128" transform="translate(256 0) scale(-1 1)"/></g>
+  <g id="row_w"><use href="#body_profile_right" transform="translate(32 0) scale(-1 1)"/><use href="#walk_right_1" x="32" transform="translate(64 0) scale(-1 1)"/><use href="#walk_right_2" x="64" transform="translate(128 0) scale(-1 1)"/><use href="#walk_right_3" x="96" transform="translate(192 0) scale(-1 1)"/><use href="#walk_right_4" x="128" transform="translate(256 0) scale(-1 1)"/></g>
+  <g id="row_nw"><use href="#body_diag_back_right" transform="translate(32 0) scale(-1 1)"/><use href="#walk_diag_br_1" x="32" transform="translate(64 0) scale(-1 1)"/><use href="#walk_diag_br_2" x="64" transform="translate(128 0) scale(-1 1)"/><use href="#walk_diag_br_3" x="96" transform="translate(192 0) scale(-1 1)"/><use href="#walk_diag_br_4" x="128" transform="translate(256 0) scale(-1 1)"/></g>
 </defs>
-<use href="#row_back" y="0"/>
-<use href="#row_right" y="48"/>
-<use href="#row_right" y="96"/>
-<use href="#row_front" y="144"/>
-<use href="#row_front" y="192"/>
-<use href="#row_left" y="240"/>
-<use href="#row_left" y="288"/>
-<use href="#row_back" y="336"/>
+<use href="#row_n" y="0"/>
+<use href="#row_ne" y="48"/>
+<use href="#row_e" y="96"/>
+<use href="#row_se" y="144"/>
+<use href="#row_s" y="192"/>
+<use href="#row_sw" y="240"/>
+<use href="#row_w" y="288"/>
+<use href="#row_nw" y="336"/>
 </svg>
