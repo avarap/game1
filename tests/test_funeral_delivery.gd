@@ -135,9 +135,7 @@ static func _check_persistence(funeral_script: Script, failures: Array[String]) 
 		failures.append("Save/load after 18:00 should not duplicate delivery")
 
 
-static func _check_progressive_unloading(
-	funeral_script: Script, failures: Array[String]
-) -> void:
+static func _check_progressive_unloading(funeral_script: Script, failures: Array[String]) -> void:
 	var cemetery := _new_cemetery_service()
 	var storage := _new_fodder_storage()
 	var funeral: Variant = funeral_script.new(cemetery, storage, 1)
