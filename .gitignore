@@ -15,3 +15,6 @@ Thumbs.db
 
 # Local runtime data
 *.log
+
+# Local-only licensed Verdant sample files, including Godot import sidecars.
+/art/third_party/verdant_00/
