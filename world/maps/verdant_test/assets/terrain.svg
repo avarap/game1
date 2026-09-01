@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="32" viewBox="0 0 256 32" shape-rendering="crispEdges">
+<!-- Eight native 32px tiles: grass 0-3, dirt 4-7. Each material has one common base color to eliminate tile-value checkerboards. -->
+<rect x="0" y="0" width="128" height="32" fill="#566b45"/>
+<rect x="128" y="0" width="128" height="32" fill="#715845"/>
+<path d="M4 7h2v2h2v1h-3v-1h-1z" fill="#64784d"/>
+<path d="M20 4h2v2h2v1h-3v-1h-1z" fill="#4e6241"/>
+<path d="M12 20h2v2h2v1h-3v-1h-1z" fill="#64784d"/>
+<path d="M26 25h2v2h2v1h-3v-1h-1z" fill="#4e6241"/>
+<path d="M6 5v3h2v-4h1v5h-4v-4z" fill="#6f8053"/>
+<rect x="9" y="28" width="2" height="1" fill="#4b6040"/>
+<path d="M38 21h2v2h2v1h-3v-1h-1z" fill="#64784d"/>
+<path d="M50 8h2v2h2v1h-3v-1h-1z" fill="#4e6241"/>
+<path d="M57 17h2v2h2v1h-3v-1h-1z" fill="#64784d"/>
+<path d="M44 4h2v2h2v1h-3v-1h-1z" fill="#4e6241"/>
+<path d="M52 6v3h2v-4h1v5h-4v-4z" fill="#6f8053"/>
+<rect x="46" y="24" width="2" height="1" fill="#4b6040"/>
+<path d="M68 12h2v2h2v1h-3v-1h-1z" fill="#64784d"/>
+<path d="M85 22h2v2h2v1h-3v-1h-1z" fill="#4e6241"/>
+<path d="M78 5h2v2h2v1h-3v-1h-1z" fill="#64784d"/>
+<path d="M90 9h2v2h2v1h-3v-1h-1z" fill="#4e6241"/>
+<path d="M80 3v3h2v-4h1v5h-4v-4z" fill="#6f8053"/>
+<rect x="83" y="20" width="2" height="1" fill="#4b6040"/>
+<path d="M102 25h2v2h2v1h-3v-1h-1z" fill="#64784d"/>
+<path d="M114 14h2v2h2v1h-3v-1h-1z" fill="#4e6241"/>
+<path d="M122 4h2v2h2v1h-3v-1h-1z" fill="#64784d"/>
+<path d="M104 8h2v2h2v1h-3v-1h-1z" fill="#4e6241"/>
+<path d="M106 6v3h2v-4h1v5h-4v-4z" fill="#6f8053"/>
+<rect x="120" y="16" width="2" height="1" fill="#4b6040"/>
+<path d="M132 8h3v1h2v1h-4v-1h-1z" fill="#7c6149"/>
+<path d="M147 5h3v1h2v1h-4v-1h-1z" fill="#654f3f"/>
+<path d="M139 24h3v1h2v1h-4v-1h-1z" fill="#7c6149"/>
+<path d="M154 18h3v1h2v1h-4v-1h-1z" fill="#654f3f"/>
+<rect x="132" y="8" width="2" height="1" fill="#96774f"/>
+<rect x="141" y="14" width="2" height="1" fill="#5e4b3d"/>
+<path d="M165 22h3v1h2v1h-4v-1h-1z" fill="#7c6149"/>
+<path d="M177 11h3v1h2v1h-4v-1h-1z" fill="#654f3f"/>
+<path d="M186 27h3v1h2v1h-4v-1h-1z" fill="#7c6149"/>
+<path d="M169 4h3v1h2v1h-4v-1h-1z" fill="#654f3f"/>
+<rect x="177" y="11" width="2" height="1" fill="#96774f"/>
+<rect x="177" y="15" width="2" height="1" fill="#5e4b3d"/>
+<path d="M195 16h3v1h2v1h-4v-1h-1z" fill="#7c6149"/>
+<path d="M214 6h3v1h2v1h-4v-1h-1z" fill="#654f3f"/>
+<path d="M206 26h3v1h2v1h-4v-1h-1z" fill="#7c6149"/>
+<path d="M219 17h3v1h2v1h-4v-1h-1z" fill="#654f3f"/>
+<rect x="206" y="26" width="2" height="1" fill="#96774f"/>
+<rect x="213" y="16" width="2" height="1" fill="#5e4b3d"/>
+<path d="M230 6h3v1h2v1h-4v-1h-1z" fill="#7c6149"/>
+<path d="M244 23h3v1h2v1h-4v-1h-1z" fill="#654f3f"/>
+<path d="M251 10h3v1h2v1h-4v-1h-1z" fill="#7c6149"/>
+<path d="M234 17h3v1h2v1h-4v-1h-1z" fill="#654f3f"/>
+<rect x="234" y="17" width="2" height="1" fill="#96774f"/>
+<rect x="249" y="17" width="2" height="1" fill="#5e4b3d"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="40" viewBox="0 0 48 40" shape-rendering="crispEdges">
+<!-- Original bark, exposed rings and buttress roots. Native 48x40; ground pivot (24,32). -->
+<path d="M9 29h9v-2h16v3h9v5h-6v3H14v-2H6v-4h3z" fill="#30312d" opacity=".4"/>
+<path d="M11 13h25v12l3 5 6 2v3H33l-8-3-9 3H3v-3l7-5z" fill="#362e26"/>
+<path d="M13 13h20v13l4 5h-7l-5-3-9 4H8l5-5z" fill="#795639"/>
+<path d="M14 16h5v11l-6 4H9l6-6zM22 19h3v10h-3z" fill="#a37a4c"/>
+<path d="M28 17h5v8l5 6h-6l-4-5zM19 19h2v8h-2zM12 24h3v4h-3z" fill="#4b392b"/>
+<path d="M13 9h7V6h9v3h7v4h4v6h-6v3H17v-2h-7v-6h3z" fill="#352f26"/>
+<path d="M15 10h8V8h6v3h6v3h3v4h-6v2H18v-2h-6v-3h3z" fill="#bb9560"/>
+<path d="M19 11h10v2h5v4h-5v2H20v-2h-5v-3h4z" fill="#805b3a"/>
+<path d="M20 12h8v2h4v2h-4v2h-7v-2h-4v-2h3z" fill="#c6a26b"/>
+<path d="M22 13h5v2h3v1h-3v1h-6v-2h-2v-1h3z" fill="#916b43"/>
+<path d="M22 14h4v2h-4zM29 9h2v4h-2v3h-2v-2h1v-3h1z" fill="#68482f"/>
+<path d="M13 12h5v1h-5zM18 9h5v1h-5zM13 16h3v1h-3z" fill="#dfc084"/>
+<path d="M7 33h5v-3h2v4H7zM35 31h5v2h-5z" fill="#667047"/>
+</svg>

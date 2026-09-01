@@ -50,6 +50,7 @@ func _run_all_tests() -> void:
 	_run_suite("TechnologyQuestIntegration", TestTechnologyQuestIntegration.run(), failures)
 	_run_suite("MapFoundation", TestMapFoundation.run(), failures)
 	_run_suite("MapForest", TestMapForest.run(), failures)
+	_run_suite("VerdantTestMap", await TestVerdantTestMap.run(), failures)
 	_run_suite("CemeteryMap", TestCemeteryMap.run(), failures)
 	_run_suite("CemeteryVisualSlice", TestCemeteryVisualSlice.run(), failures)
 	_run_suite("CemeteryArtCatalog", TestCemeteryArtCatalog.run(), failures)
