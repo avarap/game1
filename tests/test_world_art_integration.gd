@@ -9,7 +9,7 @@ const MAP_PATHS := [
 	"res://world/maps/interiors/home_workshop.tscn",
 	"res://world/maps/interiors/village_building.tscn",
 ]
-const EXTERIOR_ATLAS := "res://art/environment/tilesets/exterior_tileset.svg"
+const EXTERIOR_ATLAS := "res://art/environment/tilesets/cemetery_ground_tileset.png"
 const CEMETERY_ATLAS := "res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png"
 
 

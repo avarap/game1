@@ -5,7 +5,7 @@ const TILE_SIZE := Vector2i(32, 32)
 const ATLAS_SIZE := Vector2i(8, 8)
 const SOURCE_ID := 0
 const COLLISION_TILE := Vector2i(7, 7)
-const ATLAS_PATH := "res://art/environment/tilesets/exterior_tileset.svg"
+const ATLAS_PATH := "res://art/environment/tilesets/cemetery_ground_tileset.png"
 
 
 static func build() -> TileSet:

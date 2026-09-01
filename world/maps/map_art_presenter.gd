@@ -1,19 +1,19 @@
 class_name MapArtPresenter
 extends RefCounted
 
-const WORKBENCH := "res://art/environment/props/workbench.svg"
-const STORAGE_CHEST := "res://art/environment/props/storage_chest.svg"
-const BED := "res://art/environment/props/bed.svg"
-const SIGN := "res://art/environment/props/sign.svg"
-const PREPARATION_TABLE := "res://art/environment/cemetery/preparation_table.svg"
-const GRAVE_FRESH := "res://art/environment/cemetery/grave_fresh.svg"
-const GRAVE_WORN := "res://art/environment/cemetery/grave_worn.svg"
-const PLAYER_WORKSHOP := "res://art/environment/buildings/player_workshop.svg"
-const VILLAGE_HOUSE := "res://art/environment/buildings/village_house.svg"
-const TREE := "res://art/environment/props/tree.svg"
-const ROCK := "res://art/environment/props/rock.svg"
-const WORKSHOP_PIVOT := Vector2(192, 248)
-const VILLAGE_HOUSE_PIVOT := Vector2(176, 216)
+const WORKBENCH := "res://art/environment/props/workbench.png"
+const STORAGE_CHEST := "res://art/environment/props/storage_chest.png"
+const BED := "res://art/environment/props/bed.png"
+const SIGN := "res://art/environment/props/sign.png"
+const PREPARATION_TABLE := "res://art/environment/cemetery/preparation_table.png"
+const GRAVE_FRESH := "res://art/environment/cemetery/grave_fresh.png"
+const GRAVE_WORN := "res://art/environment/cemetery/grave_worn.png"
+const PLAYER_WORKSHOP := "res://art/environment/cemetery/production/atlas/building_workshop_exterior.png"
+const VILLAGE_HOUSE := "res://art/environment/buildings/village_house.png"
+const TREE := "res://art/environment/props/tree.png"
+const ROCK := "res://art/environment/props/rock.png"
+const WORKSHOP_PIVOT := Vector2(160, 240)
+const VILLAGE_HOUSE_PIVOT := Vector2(512, 512)
 
 
 static func apply(root: Node) -> void:

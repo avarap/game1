@@ -1,7 +1,7 @@
 class_name AmbientVegetationSway
 extends Node
 
-const TREE_TEXTURE_PATH := "res://art/environment/props/tree.svg"
+const TREE_TEXTURE_PATH := "res://art/environment/props/tree.png"
 
 @export var enabled := true
 @export_range(0.0, 2.0, 0.1) var sway_pixels := 1.0

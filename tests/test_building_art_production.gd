@@ -1,8 +1,8 @@
 class_name TestBuildingArtProduction
 extends RefCounted
 
-const WORKSHOP_ART := "res://art/environment/buildings/player_workshop.svg"
-const VILLAGE_HOUSE_ART := "res://art/environment/buildings/village_house.svg"
+const WORKSHOP_ART := "res://art/environment/cemetery/production/atlas/building_workshop_exterior.png"
+const VILLAGE_HOUSE_ART := "res://art/environment/buildings/village_house.png"
 const CEMETERY_MAP := "res://world/maps/cemetery/cemetery_map.tscn"
 const VILLAGE_MAP := "res://world/maps/village/village_map.tscn"
 const MIN_BUILDING_SIZE := Vector2i(288, 208)
