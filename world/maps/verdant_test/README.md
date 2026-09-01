@@ -31,6 +31,7 @@ All paths are relative to the project root:
 | Other grass fills | `art/third_party/verdant_00/grass_1.png` through `grass_3.png` | 16×16 each | Optional |
 | Dirt fills | `art/third_party/verdant_00/dirt_0.png` through `dirt_3.png` | 16×16 each | Recommended |
 | Transparent tree | `art/third_party/verdant_00/tree.png` | 32×32 | Recommended |
+| Transparent stump | `art/third_party/verdant_00/stump.png` | 16×16 | Optional |
 | Transparent rock | `art/third_party/verdant_00/rock.png` | 16×16 | Recommended |
 | Transparent bush | `art/third_party/verdant_00/bush.png` | 16×16 | Optional |
 | Red flowers | `art/third_party/verdant_00/flowers.png` | 16×16 | Optional |
@@ -45,8 +46,9 @@ Missing optional props also use repository art; a partial setup is a mixed view.
 
 ## What to compare
 
-- Uneven grass/dirt variation and a connected three-cell path with trimmed edges.
-- Dense vegetation framing two clearings and the workshop approach.
+- Fine grass/dirt variation and a continuous curved lane with irregular edges.
+- Clustered undergrowth and three fallback tree silhouettes framing the clearings.
+- Eight-direction footsteps, visible axe swings/chips and a stump after depletion.
 - Prop silhouettes and player occlusion with Y-sort from ground contact points.
 - The same layout, collision footprints, player and camera in both modes.
 
@@ -55,12 +57,26 @@ with repository art, uncheck `use_local_assets` on the scene root and run F6.
 Restore it for local rendering; keep such personal editor changes uncommitted.
 Use normal F5 to compare with the production environment.
 
-The sample's 16px art is displayed at **2× nearest** to preserve the game's 32px
-logical cells; its 32px tree therefore displays at 64px. This is an explicit
+The sample's 16px fills and small props display at **2× nearest**, preserving the
+32px logical cells. Its 32px tree displays at **4× nearest** (128px), to give the
+canopy more presence beside the 64×96 player. The trunk collision is unchanged. This is an explicit
 scale experiment, not production art approval. The workshop remains repository
 art because the sample has no building. This scene evaluates fills and props;
-path edges are clipped from the dirt fills and do **not** exercise the pack's
+path edges are clipped continuously in world space from the dirt fills and do **not** exercise the pack's
 complete 47-mask transition set. No external `.tres` or plugin is executed.
+
+## Isolated presentation improvements
+
+The fallback SVGs in `assets/` are repository-owned art for this experiment.
+Grass/dirt fills share their base colors so variation does not create a checkerboard;
+transparent ground details gather around vegetation and rocks. The workshop,
+obstacle positions and collision footprints retain the original test layout.
+
+`verdant_feedback.gd` observes the real resource signals. Successful hits show an
+axe swing, wood chips and trunk sway. Depletion swaps only the art for a stump;
+loot, energy costs and the small trunk collider remain controlled by gameplay.
+The player receives a private eight-frame walk cycle in each direction. Shared
+player resources and production scenes keep their existing animations.
 
 ## Verification
 
@@ -72,7 +88,8 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 `TestVerdantTestMap` runs through the existing bootstrap suite. It covers the
 asset-free scene, real player movement/collisions/harvesting, raw PNG loading,
-invalid inputs and the unchanged main-scene setting. Temporary PNG fixtures are
+invalid inputs, depletion without extra loot/energy use, local stump loading,
+private walk frames and the unchanged main-scene setting. Temporary PNG fixtures are
 generated under `user://` and removed afterward; CI needs no licensed files.
 
 Fallback capture: 1280×720, the real player camera at 1.5× zoom, default spawn,

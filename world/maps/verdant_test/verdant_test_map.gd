@@ -4,12 +4,20 @@ extends Node2D
 const CELL_SIZE := 32
 const MAP_SIZE := Vector2i(30, 20)
 const LOCAL_ASSET_DIRECTORY := "res://art/third_party/verdant_00"
-const FALLBACK_ATLAS := preload("res://art/environment/tilesets/exterior_tileset.svg")
-const FALLBACK_TREE := preload("res://art/environment/props/tree.svg")
+const TERRAIN := preload("res://world/maps/verdant_test/verdant_terrain.gd")
+const FEEDBACK := preload("res://world/maps/verdant_test/verdant_feedback.gd")
+const FALLBACK_ATLAS := preload("res://world/maps/verdant_test/assets/terrain.svg")
+const FALLBACK_TREES := [
+	preload("res://world/maps/verdant_test/assets/tree_oak.svg"),
+	preload("res://world/maps/verdant_test/assets/tree_pine.svg"),
+	preload("res://world/maps/verdant_test/assets/tree_birch.svg"),
+]
+const TREE_PIVOTS := [Vector2(56, 132), Vector2(48, 148), Vector2(48, 132)]
+const FALLBACK_STUMP := preload("res://world/maps/verdant_test/assets/stump.svg")
+const UNDERGROWTH := preload("res://world/maps/verdant_test/assets/undergrowth.svg")
 const FALLBACK_ROCK := preload("res://art/environment/props/rock.svg")
 const WORKSHOP := preload("res://art/environment/buildings/player_workshop.svg")
 const RESOURCE_TREE := preload("res://world/resources/tree_resource.tscn")
-const NEIGHBORS := [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]
 
 @export_dir var asset_directory: String = LOCAL_ASSET_DIRECTORY
 @export var use_local_assets := true
@@ -26,7 +34,6 @@ var _path_cells: Dictionary = {}
 
 func _ready() -> void:
 	uses_verdant_assets = _local_image("grass_0", Vector2i(16, 16)) != null
-	_build_paths()
 	_build_terrain()
 	_build_objects()
 	_build_boundary()
@@ -77,70 +84,15 @@ func _fill_image(material: String, variant: int) -> Image:
 	return FALLBACK_ATLAS.get_image().get_region(Rect2i(column * CELL_SIZE, 0, 32, 32))
 
 
-func _build_paths() -> void:
-	# A three-cell lane, a workshop approach, and two wider clearings.
-	for x in range(1, 29):
-		var center_y := 11 if x < 21 else 12
-		for y in range(center_y - 1, center_y + 2):
-			_path_cells[Vector2i(x, y)] = true
-	for rect in [Rect2i(18, 8, 3, 4), Rect2i(5, 9, 4, 5), Rect2i(23, 10, 4, 5)]:
-		for y in range(rect.position.y, rect.end.y):
-			for x in range(rect.position.x, rect.end.x):
-				_path_cells[Vector2i(x, y)] = true
-
-
 func _build_terrain() -> void:
-	var atlas := Image.create(64 * CELL_SIZE, 2 * CELL_SIZE, false, Image.FORMAT_RGBA8)
+	var grass: Array[Image] = []
+	var dirt: Array[Image] = []
 	for variant in range(4):
-		var grass := _fill_image("grass", variant)
-		var dirt := _fill_image("dirt", variant)
-		atlas.blit_rect(grass, Rect2i(0, 0, 32, 32), Vector2i(variant * 32, 0))
-		for mask in range(16):
-			var path_tile := _path_image(dirt, mask)
-			atlas.blit_rect(
-				path_tile, Rect2i(0, 0, 32, 32), Vector2i((mask * 4 + variant) * 32, 32)
-			)
-	var source := TileSetAtlasSource.new()
-	source.texture = ImageTexture.create_from_image(atlas)
-	source.texture_region_size = Vector2i(CELL_SIZE, CELL_SIZE)
-	for column in range(64):
-		source.create_tile(Vector2i(column, 1))
-		if column < 4:
-			source.create_tile(Vector2i(column, 0))
-	var tile_set := TileSet.new()
-	tile_set.tile_size = Vector2i(CELL_SIZE, CELL_SIZE)
-	tile_set.add_source(source, 0)
-	ground.tile_set = tile_set
-	paths.tile_set = tile_set
-	for y in range(MAP_SIZE.y):
-		for x in range(MAP_SIZE.x):
-			var cell := Vector2i(x, y)
-			var variant := (x * 7 + y * 11 + x * y) % 4
-			ground.set_cell(cell, 0, Vector2i(variant, 0))
-			if _path_cells.has(cell):
-				var mask := 0
-				for index in range(4):
-					if _path_cells.has(cell + NEIGHBORS[index]):
-						mask |= 1 << index
-				paths.set_cell(cell, 0, Vector2i(mask * 4 + variant, 1))
-
-
-func _path_image(dirt: Image, mask: int) -> Image:
-	var image := dirt.duplicate() as Image
-	# Clip exposed edges only; connected cells have no seams. Two-pixel clusters
-	# preserve the source grid. This does not claim to implement the pack's 47 masks.
-	for y in range(CELL_SIZE):
-		for x in range(CELL_SIZE):
-			var edge_x := 2 + 2 * ((y / 4) % 2)
-			var edge_y := 2 + 2 * ((x / 4) % 2)
-			if (
-				(mask & 1 == 0 and y < edge_y)
-				or (mask & 2 == 0 and x >= CELL_SIZE - edge_x)
-				or (mask & 4 == 0 and y >= CELL_SIZE - edge_y)
-				or (mask & 8 == 0 and x < edge_x)
-			):
-				image.set_pixel(x, y, Color.TRANSPARENT)
-	return image
+		grass.append(_fill_image("grass", variant))
+		dirt.append(_fill_image("dirt", variant))
+	TERRAIN.populate(ground, paths, grass, dirt)
+	for cell in paths.get_used_cells():
+		_path_cells[cell] = true
 
 
 func _build_objects() -> void:
@@ -150,7 +102,8 @@ func _build_objects() -> void:
 		trees.append(Vector2i(x, 16 + (x / 2) % 3))
 	for index in range(trees.size()):
 		var tree := _obstacle("Tree%d" % index, _cell_center(trees[index]), Vector2(18, 16))
-		_add_prop(tree, "tree", FALLBACK_TREE, Vector2(32, 84), Vector2i(32, 32))
+		var species := index % FALLBACK_TREES.size()
+		_add_prop(tree, "tree", FALLBACK_TREES[species], TREE_PIVOTS[species], Vector2i(32, 32))
 	var rocks := [Vector2i(13, 8), Vector2i(27, 8), Vector2i(3, 15), Vector2i(21, 16)]
 	for index in range(rocks.size()):
 		var rock := _obstacle("Rock%d" % index, _cell_center(rocks[index]), Vector2(24, 16))
@@ -190,42 +143,68 @@ func _add_prop(
 	var local: Image = _local_image(role, source_size) if uses_verdant_assets else null
 	if local != null:
 		sprite.texture = ImageTexture.create_from_image(local)
-		sprite.scale = Vector2(2, 2)
-		sprite.position = -Vector2(source_size.x, (source_size.y - 2) * 2)
+		var magnification := 4 if role == "tree" else 2
+		sprite.scale = Vector2.ONE * magnification
+		sprite.offset = -Vector2(source_size.x * 0.5, source_size.y - 2)
 	else:
 		sprite.texture = fallback
-		sprite.position = -pivot
+		sprite.offset = -pivot
 	parent.add_child(sprite)
 
 
 func _build_harvest_tree() -> void:
 	var trunk := _obstacle("HarvestTree", Vector2(272, 272), Vector2(18, 16))
-	_add_prop(trunk, "tree", FALLBACK_TREE, Vector2(32, 84), Vector2i(32, 32))
+	_add_prop(trunk, "tree", FALLBACK_TREES[0], TREE_PIVOTS[0], Vector2i(32, 32))
 	var resource := RESOURCE_TREE.instantiate() as ResourceNode
 	resource.name = "Resource"
 	resource.get_node("Trunk").hide()
 	resource.get_node("Crown").hide()
 	trunk.add_child(resource)
+	var stump: Texture2D = FALLBACK_STUMP
+	var pivot := Vector2(24, 32)
+	var magnification := Vector2.ONE
+	var local := _local_image("stump", Vector2i(16, 16)) if uses_verdant_assets else null
+	if local != null:
+		stump = ImageTexture.create_from_image(local)
+		pivot = Vector2(16, 28)
+		magnification = Vector2(2, 2)
+	var feedback := FEEDBACK.new()
+	feedback.name = "HarvestFeedback"
+	trunk.add_child(feedback)
+	feedback.setup(player, resource, trunk.get_node("Art"), stump, pivot, magnification)
 
 
 func _build_decoration() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 730021
-	for index in range(110):
-		var cell := Vector2i(rng.randi_range(1, 28), rng.randi_range(4, 18))
+	var clusters := [
+		Vector2(80, 150),
+		Vector2(358, 202),
+		Vector2(875, 190),
+		Vector2(106, 515),
+		Vector2(362, 565),
+		Vector2(755, 572),
+		Vector2(874, 592),
+		Vector2(425, 292),
+	]
+	for index in range(120):
+		var foot: Vector2 = clusters[index % clusters.size()]
+		foot += Vector2(rng.randf_range(-46, 46), rng.randf_range(-30, 30))
+		var cell := Vector2i(foot / CELL_SIZE)
 		if _path_cells.has(cell) or Rect2i(14, 3, 10, 6).has_point(cell):
 			continue
 		var anchor := Node2D.new()
-		anchor.position = _cell_center(cell) + Vector2(rng.randi_range(-8, 8), 4)
+		anchor.position = foot
 		$DecorationLow.add_child(anchor)
 		var texture := AtlasTexture.new()
-		texture.atlas = FALLBACK_ATLAS
-		texture.region = Rect2((index % 2) * 32, 6 * 32, 32, 32)
+		texture.atlas = UNDERGROWTH
+		var variant := 2 if index % 7 == 0 else index % 2
+		texture.region = Rect2(variant * 32, 0, 32, 32)
 		_add_prop(
 			anchor,
-			"flowers" if index % 3 == 0 else "bush",
+			"flowers" if variant == 2 else "bush",
 			texture,
-			Vector2(16, 24),
+			Vector2(16, 28),
 			Vector2i(16, 16)
 		)
 
