@@ -1,0 +1,29 @@
+name: Cemetery Visual Capture
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Import project
+        run: godot --headless --path . --editor --quit
+
+      - name: Capture production views
+        env:
+          VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: bash tools/visual_capture/run_capture.sh "$GITHUB_WORKSPACE/.visual-captures"
+
+      - name: Upload captures
+        uses: actions/upload-artifact@v4
+        with:
+          name: cemetery-map-captures
+          path: .visual-captures
+          if-no-files-found: error
