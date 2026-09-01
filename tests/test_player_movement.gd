@@ -17,6 +17,12 @@ static func run() -> Array[String]:
 	if not capped.is_equal_approx(Vector2(100.0, 0.0)):
 		failures.append("PlayerMovement should normalize oversized input")
 
+	var sprinted := PlayerMovement.next_velocity(
+		Vector2.ZERO, Vector2.RIGHT, 100.0, 300.0, 80.0, 1.0, 1.5
+	)
+	if not sprinted.is_equal_approx(Vector2(150.0, 0.0)):
+		failures.append("PlayerMovement should apply the requested speed multiplier")
+
 	var decelerated := PlayerMovement.next_velocity(
 		Vector2(100.0, 0.0), Vector2.ZERO, 100.0, 50.0, 40.0, 1.0
 	)
