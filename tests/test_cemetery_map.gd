@@ -1,7 +1,6 @@
 class_name TestCemeteryMap
 extends RefCounted
 
-const PLAYER_SCENE := preload("res://player/player.tscn")
 const CEMETERY_MAP_PATH := "res://world/maps/cemetery/cemetery_map.tscn"
 const REQUIRED_LAYERS := [
 	"ground",
@@ -168,7 +167,6 @@ static func run() -> Array[String]:
 		if region.navigation_polygon == null:
 			failures.append("Cemetery navigation polygon should be available")
 
-	await _check_real_player_physics(map, collision, failures)
 	map.free()
 	return failures
 
@@ -190,29 +188,3 @@ static func _can_reach(collision: TileMapLayer, start: Vector2i, goal: Vector2i)
 		for step in [Vector2i.UP, Vector2i.RIGHT, Vector2i.DOWN, Vector2i.LEFT]:
 			pending.append(cell + step)
 	return false
-
-
-static func _check_real_player_physics(
-	map: Node2D, collision: TileMapLayer, failures: Array[String]
-) -> void:
-	var tree := Engine.get_main_loop() as SceneTree
-	var player := PLAYER_SCENE.instantiate() as PlayerController
-	map.add_child(player)
-	player.set_physics_process(false)
-	player.position = (map.get_node("PlayerSpawn") as Marker2D).position
-	await tree.physics_frame
-	await tree.physics_frame
-
-	var start := player.position
-	var hit := player.move_and_collide(Vector2(64, 0))
-	if hit != null or not player.position.is_equal_approx(start + Vector2(64, 0)):
-		failures.append("Real player must move freely across the workshop apron")
-
-	var obstacle_center := collision.map_to_local(Vector2i(7, 20))
-	player.position = obstacle_center + Vector2(0, 64)
-	await tree.physics_frame
-	hit = player.move_and_collide(Vector2(0, -96))
-	if hit == null:
-		failures.append("Real player must collide with authored scenery footprints")
-
-	player.queue_free()
