@@ -4,9 +4,12 @@ extends CharacterBody2D
 @export var max_speed: float = 220.0
 @export var acceleration: float = 1200.0
 @export var deceleration: float = 1500.0
+@export_range(1.0, 2.0, 0.05) var sprint_multiplier: float = 1.45
 @export var equipped_tool_id: StringName = &"axe"
 
 @onready var interaction_area: Area2D = $InteractionArea
+
+var _is_running := false
 
 
 func _enter_tree() -> void:
@@ -15,8 +18,10 @@ func _enter_tree() -> void:
 
 func _physics_process(delta: float) -> void:
 	var direction := PlayerMovement.input_direction()
+	_is_running = not direction.is_zero_approx() and Input.is_action_pressed("run")
+	var speed_multiplier := sprint_multiplier if _is_running else 1.0
 	velocity = PlayerMovement.next_velocity(
-		velocity, direction, max_speed, acceleration, deceleration, delta
+		velocity, direction, max_speed, acceleration, deceleration, delta, speed_multiplier
 	)
 	move_and_slide()
 
@@ -24,6 +29,10 @@ func _physics_process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		_interact_with_nearest()
+
+
+func is_running() -> bool:
+	return _is_running
 
 
 func get_equipped_tool_id() -> StringName:
