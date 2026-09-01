@@ -1,20 +1,15 @@
 import os
+import sys
 import json
 import imageio_ffmpeg
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
-def build_gameplay_poc_video():
-    capture_dir = r"c:\REPO\game1\.visual-captures\poc"
-    output_video_path = r"c:\REPO\game1\.visual-captures\gameplay_poc.mp4"
-    
+def build_gameplay_video(capture_dir, output_video_path):
     metadata_path = os.path.join(capture_dir, "capture_metadata.json")
     if os.path.exists(metadata_path):
         with open(metadata_path, "r") as f:
             metadata = json.load(f)
-        captures = metadata.get("captures", [])
-    else:
-        captures = []
-        
+    
     image_files = [
         "cemetery_day.png",
         "cemetery_night.png",
@@ -44,7 +39,7 @@ def build_gameplay_poc_video():
     
     fps = 2
     writer = imageio_ffmpeg.write_frames(output_video_path, (1280, 720), fps=fps, codec="libx264", pix_fmt_in="rgb24")
-    writer.send(None) # initialize
+    writer.send(None)
     
     count = 0
     for filename in image_files:
@@ -58,17 +53,19 @@ def build_gameplay_poc_video():
                 img = img.resize((1280, 720), Image.Resampling.LANCZOS)
             
             draw = ImageDraw.Draw(img)
-            title_text = f"PoC Gameplay Video | Frame: {filename}"
-            draw.rectangle([10, 10, 500, 45], fill=(0, 0, 0, 180))
+            title_text = f"GAME1 Production Art Capture | Frame: {filename}"
+            draw.rectangle([10, 10, 520, 45], fill=(0, 0, 0, 180))
             draw.text((20, 18), title_text, fill=(255, 255, 255))
             
-            # Repeat frame for 1.5s (3 frames at 2fps)
+            # 3 frames at 2fps = 1.5s display per capture
             for _ in range(3):
                 writer.send(img.tobytes())
                 count += 1
                 
     writer.close()
-    print(f"PoC Video generated successfully: {output_video_path} ({count} frames)")
+    print(f"Video generated successfully: {output_video_path} ({count} frames)")
 
 if __name__ == "__main__":
-    build_gameplay_poc_video()
+    capture_dir = sys.argv[1] if len(sys.argv) > 1 else r"c:\REPO\game1\.visual-captures\clean_art"
+    output_video = sys.argv[2] if len(sys.argv) > 2 else r"c:\REPO\game1\.visual-captures\gameplay_clean.mp4"
+    build_gameplay_video(capture_dir, output_video)

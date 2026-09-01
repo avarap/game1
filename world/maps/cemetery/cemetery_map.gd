@@ -91,6 +91,8 @@ func _hide_placeholders(node: Node) -> void:
 	for child in node.get_children():
 		if child is Polygon2D:
 			(child as Polygon2D).visible = false
+		elif child is Label and child.name == "FeedbackLabel":
+			(child as Label).visible = false
 		_hide_placeholders(child)
 
 
