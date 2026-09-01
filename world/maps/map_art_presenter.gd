@@ -13,7 +13,7 @@ const VILLAGE_HOUSE := "res://art/environment/buildings/village_house.png"
 const TREE := "res://art/environment/props/tree.png"
 const ROCK := "res://art/environment/props/rock.png"
 const WORKSHOP_PIVOT := Vector2(160, 240)
-const VILLAGE_HOUSE_PIVOT := Vector2(512, 512)
+const VILLAGE_HOUSE_PIVOT := Vector2(160, 240)
 
 
 static func apply(root: Node) -> void:

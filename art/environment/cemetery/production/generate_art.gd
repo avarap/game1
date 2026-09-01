@@ -36,23 +36,10 @@ func _tile_origin(index: Vector2i) -> Vector2i:
 
 
 func _make_tiles() -> void:
-	var image := Image.create_empty(512, 512, false, Image.FORMAT_RGBA8)
-	image.fill(Color.TRANSPARENT)
-	for x in range(8):
-		_ground(image, Vector2i(x, 0), x)
-	for x in range(8):
-		_path(image, Vector2i(x, 1), x)
-	for x in range(8):
-		_decal(image, Vector2i(x, 2), x)
-	for x in range(8):
-		_object(image, Vector2i(x, 3), x)
-	for x in range(8):
-		_object(image, Vector2i(x, 4), x + 8)
-	for x in range(8):
-		_object(image, Vector2i(x, 5), x + 16)
-	for x in range(8):
-		_foreground(image, Vector2i(x, 6), x)
-	image.save_png(OUT.path_join("tileset_cemetery_32.png"))
+	var source_path := "res://art/environment/tilesets/cemetery_ground_tileset.png"
+	var img := Image.load_from_file(ProjectSettings.globalize_path(source_path))
+	if img != null:
+		img.save_png(OUT.path_join("tileset_cemetery_32.png"))
 
 
 func _ground(image: Image, cell: Vector2i, variant: int) -> void:
@@ -143,27 +130,9 @@ func _foreground(image: Image, cell: Vector2i, variant: int) -> void:
 
 
 func _make_workshop() -> void:
-	var image := Image.create_empty(320, 256, false, Image.FORMAT_RGBA8)
-	image.fill(Color.TRANSPARENT)
-	_rect(image, Rect2i(30, 225, 266, 15), SHADOW)
-	_rect(image, Rect2i(45, 92, 230, 137), INK)
-	_rect(image, Rect2i(51, 97, 218, 126), SOIL_DARK)
-	_rect(image, Rect2i(65, 113, 102, 105), Color("827056"))
-	_rect(image, Rect2i(176, 118, 72, 105), Color("49332a"))
-	_rect(image, Rect2i(190, 151, 43, 72), INK)
-	_rect(image, Rect2i(195, 156, 33, 67), SOIL)
-	for x in range(199, 228, 7):
-		_rect(image, Rect2i(x, 158, 3, 62), SOIL_DARK)
-	_rect(image, Rect2i(78, 139, 58, 44), INK)
-	_rect(image, Rect2i(83, 144, 48, 34), LIGHT)
-	_rect(image, Rect2i(88, 150, 17, 22), OCHRE)
-	_rect(image, Rect2i(110, 146, 17, 27), Color("f0c878"))
-	_rect(image, Rect2i(21, 80, 279, 28), INK)
-	_rect(image, Rect2i(32, 69, 250, 31), SOIL_DARK)
-	_rect(image, Rect2i(52, 50, 214, 30), Color("5a4032"))
-	_rect(image, Rect2i(78, 35, 165, 24), RUST)
-	for x in range(43, 278, 28):
-		_rect(image, Rect2i(x, 76 + (x / 28) % 4, 22, 5), OCHRE)
-	_rect(image, Rect2i(44, 214, 225, 9), Color("6b6858"))
-	_rect(image, Rect2i(65, 210, 38, 4), BONE)
-	image.save_png(OUT.path_join("building_workshop_exterior.png"))
+	var house_path := "res://art/environment/buildings/village_house.png"
+	var img := Image.load_from_file(ProjectSettings.globalize_path(house_path))
+	if img != null:
+		img.save_png(OUT.path_join("building_workshop_exterior.png"))
+	else:
+		push_error("Could not load village_house.png for workshop building")
