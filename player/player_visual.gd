@@ -2,6 +2,8 @@ class_name PlayerVisual
 extends AnimatedSprite2D
 
 const MOVE_EPSILON := 1.0
+const WALK_ANIMATION_SPEED := 1.0
+const RUN_ANIMATION_SPEED := 1.35
 const DIRECTION_NAMES: Array[StringName] = [
 	&"e",
 	&"se",
@@ -24,6 +26,8 @@ func _process(_delta: float) -> void:
 	if moving:
 		_facing = _direction_name(actor.velocity)
 	var target := StringName("%s_%s" % ["walk" if moving else "idle", _facing])
+	var running := actor.has_method("is_running") and actor.is_running()
+	speed_scale = RUN_ANIMATION_SPEED if moving and running else WALK_ANIMATION_SPEED
 	if animation != target:
 		play(target)
 
