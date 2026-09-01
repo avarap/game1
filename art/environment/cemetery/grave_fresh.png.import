@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://gravefreshpng001"
-path="res://.godot/imported/grave_fresh.png-22334455667788990011aabbccddeeff.ctex"
+uid="uid://boibrdlavy4ue"
+path="res://.godot/imported/grave_fresh.png-14c0a2d936af1a4338e0e1eb6fa55009.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://art/environment/cemetery/grave_fresh.png"
-dest_files=["res://.godot/imported/grave_fresh.png-22334455667788990011aabbccddeeff.ctex"]
+dest_files=["res://.godot/imported/grave_fresh.png-14c0a2d936af1a4338e0e1eb6fa55009.ctex"]
 
 [params]
 

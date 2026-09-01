@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://aldrenidwalkpng001"
-path="res://.godot/imported/brother_aldren_idle_walk.png-8b321a4f00112233445566778899aabb.ctex"
+uid="uid://cmjdapsl2atka"
+path="res://.godot/imported/brother_aldren_idle_walk.png-09f56e30121fd040cbed81bef9b400d6.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://art/characters/npcs/brother_aldren_idle_walk.png"
-dest_files=["res://.godot/imported/brother_aldren_idle_walk.png-8b321a4f00112233445566778899aabb.ctex"]
+dest_files=["res://.godot/imported/brother_aldren_idle_walk.png-09f56e30121fd040cbed81bef9b400d6.ctex"]
 
 [params]
 

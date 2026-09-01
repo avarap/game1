@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cemeterygroundpng01"
-path="res://.godot/imported/cemetery_ground_tileset.png-33445566778899001122aabbccddeeff.ctex"
+uid="uid://cjl82geuphwdw"
+path="res://.godot/imported/cemetery_ground_tileset.png-21c775f59d610d57cbaedfff34df9fd2.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://art/environment/tilesets/cemetery_ground_tileset.png"
-dest_files=["res://.godot/imported/cemetery_ground_tileset.png-33445566778899001122aabbccddeeff.ctex"]
+dest_files=["res://.godot/imported/cemetery_ground_tileset.png-21c775f59d610d57cbaedfff34df9fd2.ctex"]
 
 [params]
 

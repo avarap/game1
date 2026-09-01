@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://villagehousepng001"
-path="res://.godot/imported/village_house.png-11223344556677889900aabbccddeeff.ctex"
+uid="uid://dxfkg2sabm5rg"
+path="res://.godot/imported/village_house.png-392fb2830724f4acd105fdf66de7a3b2.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://art/environment/buildings/village_house.png"
-dest_files=["res://.godot/imported/village_house.png-11223344556677889900aabbccddeeff.ctex"]
+dest_files=["res://.godot/imported/village_house.png-392fb2830724f4acd105fdf66de7a3b2.ctex"]
 
 [params]
 
