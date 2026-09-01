@@ -104,6 +104,10 @@ func _add_workshop_art() -> void:
 	sprite.centered = false
 	sprite.position = Vector2(-160, -240)
 	anchor.add_child(sprite)
+	var smoke := ChimneySmokeEffect.new()
+	smoke.name = "ChimneySmokeEffect"
+	smoke.position = Vector2(85, -220)
+	anchor.add_child(smoke)
 	for entry in [
 		["WorkshopArea/Workbench", Vector2i(6, 3)],
 		["WorkshopArea/StorageChest", Vector2i(5, 3)],
