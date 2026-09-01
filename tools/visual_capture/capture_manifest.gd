@@ -53,7 +53,7 @@ static func capture_specs() -> Array[Dictionary]:
 static func _character_spec(actor: StringName, direction: StringName) -> Dictionary:
 	var capture_id := StringName("%s_%s" % [actor, direction])
 	var is_player := actor == &"player"
-	var position := Vector2(544, 640) if is_player else Vector2(1216, 640)
+	var position := Vector2(416, 800) if is_player else Vector2(800, 544)
 	return {
 		"id": capture_id,
 		"kind": &"character",
@@ -71,13 +71,13 @@ static func _character_spec(actor: StringName, direction: StringName) -> Diction
 
 
 static func _world_spec(capture_id: StringName) -> Dictionary:
-	var camera_position := Vector2(960, 480)
+	var camera_position := Vector2(800, 560)
 	var lighting := Color.WHITE
 	var scene_path := CEMETERY_SCENE
 	if capture_id == &"cemetery_night":
 		lighting = Color(0.42, 0.48, 0.62, 1.0)
 	elif capture_id == &"cemetery_architecture_props":
-		camera_position = Vector2(480, 680)
+		camera_position = Vector2(416, 704)
 		lighting = Color(0.92, 0.88, 0.82, 1.0)
 	elif capture_id == &"village_architecture":
 		scene_path = VILLAGE_SCENE
