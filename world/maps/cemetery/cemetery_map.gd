@@ -166,7 +166,7 @@ func _mark_protected_cells() -> void:
 	for center in PROTECTED_CENTERS:
 		for offset_y in range(-1, 2):
 			for offset_x in range(-1, 2):
-				var cell := center + Vector2i(offset_x, offset_y)
+				var cell: Vector2i = center + Vector2i(offset_x, offset_y)
 				if _is_inside_map(cell):
 					_protected_cells[cell] = true
 
@@ -284,7 +284,7 @@ func _build_low_decoration() -> void:
 				rng.randi_range(-4, 4),
 				rng.randi_range(-3, 3),
 			)
-			var cell := center + offset
+			var cell: Vector2i = center + offset
 			if not _can_place_low_decoration(cell):
 				continue
 			var atlas_cell := Vector2i(rng.randi_range(0, 7), 2)
