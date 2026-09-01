@@ -12,9 +12,10 @@ static func next_velocity(
 	max_speed: float,
 	acceleration: float,
 	deceleration: float,
-	delta: float
+	delta: float,
+	speed_multiplier: float = 1.0
 ) -> Vector2:
 	var normalized_direction := direction.limit_length(1.0)
-	var target := normalized_direction * max_speed
+	var target := normalized_direction * max_speed * maxf(speed_multiplier, 0.0)
 	var rate := acceleration if not normalized_direction.is_zero_approx() else deceleration
 	return current_velocity.move_toward(target, rate * delta)
