@@ -18,6 +18,13 @@ static func run() -> Array[String]:
 
 	if body.offset != Vector2(0, -48):
 		failures.append("64x96 player should keep feet pivot at y=0")
+	if body.texture_filter != CanvasItem.TEXTURE_FILTER_NEAREST:
+		failures.append("Player pixel art should use nearest filtering")
+	var shadow := player.get_node_or_null("ContactShadow") as Sprite2D
+	if shadow == null:
+		failures.append("Player should own a contact-shadow node")
+	elif shadow.z_index >= body.z_index:
+		failures.append("Player contact shadow should draw below the body")
 
 	_check_animation(body, &"idle_n", failures)
 	_check_animation(body, &"walk_n", failures)
@@ -46,8 +53,11 @@ static func _check_animation(
 	if not body.sprite_frames.has_animation(animation):
 		failures.append("Missing player animation %s" % animation)
 		return
-	if body.sprite_frames.get_frame_count(animation) < 1:
-		failures.append("Player animation %s has no frames" % animation)
+	var minimum_frames := 4 if String(animation).begins_with("walk_") else 1
+	if body.sprite_frames.get_frame_count(animation) < minimum_frames:
+		failures.append(
+			"Player animation %s should have at least %d frames" % [animation, minimum_frames]
+		)
 		return
 	var texture := body.sprite_frames.get_frame_texture(animation, 0)
 	if texture == null or texture.get_size() != Vector2(64, 96):

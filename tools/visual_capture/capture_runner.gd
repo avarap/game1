@@ -176,7 +176,7 @@ func _add_camera_rig(stage: Node2D, position: Vector2, spec: Dictionary) -> void
 	rig.position = position
 	rig.process_mode = Node.PROCESS_MODE_DISABLED
 	stage.add_child(rig)
-	var body := rig.get_node_or_null("Body") as CanvasItem
+	var body := _character_visual(rig) as CanvasItem
 	if body != null:
 		body.hide()
 	_configure_camera(rig, spec)
@@ -193,9 +193,9 @@ func _configure_camera(actor: Node, spec: Dictionary) -> void:
 
 
 func _set_idle_direction(actor: Node, direction: StringName) -> void:
-	var body := actor.get_node_or_null("Body") as AnimatedSprite2D
+	var body := _character_visual(actor)
 	if body == null:
-		_failures.append("Character Body sprite missing")
+		_failures.append("Character animated visual missing")
 		return
 	var animation := StringName("idle_%s" % direction)
 	if body.sprite_frames == null or not body.sprite_frames.has_animation(animation):
@@ -203,6 +203,13 @@ func _set_idle_direction(actor: Node, direction: StringName) -> void:
 		return
 	body.play(animation)
 	body.pause()
+
+
+func _character_visual(actor: Node) -> AnimatedSprite2D:
+	var body := actor.get_node_or_null("Body") as AnimatedSprite2D
+	if body != null:
+		return body
+	return actor.get_node_or_null("Visual") as AnimatedSprite2D
 
 
 func _add_lighting(stage: Node2D, color: Color) -> void:
