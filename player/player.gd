@@ -18,7 +18,7 @@ func _enter_tree() -> void:
 
 func _physics_process(delta: float) -> void:
 	var direction := PlayerMovement.input_direction()
-	_is_running = not direction.is_zero_approx() and Input.is_action_pressed("run")
+	_is_running = not direction.is_zero_approx() and Input.is_key_pressed(KEY_SHIFT)
 	var speed_multiplier := sprint_multiplier if _is_running else 1.0
 	velocity = PlayerMovement.next_velocity(
 		velocity, direction, max_speed, acceleration, deceleration, delta, speed_multiplier
