@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://world/maps/technical_map.gd" id="1_map"]
 [ext_resource type="Script" path="res://world/navigation/world_navigation_region.gd" id="2_navigation"]
@@ -6,6 +6,11 @@
 [ext_resource type="PackedScene" path="res://world/storage/storage_chest.tscn" id="4_chest"]
 [ext_resource type="Script" path="res://world/interactables/sleep_spot.gd" id="5_sleep"]
 [ext_resource type="Script" path="res://world/cemetery/cemetery_action.gd" id="7_action"]
+[ext_resource type="Texture2D" path="res://art/environment/props/tree.svg" id="8_tree"]
+[ext_resource type="Texture2D" path="res://art/environment/props/rock.svg" id="9_rock"]
+[ext_resource type="Texture2D" path="res://art/environment/cemetery/dry_grass.svg" id="10_grass"]
+[ext_resource type="Texture2D" path="res://art/environment/cemetery/grave_worn.svg" id="11_grave"]
+[ext_resource type="Texture2D" path="res://art/environment/props/sign.svg" id="12_sign"]
 
 [sub_resource type="TileSet" id="TileSet_cemetery"]
 tile_size = Vector2i(32, 32)
@@ -34,6 +39,97 @@ z_index = -8
 collision_enabled = false
 tile_set = SubResource("TileSet_cemetery")
 
+[node name="TerrainComposition" type="Node2D" parent="."]
+z_index = -7
+
+[node name="WorkshopYard" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(224, 458, 604, 444, 680, 520, 664, 770, 248, 790, 184, 690)
+color = Color(0.305, 0.258, 0.196, 0.72)
+
+[node name="WorkshopYardInner" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(266, 492, 574, 482, 626, 536, 614, 744, 282, 754, 224, 680)
+color = Color(0.386, 0.325, 0.235, 0.52)
+
+[node name="CemeterySoil" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(838, 190, 1382, 176, 1450, 246, 1430, 536, 850, 548, 788, 458, 802, 258)
+color = Color(0.245, 0.228, 0.19, 0.7)
+
+[node name="CemeterySoilInner" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(890, 226, 1348, 214, 1398, 270, 1378, 502, 882, 514, 834, 452, 846, 278)
+color = Color(0.34, 0.302, 0.224, 0.34)
+
+[node name="PathShoulder" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(500, 668, 606, 622, 704, 564, 802, 498, 900, 432, 996, 374, 1086, 340, 1114, 382, 1010, 430, 916, 492, 820, 558, 718, 626, 616, 686, 530, 724)
+color = Color(0.277, 0.243, 0.192, 0.92)
+
+[node name="MainPath" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(516, 676, 612, 636, 710, 578, 808, 512, 904, 448, 1000, 394, 1088, 358, 1100, 382, 1008, 422, 914, 480, 818, 544, 720, 610, 620, 666, 532, 704)
+color = Color(0.51, 0.432, 0.3, 0.88)
+
+[node name="PathWear" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(548, 680, 628, 646, 722, 590, 816, 528, 910, 466, 1006, 412, 1066, 386, 1072, 398, 1014, 426, 922, 482, 826, 546, 730, 608, 636, 660, 558, 694)
+color = Color(0.598, 0.51, 0.354, 0.35)
+
+[node name="NorthGrassPatch" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(118, 126, 436, 108, 524, 182, 500, 322, 172, 340, 86, 258)
+color = Color(0.27, 0.334, 0.207, 0.33)
+
+[node name="SouthGrassPatch" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(710, 704, 930, 652, 1184, 686, 1370, 810, 1314, 954, 868, 938, 676, 842)
+color = Color(0.257, 0.322, 0.198, 0.28)
+
+[node name="WestShadePatch" type="Polygon2D" parent="TerrainComposition"]
+polygon = PackedVector2Array(56, 374, 244, 338, 326, 420, 292, 620, 74, 646, 34, 544)
+color = Color(0.196, 0.252, 0.18, 0.3)
+
+[node name="LowDetails" type="Node2D" parent="TerrainComposition"]
+
+[node name="Grass01" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(280, 420)
+
+[node name="Grass02" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(326, 448)
+scale = Vector2(0.8, 0.8)
+
+[node name="Grass03" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(620, 470)
+scale = Vector2(0.9, 0.9)
+
+[node name="Grass04" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(746, 578)
+
+[node name="Grass05" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(840, 600)
+scale = Vector2(0.75, 0.75)
+
+[node name="Grass06" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(1260, 558)
+
+[node name="Grass07" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(1320, 590)
+scale = Vector2(0.8, 0.8)
+
+[node name="Grass08" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(1180, 760)
+
+[node name="Grass09" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(728, 824)
+scale = Vector2(0.8, 0.8)
+
+[node name="Grass10" type="Sprite2D" parent="TerrainComposition/LowDetails"]
+texture = ExtResource("10_grass")
+position = Vector2(180, 720)
+scale = Vector2(0.9, 0.9)
+
 [node name="collision" type="TileMapLayer" parent="."]
 visible = false
 tile_set = SubResource("TileSet_cemetery")
@@ -42,6 +138,88 @@ tile_set = SubResource("TileSet_cemetery")
 y_sort_enabled = true
 collision_enabled = false
 tile_set = SubResource("TileSet_cemetery")
+
+[node name="EnvironmentClusters" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="WestTree01" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("8_tree")
+position = Vector2(118, 474)
+
+[node name="WestTree02" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("8_tree")
+position = Vector2(176, 520)
+scale = Vector2(0.92, 0.92)
+
+[node name="WestTree03" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("8_tree")
+position = Vector2(96, 592)
+scale = Vector2(0.84, 0.84)
+
+[node name="WorkshopTree" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("8_tree")
+position = Vector2(650, 454)
+scale = Vector2(0.88, 0.88)
+
+[node name="EastTree01" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("8_tree")
+position = Vector2(1450, 482)
+
+[node name="EastTree02" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("8_tree")
+position = Vector2(1394, 620)
+scale = Vector2(0.9, 0.9)
+
+[node name="SouthTree01" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("8_tree")
+position = Vector2(910, 914)
+scale = Vector2(0.85, 0.85)
+
+[node name="SouthTree02" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("8_tree")
+position = Vector2(1230, 904)
+
+[node name="RockWest01" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("9_rock")
+position = Vector2(218, 566)
+
+[node name="RockWest02" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("9_rock")
+position = Vector2(256, 600)
+scale = Vector2(0.8, 0.8)
+
+[node name="RockEast01" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("9_rock")
+position = Vector2(1360, 540)
+scale = Vector2(0.86, 0.86)
+
+[node name="RockSouth01" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("9_rock")
+position = Vector2(1010, 850)
+
+[node name="CemeteryMarker" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("12_sign")
+position = Vector2(824, 450)
+
+[node name="DecorativeGrave01" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("11_grave")
+position = Vector2(926, 270)
+scale = Vector2(0.9, 0.9)
+
+[node name="DecorativeGrave02" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("11_grave")
+position = Vector2(1012, 258)
+scale = Vector2(0.82, 0.82)
+
+[node name="DecorativeGrave03" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("11_grave")
+position = Vector2(1204, 262)
+scale = Vector2(0.9, 0.9)
+
+[node name="DecorativeGrave04" type="Sprite2D" parent="EnvironmentClusters"]
+texture = ExtResource("11_grave")
+position = Vector2(1294, 276)
+scale = Vector2(0.8, 0.8)
 
 [node name="foreground_occlusion" type="TileMapLayer" parent="."]
 z_index = 10
