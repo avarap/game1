@@ -1,0 +1,55 @@
+[gd_resource type="Resource" script_class="CemeteryArtCatalogData" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://art/environment/cemetery/production/cemetery_art_catalog.gd" id="1"]
+[ext_resource type="Script" path="res://art/environment/cemetery/production/cemetery_visual_spec.gd" id="2"]
+[ext_resource type="Texture2D" path="res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png" id="3"]
+[ext_resource type="Texture2D" path="res://art/environment/cemetery/production/atlas/building_workshop_exterior.png" id="4"]
+
+[sub_resource type="Resource" id="Ground"]
+script = ExtResource("2")
+id = &"ground_moss_01"
+texture = ExtResource("3")
+region = Rect2i(0, 0, 32, 32)
+pivot_px = Vector2i(0, 0)
+footprint_px = Vector2i(32, 32)
+layer_role = "low"
+
+[sub_resource type="Resource" id="Grave"]
+script = ExtResource("2")
+id = &"grave_marker_01"
+texture = ExtResource("3")
+region = Rect2i(0, 96, 32, 32)
+pivot_px = Vector2i(16, 32)
+footprint_px = Vector2i(16, 8)
+layer_role = "y_sorted"
+
+[sub_resource type="Resource" id="Gate"]
+script = ExtResource("2")
+id = &"iron_gate"
+texture = ExtResource("3")
+region = Rect2i(128, 96, 32, 32)
+pivot_px = Vector2i(16, 32)
+footprint_px = Vector2i(32, 8)
+layer_role = "y_sorted"
+
+[sub_resource type="Resource" id="Tree"]
+script = ExtResource("2")
+id = &"perimeter_tree_01"
+texture = ExtResource("3")
+region = Rect2i(0, 192, 32, 32)
+pivot_px = Vector2i(16, 24)
+footprint_px = Vector2i(16, 8)
+layer_role = "foreground"
+
+[sub_resource type="Resource" id="Workshop"]
+script = ExtResource("2")
+id = &"workshop_exterior"
+texture = ExtResource("4")
+region = Rect2i(0, 0, 320, 256)
+pivot_px = Vector2i(160, 240)
+footprint_px = Vector2i(192, 64)
+layer_role = "y_sorted"
+
+[resource]
+script = ExtResource("1")
+specs = Array[ExtResource("2")]([SubResource("Ground"), SubResource("Grave"), SubResource("Gate"), SubResource("Tree"), SubResource("Workshop")])

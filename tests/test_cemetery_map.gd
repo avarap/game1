@@ -27,6 +27,15 @@ const REQUIRED_MARKERS := [
 	"FutureExpansion",
 ]
 const EXPECTED_TILE_SIZE := Vector2i(32, 32)
+const EXPECTED_POSITIONS := {
+	"WorkshopArea/Workbench": Vector2(448, 704),
+	"WorkshopArea/StorageChest": Vector2(512, 704),
+	"WorkshopArea/SleepSpot": Vector2(384, 704),
+	"CemeteryArea/CorpseDelivery": Vector2(960, 320),
+	"CemeteryArea/PreparationTable": Vector2(1024, 320),
+	"CemeteryArea/GravePlot": Vector2(1088, 320),
+	"CemeteryArea/GraveUpgrade": Vector2(1152, 320),
+}
 
 
 static func run() -> Array[String]:
@@ -58,6 +67,8 @@ static func run() -> Array[String]:
 		return failures
 
 	var world_rect: Rect2 = map.get_world_rect()
+	if world_rect.size != Vector2(1600, 1024):
+		failures.append("Cemetery world bounds should remain 1600x1024")
 	for node_path in REQUIRED_INTERACTIONS:
 		var interaction := map.get_node_or_null(node_path) as Node2D
 		if interaction == null:
@@ -65,6 +76,8 @@ static func run() -> Array[String]:
 			continue
 		if not world_rect.has_point(interaction.global_position):
 			failures.append("%s should stay inside cemetery map bounds" % node_path)
+		if interaction.position != EXPECTED_POSITIONS[node_path]:
+			failures.append("%s should preserve its gameplay position" % node_path)
 		var cell := collision.local_to_map(collision.to_local(interaction.global_position))
 		if collision.get_cell_source_id(cell) != -1:
 			failures.append("%s should not spawn inside tile collision" % node_path)
