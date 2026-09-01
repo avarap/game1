@@ -30,9 +30,7 @@ static func graveyard_theme() -> AudioStreamWAV:
 	return _make_stream(MUSIC_SECONDS, _music_sample, true)
 
 
-static func _make_stream(
-	duration: float, sampler: Callable, looped: bool
-) -> AudioStreamWAV:
+static func _make_stream(duration: float, sampler: Callable, looped: bool) -> AudioStreamWAV:
 	var sample_count := int(duration * SAMPLE_RATE)
 	var bytes := PackedByteArray()
 	bytes.resize(sample_count * 2)
