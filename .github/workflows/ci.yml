@@ -48,3 +48,44 @@ jobs:
 
       - name: Run bootstrap tests
         run: timeout 30s godot --headless --path . --script res://tests/run_tests.gd
+
+  visual-capture:
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install virtual display
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends xvfb
+
+      - name: Import project for capture
+        run: godot --headless --path . --editor --quit
+
+      - name: Capture real cemetery views at 1280x720
+        env:
+          VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p artifacts/visual_capture
+          xvfb-run -a -s "-screen 0 1280x720x24" \
+            godot --path . \
+            --rendering-method gl_compatibility \
+            --script res://tools/visual_capture/capture_runner.gd \
+            -- --output=artifacts/visual_capture
+          test -s artifacts/visual_capture/cemetery_workshop.png
+          test -s artifacts/visual_capture/cemetery_plaza.png
+          test -s artifacts/visual_capture/cemetery_overview.png
+          test -s artifacts/visual_capture/cemetery_graves.png
+          test -s artifacts/visual_capture/cemetery_forest_path.png
+
+      - name: Upload visual captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cemetery-visual-captures
+          path: artifacts/visual_capture
+          if-no-files-found: error
+          retention-days: 14
