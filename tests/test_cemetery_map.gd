@@ -121,8 +121,13 @@ static func run() -> Array[String]:
 		failures.append("Cemetery map should expose NavigationRegion2D")
 	else:
 		region.ensure_navigation_polygon()
-		if region.navigation_polygon == null:
+		var navigation_polygon := region.navigation_polygon
+		if navigation_polygon == null:
 			failures.append("Cemetery navigation polygon should be available")
+		else:
+			_assert_navigation_matches_collision(
+				navigation_polygon, collision, player_spawn.global_position, failures
+			)
 
 	var paths := map.get_node_or_null("paths") as TileMapLayer
 	if paths == null or paths.get_used_cells().size() < 150:
@@ -142,6 +147,34 @@ static func _assert_open_cell(
 	var cell := collision.local_to_map(collision.to_local(global_position))
 	if collision.get_cell_source_id(cell) != -1:
 		failures.append("%s should not spawn inside tile collision" % label)
+
+
+static func _assert_navigation_matches_collision(
+	navigation_polygon: NavigationPolygon,
+	collision: TileMapLayer,
+	player_spawn: Vector2,
+	failures: Array[String]
+) -> void:
+	if not _navigation_contains_point(navigation_polygon, player_spawn):
+		failures.append("Cemetery navigation should contain PlayerSpawn")
+	for blocked_cell in [Vector2i(8, 17), Vector2i(31, 10), Vector2i(40, 19)]:
+		var blocked_point := collision.to_global(collision.map_to_local(blocked_cell))
+		if _navigation_contains_point(navigation_polygon, blocked_point):
+			failures.append("Cemetery navigation should exclude blocker %s" % blocked_cell)
+
+
+static func _navigation_contains_point(
+	navigation_polygon: NavigationPolygon, point: Vector2
+) -> bool:
+	var vertices := navigation_polygon.vertices
+	for polygon_index in range(navigation_polygon.get_polygon_count()):
+		var indices := navigation_polygon.get_polygon(polygon_index)
+		var points := PackedVector2Array()
+		for vertex_index in indices:
+			points.append(vertices[vertex_index])
+		if Geometry2D.is_point_in_polygon(point, points):
+			return true
+	return false
 
 
 static func _has_collision_free_route(
