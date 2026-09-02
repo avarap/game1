@@ -1,7 +1,8 @@
 extends Node
 
-const MOVE_TOLERANCE := 16.0
-const CAPTURE_TIMEOUT_SECONDS := 30.0
+const DEFAULT_MOVE_TOLERANCE := 18.0
+const SETTLE_SPEED := 18.0
+const CAPTURE_TIMEOUT_SECONDS := 25.0
 const MOVEMENT_ACTIONS: Array[StringName] = [
 	&"move_left",
 	&"move_right",
@@ -11,31 +12,25 @@ const MOVEMENT_ACTIONS: Array[StringName] = [
 ]
 const STEPS: Array[Dictionary] = [
 	{"kind": &"wait", "duration": 1.0, "label": "Spawn idle"},
-	{"kind": &"move", "target": Vector2(256, 704), "run": false, "label": "Approach workshop"},
-	{"kind": &"move", "target": Vector2(256, 720), "run": false, "label": "Face sleep spot"},
-	{"kind": &"wait", "duration": 0.25, "label": "Settle at workshop"},
-	{"kind": &"interact", "label": "Interact with sleep spot"},
-	{"kind": &"wait", "duration": 0.8, "label": "Show interaction"},
-	{"kind": &"move", "target": Vector2(288, 704), "run": false, "label": "Return to yard"},
-	{"kind": &"move", "target": Vector2(384, 608), "run": false, "label": "Walk pilgrimage road"},
-	{"kind": &"move", "target": Vector2(544, 576), "run": true, "label": "Run east"},
-	{"kind": &"move", "target": Vector2(768, 544), "run": true, "label": "Run to cemetery approach"},
+	{"kind": &"move", "target": Vector2(544, 704), "run": false, "label": "Leave workshop apron"},
+	{"kind": &"move", "target": Vector2(544, 576), "run": false, "label": "Join pilgrimage road"},
+	{"kind": &"move", "target": Vector2(768, 544), "run": true, "label": "Run east"},
 	{"kind": &"move", "target": Vector2(896, 448), "run": true, "label": "Climb cemetery approach"},
 	{"kind": &"move", "target": Vector2(928, 352), "run": false, "label": "Enter cemetery loop"},
 	{"kind": &"wait", "duration": 0.45, "label": "Show cemetery threshold"},
 	{"kind": &"move", "target": Vector2(1344, 352), "run": true, "label": "Run upper cemetery loop"},
 	{"kind": &"move", "target": Vector2(1344, 544), "run": false, "label": "Descend grave field"},
-	{"kind": &"move", "target": Vector2(1296, 544), "run": false, "label": "Approach grave upgrade"},
+	{"kind": &"move", "target": Vector2(1284, 544), "run": false, "tolerance": 12.0, "label": "Approach grave upgrade"},
 	{"kind": &"wait", "duration": 0.2, "label": "Face grave upgrade"},
 	{"kind": &"interact", "label": "Interact with grave upgrade"},
 	{"kind": &"wait", "duration": 0.7, "label": "Show grave interaction"},
-	{"kind": &"move", "target": Vector2(1168, 544), "run": false, "label": "Walk ceremonial aisle"},
+	{"kind": &"move", "target": Vector2(1156, 544), "run": false, "tolerance": 12.0, "label": "Walk ceremonial aisle"},
 	{"kind": &"wait", "duration": 0.2, "label": "Face grave plot"},
 	{"kind": &"interact", "label": "Interact with grave plot"},
 	{"kind": &"wait", "duration": 0.7, "label": "Show burial interaction"},
 	{"kind": &"move", "target": Vector2(1344, 544), "run": true, "label": "Return to outer loop"},
 	{"kind": &"move", "target": Vector2(1344, 736), "run": true, "label": "Run south loop"},
-	{"kind": &"move", "target": Vector2(1456, 800), "run": true, "label": "Approach forest exit"},
+	{"kind": &"move", "target": Vector2(1464, 800), "run": true, "tolerance": 14.0, "label": "Approach forest exit"},
 	{"kind": &"wait", "duration": 0.25, "label": "Face forest transition"},
 	{"kind": &"interact", "label": "Travel to forest"},
 	{"kind": &"wait", "duration": 1.5, "label": "Show forest arrival"},
@@ -45,8 +40,10 @@ var _player: PlayerController
 var _step_index := 0
 var _step_elapsed := 0.0
 var _capture_elapsed := 0.0
+var _interaction_count := 0
 var _started := false
 var _finishing := false
+var _settling_move := false
 
 
 func _ready() -> void:
@@ -58,6 +55,7 @@ func _ready() -> void:
 		push_error("Gameplay capture could not resolve production Player")
 		get_tree().quit(2)
 		return
+	_player.interaction_started.connect(_on_interaction_started)
 	_started = true
 	_print_step()
 
@@ -86,46 +84,63 @@ func _physics_process(delta: float) -> void:
 		&"move":
 			var target := step.get("target", _player.global_position) as Vector2
 			var running := bool(step.get("run", false))
-			_drive_toward(target, running)
+			var tolerance := float(step.get("tolerance", DEFAULT_MOVE_TOLERANCE))
+			_drive_toward(target, running, tolerance)
 		&"interact":
 			_release_movement_actions()
-			_trigger_interaction()
+			if not _trigger_interaction():
+				push_error("Gameplay capture interaction failed at step %d" % _step_index)
+				_finish_capture(5)
+				return
 			_advance_step()
 		_:
 			push_error("Unknown gameplay capture step kind: %s" % kind)
 			_finish_capture(4)
 
 
-func _drive_toward(target: Vector2, running: bool) -> void:
+func _drive_toward(target: Vector2, running: bool, tolerance: float) -> void:
 	var offset := target - _player.global_position
-	if offset.length() <= MOVE_TOLERANCE:
+	if _settling_move:
 		_release_movement_actions()
-		_advance_step()
+		if _player.velocity.length() <= SETTLE_SPEED:
+			_advance_step()
+		return
+	if offset.length() <= tolerance:
+		_settling_move = true
+		_release_movement_actions()
 		return
 
 	_release_movement_actions()
-	if offset.x < -MOVE_TOLERANCE:
+	var axis_deadzone := minf(tolerance * 0.4, 7.0)
+	if offset.x < -axis_deadzone:
 		Input.action_press("move_left")
-	elif offset.x > MOVE_TOLERANCE:
+	elif offset.x > axis_deadzone:
 		Input.action_press("move_right")
-	if offset.y < -MOVE_TOLERANCE:
+	if offset.y < -axis_deadzone:
 		Input.action_press("move_up")
-	elif offset.y > MOVE_TOLERANCE:
+	elif offset.y > axis_deadzone:
 		Input.action_press("move_down")
 	if running:
 		Input.action_press("run")
 
 
-func _trigger_interaction() -> void:
+func _trigger_interaction() -> bool:
+	var before := _interaction_count
 	var event := InputEventAction.new()
 	event.action = &"interact"
 	event.pressed = true
 	_player._unhandled_input(event)
+	return _interaction_count > before
+
+
+func _on_interaction_started(_target: Interactable) -> void:
+	_interaction_count += 1
 
 
 func _advance_step() -> void:
 	_step_index += 1
 	_step_elapsed = 0.0
+	_settling_move = false
 	_print_step()
 
 
