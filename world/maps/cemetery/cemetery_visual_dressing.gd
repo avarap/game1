@@ -77,25 +77,60 @@ const PLAZA_CELLS := [
 	Vector2i(24, 21),
 ]
 const GROUND_BREAKUP_PATCHES := {
-	Vector2i(1, 0): [
-		Vector2i(7, 6), Vector2i(11, 9), Vector2i(14, 6), Vector2i(17, 11),
-		Vector2i(9, 16), Vector2i(13, 18), Vector2i(18, 15), Vector2i(20, 7),
+	Vector2i(1, 0):
+	[
+		Vector2i(7, 6),
+		Vector2i(11, 9),
+		Vector2i(14, 6),
+		Vector2i(17, 11),
+		Vector2i(9, 16),
+		Vector2i(13, 18),
+		Vector2i(18, 15),
+		Vector2i(20, 7),
 	],
-	Vector2i(3, 0): [
-		Vector2i(6, 11), Vector2i(10, 14), Vector2i(15, 4), Vector2i(19, 13),
-		Vector2i(28, 6), Vector2i(29, 9), Vector2i(27, 14), Vector2i(45, 10),
+	Vector2i(3, 0):
+	[
+		Vector2i(6, 11),
+		Vector2i(10, 14),
+		Vector2i(15, 4),
+		Vector2i(19, 13),
+		Vector2i(28, 6),
+		Vector2i(29, 9),
+		Vector2i(27, 14),
+		Vector2i(45, 10),
 	],
-	Vector2i(5, 0): [
-		Vector2i(31, 4), Vector2i(34, 6), Vector2i(38, 4), Vector2i(41, 7),
-		Vector2i(30, 12), Vector2i(43, 13), Vector2i(33, 18), Vector2i(42, 17),
+	Vector2i(5, 0):
+	[
+		Vector2i(31, 4),
+		Vector2i(34, 6),
+		Vector2i(38, 4),
+		Vector2i(41, 7),
+		Vector2i(30, 12),
+		Vector2i(43, 13),
+		Vector2i(33, 18),
+		Vector2i(42, 17),
 	],
-	Vector2i(6, 0): [
-		Vector2i(8, 24), Vector2i(12, 26), Vector2i(17, 25), Vector2i(20, 23),
-		Vector2i(28, 24), Vector2i(32, 26), Vector2i(38, 24), Vector2i(45, 27),
+	Vector2i(6, 0):
+	[
+		Vector2i(8, 24),
+		Vector2i(12, 26),
+		Vector2i(17, 25),
+		Vector2i(20, 23),
+		Vector2i(28, 24),
+		Vector2i(32, 26),
+		Vector2i(38, 24),
+		Vector2i(45, 27),
 	],
-	Vector2i(7, 0): [
-		Vector2i(5, 19), Vector2i(11, 21), Vector2i(16, 19), Vector2i(19, 26),
-		Vector2i(27, 21), Vector2i(35, 22), Vector2i(40, 25), Vector2i(47, 23),
+	Vector2i(7, 0):
+	[
+		Vector2i(5, 19),
+		Vector2i(11, 21),
+		Vector2i(16, 19),
+		Vector2i(19, 26),
+		Vector2i(27, 21),
+		Vector2i(35, 22),
+		Vector2i(40, 25),
+		Vector2i(47, 23),
 	],
 }
 const TREE_CELLS := [
