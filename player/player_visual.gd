@@ -23,8 +23,16 @@ func get_locomotion_state() -> StringName:
 
 
 func _apply_animation() -> void:
-	var animation_state := &"walk" if _locomotion_state == &"run" else _locomotion_state
+	var animation_state := _locomotion_state
+	if _locomotion_state == &"run":
+		animation_state = &"walk"
+	elif _locomotion_state == &"interact":
+		animation_state = &"interact"
+
 	var target := StringName("%s_%s" % [animation_state, _facing])
+	if not sprite_frames.has_animation(target):
+		target = StringName("idle_%s" % _facing)
+
 	var target_speed_scale := RUN_ANIMATION_SCALE if _locomotion_state == &"run" else 1.0
 	if animation != target:
 		play(target)
