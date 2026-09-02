@@ -15,8 +15,10 @@ const FALLBACK_TREES := [
 const TREE_PIVOTS := [Vector2(56, 132), Vector2(48, 148), Vector2(48, 132)]
 const FALLBACK_STUMP := preload("res://world/maps/verdant_test/assets/stump.svg")
 const UNDERGROWTH := preload("res://world/maps/verdant_test/assets/undergrowth.svg")
-const FALLBACK_ROCK := preload("res://art/environment/props/rock.svg")
-const WORKSHOP := preload("res://art/environment/buildings/player_workshop.svg")
+const FALLBACK_ROCK := preload("res://art/environment/props/rock.png")
+const WORKSHOP := preload(
+	"res://art/environment/cemetery/production/atlas/building_workshop_exterior.png"
+)
 const RESOURCE_TREE := preload("res://world/resources/tree_resource.tscn")
 
 @export_dir var asset_directory: String = LOCAL_ASSET_DIRECTORY
