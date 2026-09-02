@@ -50,7 +50,8 @@ func _physics_process(delta: float) -> void:
 	)
 	move_and_slide()
 
-	if direction.is_zero_approx():
+	var physically_moving := not velocity.is_zero_approx()
+	if not physically_moving:
 		_set_state(State.IDLE)
 	elif running:
 		_set_state(State.RUN)
