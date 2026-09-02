@@ -5,6 +5,9 @@ extends RefCounted
 static func run() -> Array[String]:
 	var failures: Array[String] = []
 
+	if not InputMap.has_action("run"):
+		failures.append("Player controls should expose a run action")
+
 	var player_scene := load("res://player/player.tscn") as PackedScene
 	if player_scene == null:
 		failures.append("Walking prototype should load player/player.tscn")
@@ -30,10 +33,14 @@ static func run() -> Array[String]:
 						failures.append("Player should define %s" % walk_name)
 			if body.position != Vector2(0, 0):
 				failures.append("Player visual pivot should remain at the feet/origin")
+			if not body.has_method("set_locomotion_state"):
+				failures.append("Player visual should expose idle/walk/run locomotion state")
 
 		var interaction_area := player.get_node_or_null("InteractionArea")
 		if not interaction_area is Area2D:
 			failures.append("Player should expose an InteractionArea")
+		if not player.has_method("get_facing_vector"):
+			failures.append("Player controller should expose current facing for interactions")
 
 		var collision := player.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if collision == null or not collision.shape is CapsuleShape2D:
