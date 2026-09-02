@@ -1,9 +1,7 @@
 class_name PlayerVisual
 extends AnimatedSprite2D
 
-const DIRECTIONS: Array[StringName] = [
-	&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"
-]
+const DIRECTIONS: Array[StringName] = [&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"]
 const FRAME_SIZE := Vector2i(64, 96)
 const STATE_COUNT := {
 	&"idle": 2,
@@ -84,9 +82,7 @@ func _build_animation(state: StringName, direction_index: int) -> void:
 
 	var frame_count: int = STATE_COUNT[state]
 	for frame_index in frame_count:
-		sprite_frames.add_frame(
-			animation_name, _render_frame(state, direction_index, frame_index)
-		)
+		sprite_frames.add_frame(animation_name, _render_frame(state, direction_index, frame_index))
 
 
 func _render_frame(state: StringName, direction_index: int, frame_index: int) -> Texture2D:
@@ -116,13 +112,9 @@ func _pose_for(state: StringName, frame_index: int) -> Vector2i:
 	if state == &"idle":
 		return Vector2i(0, [0, 1][frame_index])
 	if state == &"walk":
-		return Vector2i(
-			[-3, -1, 2, 3, 1, -2][frame_index], [0, 1, 0, -1, 0, 1][frame_index]
-		)
+		return Vector2i([-3, -1, 2, 3, 1, -2][frame_index], [0, 1, 0, -1, 0, 1][frame_index])
 	if state == &"run":
-		return Vector2i(
-			[-6, -3, 3, 6, 3, -3][frame_index], [1, -1, 0, 1, -1, 0][frame_index]
-		)
+		return Vector2i([-6, -3, 3, 6, 3, -3][frame_index], [1, -1, 0, 1, -1, 0][frame_index])
 	return Vector2i(0, [0, -1, -1, 0][frame_index])
 
 
@@ -208,13 +200,7 @@ func _draw_interaction_prop(image: Image, hand: Vector2i, direction: Vector2) ->
 	_fill_rect(image, Rect2i(prop_x - 1, prop_y - 2, 3, 2), METAL)
 
 
-func _draw_head(
-	image: Image,
-	center_x: int,
-	head_y: int,
-	direction: Vector2,
-	lean: int
-) -> void:
+func _draw_head(image: Image, center_x: int, head_y: int, direction: Vector2, lean: int) -> void:
 	var head_x := center_x + int(direction.x * (3 + lean))
 	_fill_rect(image, Rect2i(head_x - 10, head_y - 7, 21, 22), OUTLINE)
 	_fill_rect(image, Rect2i(head_x - 8, head_y - 5, 17, 18), SKIN)
