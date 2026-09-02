@@ -27,6 +27,7 @@ const REQUIRED_MARKERS := [
 	"FutureExpansion",
 ]
 const EXPECTED_TILE_SIZE := Vector2i(32, 32)
+const MAX_DOMINANT_GROUND_RATIO := 0.55
 const EXPECTED_POSITIONS := {
 	"WorkshopArea/Workbench": Vector2(416, 800),
 	"WorkshopArea/StorageChest": Vector2(480, 800),
@@ -146,5 +147,28 @@ static func run() -> Array[String]:
 	if graves == null or graves.get_used_cells().size() < 20:
 		failures.append("Cemetery composition should contain authored graves, trees and props")
 
+	_validate_ground_variation(map, failures)
 	map.free()
 	return failures
+
+
+static func _validate_ground_variation(map: Node, failures: Array[String]) -> void:
+	var ground := map.get_node_or_null("ground") as TileMapLayer
+	if ground == null:
+		return
+	var cells := ground.get_used_cells()
+	if cells.is_empty():
+		failures.append("Cemetery ground should cover the playable map")
+		return
+	var counts: Dictionary = {}
+	for cell in cells:
+		var atlas_coords := ground.get_cell_atlas_coords(cell)
+		counts[atlas_coords] = int(counts.get(atlas_coords, 0)) + 1
+	if counts.size() < 6:
+		failures.append("Cemetery ground should use at least six authored terrain variants")
+	var dominant_count := 0
+	for count in counts.values():
+		dominant_count = maxi(dominant_count, int(count))
+	var dominant_ratio := float(dominant_count) / float(cells.size())
+	if dominant_ratio > MAX_DOMINANT_GROUND_RATIO:
+		failures.append("No single ground tile may dominate more than 55% of the authored surface")
