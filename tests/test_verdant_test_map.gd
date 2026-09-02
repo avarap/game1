@@ -106,6 +106,10 @@ static func _check_physics_and_interaction(map: Node2D, failures: Array[String])
 		failures.append("World boundary must prevent leaving the test map")
 	var harvest_tree := map.get_node("Objects/HarvestTree") as Node2D
 	player.position = harvest_tree.position + Vector2(0, 32)
+	var face_up := InputEventAction.new()
+	face_up.action = "move_up"
+	face_up.pressed = true
+	player._unhandled_input(face_up)
 	await tree.physics_frame
 	await tree.physics_frame
 	var event := InputEventAction.new()
