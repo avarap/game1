@@ -5,6 +5,58 @@ const TREE_TEXTURE := preload("res://art/environment/props/tree.png")
 const DRY_GRASS_TEXTURE := preload("res://art/environment/cemetery/dry_grass.png")
 const TREE_PIVOT := Vector2(32, 84)
 const DRY_GRASS_PIVOT := Vector2(16, 28)
+const TERRAIN_SOURCE := 0
+const VILLAGE_ROUTE_REPLACED := [
+	Vector2i(24, 19),
+	Vector2i(24, 18),
+	Vector2i(25, 17),
+	Vector2i(25, 16),
+	Vector2i(24, 15),
+	Vector2i(24, 14),
+	Vector2i(23, 13),
+	Vector2i(23, 12),
+	Vector2i(24, 11),
+	Vector2i(25, 10),
+	Vector2i(25, 9),
+	Vector2i(24, 8),
+	Vector2i(23, 7),
+	Vector2i(23, 6),
+	Vector2i(24, 5),
+	Vector2i(25, 4),
+	Vector2i(24, 3),
+]
+const PLAZA_CELLS := [
+	Vector2i(22, 18),
+	Vector2i(23, 18),
+	Vector2i(24, 18),
+	Vector2i(25, 18),
+	Vector2i(26, 18),
+	Vector2i(22, 19),
+	Vector2i(23, 19),
+	Vector2i(24, 19),
+	Vector2i(25, 19),
+	Vector2i(26, 19),
+	Vector2i(23, 20),
+	Vector2i(24, 20),
+	Vector2i(25, 20),
+	Vector2i(26, 20),
+]
+const PLAZA_TILES := [
+	Vector2i(0, 2),
+	Vector2i(1, 2),
+	Vector2i(2, 2),
+	Vector2i(3, 2),
+	Vector2i(4, 2),
+	Vector2i(5, 2),
+	Vector2i(6, 2),
+	Vector2i(7, 2),
+	Vector2i(1, 2),
+	Vector2i(4, 2),
+	Vector2i(6, 2),
+	Vector2i(2, 2),
+	Vector2i(5, 2),
+	Vector2i(7, 2),
+]
 const TREE_CELLS := [
 	Vector2i(5, 5),
 	Vector2i(8, 7),
@@ -47,10 +99,16 @@ func _apply_dressing() -> void:
 	var map := get_parent()
 	if map == null:
 		return
+	var ground := map.get_node_or_null("ground") as TileMapLayer
+	var paths := map.get_node_or_null("paths") as TileMapLayer
 	var objects := map.get_node_or_null("objects_y_sorted") as TileMapLayer
 	var low := map.get_node_or_null("decoration_low") as TileMapLayer
-	if objects == null or low == null:
+	if ground == null or paths == null or objects == null or low == null:
 		return
+
+	_apply_terrain_tileset(ground, paths)
+	_rework_village_route(paths)
+	_add_plaza_landmark(paths)
 
 	for index in range(TREE_CELLS.size()):
 		var cell: Vector2i = TREE_CELLS[index]
@@ -74,6 +132,28 @@ func _apply_dressing() -> void:
 		)
 
 	_dress_forest_resources(map)
+
+
+func _apply_terrain_tileset(ground: TileMapLayer, paths: TileMapLayer) -> void:
+	var terrain_tileset := CemeteryTerrainTileset.build()
+	ground.tile_set = terrain_tileset
+	paths.tile_set = terrain_tileset
+	ground.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	paths.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+
+
+func _rework_village_route(paths: TileMapLayer) -> void:
+	for y in range(3, 20):
+		paths.erase_cell(Vector2i(24, y))
+	for index in range(VILLAGE_ROUTE_REPLACED.size()):
+		var cell: Vector2i = VILLAGE_ROUTE_REPLACED[index]
+		var tile := Vector2i(index % 4, 1)
+		paths.set_cell(cell, TERRAIN_SOURCE, tile)
+
+
+func _add_plaza_landmark(paths: TileMapLayer) -> void:
+	for index in range(PLAZA_CELLS.size()):
+		paths.set_cell(PLAZA_CELLS[index], TERRAIN_SOURCE, PLAZA_TILES[index])
 
 
 func _dress_forest_resources(map: Node) -> void:
