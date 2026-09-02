@@ -14,19 +14,19 @@
 - Completion policy: CI/tests alone are insufficient for gameplay or visual acceptance.
 - Branch policy: one domain, one canonical branch/PR; integration is separate from feature implementation.
 - Cleanup policy: superseded branch refs must be deleted once safe. Repointing to a canonical SHA is only temporary containment and remains cleanup debt.
-- Integration policy: #138 is parked/closed while #139/#140 are below their own gates. It must be reopened and refreshed/rebuilt from accepted canonical state for final cross-domain integration; no replacement integration PR should be created.
-- Operational documentation (`DEV_MEMORY.md`, `ROADMAP.md`, `README.md`, `CHANGELOG.md`) refreshed around the current canonical production flow.
+- Integration policy: #138 remains parked/closed until MAP and PLAYER satisfy their actual gates; merge status alone is not acceptance.
+- Operational documentation refreshed around the real merged-but-unaccepted production state.
 
 ### Current Work / Gates
-- MAP #139 — `feat/main-map-rebuild-commercial-pass`: draft/open. Technical CI green on current head, but visual gate rejected; must reach authored commercial-quality composition, functional navigation/collisions/interactions and real 1280x720 visual acceptance.
-- PLAYER #140 — `character/player-controller-polish-20260902`: draft/open. CI currently red and procedural frame generation is rejected; must restore an authored cleaned spritesheet, commercial locomotion/animation/interactions and real verification on the rebuilt map.
-- INTEGRATION #138 — `automation/supervisor-player-map-integration`: parked/closed. Historical diff contains MAP/PLAYER implementation files, so it remains inactive until the two domain PRs pass their own gates; then reopen/refactor it as integration-only.
-- Duplicate historical branch refs remain a known cleanup debt until they can be physically deleted through tooling that supports remote-ref deletion.
+- MAP #139 — merged to `main` on 2026-09-02. Pre-merge technical CI was green, but visual gate was still rejected. Current debt: authored terrain/path system, elimination of visible grid/banding/repetition, stronger landmarks/depth and accepted 1280x720 recapture.
+- PLAYER #140 — merged to `main` on 2026-09-02 despite a red pre-merge CI. `main` still contains procedural character-frame generation in `PlayerVisual`; current debt: full technical green, authored/pixel-cleaned atlas, real 8-direction idle/walk/run/interact and 1280x720 gameplay evidence.
+- INTEGRATION #138 — parked/closed. Do not reactivate until the merged MAP and PLAYER states are actually accepted. Then reopen the same PR and keep only cross-domain deltas.
+- Historical stale refs currently appear again in the GitHub branch list. They must not receive new work; treat them as hygiene debt rather than as active workstreams.
 
 ### Historical foundations retained
 - Fases 0–7 completed.
 - Godot 4.7.2 remains the runtime/CI target.
-- Existing gameplay systems for movement, inventory, energy, crafting, cemetery, time/sleep, NPCs, dialogue, relationships, quests, economy, technology and modular world remain the technical foundation unless a canonical workstream intentionally replaces them.
+- Existing gameplay systems remain the technical foundation unless intentionally replaced through the governed production path.
 - Existing capture/testing infrastructure remains reusable where it satisfies current gates.
 
 ### Visual quality decisions
@@ -37,6 +37,5 @@
 
 ### Cleanup decisions
 - PRs #134, #135, #136, #137 and #126 were superseded/closed during consolidation.
-- PR #138 is not superseded; it is parked/closed until integration should actually start, and must be reopened rather than replaced.
-- Their historical branches must not be used for new work.
-- If deletion tooling is unavailable, temporary ref neutralization may prevent divergent implementation, but the repository is not considered fully cleaned until those refs are deleted.
+- #139 and #140 are merged but remain unaccepted until their missing gates are satisfied.
+- PR #138 is not superseded; it remains parked/closed until integration should actually start, and must be reopened rather than replaced.
