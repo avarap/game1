@@ -1,15 +1,15 @@
 class_name PlayerController
 extends CharacterBody2D
 
+signal state_changed(state: State)
+signal interaction_started(target: Interactable)
+
 enum State {
 	IDLE,
 	WALK,
 	RUN,
 	INTERACT,
 }
-
-signal state_changed(state: State)
-signal interaction_started(target: Interactable)
 
 @export var max_speed: float = 220.0
 @export var run_speed_multiplier: float = 1.45
@@ -19,11 +19,11 @@ signal interaction_started(target: Interactable)
 @export_range(0.0, 1.0, 0.01) var interaction_lock_seconds: float = 0.16
 @export var equipped_tool_id: StringName = &"axe"
 
-@onready var interaction_area: Area2D = $InteractionArea
-
 var _state: State = State.IDLE
 var _facing: StringName = &"s"
 var _interaction_lock_remaining: float = 0.0
+
+@onready var interaction_area: Area2D = $InteractionArea
 
 
 func _enter_tree() -> void:
