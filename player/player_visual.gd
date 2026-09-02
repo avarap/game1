@@ -119,12 +119,7 @@ func _pose_for(state: StringName, frame_index: int) -> Vector2i:
 
 
 func _draw_legs(
-	image: Image,
-	center_x: int,
-	hip_y: int,
-	foot_y: int,
-	direction: Vector2,
-	stride: int
+	image: Image, center_x: int, hip_y: int, foot_y: int, direction: Vector2, stride: int
 ) -> void:
 	for leg_index in 2:
 		var leg_stride := stride if leg_index == 0 else -stride
@@ -139,12 +134,7 @@ func _draw_legs(
 
 
 func _draw_torso(
-	image: Image,
-	center_x: int,
-	shoulder_y: int,
-	hip_y: int,
-	direction: Vector2,
-	lean: int
+	image: Image, center_x: int, shoulder_y: int, hip_y: int, direction: Vector2, lean: int
 ) -> void:
 	var shift := int(direction.x * lean)
 	_fill_rect(image, Rect2i(center_x - 18 + shift, shoulder_y, 36, 26), OUTLINE)
