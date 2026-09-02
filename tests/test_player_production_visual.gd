@@ -43,10 +43,7 @@ static func run() -> Array[String]:
 
 
 static func _check_animation(
-	body: AnimatedSprite2D,
-	state: StringName,
-	direction: StringName,
-	failures: Array[String]
+	body: AnimatedSprite2D, state: StringName, direction: StringName, failures: Array[String]
 ) -> void:
 	var animation := StringName("%s_%s" % [state, direction])
 	if not body.sprite_frames.has_animation(animation):
@@ -54,8 +51,10 @@ static func _check_animation(
 		return
 	if body.sprite_frames.get_frame_count(animation) < MINIMUM_FRAMES[state]:
 		failures.append(
-			"Player animation %s should have at least %d authored frames"
-			% [animation, MINIMUM_FRAMES[state]]
+			(
+				"Player animation %s should have at least %d authored frames"
+				% [animation, MINIMUM_FRAMES[state]]
+			)
 		)
 		return
 	for frame_index in body.sprite_frames.get_frame_count(animation):
@@ -68,7 +67,9 @@ static func _check_animation(
 			return
 		var atlas_texture := texture as AtlasTexture
 		if atlas_texture.atlas == null or atlas_texture.atlas.resource_path != ACTION_SHEET:
-			failures.append("Player animation %s must come from the authored action sheet" % animation)
+			failures.append(
+				"Player animation %s must come from the authored action sheet" % animation
+			)
 			return
 
 
