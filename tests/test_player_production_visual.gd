@@ -79,9 +79,15 @@ static func _check_distinct_action_frames(
 	var run_name := StringName("run_%s" % direction)
 	var idle_name := StringName("idle_%s" % direction)
 	var interact_name := StringName("interact_%s" % direction)
-	if not body.sprite_frames.has_animation(run_name) or not body.sprite_frames.has_animation(walk_name):
+	if (
+		not body.sprite_frames.has_animation(run_name)
+		or not body.sprite_frames.has_animation(walk_name)
+	):
 		return
-	if not body.sprite_frames.has_animation(interact_name) or not body.sprite_frames.has_animation(idle_name):
+	if (
+		not body.sprite_frames.has_animation(interact_name)
+		or not body.sprite_frames.has_animation(idle_name)
+	):
 		return
 	var walk_frame := body.sprite_frames.get_frame_texture(walk_name, 0) as AtlasTexture
 	var run_frame := body.sprite_frames.get_frame_texture(run_name, 0) as AtlasTexture
