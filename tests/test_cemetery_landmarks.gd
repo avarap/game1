@@ -20,7 +20,7 @@ static func run() -> Array[String]:
 		failures.append("Landmarks layer should carry enough detail to establish visual hierarchy")
 
 	for entry in [
-		["workshop", Vector2i(9, 22), 4],
+		["workshop", Vector2i(8, 24), 4],
 		["cemetery threshold", Vector2i(29, 11), 4],
 		["village exit", Vector2i(21, 3), 4],
 	]:
