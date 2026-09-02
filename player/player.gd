@@ -33,9 +33,7 @@ func _enter_tree() -> void:
 func _physics_process(delta: float) -> void:
 	if _interaction_lock_remaining > 0.0:
 		_interaction_lock_remaining = maxf(_interaction_lock_remaining - delta, 0.0)
-		velocity = PlayerMovement.next_velocity(
-			velocity, Vector2.ZERO, max_speed, acceleration, deceleration, delta
-		)
+		velocity = PlayerMovement.interaction_locked_velocity(velocity)
 		move_and_slide()
 		if _interaction_lock_remaining <= 0.0:
 			_set_state(State.IDLE)
@@ -106,6 +104,7 @@ func _interact_with_facing_target() -> void:
 	var nearest := _find_facing_interactable()
 	if nearest == null:
 		return
+	velocity = PlayerMovement.interaction_locked_velocity(velocity)
 	_set_state(State.INTERACT)
 	_interaction_lock_remaining = interaction_lock_seconds
 	interaction_started.emit(nearest)
