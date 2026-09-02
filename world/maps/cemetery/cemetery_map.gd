@@ -34,12 +34,26 @@ const STRUCTURAL_GATE_CELLS := [
 	Vector2i(18, 2),
 	Vector2i(24, 2),
 ]
+const INTERACTION_CUE_CELLS := [
+	Vector2i(8, 24),
+	Vector2i(10, 24),
+	Vector2i(12, 24),
+	Vector2i(29, 13),
+	Vector2i(29, 15),
+	Vector2i(35, 17),
+	Vector2i(39, 17),
+]
 
 
 func _ready() -> void:
-	_configure_layers(CemeteryArtTileset.build())
+	var art_tileset := CemeteryArtTileset.build()
+	_configure_layers(art_tileset)
+	var interaction_cues := get_node("interaction_cues") as TileMapLayer
+	interaction_cues.tile_set = art_tileset
+	interaction_cues.collision_enabled = false
 	_populate_rebuilt_ground()
 	_populate_rebuilt_paths()
+	_populate_interaction_cues(interaction_cues)
 	_populate_rebuilt_decor()
 	_populate_rebuilt_objects()
 	_populate_rebuilt_collision()
@@ -144,6 +158,16 @@ func _paint_path_disc(center: Vector2i, half_width: int) -> void:
 				continue
 			var variant := (x * 3 + y * 5) % 8
 			paths.set_cell(Vector2i(x, y), ART_SOURCE, Vector2i(variant, 1))
+
+
+func _populate_interaction_cues(interaction_cues: TileMapLayer) -> void:
+	# Small worn-ground pads make gameplay anchors readable without UI markers.
+	# They remain decorative only and deliberately do not affect collision/nav.
+	for center in INTERACTION_CUE_CELLS:
+		for offset in [Vector2i.LEFT, Vector2i.ZERO, Vector2i.RIGHT]:
+			var cell: Vector2i = center + offset
+			var variant := absi(cell.x * 7 + cell.y * 3) % 8
+			interaction_cues.set_cell(cell, ART_SOURCE, Vector2i(variant, 1))
 
 
 func _populate_rebuilt_decor() -> void:
