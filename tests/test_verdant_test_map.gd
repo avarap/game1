@@ -108,9 +108,6 @@ static func _check_physics_and_interaction(map: Node2D, failures: Array[String])
 	player.position = harvest_tree.position + Vector2(0, 32)
 	await tree.physics_frame
 	await tree.physics_frame
-	Input.action_press("move_up")
-	player._physics_process(0.0)
-	Input.action_release("move_up")
 	var event := InputEventAction.new()
 	event.action = "interact"
 	event.pressed = true
