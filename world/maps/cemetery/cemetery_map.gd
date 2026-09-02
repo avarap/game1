@@ -2,6 +2,7 @@ class_name CemeteryMap
 extends TechnicalMap
 
 const ART_SOURCE := 0
+const GATE_TILE := Vector2i(4, 3)
 const WORKSHOP_TEXTURE := preload(
 	"res://art/environment/cemetery/production/atlas/building_workshop_exterior.png"
 )
@@ -26,6 +27,12 @@ const GRAVE_CELLS := [
 	Vector2i(34, 19),
 	Vector2i(37, 19),
 	Vector2i(40, 19),
+]
+const STRUCTURAL_GATE_CELLS := [
+	Vector2i(27, 8),
+	Vector2i(31, 8),
+	Vector2i(18, 2),
+	Vector2i(24, 2),
 ]
 
 
@@ -166,6 +173,11 @@ func _populate_rebuilt_decor() -> void:
 func _populate_rebuilt_objects() -> void:
 	for index in range(GRAVE_CELLS.size()):
 		objects_y_sorted.set_cell(GRAVE_CELLS[index], ART_SOURCE, Vector2i(index % 4, 3))
+
+	# Reused production gate art provides vertical silhouettes at the two critical
+	# route transitions while deliberately leaving the travel cells collision-free.
+	for cell in STRUCTURAL_GATE_CELLS:
+		objects_y_sorted.set_cell(cell, ART_SOURCE, GATE_TILE)
 
 	var tree_cells := [
 		Vector2i(3, 4),
