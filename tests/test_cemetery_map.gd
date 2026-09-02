@@ -31,8 +31,8 @@ const EXPECTED_POSITIONS := {
 	"WorkshopArea/Workbench": Vector2(320, 768),
 	"WorkshopArea/StorageChest": Vector2(384, 768),
 	"WorkshopArea/SleepSpot": Vector2(256, 768),
-	"CemeteryArea/CorpseDelivery": Vector2(1088, 416),
-	"CemeteryArea/PreparationTable": Vector2(1152, 416),
+	"CemeteryArea/CorpseDelivery": Vector2(928, 416),
+	"CemeteryArea/PreparationTable": Vector2(928, 480),
 	"CemeteryArea/GravePlot": Vector2(1120, 544),
 	"CemeteryArea/GraveUpgrade": Vector2(1248, 544),
 }
@@ -98,7 +98,10 @@ static func run() -> Array[String]:
 	var player_spawn := map.get_node("PlayerSpawn") as Marker2D
 	for destination_path in [
 		"WorkshopArea/Workbench",
+		"CemeteryArea/CorpseDelivery",
 		"CemeteryArea/PreparationTable",
+		"CemeteryArea/GravePlot",
+		"CemeteryArea/GraveUpgrade",
 		"VillageExit",
 		"ForestExit",
 		"FutureExpansion",
