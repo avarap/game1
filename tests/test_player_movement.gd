@@ -51,4 +51,18 @@ static func run() -> Array[String]:
 	if rear_score != INF:
 		failures.append("Interactables behind the player should not steal interaction focus")
 
+	var packed := load("res://player/player.tscn") as PackedScene
+	if packed == null:
+		failures.append("Production player scene should load for movement-state regression test")
+		return failures
+	var player := packed.instantiate() as PlayerController
+	if player == null:
+		failures.append("Production player scene should instantiate PlayerController")
+		return failures
+	player.velocity = Vector2(60.0, 0.0)
+	player._physics_process(0.0)
+	if player.get_state() != PlayerController.State.WALK:
+		failures.append("Player should stay in WALK while physical deceleration still has velocity")
+	player.free()
+
 	return failures
