@@ -6,7 +6,7 @@ This file contains project-specific rules consumed by the generic `orchestrating
 
 - Map: PR #139 — branch `feat/main-map-rebuild-commercial-pass`
 - Player: PR #140 — branch `character/player-controller-polish-20260902`
-- Integration: PR #138 — branch `automation/supervisor-player-map-integration`
+- Integration: PR #138 — branch `automation/supervisor-player-map-integration` — **parked/closed until #139 and #140 pass their own gates; reopen this same PR for final integration, do not create a replacement.**
 
 Do not create parallel implementation PRs or branches for these domains while the canonical workstream is active.
 
@@ -91,6 +91,8 @@ PR #138 exists only to verify and fix cross-domain behavior:
 - regressions caused by combining #139 and #140.
 
 Do not independently implement map or player features in #138.
+
+While either #139 or #140 is below its own acceptance gate, #138 stays parked/closed. When both are ready, reopen #138 and refresh/rebuild it from the accepted canonical state, keeping only genuine integration deltas. Do not open a replacement integration PR.
 
 ## Verification requirements
 
