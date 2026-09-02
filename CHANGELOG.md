@@ -14,12 +14,13 @@
 - Completion policy: CI/tests alone are insufficient for gameplay or visual acceptance.
 - Branch policy: one domain, one canonical branch/PR; integration is separate from feature implementation.
 - Cleanup policy: superseded branch refs must be deleted once safe. Repointing to a canonical SHA is only temporary containment and remains cleanup debt.
+- Integration policy: #138 is parked/closed while #139/#140 are below their own gates. It must be reopened and refreshed/rebuilt from accepted canonical state for final cross-domain integration; no replacement integration PR should be created.
 - Operational documentation (`DEV_MEMORY.md`, `ROADMAP.md`, `README.md`, `CHANGELOG.md`) refreshed around the current canonical production flow.
 
 ### Current Work / Gates
-- MAP #139 — `feat/main-map-rebuild-commercial-pass`: draft/open. Must reach authored commercial-quality composition, functional navigation/collisions/interactions, technical gates and real 1280x720 visual evidence.
-- PLAYER #140 — `character/player-controller-polish-20260902`: draft/open. Must reach commercial locomotion/animation/interactions and real verification on the rebuilt map; run=accelerated-walk is not final acceptance.
-- INTEGRATION #138 — `automation/supervisor-player-map-integration`: draft/open. Reserved for cross-domain integration/regressions only.
+- MAP #139 — `feat/main-map-rebuild-commercial-pass`: draft/open. Technical CI green on current head, but visual gate rejected; must reach authored commercial-quality composition, functional navigation/collisions/interactions and real 1280x720 visual acceptance.
+- PLAYER #140 — `character/player-controller-polish-20260902`: draft/open. CI currently red and procedural frame generation is rejected; must restore an authored cleaned spritesheet, commercial locomotion/animation/interactions and real verification on the rebuilt map.
+- INTEGRATION #138 — `automation/supervisor-player-map-integration`: parked/closed. Historical diff contains MAP/PLAYER implementation files, so it remains inactive until the two domain PRs pass their own gates; then reopen/refactor it as integration-only.
 - Duplicate historical branch refs remain a known cleanup debt until they can be physically deleted through tooling that supports remote-ref deletion.
 
 ### Historical foundations retained
@@ -36,5 +37,6 @@
 
 ### Cleanup decisions
 - PRs #134, #135, #136, #137 and #126 were superseded/closed during consolidation.
+- PR #138 is not superseded; it is parked/closed until integration should actually start, and must be reopened rather than replaced.
 - Their historical branches must not be used for new work.
 - If deletion tooling is unavailable, temporary ref neutralization may prevent divergent implementation, but the repository is not considered fully cleaned until those refs are deleted.
