@@ -39,6 +39,32 @@ static func run() -> Array[String]:
 						failures.append("Player should define %s" % run_name)
 					if not body.sprite_frames.has_animation(interact_name):
 						failures.append("Player should define %s" % interact_name)
+					if body.sprite_frames.has_animation(idle_name) and body.sprite_frames.get_frame_count(idle_name) < 2:
+						failures.append("%s should have at least 2 authored frames" % idle_name)
+					if body.sprite_frames.has_animation(walk_name) and body.sprite_frames.get_frame_count(walk_name) < 6:
+						failures.append("%s should have at least 6 authored frames" % walk_name)
+					if body.sprite_frames.has_animation(run_name) and body.sprite_frames.get_frame_count(run_name) < 6:
+						failures.append("%s should have at least 6 authored frames" % run_name)
+					if body.sprite_frames.has_animation(interact_name) and body.sprite_frames.get_frame_count(interact_name) < 4:
+						failures.append("%s should have at least 4 authored frames" % interact_name)
+					if (
+						body.sprite_frames.has_animation(run_name)
+						and body.sprite_frames.has_animation(walk_name)
+						and body.sprite_frames.get_frame_count(run_name) > 0
+						and body.sprite_frames.get_frame_count(walk_name) > 0
+						and body.sprite_frames.get_frame_texture(run_name, 0)
+						== body.sprite_frames.get_frame_texture(walk_name, 0)
+					):
+						failures.append("%s must not reuse walk frames" % run_name)
+					if (
+						body.sprite_frames.has_animation(interact_name)
+						and body.sprite_frames.has_animation(idle_name)
+						and body.sprite_frames.get_frame_count(interact_name) > 1
+						and body.sprite_frames.get_frame_count(idle_name) > 0
+						and body.sprite_frames.get_frame_texture(interact_name, 1)
+						== body.sprite_frames.get_frame_texture(idle_name, 0)
+					):
+						failures.append("%s reach frame must not reuse idle" % interact_name)
 			if body.position != Vector2(0, 0):
 				failures.append("Player visual pivot should remain at the feet/origin")
 			if not body.has_method("set_locomotion_state"):
