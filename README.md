@@ -21,21 +21,22 @@ Objetivo: un vertical slice original, jugable y con calidad visual de videojuego
 - Runtime/CI objetivo: Godot 4.7.2.
 - El mapa principal antiguo está descartado y no puede reutilizarse en layout/composición/patrones/distribución/diseño espacial.
 - CI verde es obligatorio donde aplique, pero nunca sustituye la evidencia jugable/visual.
+- MAP #139 y PLAYER #140 están **merged pero todavía no accepted**; el merge no sustituye los gates.
 
 ## Workstreams canónicos
 
-- **MAP #139** — `feat/main-map-rebuild-commercial-pass` — activa/draft.
-- **PLAYER #140** — `character/player-controller-polish-20260902` — activa/draft.
-- **INTEGRATION #138** — `automation/supervisor-player-map-integration` — aparcada/cerrada hasta que MAP y PLAYER pasen sus gates; entonces se reabre la misma PR para integración final.
+- **MAP #139** — `feat/main-map-rebuild-commercial-pass` — merged; gate visual pendiente.
+- **PLAYER #140** — `character/player-controller-polish-20260902` — merged; gates técnico/gameplay/visual pendientes.
+- **INTEGRATION #138** — `automation/supervisor-player-map-integration` — aparcada/cerrada hasta que MAP y PLAYER satisfagan realmente sus gates; entonces se reabre la misma PR para integración final.
 
-No abrir ramas o PR paralelas para estos dominios mientras exista su workstream canónico. No crear una PR sustituta para #138.
+No abrir ramas o PR paralelas para estos dominios. No crear una PR sustituta para #138.
 
 ## Critical path
 
-1. Llevar #139 a mapa nuevo authored, navegable, interactuable y visualmente creíble.
-2. Llevar #140 a protagonista de calidad comercial con movimiento/animación/interacción reales.
-3. Reabrir/refrescar #138 desde los estados canónicos aceptados y resolver solo regresiones cross-domain.
-4. Validar build, gameplay real y capturas/video 1280x720.
+1. Corregir PLAYER ya presente en `main`: CI completo verde, atlas authored/pixel-cleaned, idle/walk/run/interact reales en 8 direcciones y gameplay 1280x720.
+2. Corregir MAP ya presente en `main`: terrain/path system authored, eliminar grid/banding/repetición, reforzar landmarks/depth y recapturar 1280x720.
+3. Reabrir/refrescar #138 solo cuando ambos dominios estén aceptados y resolver únicamente regresiones cross-domain.
+4. Validar build, gameplay real y capturas/video 1280x720 sobre el mismo estado integrado.
 5. Solo entonces avanzar al gate final del vertical slice.
 
 ## Pipeline de pixel art
@@ -50,11 +51,11 @@ El arte de producción sigue un pipeline especializado:
 6. captura in-game 1280x720;
 7. crítica visual y revisión.
 
-Una imagen generada o conceptual no es un asset final hasta pasar estas etapas.
+Una imagen generada, conceptual o sprite procedural no es un asset final hasta pasar estas etapas.
 
 ## Sandbox Verdant
 
-`world/maps/verdant_test/` es un sandbox visual aislado. No forma parte del world/save flow de producción. Solo puede aportar técnicas o assets individuales si #139 los adopta explícitamente tras revisión.
+`world/maps/verdant_test/` es un sandbox visual aislado. No forma parte del world/save flow de producción.
 
 ## Ejecutar
 
@@ -75,8 +76,6 @@ Una imagen generada o conceptual no es un asset final hasta pasar estas etapas.
 
 ## Quality gates
 
-El CI y la revisión de producción exigen según aplique:
-
 - `gdlint`;
 - `gdformat --check`;
 - Godot 4.7.2 import/validation;
@@ -92,4 +91,4 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 ## Branch cleanup
 
-Una rama supersedida debe borrarse cuando no contenga trabajo único. Reapuntarla temporalmente al SHA canónico solo contiene la divergencia; no cuenta como limpieza final.
+Los refs stale históricos no deben recibir pushes ni convertirse de nuevo en workstreams. Su cleanup físico es higiene del repositorio, pero no sustituye ni oculta los gates de producción pendientes.
