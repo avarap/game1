@@ -3,77 +3,38 @@
 ## Unreleased
 
 ### Added
-- Bootstrap Godot 4.x, cinco Autoloads globales, InputMap, logging, debug, guardado versionado, tests y CI headless.
-- Walking prototype, items/inventario, energía, recursos, crafting, `StorageNetwork`, producción temporizada y cementerio persistente.
-- Simulación: reloj/calendario, sueño, ciclo día/noche, `NPCData`, navegación, horarios/estados y persistencia NPC.
-- Localización EN/ES, diálogo data-driven, relaciones, quests, economía, comercio UI y tecnologías.
-- Fase 7 completa: cementerio/taller, bosque, pueblo, interiores, mina, zonas, transiciones y persistencia de ubicación.
-- Track 8A integrado hasta 8A.8: descomposición, conservación, agricultura mínima, recurso multiuso, servicio funerario 18:00, logística progresiva, decisiones terminales y feedback hooks exactly-once.
-- #82 / PR #92: regresión específica para preservar posición/estado de Brother Aldren en save/load de cementerio.
-- #96 / PR #108: tooling de captura visual reproducible 1280x720 ligado a SHA, con cámara/zoom reales.
-- PR #107: decisión arquitectónica provisional fuerte para abandonar 32x48 como baseline hero y preferir 64x96 nativo con canvas visual desacoplado de colisión/navegación.
-- PR #118: política de prompts de producción visual; los screenshots de `docs/` son benchmark obligatorio de calidad percibida sin copiar contenido protegido.
-- #119: gameplay MP4 reproducible del baseline `98045f4...`; PR #120 cerrada sin merge después de producir el artefacto solicitado.
+- `GAME1_RULES.md` as project-specific production contract.
+- `.agents/skills/orchestrating-game-production/SKILL.md` as the reusable orchestration process.
+- Canonical workstream model: MAP #139, PLAYER #140, INTEGRATION #138.
+- Specialized pixel-art production pipeline: art direction -> concept/base -> pixel cleanup -> asset-system assembly -> Godot integration -> 1280x720 capture -> visual critique/revision.
+- Explicit treatment of `world/maps/verdant_test/` as an isolated visual sandbox, not production world content.
 
 ### Changed
-- Runtime/CI objetivo: **Godot 4.7.2**.
-- Quality gate global descubre todos los `*.gd` y ejecuta `gdlint` + `gdformat --check`.
-- `world/world.tscn` es shell persistente y `ZoneManager` mantiene una sola zona activa.
-- Fases 0–7 completadas; Fase 8 — Polish permanece **ACTIVA**.
-- Reset visual: no existe restricción heredada 32x48/160x128; se prioriza calidad comparable a `docs/` y se permite aumentar resolución/escala o ajustar cámara/zoom de forma planificada.
-- `ART_DIRECTION.md` conserva temporalmente el contrato histórico 32x48/1.5x hasta la validación perceptual final de #94 mediante #109/#96.
-
-### Fixed
-- Restaurar `world_location` no debe sobreescribir el estado persistente de Brother Aldren.
-- El servicio funerario consume `fodder_turnip` real mediante storage.
-- PR #102 corrige el error runtime de densidad de `CPUParticles2D` usando `amount` entero y añade regresión live SceneTree.
-- PR #121 contiene una corrección mínima, todavía no integrada, para que `CemeteryController` inyecte configuración de decisiones terminales y el `TechnologyService` real del mundo en `CemeteryService`, cerrando el RED de `research` del flujo 8A.
+- Main-map policy: previous main-map layout/composition/patterns/distribution/spatial design are discarded and may not be reused.
+- Completion policy: CI/tests alone are insufficient for gameplay or visual acceptance.
+- Branch policy: one domain, one canonical branch/PR; integration is separate from feature implementation.
+- Cleanup policy: superseded branch refs must be deleted once safe. Repointing to a canonical SHA is only temporary containment and remains cleanup debt.
+- Operational documentation (`DEV_MEMORY.md`, `ROADMAP.md`, `README.md`, `CHANGELOG.md`) refreshed around the current canonical production flow.
 
 ### Current Work / Gates
-- HEAD sincronizado por esta documentación: `a0a54f5ede3d37602bed5594957305b92577bb96`.
-- CI de ese HEAD: run `33400411975`, **success**.
-- Gate P0 histórico #82/#83: **superado**.
-- #115 / PR #121: head `e37dc433...`, mergeable/sincronizado y CI `33404377011` completamente verde, incluido `Phase8AAcceptance`. No integrado aún porque el PR continúa draft y el conector GitHub falla al pasarlo a ready; no forzar merge.
-- #109 / PR #114: sincronizado/mergeable y CI `33405431151` verde. El candidato visual actual está rechazado por seguir leyendo como placeholder ampliado; requiere rework y evidencia #96 contra `docs/`.
-- #113 / PR #116: sincronizado/mergeable y CI `33403543515` verde; requiere evidencia perceptual #96 y posible migración a raster si SVG no alcanza el quality bar.
-- #93 / PR #122: import, smoke, suite y gdlint verdes, pero `gdformat --check` falla en CI `33404640239`; mantener worker hasta corrección y revalidación.
-- #94 ARCH: abierta y bloqueada por evidencia perceptual de #109.
-- #70 sigue siendo el único gate autorizado para cerrar Fase 8.
+- MAP #139 — `feat/main-map-rebuild-commercial-pass`: draft/open. Must reach authored commercial-quality composition, functional navigation/collisions/interactions, technical gates and real 1280x720 visual evidence.
+- PLAYER #140 — `character/player-controller-polish-20260902`: draft/open. Must reach commercial locomotion/animation/interactions and real verification on the rebuilt map; run=accelerated-walk is not final acceptance.
+- INTEGRATION #138 — `automation/supervisor-player-map-integration`: draft/open. Reserved for cross-domain integration/regressions only.
+- Duplicate historical branch refs remain a known cleanup debt until they can be physically deleted through tooling that supports remote-ref deletion.
 
-### Validated
-- Cierre Fase 6: PR #39, run `33308814397`, success.
-- Godot 4.7.2: PR #41, run `33309144543`, success.
-- Cierre Fase 7: PR #54, run `33331207740`, success.
-- 8A.3 agricultura mínima: run `33342619691`, success.
-- #29 integración artística: run `33350442187`, success.
-- #26 player visual: run `33350515654`, success.
-- #82 Aldren cemetery save/load: run `33356344828`, success.
-- PR #99 funeral service: run `33359942851`, success.
-- PR #103 logística progresiva: integrada.
-- PR #106 decisiones terminales: integrada.
-- PR #112 feedback hooks: main run `33395789790`, success.
-- PR #118 política visual: main run `33400411975`, success.
-- PR #121 pre-merge acceptance: run `33404377011`, success.
-- PR #114 technical gate: run `33405431151`, success; visual gate remains open.
-- PR #116 technical gate: run `33403543515`, success; visual gate remains open.
+### Historical foundations retained
+- Fases 0–7 completed.
+- Godot 4.7.2 remains the runtime/CI target.
+- Existing gameplay systems for movement, inventory, energy, crafting, cemetery, time/sleep, NPCs, dialogue, relationships, quests, economy, technology and modular world remain the technical foundation unless a canonical workstream intentionally replaces them.
+- Existing capture/testing infrastructure remains reusable where it satisfies current gates.
 
-### Design Decisions — Phase 8A
-- Descomposición integer 0–100 con estados Fresh/Fading/Decomposed/Rotten y aceleración con edad.
-- Conservación mediante basis points enteros, sin rejuvenecimiento.
-- Transporte funerario original al atardecer, objetivo 18:00; tras introducción requiere alimento cultivable y es exactly-once con sueño/time-jump/save-load.
-- Descarga inicial junto al camino y rampa desbloqueable posterior.
-- `fodder_turnip` es cultivable, comprable, vendible, almacenable y reutilizable.
-- Cremar e investigar son decisiones terminales alternativas y persistentes.
-- Feedback reutiliza EventBus/AudioManager sin acoplar reglas de gameplay.
+### Visual quality decisions
+- Pixel art must read as authored game art, not a generic generated image, vector blockout or procedural texture field.
+- Generated/concept art is source material only until pixel cleanup and in-game integration/review.
+- Real gameplay screenshots/video are mandatory evidence for visual acceptance.
+- Grid logic may remain technical, but visible composition must avoid obvious tile repetition, mathematical distribution, uniform spacing and prototype geometry.
 
-### Design Decisions — Visual Reset
-- `docs/` es la referencia oficial de calidad percibida.
-- CI verde no equivale a aceptación visual.
-- 32x48 no es contrato de producción para personajes hero/key NPCs; 64x96 nativo es la recomendación provisional fuerte de #107, no un techo si la calidad exige más resolución.
-- Pivote de pies, colisión, navegación e interacción se mantienen desacoplados del canvas visible.
-- Arquitectura, props, tiles y VFX pueden aumentar resolución/escala si el resultado heredado obliga a un aspecto plano/blockout.
-
-### Design Decisions — Post-MVP
-- Comerciantes por profesión mediante `MerchantProfile` data-driven y tags/categorías.
-- Todo producto vendible debe tener salida económica salvo excepciones explícitas.
-- Trabajadores originales para `HARVEST`, `MINE`, `CHOP`, `TRANSPORT` y `PROCESS`, evolucionando de trabajo manual a cadenas automatizadas.
+### Cleanup decisions
+- PRs #134, #135, #136, #137 and #126 were superseded/closed during consolidation.
+- Their historical branches must not be used for new work.
+- If deletion tooling is unavailable, temporary ref neutralization may prevent divergent implementation, but the repository is not considered fully cleaned until those refs are deleted.
