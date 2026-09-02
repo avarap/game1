@@ -2,11 +2,15 @@ class_name PlayerController
 extends CharacterBody2D
 
 @export var max_speed: float = 220.0
+@export var run_speed_multiplier: float = 1.45
 @export var acceleration: float = 1200.0
 @export var deceleration: float = 1500.0
 @export var equipped_tool_id: StringName = &"axe"
 
 @onready var interaction_area: Area2D = $InteractionArea
+@onready var player_visual: PlayerVisual = $Body
+
+var _facing_vector := Vector2.DOWN
 
 
 func _enter_tree() -> void:
@@ -15,15 +19,31 @@ func _enter_tree() -> void:
 
 func _physics_process(delta: float) -> void:
 	var direction := PlayerMovement.input_direction()
+	if not direction.is_zero_approx():
+		_facing_vector = direction.normalized()
+
+	var running := Input.is_action_pressed("run") and not direction.is_zero_approx()
+	var target_speed := PlayerMovement.speed_for_mode(
+		max_speed, run_speed_multiplier, running
+	)
 	velocity = PlayerMovement.next_velocity(
-		velocity, direction, max_speed, acceleration, deceleration, delta
+		velocity, direction, target_speed, acceleration, deceleration, delta
 	)
 	move_and_slide()
+
+	var state := &"idle"
+	if not direction.is_zero_approx():
+		state = &"run" if running else &"walk"
+	player_visual.set_locomotion_state(state, _facing_vector)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		_interact_with_nearest()
+
+
+func get_facing_vector() -> Vector2:
+	return _facing_vector
 
 
 func get_equipped_tool_id() -> StringName:
