@@ -34,3 +34,4 @@ jobs:
           name: cemetery-map-captures
           path: .visual-captures
           if-no-files-found: error
+          include-hidden-files: true
