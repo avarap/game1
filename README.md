@@ -24,17 +24,17 @@ Objetivo: un vertical slice original, jugable y con calidad visual de videojuego
 
 ## Workstreams canónicos
 
-- **MAP #139** — `feat/main-map-rebuild-commercial-pass`.
-- **PLAYER #140** — `character/player-controller-polish-20260902`.
-- **INTEGRATION #138** — `automation/supervisor-player-map-integration`.
+- **MAP #139** — `feat/main-map-rebuild-commercial-pass` — activa/draft.
+- **PLAYER #140** — `character/player-controller-polish-20260902` — activa/draft.
+- **INTEGRATION #138** — `automation/supervisor-player-map-integration` — aparcada/cerrada hasta que MAP y PLAYER pasen sus gates; entonces se reabre la misma PR para integración final.
 
-No abrir ramas o PR paralelas para estos dominios mientras exista su workstream canónico.
+No abrir ramas o PR paralelas para estos dominios mientras exista su workstream canónico. No crear una PR sustituta para #138.
 
 ## Critical path
 
 1. Llevar #139 a mapa nuevo authored, navegable, interactuable y visualmente creíble.
 2. Llevar #140 a protagonista de calidad comercial con movimiento/animación/interacción reales.
-3. Integrar ambos en #138 y resolver solo regresiones cross-domain.
+3. Reabrir/refrescar #138 desde los estados canónicos aceptados y resolver solo regresiones cross-domain.
 4. Validar build, gameplay real y capturas/video 1280x720.
 5. Solo entonces avanzar al gate final del vertical slice.
 
