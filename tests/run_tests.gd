@@ -23,6 +23,7 @@ func _run_all_tests() -> void:
 	_run_suite("RPGAcceptance", TestRPGAcceptance.run(), failures)
 	_run_suite("PlayerMovement", TestPlayerMovement.run(), failures)
 	_run_suite("PlayerProductionVisual", TestPlayerProductionVisual.run(), failures)
+	_run_suite("PlayerCemeteryIntegration", TestPlayerCemeteryIntegration.run(), failures)
 	_run_suite("WalkingPrototype", TestWalkingPrototype.run(), failures)
 	_run_suite("InventoryModel", TestInventoryModel.run(), failures)
 	_run_suite("ItemsFoundation", TestItemsFoundation.run(), failures)
