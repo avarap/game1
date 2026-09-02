@@ -118,6 +118,8 @@ static func _check_forest_resources(map: Node2D, failures: Array[String]) -> voi
 		if WORKSHOP_RECT.has_point(cell):
 			failures.append("Forest resource must not be scattered inside workshop yard: %s" % cell)
 		if CEMETERY_RECT.has_point(cell):
-			failures.append("Forest resource must not be scattered inside cemetery enclosure: %s" % cell)
+			failures.append(
+				"Forest resource must not be scattered inside cemetery enclosure: %s" % cell
+			)
 	if resource_count < 6:
 		failures.append("Forest zone should expose at least six real harvestable resource nodes")

@@ -5,7 +5,8 @@ const ART_SOURCE := 0
 const FENCE_TILE := Vector2i(4, 3)
 const AISLE_TILE := Vector2i(1, 1)
 const WORKSHOP_SOIL_CELLS := {
-	Vector2i(1, 0): [
+	Vector2i(1, 0):
+	[
 		Vector2i(8, 20),
 		Vector2i(9, 20),
 		Vector2i(10, 20),
@@ -28,7 +29,8 @@ const WORKSHOP_SOIL_CELLS := {
 		Vector2i(17, 26),
 		Vector2i(18, 26),
 	],
-	Vector2i(2, 0): [
+	Vector2i(2, 0):
+	[
 		Vector2i(10, 22),
 		Vector2i(11, 22),
 		Vector2i(12, 22),
@@ -55,7 +57,8 @@ const WORKSHOP_SOIL_CELLS := {
 		Vector2i(16, 24),
 		Vector2i(17, 24),
 	],
-	Vector2i(5, 0): [
+	Vector2i(5, 0):
+	[
 		Vector2i(8, 22),
 		Vector2i(17, 22),
 		Vector2i(8, 23),
