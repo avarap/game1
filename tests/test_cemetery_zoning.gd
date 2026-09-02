@@ -15,7 +15,10 @@ const FENCE_SAMPLE_CELLS := [
 	Vector2i(32, 19),
 	Vector2i(42, 19),
 ]
-const GATE_GAPS := [Vector2i(30, 16), Vector2i(39, 19)]
+const GATE_GAPS := [
+	Vector2i(30, 16),
+	Vector2i(39, 19),
+]
 const GRAVE_AISLE_CELLS := [
 	Vector2i(35, 7),
 	Vector2i(35, 11),
@@ -108,7 +111,10 @@ static func _check_forest_resources(map: Node2D, failures: Array[String]) -> voi
 		if child is not ResourceNode:
 			continue
 		resource_count += 1
-		var cell := Vector2i(floori(child.position.x / 32.0), floori(child.position.y / 32.0))
+		var cell := Vector2i(
+			floori(child.position.x / 32.0),
+			floori(child.position.y / 32.0),
+		)
 		if WORKSHOP_RECT.has_point(cell):
 			failures.append("Forest resource must not be scattered inside workshop yard: %s" % cell)
 		if CEMETERY_RECT.has_point(cell):
