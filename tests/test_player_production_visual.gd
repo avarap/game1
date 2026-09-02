@@ -26,34 +26,25 @@ static func run() -> Array[String]:
 	elif shadow.z_index >= body.z_index:
 		failures.append("Player contact shadow should draw below the body")
 
-	_check_animation(body, &"idle_n", failures)
-	_check_animation(body, &"walk_n", failures)
-	_check_animation(body, &"idle_ne", failures)
-	_check_animation(body, &"walk_ne", failures)
-	_check_animation(body, &"idle_e", failures)
-	_check_animation(body, &"walk_e", failures)
-	_check_animation(body, &"idle_se", failures)
-	_check_animation(body, &"walk_se", failures)
-	_check_animation(body, &"idle_s", failures)
-	_check_animation(body, &"walk_s", failures)
-	_check_animation(body, &"idle_sw", failures)
-	_check_animation(body, &"walk_sw", failures)
-	_check_animation(body, &"idle_w", failures)
-	_check_animation(body, &"walk_w", failures)
-	_check_animation(body, &"idle_nw", failures)
-	_check_animation(body, &"walk_nw", failures)
+	for facing in [&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"]:
+		_check_animation(body, StringName("idle_%s" % facing), 1, failures)
+		_check_animation(body, StringName("walk_%s" % facing), 4, failures)
+		_check_animation(body, StringName("run_%s" % facing), 4, failures)
+		_check_animation(body, StringName("interact_%s" % facing), 3, failures)
 
 	player.free()
 	return failures
 
 
 static func _check_animation(
-	body: AnimatedSprite2D, animation: StringName, failures: Array[String]
+	body: AnimatedSprite2D,
+	animation: StringName,
+	minimum_frames: int,
+	failures: Array[String]
 ) -> void:
 	if not body.sprite_frames.has_animation(animation):
 		failures.append("Missing player animation %s" % animation)
 		return
-	var minimum_frames := 4 if String(animation).begins_with("walk_") else 1
 	if body.sprite_frames.get_frame_count(animation) < minimum_frames:
 		failures.append(
 			"Player animation %s should have at least %d frames" % [animation, minimum_frames]
