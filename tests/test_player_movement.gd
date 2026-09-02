@@ -64,6 +64,8 @@ static func run() -> Array[String]:
 	if player == null:
 		failures.append("Production player scene should instantiate PlayerController")
 		return failures
+	var tree := Engine.get_main_loop() as SceneTree
+	tree.root.add_child(player)
 	player.velocity = Vector2(60.0, 0.0)
 	player._physics_process(0.0)
 	if player.get_state() != PlayerController.State.WALK:
