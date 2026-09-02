@@ -28,6 +28,13 @@ jobs:
           VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha }}
         run: xvfb-run -a bash tools/visual_capture/run_capture.sh "$GITHUB_WORKSPACE/.visual-captures"
 
+      - name: Collect cemetery source art for visual review
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/.visual-captures/source-art"
+          cp art/environment/tilesets/cemetery_ground_tileset.png "$GITHUB_WORKSPACE/.visual-captures/source-art/"
+          cp art/environment/cemetery/production/atlas/tileset_cemetery_32.png "$GITHUB_WORKSPACE/.visual-captures/source-art/"
+          cp art/environment/cemetery/production/atlas/building_workshop_exterior.png "$GITHUB_WORKSPACE/.visual-captures/source-art/"
+
       - name: Upload captures
         uses: actions/upload-artifact@v4
         with:
