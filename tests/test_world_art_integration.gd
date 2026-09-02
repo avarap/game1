@@ -10,7 +10,8 @@ const MAP_PATHS := [
 	"res://world/maps/interiors/village_building.tscn",
 ]
 const EXTERIOR_ATLAS := "res://art/environment/tilesets/cemetery_ground_tileset.png"
-const CEMETERY_TERRAIN_ATLAS := "res://art/environment/cemetery/production/atlas/terrain_ground_paths_32.png"
+const CEMETERY_ATLAS_DIR := "res://art/environment/cemetery/production/atlas/"
+const CEMETERY_TERRAIN_ATLAS := CEMETERY_ATLAS_DIR + "terrain_ground_paths_32.png"
 
 
 static func run() -> Array[String]:
