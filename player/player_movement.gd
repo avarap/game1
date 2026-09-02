@@ -31,6 +31,10 @@ static func next_velocity(
 	return current_velocity.move_toward(target, rate * delta)
 
 
+static func interaction_locked_velocity(_current_velocity: Vector2) -> Vector2:
+	return Vector2.ZERO
+
+
 static func direction_name(value: Vector2, fallback: StringName = &"s") -> StringName:
 	if value.is_zero_approx():
 		return fallback
