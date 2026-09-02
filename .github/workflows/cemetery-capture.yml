@@ -1,0 +1,47 @@
+name: Cemetery Visual Capture
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install virtual display dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            xvfb xauth libfontconfig1 libx11-6 libxext6 libxrandr2 \
+            libxcursor1 libxi6 libxinerama1 libwayland-client0
+
+      - name: Import project
+        run: godot --headless --path . --editor --quit
+
+      - name: Capture production cemetery views
+        env:
+          VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          xvfb-run -a bash tools/visual_capture/run_capture.sh \
+            "$GITHUB_WORKSPACE/.visual-captures"
+
+      - name: Collect source art for review
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/.visual-captures/source-art"
+          cp art/environment/cemetery/production/atlas/tileset_cemetery_32.png \
+            "$GITHUB_WORKSPACE/.visual-captures/source-art/"
+          cp art/environment/cemetery/production/atlas/building_workshop_exterior.png \
+            "$GITHUB_WORKSPACE/.visual-captures/source-art/"
+
+      - name: Upload captures
+        uses: actions/upload-artifact@v4
+        with:
+          name: cemetery-map-captures
+          path: .visual-captures
+          if-no-files-found: error
+          include-hidden-files: true
