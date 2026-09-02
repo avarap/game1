@@ -24,6 +24,20 @@ static func run() -> Array[String]:
 	if not player.has_method("get_facing_name"):
 		failures.append("Integrated player must expose stable 8-direction facing")
 
+	var camera := player.get_node_or_null("Camera2D") as Camera2D
+	if camera == null:
+		failures.append("Integrated player must expose its production Camera2D")
+	else:
+		var world_rect: Rect2 = map.get_world_rect()
+		if camera.limit_left != int(world_rect.position.x):
+			failures.append("Player camera left limit must match rebuilt cemetery bounds")
+		if camera.limit_top != int(world_rect.position.y):
+			failures.append("Player camera top limit must match rebuilt cemetery bounds")
+		if camera.limit_right != int(world_rect.end.x):
+			failures.append("Player camera right limit must match rebuilt cemetery bounds")
+		if camera.limit_bottom != int(world_rect.end.y):
+			failures.append("Player camera bottom limit must match rebuilt cemetery bounds")
+
 	var collision := map.get_node_or_null("collision") as TileMapLayer
 	if collision == null:
 		failures.append("Rebuilt cemetery must expose collision layer")
