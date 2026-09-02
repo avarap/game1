@@ -30,13 +30,18 @@ z_index = -9
 collision_enabled = false
 tile_set = SubResource("TileSet_cemetery")
 
-[node name="decoration_low" type="TileMapLayer" parent="."]
+[node name="interaction_cues" type="TileMapLayer" parent="."]
 z_index = -8
 collision_enabled = false
 tile_set = SubResource("TileSet_cemetery")
 
-[node name="landmarks" type="TileMapLayer" parent="."]
+[node name="decoration_low" type="TileMapLayer" parent="."]
 z_index = -7
+collision_enabled = false
+tile_set = SubResource("TileSet_cemetery")
+
+[node name="landmarks" type="TileMapLayer" parent="."]
+z_index = -6
 collision_enabled = false
 tile_set = SubResource("TileSet_cemetery")
 script = ExtResource("8_landmarks")
