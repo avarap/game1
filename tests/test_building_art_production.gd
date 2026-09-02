@@ -1,9 +1,8 @@
 class_name TestBuildingArtProduction
 extends RefCounted
 
-const WORKSHOP_ART := (
-	"res://art/environment/cemetery/production/atlas/building_workshop_exterior.png"
-)
+const WORKSHOP_ATLAS := "res://art/environment/cemetery/production/atlas/"
+const WORKSHOP_ART := WORKSHOP_ATLAS + "building_workshop_exterior.png"
 const VILLAGE_HOUSE_ART := "res://art/environment/buildings/village_house.png"
 const CEMETERY_MAP := "res://world/maps/cemetery/cemetery_map.tscn"
 const VILLAGE_MAP := "res://world/maps/village/village_map.tscn"
