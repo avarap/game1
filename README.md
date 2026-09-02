@@ -12,7 +12,7 @@ Objetivo: un vertical slice original, jugable y con calidad visual de videojuego
 - Plan: `ROADMAP.md`.
 - Arquitectura/spec: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
 - Diseño: `GAME_DESIGN.md`.
-- Dirección visual: `ART_DIRECTION.md` + benchmarks en `docs/`.
+- Dirección visual: `ART_DIRECTION.md`.
 
 ## Estado
 
@@ -20,59 +20,31 @@ Objetivo: un vertical slice original, jugable y con calidad visual de videojuego
 - Fase 8 — Polish: activa.
 - Runtime/CI objetivo: Godot 4.7.2.
 - El mapa principal antiguo está descartado y no puede reutilizarse en layout/composición/patrones/distribución/diseño espacial.
-- CI verde es obligatorio donde aplique, pero nunca sustituye la evidencia jugable/visual.
-- MAP #139 y PLAYER #140 están **merged pero todavía no accepted**; el merge no sustituye los gates.
+- MAP #139 y PLAYER #140 fueron merged antes de aceptación. **Merged != accepted**.
+- `main` sigue requiriendo remediación PLAYER para recuperar CI completamente verde.
 
 ## Workstreams canónicos
 
-- **MAP #139** — `feat/main-map-rebuild-commercial-pass` — merged; gate visual pendiente.
-- **PLAYER #140** — `character/player-controller-polish-20260902` — merged; gates técnico/gameplay/visual pendientes.
-- **INTEGRATION #138** — `automation/supervisor-player-map-integration` — aparcada/cerrada hasta que MAP y PLAYER satisfagan realmente sus gates; entonces se reabre la misma PR para integración final.
+La identidad canónica es la rama; un PR merged pasa a ser histórico.
 
-No abrir ramas o PR paralelas para estos dominios. No crear una PR sustituta para #138.
+- **MAP** — `feat/main-map-rebuild-commercial-pass` — #139 histórico; una única PR secuencial de remediación puede reutilizar esta misma rama.
+- **PLAYER** — `character/player-controller-polish-20260902` — #140 histórico; una única PR secuencial de remediación puede reutilizar esta misma rama.
+- **INTEGRATION #138** — `automation/supervisor-player-map-integration` — PARKED/CLOSED hasta aceptación real de MAP+PLAYER; entonces se reabre la misma #138.
+
+No crear ramas paralelas. Máximo una PR abierta por dominio. #138 nunca se usa para terminar deuda propia de MAP/PLAYER.
 
 ## Critical path
 
-1. Corregir PLAYER ya presente en `main`: CI completo verde, atlas authored/pixel-cleaned, idle/walk/run/interact reales en 8 direcciones y gameplay 1280x720.
-2. Corregir MAP ya presente en `main`: terrain/path system authored, eliminar grid/banding/repetición, reforzar landmarks/depth y recapturar 1280x720.
-3. Reabrir/refrescar #138 solo cuando ambos dominios estén aceptados y resolver únicamente regresiones cross-domain.
-4. Validar build, gameplay real y capturas/video 1280x720 sobre el mismo estado integrado.
-5. Solo entonces avanzar al gate final del vertical slice.
+1. **PLAYER remediation:** systematic debugging -> `gdformat` + bootstrap green -> eliminar frames procedurales -> atlas authored/pixel-cleaned -> idle/walk/run/interact reales en 8 direcciones -> gameplay 1280x720.
+2. **MAP remediation en paralelo:** mantener CI técnico verde -> terrain/path authored -> eliminar grid/banding/repetición -> landmarks/depth -> recaptura 1280x720 y crítica aceptada.
+3. Reabrir #138 solo después de aceptación real de ambos dominios y resolver únicamente integración cross-domain.
+4. Validar build, gameplay y evidencia visual sobre el mismo estado integrado.
 
 ## Pipeline de pixel art
 
-El arte de producción sigue un pipeline especializado:
+art direction -> concept/base -> pixel cleanup -> asset-system assembly -> Godot integration -> captura 1280x720 -> critique/revision.
 
-1. dirección artística/paleta/escala/perspectiva;
-2. concepto o base generada si ayuda;
-3. limpieza pixel-art intencional;
-4. ensamblaje en tilesets/spritesheets/familias de props;
-5. integración Godot con filtering, pivots, escala, capas/Y-sort, colisión y navegación;
-6. captura in-game 1280x720;
-7. crítica visual y revisión.
-
-Una imagen generada, conceptual o sprite procedural no es un asset final hasta pasar estas etapas.
-
-## Sandbox Verdant
-
-`world/maps/verdant_test/` es un sandbox visual aislado. No forma parte del world/save flow de producción.
-
-## Ejecutar
-
-1. Instala Godot 4.7.2.
-2. Clona el repositorio.
-3. Abre `project.godot`.
-4. Ejecuta la escena principal con F5.
-
-## Controles base
-
-- Movimiento: WASD
-- Interactuar: E
-- Acción primaria/secundaria: ratón
-- Inventario: I
-- Mapa: M
-- Pausa: Esc
-- Panel debug: F12
+Una imagen generada, conceptual o sprite procedural no es un asset final hasta pasar el pipeline.
 
 ## Quality gates
 
@@ -85,10 +57,14 @@ Una imagen generada, conceptual o sprite procedural no es un asset final hasta p
 - navegación/rendimiento;
 - capturas/video reales para revisión visual.
 
-```bash
-godot --headless --path . --script res://tests/run_tests.gd
-```
+Tests solos nunca equivalen a aceptación visual o jugable.
 
 ## Branch cleanup
 
-Los refs stale históricos no deben recibir pushes ni convertirse de nuevo en workstreams. Su cleanup físico es higiene del repositorio, pero no sustituye ni oculta los gates de producción pendientes.
+Las ramas stale verificadas sin trabajo único se contienen y no pueden volver a recibir trabajo. Cuando el tooling no permita borrarlas físicamente, apuntarlas a `main` es solo contención temporal; el borrado remoto sigue pendiente, pero no bloquea el trabajo en las ramas canónicas.
+
+## Ejecutar
+
+```bash
+godot --headless --path . --script res://tests/run_tests.gd
+```
