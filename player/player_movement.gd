@@ -31,6 +31,10 @@ static func next_velocity(
 	return current_velocity.move_toward(target, rate * delta)
 
 
+static func should_use_run_state(current_velocity: Vector2, walk_speed: float) -> bool:
+	return current_velocity.length() > walk_speed + 0.5
+
+
 static func interaction_locked_velocity(_current_velocity: Vector2) -> Vector2:
 	return Vector2.ZERO
 
