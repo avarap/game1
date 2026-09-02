@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://world/maps/cemetery/cemetery_map.gd" id="1_map"]
 [ext_resource type="Script" path="res://world/maps/cemetery/cemetery_navigation_region.gd" id="2_navigation"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" path="res://world/interactables/sleep_spot.gd" id="5_sleep"]
 [ext_resource type="Script" path="res://world/cemetery/cemetery_action.gd" id="7_action"]
 [ext_resource type="Script" path="res://world/maps/cemetery/cemetery_visual_dressing.gd" id="8_dressing"]
+[ext_resource type="Script" path="res://world/maps/cemetery/cemetery_zoning.gd" id="9_zoning"]
+[ext_resource type="PackedScene" path="res://world/resources/tree_resource.tscn" id="10_tree_resource"]
 
 [sub_resource type="TileSet" id="TileSet_cemetery"]
 tile_size = Vector2i(32, 32)
@@ -139,6 +141,30 @@ color = Color(0.38, 0.38, 0.42, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CemeteryArea/GraveUpgrade"]
 shape = SubResource("Cemetery_action_shape")
 
+[node name="ForestResources" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="ForestTreeResource00" parent="ForestResources" instance=ExtResource("10_tree_resource")]
+position = Vector2(176, 240)
+
+[node name="ForestTreeResource01" parent="ForestResources" instance=ExtResource("10_tree_resource")]
+position = Vector2(314, 338)
+
+[node name="ForestTreeResource02" parent="ForestResources" instance=ExtResource("10_tree_resource")]
+position = Vector2(427, 183)
+
+[node name="ForestTreeResource03" parent="ForestResources" instance=ExtResource("10_tree_resource")]
+position = Vector2(553, 302)
+
+[node name="ForestTreeResource04" parent="ForestResources" instance=ExtResource("10_tree_resource")]
+position = Vector2(687, 252)
+
+[node name="ForestTreeResource05" parent="ForestResources" instance=ExtResource("10_tree_resource")]
+position = Vector2(825, 347)
+
+[node name="ForestTreeResource06" parent="ForestResources" instance=ExtResource("10_tree_resource")]
+position = Vector2(707, 466)
+
 [node name="PlayerSpawn" type="Marker2D" parent="."]
 position = Vector2(480, 736)
 
@@ -153,6 +179,9 @@ position = Vector2(768, 96)
 
 [node name="FutureExpansion" type="Marker2D" parent="."]
 position = Vector2(1344, 160)
+
+[node name="AuthoredZoning" type="Node" parent="."]
+script = ExtResource("9_zoning")
 
 [node name="AuthoredVisualDressing" type="Node" parent="."]
 script = ExtResource("8_dressing")
