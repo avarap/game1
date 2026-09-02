@@ -14,6 +14,8 @@ static func run() -> Array[String]:
 		return failures
 
 	var player := player_scene.instantiate()
+	var tree := Engine.get_main_loop() as SceneTree
+	tree.root.add_child(player)
 	if not player is CharacterBody2D:
 		failures.append("Player scene root should be CharacterBody2D")
 	else:
@@ -41,6 +43,13 @@ static func run() -> Array[String]:
 				failures.append("Player visual pivot should remain at the feet/origin")
 			if not body.has_method("set_locomotion_state"):
 				failures.append("Player visual should expose idle/walk/run/interact locomotion state")
+			else:
+				body.call("set_locomotion_state", &"run", Vector2.DOWN)
+				if body.animation != &"run_s":
+					failures.append("Run state should play a dedicated directional run animation")
+				body.call("set_locomotion_state", &"interact", Vector2.DOWN)
+				if body.animation != &"interact_s":
+					failures.append("Interact state should play a dedicated directional interaction animation")
 
 		var interaction_area := player.get_node_or_null("InteractionArea")
 		if not interaction_area is Area2D:
@@ -79,7 +88,6 @@ static func run() -> Array[String]:
 		return failures
 
 	var world := world_scene.instantiate()
-	var tree := Engine.get_main_loop() as SceneTree
 	tree.root.add_child(world)
 	if not world.y_sort_enabled:
 		failures.append("World should have Y-sort enabled")
