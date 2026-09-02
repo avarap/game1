@@ -1,23 +1,40 @@
 class_name TestPlayerCemeteryIntegration
 extends RefCounted
 
-const PLAYER_SCENE := preload("res://player/player.tscn")
-const CEMETERY_SCENE := preload("res://world/maps/cemetery/cemetery_map.tscn")
+const WORLD_SCENE := preload("res://world/world.tscn")
 
 
 static func run() -> Array[String]:
 	var failures: Array[String] = []
 	var tree := Engine.get_main_loop() as SceneTree
-	var map := CEMETERY_SCENE.instantiate()
-	var player := PLAYER_SCENE.instantiate() as PlayerController
-	tree.root.add_child(map)
-	tree.root.add_child(player)
+	var world := WORLD_SCENE.instantiate() as Node2D
+	tree.root.add_child(world)
+	await tree.process_frame
+	await tree.physics_frame
+
+	var zone_manager := world.get_node_or_null("ZoneManager") as ZoneManager
+	if zone_manager == null:
+		failures.append("Production world must expose ZoneManager")
+		world.free()
+		return failures
+
+	var map := zone_manager.get_active_zone()
+	var player := world.get_node_or_null("Player") as PlayerController
+	if map == null:
+		failures.append("Production world must load an initial active zone")
+	if zone_manager.get_active_zone_id() != &"cemetery":
+		failures.append("Production world must boot into rebuilt cemetery")
+	if player == null:
+		failures.append("Production world must expose PlayerController")
+	if map == null or player == null:
+		world.free()
+		return failures
 
 	var spawn := map.get_node_or_null("PlayerSpawn") as Marker2D
 	if spawn == null:
 		failures.append("Rebuilt cemetery must expose PlayerSpawn")
-	else:
-		player.global_position = spawn.global_position
+	elif not player.global_position.is_equal_approx(spawn.global_position):
+		failures.append("ZoneManager must place Player at rebuilt cemetery PlayerSpawn")
 
 	if not player.has_method("get_state"):
 		failures.append("Integrated player must expose explicit movement states")
@@ -27,16 +44,18 @@ static func run() -> Array[String]:
 	var camera := player.get_node_or_null("Camera2D") as Camera2D
 	if camera == null:
 		failures.append("Integrated player must expose its production Camera2D")
-	else:
+	elif map.has_method("get_world_rect"):
 		var world_rect: Rect2 = map.get_world_rect()
 		if camera.limit_left != int(world_rect.position.x):
-			failures.append("Player camera left limit must match rebuilt cemetery bounds")
+			failures.append("ZoneManager must configure camera left limit from active map bounds")
 		if camera.limit_top != int(world_rect.position.y):
-			failures.append("Player camera top limit must match rebuilt cemetery bounds")
+			failures.append("ZoneManager must configure camera top limit from active map bounds")
 		if camera.limit_right != int(world_rect.end.x):
-			failures.append("Player camera right limit must match rebuilt cemetery bounds")
+			failures.append("ZoneManager must configure camera right limit from active map bounds")
 		if camera.limit_bottom != int(world_rect.end.y):
-			failures.append("Player camera bottom limit must match rebuilt cemetery bounds")
+			failures.append("ZoneManager must configure camera bottom limit from active map bounds")
+	else:
+		failures.append("Rebuilt cemetery must expose world bounds for dynamic camera configuration")
 
 	var collision := map.get_node_or_null("collision") as TileMapLayer
 	if collision == null:
@@ -92,6 +111,5 @@ static func run() -> Array[String]:
 			if interacted_targets.is_empty() or interacted_targets[0] != sleep_spot:
 				failures.append("Player must dispatch interaction to the overlapped cemetery SleepSpot")
 
-	player.free()
-	map.free()
+	world.free()
 	return failures
