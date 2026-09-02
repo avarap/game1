@@ -10,12 +10,12 @@ static func run() -> Array[String]:
 		return failures
 
 	var player := packed.instantiate()
-	var body := player.get_node_or_null("Body") as AnimatedSprite2D
+	var body := player.get_node_or_null("Body") as PlayerVisual
 	if body == null or body.sprite_frames == null:
-		failures.append("Production player should expose Body frames")
+		failures.append("Production player should expose PlayerVisual Body frames")
 		player.free()
 		return failures
-	body._ready()
+	body.prepare_state_animations()
 
 	if body.offset != Vector2(0, -48):
 		failures.append("64x96 player should keep feet pivot at y=0")
