@@ -15,6 +15,7 @@ static func run() -> Array[String]:
 		failures.append("Production player should expose Body frames")
 		player.free()
 		return failures
+	body._ready()
 
 	if body.offset != Vector2(0, -48):
 		failures.append("64x96 player should keep feet pivot at y=0")
