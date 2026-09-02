@@ -17,7 +17,7 @@ Solo existen tres workstreams autorizados para el foco actual:
 
 - MAP — PR #139 — `feat/main-map-rebuild-commercial-pass`.
 - PLAYER — PR #140 — `character/player-controller-polish-20260902`.
-- INTEGRATION — PR #138 — `automation/supervisor-player-map-integration`.
+- INTEGRATION — PR #138 — `automation/supervisor-player-map-integration` — actualmente aparcada/cerrada hasta que #139 y #140 pasen sus gates; debe reabrirse la misma PR para integración final, no crearse otra.
 
 No crear ramas/PR paralelas para estos dominios. #138 es solo integración cross-domain.
 
@@ -25,9 +25,9 @@ No crear ramas/PR paralelas para estos dominios. #138 es solo integración cross
 
 - #139 MAP: abierta/draft. Rebuild completo del mapa desde cero; exige navegación/colisiones/interacciones, CI verde y evidencia real 1280x720. Debe eliminar repetición/proceduralidad visible y alcanzar composición authored de calidad comercial.
 - #140 PLAYER: abierta/draft. Movimiento/facing/interacción y animaciones comerciales; no aceptar `run` como simple walk acelerado ni `interact` degradado a idle como solución final. Debe verificarse sobre el mapa nuevo.
-- #138 INTEGRATION: abierta/draft. Está por detrás de `main`; no desarrollar features propias hasta que #139/#140 estén listas. Debe integrar y verificar cámara, escala, capas/Y-sort, spawn, navegación, colisiones, interacciones, rendimiento y captura real.
+- #138 INTEGRATION: cerrada/aparcada. Su diff histórico contiene implementación directa de MAP/PLAYER, por lo que no debe permanecer como superficie activa mientras los dominios no estén aceptados. Cuando #139/#140 estén listas, reabrir #138 y refrescar/reconstruir desde el estado canónico aceptado, conservando solo fixes cross-domain.
 
-Los tres PR deben sincronizarse con `main` antes de aceptación; si GitHub marca `mergeable=false`, tratarlo como bloqueo de integración hasta resolver la causa.
+Los PR de dominio deben sincronizarse con `main` antes de aceptación; si GitHub marca `mergeable=false`, tratarlo como bloqueo de integración hasta resolver la causa.
 
 ## Branch cleanup
 
@@ -80,8 +80,8 @@ Antes de merge/aceptación exigir según aplique:
 
 ## Prioridad inmediata
 
-1. Mantener una única rama real por dominio y eliminar refs supersedidos cuando exista tooling capaz.
-2. Sincronizar #139/#140 con `main` y recuperar mergeabilidad/CI verificable.
-3. Llevar #139 y #140 a gates propios.
-4. Integrar ambos en #138.
-5. Producir evidencia jugable/visual final antes de declarar completado el slice.
+1. Mantener #139/#140 activos y únicos; eliminar refs supersedidos cuando exista tooling capaz.
+2. Llevar #140 a CI verde y restaurar atlas authored + animaciones reales.
+3. Llevar #139 al gate visual comercial manteniendo CI verde.
+4. Reabrir/refrescar #138 solo cuando ambos dominios estén aceptados.
+5. Producir evidencia jugable/visual integrada final antes de declarar completado el slice.
