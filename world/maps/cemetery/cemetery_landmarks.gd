@@ -9,6 +9,10 @@ const LANDMARK_CELLS := {
 }
 
 
+func _ready() -> void:
+	populate(CemeteryArtTileset.build())
+
+
 func populate(tile_set_resource: TileSet) -> void:
 	tile_set = tile_set_resource
 	collision_enabled = false
