@@ -79,7 +79,7 @@ shape = SubResource("Sleep_shape")
 [node name="CemeteryArea" type="Node2D" parent="."]
 
 [node name="CorpseDelivery" type="Area2D" parent="CemeteryArea"]
-position = Vector2(1088, 416)
+position = Vector2(928, 416)
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("7_action")
@@ -94,7 +94,7 @@ color = Color(0.42, 0.35, 0.28, 1)
 shape = SubResource("Cemetery_action_shape")
 
 [node name="PreparationTable" type="Area2D" parent="CemeteryArea"]
-position = Vector2(1152, 416)
+position = Vector2(928, 480)
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("7_action")
