@@ -9,7 +9,7 @@ description: Use when coordinating parallel game-development workstreams, pull r
 
 Centralize game production around one canonical workstream per domain and one final integration gate. Optimize for verified playable progress, not activity volume.
 
-**Core principle:** one domain, one canonical branch/PR, one owner; integration is separate from feature implementation.
+**Core principle:** one domain, one canonical branch, one owner, at most one open implementation/remediation PR; integration is separate from feature implementation.
 
 ## Required sub-skills
 
@@ -27,10 +27,10 @@ Use these when their trigger applies; do not reimplement them here:
 ## Production loop
 
 1. **Inspect** — read project rules, `main`, open PRs, active branches, CI, tests, gameplay evidence, visual evidence and current blockers.
-2. **Normalize** — enforce exactly one canonical branch/PR per active domain. If duplicates exist, stop feature expansion, port only unique valuable work, close superseded PRs and delete superseded branch refs once safe.
+2. **Normalize** — enforce exactly one canonical branch and at most one open implementation/remediation PR per active domain. If duplicate branches/PRs exist, stop feature expansion, port only unique valuable work, close superseded PRs and delete superseded branch refs once safe.
 3. **Prioritize** — choose the smallest critical-path change that improves the playable build. Prefer playable/correct/integrated work over conceptual or speculative work.
 4. **Dispatch** — parallelize only independent domains. Agents must not edit outside their domain ownership.
-5. **Implement** — work only on the canonical branch/PR for that domain. Never create a parallel PR when a canonical one exists.
+5. **Implement** — work only on the canonical branch for that domain and its single current PR. Never create a parallel domain branch.
 6. **Verify technical gates** — import/build, smoke launch, tests, lint/static checks, collisions/navigation/interactions, and relevant performance checks.
 7. **Verify gameplay gate** — prove the player can execute the intended loop in the real integrated scene.
 8. **Verify visual gate** — require real in-game screenshots/video and inspect hierarchy, composition, animation, scale, layers, readability, repetition and style consistency.
@@ -41,17 +41,34 @@ Use these when their trigger applies; do not reimplement them here:
 
 ## Canonical-workstream invariant
 
+The canonical identity is the **branch**, not a historical PR number.
+
 For every active domain:
 
 ```text
-0 canonical PRs -> create one only when implementation actually starts
-1 canonical PR  -> continue it
-2+ PRs/branches -> stop feature expansion; consolidate and delete duplicates first
+0 canonical branches -> create one only when implementation actually starts
+1 canonical branch + 0 open PRs -> open one PR only if implementation/remediation is required
+1 canonical branch + 1 open PR  -> continue it
+2+ implementation branches/PRs  -> stop feature expansion; consolidate and delete duplicates first
 ```
 
 A supervisor/integration PR is not another implementation branch.
 
-A branch with the same commit as the canonical branch is still a duplicate ref. Repointing or "neutralizing" it is only a temporary containment measure, not completed cleanup.
+### Premature-merge remediation
+
+A merge is not acceptance. If a canonical domain PR is merged while required technical, gameplay or visual gates are still failing:
+
+1. mark that PR historical/merged-but-unaccepted;
+2. keep the same canonical domain branch identity;
+3. move that canonical branch to current `main` before new remediation work;
+4. open exactly one sequential remediation PR from that same canonical branch;
+5. continue only the missing domain-owned work and evidence there;
+6. do not use the integration branch to finish domain debt;
+7. do not create a replacement branch.
+
+Sequential remediation PRs on the same canonical branch are allowed only because the previous PR is already merged/closed and no competing implementation PR exists. They do not weaken acceptance gates.
+
+A branch with the same commit as the canonical branch is still a duplicate ref. Repointing or "neutralizing" it is only temporary containment, not completed cleanup.
 
 ## Pixel-art production pipeline
 
@@ -87,8 +104,9 @@ If conflict resolution crosses ownership boundaries, move the fix to the integra
 ## Cleanup policy
 
 - Closed/superseded implementation branches must be deleted once their unique valuable work has been ported or judged obsolete.
+- Historical merged PR branches are either reused as the canonical remediation branch when acceptance is incomplete, or deleted after the domain is accepted; they must not fork into parallel workstreams.
 - Do not keep duplicate branch refs merely because they point to the same commit.
-- If the current tool/API cannot delete a safe stale branch, temporarily repoint it to the canonical head, mark cleanup **incomplete**, and retry deletion from a capable environment; do not describe that state as cleaned.
+- If the current tool/API cannot delete a safe stale branch, temporarily repoint it to current `main` or the canonical head, mark cleanup **incomplete**, and retry deletion from a capable environment; do not describe that state as cleaned.
 - Do not preserve obsolete implementations "just in case" when they contradict current project rules.
 - Do not delete protected/default branches or unreviewed unique work.
 
@@ -105,8 +123,9 @@ Every orchestration pass reports only:
 
 Stop and normalize before continuing if any occur:
 
-- multiple PRs or branch refs implementing the same domain;
+- multiple implementation branches or open PRs for the same domain;
 - an automation creates a new branch despite an existing canonical branch;
+- a merged-but-unaccepted domain has no legal remediation surface;
 - integration branch starts implementing domain features;
 - old discarded design reappears during conflict resolution;
 - completion is claimed from tests without real gameplay/visual evidence when those are required;
