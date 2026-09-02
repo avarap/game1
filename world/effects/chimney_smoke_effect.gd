@@ -1,6 +1,7 @@
 class_name ChimneySmokeEffect
 extends CPUParticles2D
 
+
 func _ready() -> void:
 	emitting = true
 	amount = 14
