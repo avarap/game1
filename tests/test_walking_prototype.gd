@@ -112,10 +112,7 @@ static func run() -> Array[String]:
 		else:
 			if not camera.position_smoothing_enabled:
 				failures.append("Camera2D smoothing should be enabled")
-			if (
-				camera.limit_right <= camera.limit_left
-				or camera.limit_bottom <= camera.limit_top
-			):
+			if camera.limit_right <= camera.limit_left or camera.limit_bottom <= camera.limit_top:
 				failures.append("Camera2D should have valid map limits")
 
 	player.free()
