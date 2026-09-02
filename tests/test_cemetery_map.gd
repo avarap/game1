@@ -28,13 +28,20 @@ const REQUIRED_MARKERS := [
 ]
 const EXPECTED_TILE_SIZE := Vector2i(32, 32)
 const EXPECTED_POSITIONS := {
-	"WorkshopArea/Workbench": Vector2(448, 704),
-	"WorkshopArea/StorageChest": Vector2(512, 704),
-	"WorkshopArea/SleepSpot": Vector2(384, 704),
-	"CemeteryArea/CorpseDelivery": Vector2(960, 320),
-	"CemeteryArea/PreparationTable": Vector2(1024, 320),
-	"CemeteryArea/GravePlot": Vector2(1088, 320),
-	"CemeteryArea/GraveUpgrade": Vector2(1152, 320),
+	"WorkshopArea/Workbench": Vector2(320, 768),
+	"WorkshopArea/StorageChest": Vector2(384, 768),
+	"WorkshopArea/SleepSpot": Vector2(256, 768),
+	"CemeteryArea/CorpseDelivery": Vector2(1088, 416),
+	"CemeteryArea/PreparationTable": Vector2(1152, 416),
+	"CemeteryArea/GravePlot": Vector2(1120, 544),
+	"CemeteryArea/GraveUpgrade": Vector2(1248, 544),
+}
+const EXPECTED_MARKER_POSITIONS := {
+	"PlayerSpawn": Vector2(288, 704),
+	"AldrenSpawn": Vector2(864, 480),
+	"ForestExit": Vector2(1504, 800),
+	"VillageExit": Vector2(672, 96),
+	"FutureExpansion": Vector2(1376, 160),
 }
 
 
@@ -69,29 +76,36 @@ static func run() -> Array[String]:
 	var world_rect: Rect2 = map.get_world_rect()
 	if world_rect.size != Vector2(1600, 1024):
 		failures.append("Cemetery world bounds should remain 1600x1024")
+
 	for node_path in REQUIRED_INTERACTIONS:
 		var interaction := map.get_node_or_null(node_path) as Node2D
 		if interaction == null:
 			failures.append("Cemetery map should preserve interaction '%s'" % node_path)
 			continue
-		if not world_rect.has_point(interaction.global_position):
-			failures.append("%s should stay inside cemetery map bounds" % node_path)
 		if interaction.position != EXPECTED_POSITIONS[node_path]:
-			failures.append("%s should preserve its gameplay position" % node_path)
-		var cell := collision.local_to_map(collision.to_local(interaction.global_position))
-		if collision.get_cell_source_id(cell) != -1:
-			failures.append("%s should not spawn inside tile collision" % node_path)
+			failures.append("%s should use the rebuilt map position" % node_path)
+		_assert_open_cell(collision, interaction.global_position, node_path, failures)
 
 	for marker_path in REQUIRED_MARKERS:
 		var marker := map.get_node_or_null(marker_path) as Marker2D
 		if marker == null:
 			failures.append("Cemetery map should expose marker '%s'" % marker_path)
 			continue
-		if not world_rect.has_point(marker.global_position):
-			failures.append("%s should stay inside cemetery map bounds" % marker_path)
-		var cell := collision.local_to_map(collision.to_local(marker.global_position))
-		if collision.get_cell_source_id(cell) != -1:
-			failures.append("%s should not spawn inside tile collision" % marker_path)
+		if marker.position != EXPECTED_MARKER_POSITIONS[marker_path]:
+			failures.append("%s should use the rebuilt map position" % marker_path)
+		_assert_open_cell(collision, marker.global_position, marker_path, failures)
+
+	var player_spawn := map.get_node("PlayerSpawn") as Marker2D
+	for destination_path in [
+		"WorkshopArea/Workbench",
+		"CemeteryArea/PreparationTable",
+		"VillageExit",
+		"ForestExit",
+		"FutureExpansion",
+	]:
+		var destination := map.get_node(destination_path) as Node2D
+		if not _has_collision_free_route(collision, player_spawn.global_position, destination.global_position):
+			failures.append("PlayerSpawn should have a traversable route to %s" % destination_path)
 
 	if map.find_child("CemeteryController", true, false) != null:
 		failures.append("Cemetery map should delegate persistent cemetery state to world shell")
@@ -105,8 +119,45 @@ static func run() -> Array[String]:
 			failures.append("Cemetery navigation polygon should be available")
 
 	var paths := map.get_node_or_null("paths") as TileMapLayer
-	if paths == null or paths.get_used_cells().is_empty():
-		failures.append("Cemetery map should contain readable paths")
+	if paths == null or paths.get_used_cells().size() < 150:
+		failures.append("Rebuilt cemetery should contain a substantial readable path network")
+
+	var objects := map.get_node_or_null("objects_y_sorted") as TileMapLayer
+	if objects == null or objects.get_used_cells().size() < 35:
+		failures.append("Rebuilt cemetery should contain enough landmarks and environmental objects")
 
 	map.free()
 	return failures
+
+
+static func _assert_open_cell(
+	collision: TileMapLayer, global_position: Vector2, label: String, failures: Array[String]
+) -> void:
+	var cell := collision.local_to_map(collision.to_local(global_position))
+	if collision.get_cell_source_id(cell) != -1:
+		failures.append("%s should not spawn inside tile collision" % label)
+
+
+static func _has_collision_free_route(
+	collision: TileMapLayer, start_position: Vector2, end_position: Vector2
+) -> bool:
+	var start := collision.local_to_map(collision.to_local(start_position))
+	var target := collision.local_to_map(collision.to_local(end_position))
+	var frontier: Array[Vector2i] = [start]
+	var visited := {start: true}
+	var directions := [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]
+	while not frontier.is_empty():
+		var current: Vector2i = frontier.pop_front()
+		if current == target:
+			return true
+		for direction in directions:
+			var next_cell: Vector2i = current + direction
+			if visited.has(next_cell):
+				continue
+			if next_cell.x <= 0 or next_cell.y <= 0 or next_cell.x >= 49 or next_cell.y >= 31:
+				continue
+			if collision.get_cell_source_id(next_cell) != -1:
+				continue
+			visited[next_cell] = true
+			frontier.append(next_cell)
+	return false
