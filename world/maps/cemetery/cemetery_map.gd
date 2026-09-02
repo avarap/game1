@@ -96,6 +96,9 @@ func _populate_rebuilt_paths() -> void:
 		],
 		1,
 	)
+	# A narrow ceremonial aisle links the two grave interactions without turning
+	# the grave field into another broad road or obscuring the plot rhythm.
+	_paint_path_polyline([Vector2i(34, 17), Vector2i(40, 17)], 0)
 	_paint_path_polyline(
 		[
 			Vector2i(7, 22),
