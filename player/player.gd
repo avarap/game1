@@ -8,11 +8,11 @@ extends CharacterBody2D
 @export var interaction_pose_duration: float = 0.18
 @export var equipped_tool_id: StringName = &"axe"
 
-@onready var interaction_area: Area2D = $InteractionArea
-@onready var player_visual: PlayerVisual = $Body
-
 var _facing_vector := Vector2.DOWN
 var _interaction_pose_remaining := 0.0
+
+@onready var interaction_area: Area2D = $InteractionArea
+@onready var player_visual: PlayerVisual = $Body
 
 
 func _enter_tree() -> void:
