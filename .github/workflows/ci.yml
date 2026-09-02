@@ -30,7 +30,13 @@ jobs:
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
 
       - name: Check formatting of all GDScript files
-        run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat --check
+        run: |
+          if find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat --check; then
+            exit 0
+          fi
+          find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat
+          git diff -- '*.gd'
+          exit 1
 
   validate-and-test:
     runs-on: ubuntu-24.04
