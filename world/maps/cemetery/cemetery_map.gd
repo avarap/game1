@@ -9,7 +9,6 @@ const ATLAS_TEXTURE := preload(
 	"res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png"
 )
 
-const GROUND_BASE_TILE := Vector2i(0, 0)
 const MAIN_PATH_TILE := Vector2i(4, 1)
 const SIDE_PATH_TILE := Vector2i(1, 1)
 const WORN_PATH_TILE := Vector2i(6, 1)
@@ -204,111 +203,42 @@ const PATH_BREAKUP_CELLS := [
 	Vector2i(39, 10),
 ]
 
-const GROUND_DRY_CELLS := [
-	Vector2i(7, 21),
-	Vector2i(8, 22),
-	Vector2i(9, 21),
-	Vector2i(10, 20),
-	Vector2i(12, 20),
-	Vector2i(14, 21),
-	Vector2i(16, 20),
-	Vector2i(17, 21),
-	Vector2i(8, 25),
-	Vector2i(10, 26),
-	Vector2i(13, 26),
-	Vector2i(16, 26),
-	Vector2i(18, 24),
-	Vector2i(18, 27),
-]
-
-const GROUND_COMPACTED_CELLS := [
-	Vector2i(11, 21),
-	Vector2i(13, 21),
-	Vector2i(15, 21),
-	Vector2i(17, 23),
-	Vector2i(9, 25),
-	Vector2i(12, 25),
-	Vector2i(15, 25),
-	Vector2i(17, 25),
-	Vector2i(19, 22),
-	Vector2i(20, 21),
-	Vector2i(22, 20),
-	Vector2i(25, 19),
-]
-
-const GROUND_MOSS_CELLS := [
-	Vector2i(31, 6),
-	Vector2i(33, 5),
-	Vector2i(35, 6),
-	Vector2i(38, 5),
-	Vector2i(41, 6),
-	Vector2i(32, 8),
-	Vector2i(34, 9),
-	Vector2i(38, 8),
-	Vector2i(42, 9),
-	Vector2i(30, 11),
-	Vector2i(43, 11),
-	Vector2i(44, 14),
-	Vector2i(32, 18),
-	Vector2i(35, 19),
-	Vector2i(42, 18),
-]
-
-const GROUND_WET_CELLS := [
-	Vector2i(44, 19),
-	Vector2i(46, 18),
-	Vector2i(47, 20),
-	Vector2i(43, 22),
-	Vector2i(45, 23),
-	Vector2i(47, 24),
-	Vector2i(42, 25),
-	Vector2i(44, 26),
-	Vector2i(46, 27),
-	Vector2i(40, 24),
-	Vector2i(41, 26),
-]
-
-const GROUND_DISTURBED_CELLS := [
-	Vector2i(33, 7),
-	Vector2i(36, 6),
-	Vector2i(39, 7),
-	Vector2i(32, 10),
-	Vector2i(35, 10),
-	Vector2i(38, 11),
-	Vector2i(41, 10),
-	Vector2i(34, 13),
-	Vector2i(37, 14),
-	Vector2i(40, 13),
-	Vector2i(34, 16),
-	Vector2i(37, 17),
-	Vector2i(40, 16),
-]
-
-const GROUND_NORTH_CELLS := [
-	Vector2i(20, 3),
-	Vector2i(22, 4),
-	Vector2i(25, 3),
-	Vector2i(26, 5),
-	Vector2i(21, 7),
-	Vector2i(23, 8),
-	Vector2i(26, 9),
-	Vector2i(20, 10),
-	Vector2i(22, 12),
-	Vector2i(25, 13),
-]
-
-const GROUND_ERODED_CELLS := [
-	Vector2i(18, 21),
-	Vector2i(21, 20),
-	Vector2i(23, 19),
-	Vector2i(27, 17),
-	Vector2i(29, 16),
-	Vector2i(32, 14),
-	Vector2i(35, 15),
-	Vector2i(37, 18),
-	Vector2i(40, 20),
-	Vector2i(42, 21),
-	Vector2i(45, 21),
+# Explicit 50x32 authored terrain mask. Each character selects one of the eight
+# production atlas variants in row 0. The broad masses follow the intended
+# forest/workshop/cemetery/wetland zoning without runtime noise or periodic math.
+const GROUND_VARIANT_ROWS := [
+	"00000000000000066666666666666660000000000000000000",
+	"03333333333333366666666666000666000000000000000000",
+	"03336663333333333366660000000066600005555555500000",
+	"06666666333333333366660000000055555555555566650000",
+	"06666666633333333336660000000005333333333366666660",
+	"06666666663333333366600000000055333333333366666660",
+	"03666666663333333066600000000555333355333366666660",
+	"03666666633000000066666600005553355555533366666660",
+	"03666666630000000066666666665553355555553366666660",
+	"03333666330000000006666666665553335555553336666660",
+	"03333300330000000006666666665553335555533333666650",
+	"00330000300000000006666077777222333355333333365550",
+	"00330000030000000007777777222222233333333335555550",
+	"00300000033330000777777777222222223333333355555550",
+	"00030000333333000777777772222222223333333355555550",
+	"00000003333330000777777772222222253333333355555550",
+	"00000000000001111777777777772222555533333555555550",
+	"00000777111111111777777777777777555555333555555550",
+	"00777777111111111177777777777777777550044445555540",
+	"00777777111111222277777777777777777700004444554440",
+	"00777777722222222277777777777777777770000444444440",
+	"07777777722222222277777777700777777777000044444440",
+	"07777777222222222227777770000777777770000044444440",
+	"00777772222222222222777100000077777770444444444440",
+	"00117722222222222222111110000077777744444444444440",
+	"00111222222222222211111111000000000044444444444440",
+	"00011122222222222211111111100000000444444444444440",
+	"00011112222222222211111111000000000444444444444440",
+	"00001111222222222211111111000000000044444444444440",
+	"00001111111111111111111110000000000004444444444440",
+	"00000111111111000000000000000000004444444444444440",
+	"00000000000000000000000000000000000000000000000000",
 ]
 
 const GRAVE_CELLS := [
@@ -448,16 +378,11 @@ func _ready() -> void:
 
 
 func _populate_authored_ground() -> void:
-	for y in range(MAP_SIZE_TILES.y):
-		for x in range(MAP_SIZE_TILES.x):
-			ground.set_cell(Vector2i(x, y), ART_SOURCE, GROUND_BASE_TILE)
-	_paint_cells(ground, GROUND_DRY_CELLS, Vector2i(1, 0))
-	_paint_cells(ground, GROUND_COMPACTED_CELLS, Vector2i(2, 0))
-	_paint_cells(ground, GROUND_MOSS_CELLS, Vector2i(3, 0))
-	_paint_cells(ground, GROUND_WET_CELLS, Vector2i(4, 0))
-	_paint_cells(ground, GROUND_DISTURBED_CELLS, Vector2i(5, 0))
-	_paint_cells(ground, GROUND_NORTH_CELLS, Vector2i(6, 0))
-	_paint_cells(ground, GROUND_ERODED_CELLS, Vector2i(7, 0))
+	for y in range(GROUND_VARIANT_ROWS.size()):
+		var authored_row: String = GROUND_VARIANT_ROWS[y]
+		for x in range(authored_row.length()):
+			var atlas_x := authored_row.substr(x, 1).to_int()
+			ground.set_cell(Vector2i(x, y), ART_SOURCE, Vector2i(atlas_x, 0))
 
 
 func _populate_authored_paths() -> void:
