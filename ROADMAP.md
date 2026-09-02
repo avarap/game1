@@ -41,9 +41,11 @@ Aceptación:
 
 ### 3. INTEGRATION — PR #138
 
-Rama canónica: `automation/supervisor-player-map-integration`.
+Rama reservada: `automation/supervisor-player-map-integration`.
 
-No desarrolla features propias de mapa/personaje. Solo integra #139 + #140 y corrige regresiones cross-domain:
+Estado actual: **PARKED/CLOSED** hasta que #139 y #140 pasen sus gates propios. No mantener una integración activa mientras exista implementación de dominio no aceptada. Cuando ambos estén listos, reabrir la misma #138 y refrescar/reconstruir desde el estado canónico aceptado; no abrir una PR de reemplazo.
+
+#138 no desarrolla features propias de mapa/personaje. Solo integra #139 + #140 y corrige regresiones cross-domain:
 - cámara;
 - escala;
 - layers/Y-sort;
@@ -90,7 +92,7 @@ No permitir que estas fuentes contradigan materialmente el estado real de `main`
 
 ## Después del critical path
 
-Una vez integrado #138 con evidencia aceptada:
+Una vez reabierta e integrada #138 con evidencia aceptada:
 
 - UI/UX final;
 - audio final;
