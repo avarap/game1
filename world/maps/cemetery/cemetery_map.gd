@@ -129,7 +129,7 @@ func _paint_path_disc(center: Vector2i, half_width: int) -> void:
 		for x in range(center.x - half_width, center.x + half_width + 1):
 			if x <= 0 or y <= 0 or x >= MAP_SIZE_TILES.x - 1 or y >= MAP_SIZE_TILES.y - 1:
 				continue
-			var distance := abs(x - center.x) + abs(y - center.y)
+			var distance: int = absi(x - center.x) + absi(y - center.y)
 			if distance > half_width + 1:
 				continue
 			var variant := (x * 3 + y * 5) % 8
