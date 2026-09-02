@@ -27,14 +27,20 @@ static func run() -> Array[String]:
 				for direction in ["n", "ne", "e", "se", "s", "sw", "w", "nw"]:
 					var idle_name := StringName("idle_%s" % direction)
 					var walk_name := StringName("walk_%s" % direction)
+					var run_name := StringName("run_%s" % direction)
+					var interact_name := StringName("interact_%s" % direction)
 					if not body.sprite_frames.has_animation(idle_name):
 						failures.append("Player should define %s" % idle_name)
 					if not body.sprite_frames.has_animation(walk_name):
 						failures.append("Player should define %s" % walk_name)
+					if not body.sprite_frames.has_animation(run_name):
+						failures.append("Player should define %s" % run_name)
+					if not body.sprite_frames.has_animation(interact_name):
+						failures.append("Player should define %s" % interact_name)
 			if body.position != Vector2(0, 0):
 				failures.append("Player visual pivot should remain at the feet/origin")
 			if not body.has_method("set_locomotion_state"):
-				failures.append("Player visual should expose idle/walk/run locomotion state")
+				failures.append("Player visual should expose idle/walk/run/interact locomotion state")
 
 		var interaction_area := player.get_node_or_null("InteractionArea")
 		if not interaction_area is Area2D:
