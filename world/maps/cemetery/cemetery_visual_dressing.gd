@@ -92,13 +92,13 @@ const DRY_GRASS_CELLS := [
 
 
 func _ready() -> void:
-	call_deferred("_apply_dressing")
-
-
-func _apply_dressing() -> void:
 	var map := get_parent()
 	if map == null:
 		return
+	map.ready.connect(_apply_dressing.bind(map), CONNECT_ONE_SHOT)
+
+
+func _apply_dressing(map: Node) -> void:
 	var ground := map.get_node_or_null("ground") as TileMapLayer
 	var paths := map.get_node_or_null("paths") as TileMapLayer
 	var objects := map.get_node_or_null("objects_y_sorted") as TileMapLayer
