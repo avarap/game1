@@ -11,6 +11,7 @@ const DIRECTION_NAMES: Array[StringName] = [
 	&"n",
 	&"ne",
 ]
+const MIN_INTERACTION_FACING_DOT := 0.15
 
 
 static func input_direction() -> Vector2:
@@ -42,3 +43,16 @@ static func next_velocity(
 	var target := normalized_direction * max_speed
 	var rate := acceleration if not normalized_direction.is_zero_approx() else deceleration
 	return current_velocity.move_toward(target, rate * delta)
+
+
+static func interaction_score(origin: Vector2, facing: Vector2, target: Vector2) -> float:
+	var offset := target - origin
+	if offset.is_zero_approx():
+		return 0.0
+	var normalized_facing := facing.normalized()
+	if normalized_facing.is_zero_approx():
+		normalized_facing = Vector2.DOWN
+	var facing_dot := normalized_facing.dot(offset.normalized())
+	if facing_dot < MIN_INTERACTION_FACING_DOT:
+		return INF
+	return offset.length_squared() * (1.5 - 0.5 * facing_dot)
