@@ -104,7 +104,10 @@ static func run() -> Array[String]:
 		"FutureExpansion",
 	]:
 		var destination := map.get_node(destination_path) as Node2D
-		if not _has_collision_free_route(collision, player_spawn.global_position, destination.global_position):
+		var has_route := _has_collision_free_route(
+			collision, player_spawn.global_position, destination.global_position
+		)
+		if not has_route:
 			failures.append("PlayerSpawn should have a traversable route to %s" % destination_path)
 
 	if map.find_child("CemeteryController", true, false) != null:
