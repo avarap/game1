@@ -1,0 +1,48 @@
+name: Gameplay Video
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  render:
+    if: github.head_ref == 'automation/supervisor-player-map-integration'
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install render and encoding dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            xvfb xauth ffmpeg libfontconfig1 libx11-6 libxext6 libxrandr2 \
+            libxcursor1 libxi6 libxinerama1 libwayland-client0
+
+      - name: Import project
+        run: godot --headless --path . --editor --quit
+
+      - name: Record deterministic gameplay
+        run: |
+          xvfb-run -a godot \
+            --path . \
+            --fixed-fps 30 \
+            --write-movie "$GITHUB_WORKSPACE/gameplay.avi" \
+            res://tools/gameplay_capture/gameplay_capture.tscn
+
+      - name: Encode MP4
+        run: |
+          ffmpeg -y -i "$GITHUB_WORKSPACE/gameplay.avi" \
+            -an -c:v libx264 -preset medium -crf 20 -pix_fmt yuv420p \
+            -movflags +faststart "$GITHUB_WORKSPACE/game1-gameplay.mp4"
+          test -s "$GITHUB_WORKSPACE/game1-gameplay.mp4"
+
+      - name: Upload gameplay video
+        uses: actions/upload-artifact@v4
+        with:
+          name: game1-gameplay
+          path: game1-gameplay.mp4
+          if-no-files-found: error
+          retention-days: 7
