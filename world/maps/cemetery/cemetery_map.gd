@@ -147,9 +147,10 @@ func _populate_authored_collision() -> void:
 
 func _paint_route(cells: Array, tile: Vector2i, widen: bool) -> void:
 	for cell in cells:
-		paths.set_cell(cell, ART_SOURCE, tile)
+		var route_cell: Vector2i = cell
+		paths.set_cell(route_cell, ART_SOURCE, tile)
 		if widen:
-			var shoulder := cell + Vector2i(0, 1)
+			var shoulder: Vector2i = route_cell + Vector2i(0, 1)
 			if shoulder.y < MAP_SIZE_TILES.y - 1:
 				paths.set_cell(shoulder, ART_SOURCE, tile + Vector2i(1, 0))
 
