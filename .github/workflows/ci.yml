@@ -60,7 +60,12 @@ jobs:
       - name: Install virtual display
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends xvfb
+          apt-get install -y --no-install-recommends \
+            xvfb \
+            libxcursor1 \
+            libfontconfig1 \
+            libxi6 \
+            libxinerama1
 
       - name: Import project for capture
         run: godot --headless --path . --editor --quit
@@ -73,6 +78,7 @@ jobs:
           xvfb-run -a -s "-screen 0 1280x720x24" \
             godot --path . \
             --rendering-method gl_compatibility \
+            --display-driver x11 \
             --script res://tools/visual_capture/capture_runner.gd \
             -- --output=artifacts/visual_capture
           test -s artifacts/visual_capture/cemetery_workshop.png
