@@ -5,12 +5,17 @@ extends RefCounted
 static func run() -> Array[String]:
 	var failures: Array[String] = []
 
+	if not InputMap.has_action("run"):
+		failures.append("Player controls should expose a run action")
+
 	var player_scene := load("res://player/player.tscn") as PackedScene
 	if player_scene == null:
 		failures.append("Walking prototype should load player/player.tscn")
 		return failures
 
 	var player := player_scene.instantiate()
+	var tree := Engine.get_main_loop() as SceneTree
+	tree.root.add_child(player)
 	if not player is CharacterBody2D:
 		failures.append("Player scene root should be CharacterBody2D")
 	else:
@@ -24,16 +29,71 @@ static func run() -> Array[String]:
 				for direction in ["n", "ne", "e", "se", "s", "sw", "w", "nw"]:
 					var idle_name := StringName("idle_%s" % direction)
 					var walk_name := StringName("walk_%s" % direction)
+					var run_name := StringName("run_%s" % direction)
+					var interact_name := StringName("interact_%s" % direction)
 					if not body.sprite_frames.has_animation(idle_name):
 						failures.append("Player should define %s" % idle_name)
 					if not body.sprite_frames.has_animation(walk_name):
 						failures.append("Player should define %s" % walk_name)
+					if not body.sprite_frames.has_animation(run_name):
+						failures.append("Player should define %s" % run_name)
+					if not body.sprite_frames.has_animation(interact_name):
+						failures.append("Player should define %s" % interact_name)
+					if (
+						body.sprite_frames.has_animation(idle_name)
+						and body.sprite_frames.get_frame_count(idle_name) < 2
+					):
+						failures.append("%s should have at least 2 authored frames" % idle_name)
+					if (
+						body.sprite_frames.has_animation(walk_name)
+						and body.sprite_frames.get_frame_count(walk_name) < 6
+					):
+						failures.append("%s should have at least 6 authored frames" % walk_name)
+					if (
+						body.sprite_frames.has_animation(run_name)
+						and body.sprite_frames.get_frame_count(run_name) < 6
+					):
+						failures.append("%s should have at least 6 authored frames" % run_name)
+					if (
+						body.sprite_frames.has_animation(interact_name)
+						and body.sprite_frames.get_frame_count(interact_name) < 4
+					):
+						failures.append("%s should have at least 4 authored frames" % interact_name)
+					if (
+						body.sprite_frames.has_animation(run_name)
+						and body.sprite_frames.has_animation(walk_name)
+						and body.sprite_frames.get_frame_count(run_name) > 0
+						and body.sprite_frames.get_frame_count(walk_name) > 0
+						and body.sprite_frames.get_frame_texture(run_name, 0)
+						== body.sprite_frames.get_frame_texture(walk_name, 0)
+					):
+						failures.append("%s must not reuse walk frames" % run_name)
+					if (
+						body.sprite_frames.has_animation(interact_name)
+						and body.sprite_frames.has_animation(idle_name)
+						and body.sprite_frames.get_frame_count(interact_name) > 1
+						and body.sprite_frames.get_frame_count(idle_name) > 0
+						and body.sprite_frames.get_frame_texture(interact_name, 1)
+						== body.sprite_frames.get_frame_texture(idle_name, 0)
+					):
+						failures.append("%s reach frame must not reuse idle" % interact_name)
 			if body.position != Vector2(0, 0):
 				failures.append("Player visual pivot should remain at the feet/origin")
+			if not body.has_method("set_locomotion_state"):
+				failures.append("Player visual should expose idle/walk/run/interact locomotion state")
+			else:
+				body.call("set_locomotion_state", &"run", Vector2.DOWN)
+				if body.animation != &"run_s":
+					failures.append("Run state should play a dedicated directional run animation")
+				body.call("set_locomotion_state", &"interact", Vector2.DOWN)
+				if body.animation != &"interact_s":
+					failures.append("Interact state should play a dedicated directional interaction animation")
 
 		var interaction_area := player.get_node_or_null("InteractionArea")
 		if not interaction_area is Area2D:
 			failures.append("Player should expose an InteractionArea")
+		if not player.has_method("get_facing_vector"):
+			failures.append("Player controller should expose current facing for interactions")
 
 		var collision := player.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if collision == null or not collision.shape is CapsuleShape2D:
@@ -52,7 +112,10 @@ static func run() -> Array[String]:
 		else:
 			if not camera.position_smoothing_enabled:
 				failures.append("Camera2D smoothing should be enabled")
-			if camera.limit_right <= camera.limit_left or camera.limit_bottom <= camera.limit_top:
+			if (
+				camera.limit_right <= camera.limit_left
+				or camera.limit_bottom <= camera.limit_top
+			):
 				failures.append("Camera2D should have valid map limits")
 
 	player.free()
@@ -63,7 +126,6 @@ static func run() -> Array[String]:
 		return failures
 
 	var world := world_scene.instantiate()
-	var tree := Engine.get_main_loop() as SceneTree
 	tree.root.add_child(world)
 	if not world.y_sort_enabled:
 		failures.append("World should have Y-sort enabled")
