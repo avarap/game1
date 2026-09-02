@@ -33,8 +33,8 @@ static func run() -> Array[String]:
 	elif shadow.z_index >= body.z_index:
 		failures.append("Player contact shadow should draw below the body")
 
-	for state: StringName in STATES:
-		for direction: StringName in DIRECTIONS:
+	for direction: StringName in DIRECTIONS:
+		for state: StringName in STATES:
 			_check_animation(body, state, direction, failures)
 		_check_distinct_action_frames(body, direction, failures)
 
