@@ -53,7 +53,7 @@ func _physics_process(delta: float) -> void:
 	var physically_moving := not velocity.is_zero_approx()
 	if not physically_moving:
 		_set_state(State.IDLE)
-	elif running or PlayerMovement.should_use_run_state(velocity, max_speed):
+	elif PlayerMovement.should_use_run_state(velocity, max_speed):
 		_set_state(State.RUN)
 	else:
 		_set_state(State.WALK)
