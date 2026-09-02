@@ -1,16 +1,34 @@
 class_name PlayerVisual
 extends AnimatedSprite2D
 
-const RUN_FPS := 10.0
-const INTERACT_FPS := 12.0
 const DIRECTIONS: Array[StringName] = [&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"]
+const ACTION_ATLAS := preload("res://art/characters/player/player_actions_64x96.png")
+const FRAME_SIZE := Vector2i(64, 96)
+const STATE_START := {
+	&"idle": 0,
+	&"walk": 2,
+	&"run": 8,
+	&"interact": 14,
+}
+const STATE_COUNT := {
+	&"idle": 2,
+	&"walk": 6,
+	&"run": 6,
+	&"interact": 4,
+}
+const STATE_SPEED := {
+	&"idle": 2.0,
+	&"walk": 10.0,
+	&"run": 12.0,
+	&"interact": 10.0,
+}
 
 var _facing := &"s"
 var _locomotion_state := &"idle"
 
 
 func _ready() -> void:
-	_ensure_state_animations()
+	_build_production_animations()
 	_apply_animation()
 
 
@@ -33,63 +51,37 @@ func _apply_animation() -> void:
 	var target := StringName("%s_%s" % [_locomotion_state, _facing])
 	if not sprite_frames.has_animation(target):
 		target = StringName("idle_%s" % _facing)
-
 	if animation != target:
 		play(target)
 	speed_scale = 1.0
 
 
-func _ensure_state_animations() -> void:
+func _build_production_animations() -> void:
 	if sprite_frames == null:
-		return
-
-	for direction in DIRECTIONS:
-		_ensure_run_animation(direction)
-		_ensure_interact_animation(direction)
-
-
-func _ensure_run_animation(direction: StringName) -> void:
-	var target := StringName("run_%s" % direction)
-	if sprite_frames.has_animation(target):
-		return
-
-	var source := StringName("walk_%s" % direction)
-	if not sprite_frames.has_animation(source):
-		return
-
-	sprite_frames.add_animation(target)
-	sprite_frames.set_animation_loop(target, true)
-	sprite_frames.set_animation_speed(target, RUN_FPS)
-	_copy_frames(source, target)
+		sprite_frames = SpriteFrames.new()
+	for state: StringName in STATE_START:
+		for direction_index in DIRECTIONS.size():
+			_build_animation(state, direction_index)
 
 
-func _ensure_interact_animation(direction: StringName) -> void:
-	var target := StringName("interact_%s" % direction)
-	if sprite_frames.has_animation(target):
-		return
+func _build_animation(state: StringName, direction_index: int) -> void:
+	var direction := DIRECTIONS[direction_index]
+	var animation_name := StringName("%s_%s" % [state, direction])
+	if sprite_frames.has_animation(animation_name):
+		sprite_frames.remove_animation(animation_name)
+	sprite_frames.add_animation(animation_name)
+	sprite_frames.set_animation_loop(animation_name, state != &"interact")
+	sprite_frames.set_animation_speed(animation_name, STATE_SPEED[state])
 
-	var idle_source := StringName("idle_%s" % direction)
-	var walk_source := StringName("walk_%s" % direction)
-	if not sprite_frames.has_animation(idle_source):
-		return
-
-	sprite_frames.add_animation(target)
-	sprite_frames.set_animation_loop(target, false)
-	sprite_frames.set_animation_speed(target, INTERACT_FPS)
-
-	var idle_texture := sprite_frames.get_frame_texture(idle_source, 0)
-	if idle_texture != null:
-		sprite_frames.add_frame(target, idle_texture)
-
-	if sprite_frames.has_animation(walk_source) and sprite_frames.get_frame_count(walk_source) > 1:
-		var reach_texture := sprite_frames.get_frame_texture(walk_source, 1)
-		if reach_texture != null:
-			sprite_frames.add_frame(target, reach_texture)
-
-
-func _copy_frames(source: StringName, target: StringName) -> void:
-	for frame_index in sprite_frames.get_frame_count(source):
-		var texture := sprite_frames.get_frame_texture(source, frame_index)
-		var duration := sprite_frames.get_frame_duration(source, frame_index)
-		if texture != null:
-			sprite_frames.add_frame(target, texture, duration)
+	var start_column: int = STATE_START[state]
+	var frame_count: int = STATE_COUNT[state]
+	for frame_index in frame_count:
+		var texture := AtlasTexture.new()
+		texture.atlas = ACTION_ATLAS
+		texture.region = Rect2(
+			(start_column + frame_index) * FRAME_SIZE.x,
+			direction_index * FRAME_SIZE.y,
+			FRAME_SIZE.x,
+			FRAME_SIZE.y
+		)
+		sprite_frames.add_frame(animation_name, texture)
