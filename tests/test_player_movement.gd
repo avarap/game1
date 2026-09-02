@@ -76,6 +76,17 @@ static func run() -> Array[String]:
 	player._physics_process(0.0)
 	if player.get_state() != PlayerController.State.WALK:
 		failures.append("Player should stay in WALK while physical deceleration still has velocity")
+
+	player.velocity = Vector2.ZERO
+	Input.action_press("move_right")
+	Input.action_press("run")
+	player._physics_process(1.0 / 60.0)
+	Input.action_release("run")
+	Input.action_release("move_right")
+	if player.velocity.length() >= player.max_speed:
+		failures.append("Sprint acceleration regression setup should remain below walk speed")
+	if player.get_state() != PlayerController.State.WALK:
+		failures.append("Sprint should stay in WALK until physical speed reaches the run threshold")
 	player.free()
 
 	return failures
