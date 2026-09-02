@@ -15,6 +15,8 @@ static func run() -> Array[String]:
 		return failures
 
 	var player := packed.instantiate()
+	var tree := Engine.get_main_loop() as SceneTree
+	tree.root.add_child(player)
 	var body := player.get_node_or_null("Body") as AnimatedSprite2D
 	if body == null or body.sprite_frames == null:
 		failures.append("Production player should expose Body frames")
@@ -34,6 +36,7 @@ static func run() -> Array[String]:
 	for state: StringName in STATES:
 		for direction: StringName in DIRECTIONS:
 			_check_animation(body, state, direction, failures)
+		_check_distinct_action_frames(body, direction, failures)
 
 	player.free()
 	return failures
@@ -67,3 +70,24 @@ static func _check_animation(
 		if atlas_texture.atlas == null or atlas_texture.atlas.resource_path != ACTION_SHEET:
 			failures.append("Player animation %s must come from the authored action sheet" % animation)
 			return
+
+
+static func _check_distinct_action_frames(
+	body: AnimatedSprite2D, direction: StringName, failures: Array[String]
+) -> void:
+	var walk_name := StringName("walk_%s" % direction)
+	var run_name := StringName("run_%s" % direction)
+	var idle_name := StringName("idle_%s" % direction)
+	var interact_name := StringName("interact_%s" % direction)
+	if not body.sprite_frames.has_animation(run_name) or not body.sprite_frames.has_animation(walk_name):
+		return
+	if not body.sprite_frames.has_animation(interact_name) or not body.sprite_frames.has_animation(idle_name):
+		return
+	var walk_frame := body.sprite_frames.get_frame_texture(walk_name, 0) as AtlasTexture
+	var run_frame := body.sprite_frames.get_frame_texture(run_name, 0) as AtlasTexture
+	var idle_frame := body.sprite_frames.get_frame_texture(idle_name, 0) as AtlasTexture
+	var interact_frame := body.sprite_frames.get_frame_texture(interact_name, 1) as AtlasTexture
+	if walk_frame != null and run_frame != null and walk_frame.region == run_frame.region:
+		failures.append("Run %s must not reuse the walk atlas region" % direction)
+	if idle_frame != null and interact_frame != null and idle_frame.region == interact_frame.region:
+		failures.append("Interact %s must not reuse the idle atlas region" % direction)
