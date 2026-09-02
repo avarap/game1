@@ -28,9 +28,7 @@ func _physics_process(delta: float) -> void:
 		_facing_vector = movement_direction.normalized()
 
 	var running := Input.is_action_pressed("run") and not movement_direction.is_zero_approx()
-	var target_speed := PlayerMovement.speed_for_mode(
-		max_speed, run_speed_multiplier, running
-	)
+	var target_speed := PlayerMovement.speed_for_mode(max_speed, run_speed_multiplier, running)
 	velocity = PlayerMovement.next_velocity(
 		velocity, movement_direction, target_speed, acceleration, deceleration, delta
 	)
