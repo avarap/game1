@@ -26,15 +26,19 @@ static func run() -> Array[String]:
 	if not PlayerMovement.has_method("speed_for_mode"):
 		failures.append("PlayerMovement should expose walk/run speed selection")
 	else:
-		var walk_speed: float = PlayerMovement.call("speed_for_mode", 220.0, 1.45, false)
-		var run_speed: float = PlayerMovement.call("speed_for_mode", 220.0, 1.45, true)
+		var walk_speed: float = PlayerMovement.call(
+			"speed_for_mode", 220.0, 1.45, false
+		)
+		var run_speed: float = PlayerMovement.call(
+			"speed_for_mode", 220.0, 1.45, true
+		)
 		if not is_equal_approx(walk_speed, 220.0):
 			failures.append("Walk mode should preserve base movement speed")
 		if not is_equal_approx(run_speed, 319.0):
 			failures.append("Run mode should apply the configured speed multiplier")
 
 	if not PlayerMovement.has_method("direction_name"):
-		failures.append("PlayerMovement should expose reusable eight-direction orientation")
+		failures.append("PlayerMovement should expose reusable 8-way orientation")
 	else:
 		var samples := {
 			Vector2.UP: &"n",
@@ -49,6 +53,9 @@ static func run() -> Array[String]:
 		for direction: Vector2 in samples:
 			var actual: StringName = PlayerMovement.call("direction_name", direction)
 			if actual != samples[direction]:
-				failures.append("Player orientation should resolve %s as %s" % [direction, samples[direction]])
+				failures.append(
+					"Player orientation should resolve %s as %s"
+					% [direction, samples[direction]]
+				)
 
 	return failures
