@@ -6,15 +6,36 @@ const DRY_GRASS_TEXTURE := preload("res://art/environment/cemetery/dry_grass.png
 const TREE_PIVOT := Vector2(32, 84)
 const DRY_GRASS_PIVOT := Vector2(16, 28)
 const TREE_CELLS := [
-	Vector2i(5, 5), Vector2i(8, 7), Vector2i(12, 5), Vector2i(15, 8),
-	Vector2i(5, 13), Vector2i(8, 17), Vector2i(12, 15), Vector2i(16, 12),
-	Vector2i(5, 24), Vector2i(8, 27), Vector2i(12, 28), Vector2i(17, 27),
-	Vector2i(43, 5), Vector2i(46, 8), Vector2i(45, 14), Vector2i(46, 27),
+	Vector2i(5, 5),
+	Vector2i(8, 7),
+	Vector2i(12, 5),
+	Vector2i(15, 8),
+	Vector2i(5, 13),
+	Vector2i(8, 17),
+	Vector2i(12, 15),
+	Vector2i(16, 12),
+	Vector2i(5, 24),
+	Vector2i(8, 27),
+	Vector2i(12, 28),
+	Vector2i(17, 27),
+	Vector2i(43, 5),
+	Vector2i(46, 8),
+	Vector2i(45, 14),
+	Vector2i(46, 27),
 ]
 const DRY_GRASS_CELLS := [
-	Vector2i(6, 20), Vector2i(8, 21), Vector2i(10, 20), Vector2i(13, 20),
-	Vector2i(16, 21), Vector2i(18, 23), Vector2i(28, 8), Vector2i(30, 10),
-	Vector2i(31, 17), Vector2i(42, 18), Vector2i(44, 20), Vector2i(45, 25),
+	Vector2i(6, 20),
+	Vector2i(8, 21),
+	Vector2i(10, 20),
+	Vector2i(13, 20),
+	Vector2i(16, 21),
+	Vector2i(18, 23),
+	Vector2i(28, 8),
+	Vector2i(30, 10),
+	Vector2i(31, 17),
+	Vector2i(42, 18),
+	Vector2i(44, 20),
+	Vector2i(45, 25),
 ]
 
 
@@ -51,6 +72,27 @@ func _apply_dressing() -> void:
 			DRY_GRASS_PIVOT,
 			"DryGrassVisual%02d" % index,
 		)
+
+	_dress_forest_resources(map)
+
+
+func _dress_forest_resources(map: Node) -> void:
+	var resources := map.get_node_or_null("ForestResources") as Node2D
+	if resources == null:
+		return
+	for child in resources.get_children():
+		if child is not ResourceNode:
+			continue
+		var resource := child as ResourceNode
+		if resource.get_node_or_null("ArtVisual") != null:
+			continue
+		var sprite := Sprite2D.new()
+		sprite.name = "ArtVisual"
+		sprite.texture = TREE_TEXTURE
+		sprite.centered = false
+		sprite.position = -TREE_PIVOT
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		resource.add_child(sprite)
 
 
 func _add_sprite(
