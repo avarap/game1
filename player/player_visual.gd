@@ -1,7 +1,9 @@
 class_name PlayerVisual
 extends AnimatedSprite2D
 
-const DIRECTIONS: Array[StringName] = [&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"]
+const DIRECTIONS: Array[StringName] = [
+	&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"
+]
 const FRAME_SIZE := Vector2i(64, 96)
 const STATE_COUNT := {
 	&"idle": 2,
@@ -16,14 +18,14 @@ const STATE_SPEED := {
 	&"interact": 10.0,
 }
 const DIRECTION_VECTORS: Array[Vector2] = [
-	Vector2.UP,
-	Vector2(1.0, -1.0).normalized(),
-	Vector2.RIGHT,
-	Vector2(1.0, 1.0).normalized(),
-	Vector2.DOWN,
-	Vector2(-1.0, 1.0).normalized(),
-	Vector2.LEFT,
-	Vector2(-1.0, -1.0).normalized(),
+	Vector2(0.0, -1.0),
+	Vector2(0.70710678, -0.70710678),
+	Vector2(1.0, 0.0),
+	Vector2(0.70710678, 0.70710678),
+	Vector2(0.0, 1.0),
+	Vector2(-0.70710678, 0.70710678),
+	Vector2(-1.0, 0.0),
+	Vector2(-0.70710678, -0.70710678),
 ]
 const OUTLINE := Color8(39, 32, 30)
 const HAIR := Color8(63, 48, 40)
@@ -83,8 +85,7 @@ func _build_animation(state: StringName, direction_index: int) -> void:
 	var frame_count: int = STATE_COUNT[state]
 	for frame_index in frame_count:
 		sprite_frames.add_frame(
-			animation_name,
-			_render_frame(state, direction_index, frame_index)
+			animation_name, _render_frame(state, direction_index, frame_index)
 		)
 
 
@@ -115,9 +116,13 @@ func _pose_for(state: StringName, frame_index: int) -> Vector2i:
 	if state == &"idle":
 		return Vector2i(0, [0, 1][frame_index])
 	if state == &"walk":
-		return Vector2i([-3, -1, 2, 3, 1, -2][frame_index], [0, 1, 0, -1, 0, 1][frame_index])
+		return Vector2i(
+			[-3, -1, 2, 3, 1, -2][frame_index], [0, 1, 0, -1, 0, 1][frame_index]
+		)
 	if state == &"run":
-		return Vector2i([-6, -3, 3, 6, 3, -3][frame_index], [1, -1, 0, 1, -1, 0][frame_index])
+		return Vector2i(
+			[-6, -3, 3, 6, 3, -3][frame_index], [1, -1, 0, 1, -1, 0][frame_index]
+		)
 	return Vector2i(0, [0, -1, -1, 0][frame_index])
 
 
