@@ -28,6 +28,9 @@ static func next_velocity(
 	var normalized_direction := direction.limit_length(1.0)
 	var target := normalized_direction * max_speed
 	var rate := acceleration if not normalized_direction.is_zero_approx() else deceleration
+	if not current_velocity.is_zero_approx() and not target.is_zero_approx():
+		if current_velocity.dot(target) < 0.0:
+			rate = acceleration + deceleration
 	return current_velocity.move_toward(target, rate * delta)
 
 
