@@ -29,6 +29,10 @@ static func run() -> Array[String]:
 	if not decelerated.is_equal_approx(Vector2(60.0, 0.0)):
 		failures.append("PlayerMovement should use deceleration when input stops")
 
+	var interaction_stopped := PlayerMovement.interaction_locked_velocity(Vector2(100.0, 35.0))
+	if not interaction_stopped.is_zero_approx():
+		failures.append("Interaction lock should stop player movement immediately")
+
 	if PlayerMovement.direction_name(Vector2.RIGHT) != &"e":
 		failures.append("Facing should resolve east")
 	if PlayerMovement.direction_name(Vector2(1.0, 1.0)) != &"se":
