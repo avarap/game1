@@ -48,4 +48,4 @@
 - [ ] Verify main-scene smoke succeeds.
 - [ ] Verify relevant bootstrap tests pass or identify unrelated baseline failures precisely.
 - [ ] Inspect CI result for the new head.
-- [ ] Keep #134/#137 branches neutralized to the canonical head after the pass.
+- [ ] Delete superseded PLAYER branch refs once verified to contain no unique work; repointing/neutralizing refs is containment only and does not satisfy cleanup.
