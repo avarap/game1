@@ -51,6 +51,11 @@ static func run() -> Array[String]:
 	if rear_score != INF:
 		failures.append("Interactables behind the player should not steal interaction focus")
 
+	if not PlayerMovement.should_use_run_state(Vector2(120.0, 0.0), 100.0):
+		failures.append("Run animation should persist while physical speed remains above walk speed")
+	if PlayerMovement.should_use_run_state(Vector2(100.0, 0.0), 100.0):
+		failures.append("Run animation should stop once physical speed reaches walk speed")
+
 	var packed := load("res://player/player.tscn") as PackedScene
 	if packed == null:
 		failures.append("Production player scene should load for movement-state regression test")
