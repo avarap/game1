@@ -6,89 +6,69 @@
 - Fase 8 — Polish: **ACTIVA**.
 - Runtime/CI contractual: **Godot 4.7.2**.
 - Gate final: no declarar el vertical slice completo sin gates técnicos, jugables y visuales sobre el mismo estado integrado.
-- #139 MAP y #140 PLAYER fueron fusionadas a `main` el 2026-09-02 antes de completar aceptación. **Merged != accepted**.
+- #139 MAP y #140 PLAYER fueron fusionadas antes de aceptación. **Merged != accepted**.
+
+## Gobernanza activa
+
+La rama es la identidad canónica del dominio.
+
+- MAP: `feat/main-map-rebuild-commercial-pass` — reutilizable para una única PR secuencial de remediación; #139 es histórica.
+- PLAYER: `character/player-controller-polish-20260902` — reutilizable para una única PR secuencial de remediación; #140 es histórica.
+- INTEGRATION: `automation/supervisor-player-map-integration` — #138 PARKED/CLOSED hasta aceptación real de MAP+PLAYER.
+
+Máximo una PR abierta por dominio. Ninguna rama paralela. Si una PR se fusionó prematuramente, se continúa en la misma rama canónica desde `main`, nunca en #138.
 
 ## Critical path actual
 
-### 1. PLAYER — deuda de #140 ya presente en main
+### 1. PLAYER remediation
 
-Origen canónico: PR #140 / `character/player-controller-polish-20260902`.
-
-Estado: fusionado pero NO aceptado. El HEAD pre-merge tenía CI rojo y `main` mantiene generación procedural de frames en `PlayerVisual`, incompatible con el pixel-art gate.
+Prioridad absoluta.
 
 Aceptación pendiente:
-- CI completo verde: gdlint/gdformat, import, smoke y bootstrap;
-- atlas/spritesheet authored y pixel-cleaned integrado con nearest filtering/pivots correctos;
-- idle/walk/run/interact realmente distintos en 8 direcciones;
-- run no reutiliza ni acelera walk;
-- interact no cae a idle;
+- systematic debugging de CI rojo;
+- `gdformat --check` verde;
+- bootstrap verde, incluidas regresiones Verdant harvest/energy/depletion/stump;
+- eliminar generación procedural de frames en `PlayerVisual`;
+- atlas/spritesheet authored + pixel-cleaned;
+- idle/walk/run/interact distintos en 8 direcciones;
+- run != walk acelerado/reutilizado;
+- interact != idle fallback;
 - colisiones e interacción direccional funcionales;
-- evidencia gameplay real 1280x720 sobre el mapa reconstruido.
+- gameplay real 1280x720 sobre el mapa reconstruido.
 
-### 2. MAP — deuda de #139 ya presente en main
+### 2. MAP remediation
 
-Origen canónico: PR #139 / `feat/main-map-rebuild-commercial-pass`.
-
-Estado: fusionado con gate técnico pre-merge verde, pero gate visual REJECTED.
+Puede avanzar en paralelo manteniendo CI técnico verde.
 
 Aceptación pendiente:
-- terreno/caminos authored sin banding/grid/repetición matemática;
-- transiciones y path edges orgánicos y pixel-cleaned;
+- terrain/path system authored;
+- transiciones/path edges pixel-cleaned;
+- eliminar banding/grid/repetición matemática y caminos ortogonales obvios;
 - landmarks claros para taller/cementerio/plaza;
 - foreground/gameplay/background depth y Y-sort coherentes;
-- navegación, colisiones e interacciones correctas;
-- rendimiento adecuado;
+- navegación/colisiones/interacciones/rendimiento correctos;
 - nueva captura real 1280x720 y crítica visual aceptada.
 
-### 3. INTEGRATION — PR #138
+### 3. INTEGRATION — #138
 
-Rama reservada: `automation/supervisor-player-map-integration`.
+Estado: **PARKED/CLOSED**.
 
-Estado actual: **PARKED/CLOSED**. No reabrirla solo porque #139/#140 estén merged: debe esperar a que las deudas de dominio anteriores satisfagan sus gates. Cuando ambos estados estén aceptados, reabrir la misma #138 y refrescar/reconstruir desde `main`; no abrir una PR de reemplazo.
+Solo cuando PLAYER y MAP estén accepted:
+1. reabrir la misma #138;
+2. refrescar su rama desde `main` accepted;
+3. conservar solo deltas cross-domain;
+4. ejecutar import/smoke/bootstrap/lint/integration;
+5. demostrar gameplay y captura 1280x720 integrados.
 
-#138 corrige exclusivamente regresiones cross-domain:
-- cámara;
-- escala;
-- layers/Y-sort;
-- spawn/traversal;
-- navegación;
-- colisiones;
-- interacciones;
-- rendimiento;
-- capture tooling.
+## Cleanup
 
-Aceptación: build integrado + suite + gameplay real + captura 1280x720 sin regresiones.
+Las ramas stale verificadas en la pasada de gobernanza no contenían commits únicos (`ahead_by=0`). Se han contenido en `main` cuando no fue posible borrarlas mediante tooling. No pueden recibir trabajo. Su borrado físico sigue pendiente, pero no bloquea remediación en las ramas canónicas.
 
 ## Pipeline visual obligatorio
 
-1. dirección artística/paleta/escala/perspectiva;
-2. concepto/base generada si aporta valor;
-3. limpieza pixel-art intencional;
-4. ensamblaje en tilesets/spritesheets/familias de assets;
-5. integración Godot con filtering/pivots/escala/capas/Y-sort/colisión/navegación;
-6. captura in-game 1280x720;
-7. crítica visual y revisión.
-
-No aceptar imágenes conceptuales/generadas o sprites procedurales como assets finales sin pasar este pipeline.
-
-## Sandbox Verdant
-
-`world/maps/verdant_test/` es un sandbox visual deliberadamente aislado. No forma parte del world/save flow de producción.
-
-## Branch policy
-
-- No crear ramas/PR paralelas de MAP/PLAYER/INTEGRATION.
-- Los refs stale históricos que reaparezcan no deben recibir pushes ni reapuntarse.
-- La existencia de cleanup histórico no debe ocultar ni sustituir los gates técnicos/jugables/visuales actuales.
-- Una PR merged sin evidencia de aceptación sigue generando deuda de producción.
-
-## Documentación operativa
-
-Fuentes vivas: `GAME1_RULES.md`, `.agents/skills/orchestrating-game-production/SKILL.md`, `DEV_MEMORY.md`, este `ROADMAP.md`, `CHANGELOG.md` y `README.md`.
+art direction -> concept/base -> pixel cleanup -> asset-system assembly -> Godot integration -> captura 1280x720 -> critique/revision.
 
 ## Después del critical path
-
-Una vez reabierta e integrada #138 con evidencia aceptada:
 
 - UI/UX final;
 - audio final;
