@@ -21,6 +21,11 @@ const WORLD_IDS: Array[StringName] = [
 	&"cemetery_day",
 	&"cemetery_night",
 	&"cemetery_architecture_props",
+	&"cemetery_workshop",
+	&"cemetery_plaza",
+	&"cemetery_overview",
+	&"cemetery_graves",
+	&"cemetery_forest_path",
 	&"village_architecture",
 ]
 const UI_SCENES := {
@@ -53,7 +58,7 @@ static func capture_specs() -> Array[Dictionary]:
 static func _character_spec(actor: StringName, direction: StringName) -> Dictionary:
 	var capture_id := StringName("%s_%s" % [actor, direction])
 	var is_player := actor == &"player"
-	var position := Vector2(544, 640) if is_player else Vector2(1216, 640)
+	var position := Vector2(480, 736) if is_player else Vector2(1184, 640)
 	return {
 		"id": capture_id,
 		"kind": &"character",
@@ -74,15 +79,28 @@ static func _world_spec(capture_id: StringName) -> Dictionary:
 	var camera_position := Vector2(960, 480)
 	var lighting := Color.WHITE
 	var scene_path := CEMETERY_SCENE
-	if capture_id == &"cemetery_night":
-		lighting = Color(0.42, 0.48, 0.62, 1.0)
-	elif capture_id == &"cemetery_architecture_props":
-		camera_position = Vector2(480, 680)
-		lighting = Color(0.92, 0.88, 0.82, 1.0)
-	elif capture_id == &"village_architecture":
-		scene_path = VILLAGE_SCENE
-		camera_position = Vector2(1088, 392)
-		lighting = Color(0.92, 0.88, 0.82, 1.0)
+	match capture_id:
+		&"cemetery_night":
+			lighting = Color(0.42, 0.48, 0.62, 1.0)
+		&"cemetery_architecture_props", &"cemetery_workshop":
+			camera_position = Vector2(430, 700)
+			lighting = Color(0.92, 0.88, 0.82, 1.0)
+		&"cemetery_plaza":
+			camera_position = Vector2(760, 480)
+			lighting = Color(0.94, 0.91, 0.86, 1.0)
+		&"cemetery_overview":
+			camera_position = Vector2(1000, 500)
+			lighting = Color(0.92, 0.89, 0.84, 1.0)
+		&"cemetery_graves":
+			camera_position = Vector2(1190, 450)
+			lighting = Color(0.90, 0.88, 0.84, 1.0)
+		&"cemetery_forest_path":
+			camera_position = Vector2(1240, 700)
+			lighting = Color(0.88, 0.90, 0.84, 1.0)
+		&"village_architecture":
+			scene_path = VILLAGE_SCENE
+			camera_position = Vector2(1088, 392)
+			lighting = Color(0.92, 0.88, 0.82, 1.0)
 	return {
 		"id": capture_id,
 		"kind": &"world",
