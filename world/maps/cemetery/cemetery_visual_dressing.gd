@@ -77,104 +77,18 @@ const PLAZA_CELLS := [
 	Vector2i(24, 21),
 ]
 const GROUND_BREAKUP_PATCHES := {
-	Vector2i(1, 0):
-	[
-		Vector2i(7, 6),
-		Vector2i(11, 9),
-		Vector2i(14, 6),
-		Vector2i(17, 11),
-		Vector2i(9, 16),
-		Vector2i(13, 18),
-		Vector2i(18, 15),
-		Vector2i(20, 7),
-	],
-	Vector2i(3, 0):
-	[
-		Vector2i(6, 11),
-		Vector2i(10, 14),
-		Vector2i(15, 4),
-		Vector2i(19, 13),
-		Vector2i(28, 6),
-		Vector2i(29, 9),
-		Vector2i(27, 14),
-		Vector2i(45, 10),
-	],
-	Vector2i(5, 0):
-	[
-		Vector2i(31, 4),
-		Vector2i(34, 6),
-		Vector2i(38, 4),
-		Vector2i(41, 7),
-		Vector2i(30, 12),
-		Vector2i(43, 13),
-		Vector2i(33, 18),
-		Vector2i(42, 17),
-	],
-	Vector2i(6, 0):
-	[
-		Vector2i(8, 24),
-		Vector2i(12, 26),
-		Vector2i(17, 25),
-		Vector2i(20, 23),
-		Vector2i(28, 24),
-		Vector2i(32, 26),
-		Vector2i(38, 24),
-		Vector2i(45, 27),
-	],
-	Vector2i(7, 0):
-	[
-		Vector2i(5, 19),
-		Vector2i(11, 21),
-		Vector2i(16, 19),
-		Vector2i(19, 26),
-		Vector2i(27, 21),
-		Vector2i(35, 22),
-		Vector2i(40, 25),
-		Vector2i(47, 23),
-	],
+	Vector2i(1, 0): [Vector2i(7, 6), Vector2i(11, 9), Vector2i(14, 6), Vector2i(17, 11), Vector2i(9, 16), Vector2i(13, 18), Vector2i(18, 15), Vector2i(20, 7)],
+	Vector2i(3, 0): [Vector2i(6, 11), Vector2i(10, 14), Vector2i(15, 4), Vector2i(19, 13), Vector2i(28, 6), Vector2i(29, 9), Vector2i(27, 14), Vector2i(45, 10)],
+	Vector2i(5, 0): [Vector2i(31, 4), Vector2i(34, 6), Vector2i(38, 4), Vector2i(41, 7), Vector2i(30, 12), Vector2i(43, 13), Vector2i(33, 18), Vector2i(42, 17)],
+	Vector2i(6, 0): [Vector2i(8, 24), Vector2i(12, 26), Vector2i(17, 25), Vector2i(20, 23), Vector2i(28, 24), Vector2i(32, 26), Vector2i(38, 24), Vector2i(45, 27)],
+	Vector2i(7, 0): [Vector2i(5, 19), Vector2i(11, 21), Vector2i(16, 19), Vector2i(19, 26), Vector2i(27, 21), Vector2i(35, 22), Vector2i(40, 25), Vector2i(47, 23)],
 }
-const TREE_CELLS := [
-	Vector2i(5, 5),
-	Vector2i(8, 7),
-	Vector2i(12, 5),
-	Vector2i(15, 8),
-	Vector2i(5, 13),
-	Vector2i(8, 17),
-	Vector2i(12, 15),
-	Vector2i(16, 12),
-	Vector2i(5, 24),
-	Vector2i(8, 27),
-	Vector2i(12, 28),
-	Vector2i(17, 27),
-	Vector2i(21, 16),
-	Vector2i(27, 16),
-	Vector2i(43, 5),
-	Vector2i(46, 8),
-	Vector2i(45, 14),
-	Vector2i(46, 27),
-]
-const DRY_GRASS_CELLS := [
-	Vector2i(6, 20),
-	Vector2i(8, 21),
-	Vector2i(10, 20),
-	Vector2i(13, 20),
-	Vector2i(16, 21),
-	Vector2i(18, 23),
-	Vector2i(21, 17),
-	Vector2i(27, 17),
-	Vector2i(22, 21),
-	Vector2i(26, 22),
-	Vector2i(28, 8),
-	Vector2i(30, 10),
-	Vector2i(31, 17),
-	Vector2i(42, 18),
-	Vector2i(44, 20),
-	Vector2i(45, 25),
-]
+const TREE_CELLS := [Vector2i(5, 5), Vector2i(8, 7), Vector2i(12, 5), Vector2i(15, 8), Vector2i(5, 13), Vector2i(8, 17), Vector2i(12, 15), Vector2i(16, 12), Vector2i(5, 24), Vector2i(8, 27), Vector2i(12, 28), Vector2i(17, 27), Vector2i(21, 16), Vector2i(27, 16), Vector2i(43, 5), Vector2i(46, 8), Vector2i(45, 14), Vector2i(46, 27)]
+const DRY_GRASS_CELLS := [Vector2i(6, 20), Vector2i(8, 21), Vector2i(10, 20), Vector2i(13, 20), Vector2i(16, 21), Vector2i(18, 23), Vector2i(21, 17), Vector2i(27, 17), Vector2i(22, 21), Vector2i(26, 22), Vector2i(28, 8), Vector2i(30, 10), Vector2i(31, 17), Vector2i(42, 18), Vector2i(44, 20), Vector2i(45, 25)]
 
 
 func _ready() -> void:
-	var map := get_parent()
+	var map: Node = get_parent()
 	if map == null:
 		return
 	map.ready.connect(_apply_dressing.bind(map), CONNECT_ONE_SHOT)
@@ -197,52 +111,40 @@ func _apply_dressing(map: Node) -> void:
 	for index in range(TREE_CELLS.size()):
 		var cell: Vector2i = TREE_CELLS[index]
 		objects.erase_cell(cell)
-		_add_sprite(
-			objects,
-			TREE_TEXTURE,
-			objects.map_to_local(cell),
-			TREE_PIVOT,
-			"TreeVisual%02d" % index,
-		)
+		_add_sprite(objects, TREE_TEXTURE, objects.map_to_local(cell), TREE_PIVOT, "TreeVisual%02d" % index)
 
 	for index in range(DRY_GRASS_CELLS.size()):
 		var cell: Vector2i = DRY_GRASS_CELLS[index]
-		_add_sprite(
-			low,
-			DRY_GRASS_TEXTURE,
-			low.map_to_local(cell),
-			DRY_GRASS_PIVOT,
-			"DryGrassVisual%02d" % index,
-		)
+		_add_sprite(low, DRY_GRASS_TEXTURE, low.map_to_local(cell), DRY_GRASS_PIVOT, "DryGrassVisual%02d" % index)
 
 	_dress_forest_resources(map)
 
 
 func _apply_terrain_tileset(ground: TileMapLayer, paths: TileMapLayer) -> void:
-	var ground_cells := ground.get_used_cells()
-	var path_cells := paths.get_used_cells()
-	var terrain_tileset := CemeteryTerrainTileset.build()
+	var ground_cells: Array[Vector2i] = ground.get_used_cells()
+	var path_cells: Array[Vector2i] = paths.get_used_cells()
+	var terrain_tileset: TileSet = CemeteryTerrainTileset.build()
 	ground.tile_set = terrain_tileset
 	paths.tile_set = terrain_tileset
 	ground.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	paths.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
-	for cell in ground_cells:
+	for cell: Vector2i in ground_cells:
 		ground.set_cell(cell, TERRAIN_SOURCE, _ground_tile_for_cell(cell))
-	for cell in path_cells:
+	for cell: Vector2i in path_cells:
 		paths.set_cell(cell, TERRAIN_SOURCE, _path_tile_for_cell(cell))
 
 
 func _ground_tile_for_cell(cell: Vector2i) -> Vector2i:
-	var macro := Vector2i(floori(float(cell.x) / 5.0), floori(float(cell.y) / 4.0))
-	var value := abs((macro.x * 73856093) ^ (macro.y * 19349663))
+	var macro: Vector2i = Vector2i(floori(float(cell.x) / 5.0), floori(float(cell.y) / 4.0))
+	var value: int = abs((macro.x * 73856093) ^ (macro.y * 19349663))
 	if value % 5 != 0:
 		return GROUND_BASE
 	return GROUND_VARIANTS[value % GROUND_VARIANTS.size()]
 
 
 func _path_tile_for_cell(cell: Vector2i) -> Vector2i:
-	var value := abs((cell.x * 83492791) ^ (cell.y * 2971215073))
+	var value: int = abs((cell.x * 83492791) ^ (cell.y * 2971215073))
 	return PATH_VARIANTS[value % PATH_VARIANTS.size()]
 
 
@@ -253,19 +155,14 @@ func _breakup_ground_masses(ground: TileMapLayer) -> void:
 
 
 func _paint_ground_cluster(ground: TileMapLayer, center: Vector2i, tile: Vector2i) -> void:
-	var offsets := [
-		Vector2i.ZERO,
-		Vector2i.RIGHT,
-		Vector2i.DOWN,
-		Vector2i(-1, 0),
-	]
-	var selector := abs((center.x * 31) ^ (center.y * 17))
+	var offsets: Array[Vector2i] = [Vector2i.ZERO, Vector2i.RIGHT, Vector2i.DOWN, Vector2i(-1, 0)]
+	var selector: int = abs((center.x * 31) ^ (center.y * 17))
 	if selector % 2 == 0:
 		offsets.append(Vector2i(0, -1))
 	if selector % 3 == 0:
 		offsets.append(Vector2i(1, 1))
-	for offset in offsets:
-		var cell := center + offset
+	for offset: Vector2i in offsets:
+		var cell: Vector2i = center + offset
 		if ground.get_cell_source_id(cell) != -1:
 			ground.set_cell(cell, TERRAIN_SOURCE, tile)
 
@@ -277,17 +174,17 @@ func _rework_village_route(paths: TileMapLayer) -> void:
 		var cell: Vector2i = VILLAGE_ROUTE_REPLACED[index]
 		paths.set_cell(cell, TERRAIN_SOURCE, _path_tile_for_cell(cell))
 		if index % 4 == 1:
-			var shoulder := cell + Vector2i.RIGHT
+			var shoulder: Vector2i = cell + Vector2i.RIGHT
 			paths.set_cell(shoulder, TERRAIN_SOURCE, _path_tile_for_cell(shoulder))
 		elif index % 4 == 3:
-			var shoulder := cell + Vector2i.LEFT
+			var shoulder: Vector2i = cell + Vector2i.LEFT
 			paths.set_cell(shoulder, TERRAIN_SOURCE, _path_tile_for_cell(shoulder))
 
 
 func _add_plaza_landmark(paths: TileMapLayer) -> void:
 	for index in range(PLAZA_CELLS.size()):
 		var cell: Vector2i = PLAZA_CELLS[index]
-		var tile := Vector2i(index % 8, 2)
+		var tile: Vector2i = Vector2i(index % 8, 2)
 		paths.set_cell(cell, TERRAIN_SOURCE, tile)
 
 
@@ -316,13 +213,7 @@ func _dress_forest_resources(map: Node) -> void:
 		resource.add_child(sprite)
 
 
-func _add_sprite(
-	parent: Node2D,
-	texture: Texture2D,
-	ground_position: Vector2,
-	pivot: Vector2,
-	sprite_name: String,
-) -> void:
+func _add_sprite(parent: Node2D, texture: Texture2D, ground_position: Vector2, pivot: Vector2, sprite_name: String) -> void:
 	var sprite := Sprite2D.new()
 	sprite.name = sprite_name
 	sprite.texture = texture
