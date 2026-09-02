@@ -1,6 +1,11 @@
 class_name TestPlayerProductionVisual
 extends RefCounted
 
+const ACTION_SHEET := "res://art/characters/player/player_actions_64x96.png"
+const DIRECTIONS := [&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"]
+const STATES := [&"idle", &"walk", &"run", &"interact"]
+const MINIMUM_FRAMES := {&"idle": 2, &"walk": 6, &"run": 6, &"interact": 4}
+
 
 static func run() -> Array[String]:
 	var failures: Array[String] = []
@@ -26,39 +31,39 @@ static func run() -> Array[String]:
 	elif shadow.z_index >= body.z_index:
 		failures.append("Player contact shadow should draw below the body")
 
-	_check_animation(body, &"idle_n", failures)
-	_check_animation(body, &"walk_n", failures)
-	_check_animation(body, &"idle_ne", failures)
-	_check_animation(body, &"walk_ne", failures)
-	_check_animation(body, &"idle_e", failures)
-	_check_animation(body, &"walk_e", failures)
-	_check_animation(body, &"idle_se", failures)
-	_check_animation(body, &"walk_se", failures)
-	_check_animation(body, &"idle_s", failures)
-	_check_animation(body, &"walk_s", failures)
-	_check_animation(body, &"idle_sw", failures)
-	_check_animation(body, &"walk_sw", failures)
-	_check_animation(body, &"idle_w", failures)
-	_check_animation(body, &"walk_w", failures)
-	_check_animation(body, &"idle_nw", failures)
-	_check_animation(body, &"walk_nw", failures)
+	for state: StringName in STATES:
+		for direction: StringName in DIRECTIONS:
+			_check_animation(body, state, direction, failures)
 
 	player.free()
 	return failures
 
 
 static func _check_animation(
-	body: AnimatedSprite2D, animation: StringName, failures: Array[String]
+	body: AnimatedSprite2D,
+	state: StringName,
+	direction: StringName,
+	failures: Array[String]
 ) -> void:
+	var animation := StringName("%s_%s" % [state, direction])
 	if not body.sprite_frames.has_animation(animation):
 		failures.append("Missing player animation %s" % animation)
 		return
-	var minimum_frames := 4 if String(animation).begins_with("walk_") else 1
-	if body.sprite_frames.get_frame_count(animation) < minimum_frames:
+	if body.sprite_frames.get_frame_count(animation) < MINIMUM_FRAMES[state]:
 		failures.append(
-			"Player animation %s should have at least %d frames" % [animation, minimum_frames]
+			"Player animation %s should have at least %d authored frames"
+			% [animation, MINIMUM_FRAMES[state]]
 		)
 		return
-	var texture := body.sprite_frames.get_frame_texture(animation, 0)
-	if texture == null or texture.get_size() != Vector2(64, 96):
-		failures.append("Player animation %s is not 64x96" % animation)
+	for frame_index in body.sprite_frames.get_frame_count(animation):
+		var texture := body.sprite_frames.get_frame_texture(animation, frame_index)
+		if texture == null or texture.get_size() != Vector2(64, 96):
+			failures.append("Player animation %s contains a non-64x96 frame" % animation)
+			return
+		if texture is not AtlasTexture:
+			failures.append("Player animation %s must use authored atlas regions" % animation)
+			return
+		var atlas_texture := texture as AtlasTexture
+		if atlas_texture.atlas == null or atlas_texture.atlas.resource_path != ACTION_SHEET:
+			failures.append("Player animation %s must come from the authored action sheet" % animation)
+			return
