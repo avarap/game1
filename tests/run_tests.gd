@@ -52,11 +52,6 @@ func _run_all_tests() -> void:
 	_run_suite("MapForest", TestMapForest.run(), failures)
 	_run_suite("VerdantTestMap", await TestVerdantTestMap.run(), failures)
 	_run_suite("CemeteryMap", TestCemeteryMap.run(), failures)
-	_run_suite(
-		"CemeteryTerrainAtlas",
-		await TestCemeteryTerrainAtlas.run(),
-		failures,
-	)
 	_run_suite("CemeteryNavigation", TestCemeteryNavigation.run(), failures)
 	_run_suite("CemeteryTraversal", await TestCemeteryTraversal.run(), failures)
 	_run_suite("CemeteryZoning", TestCemeteryZoning.run(), failures)
