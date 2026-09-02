@@ -17,10 +17,34 @@ static func run() -> Array[String]:
 	if not capped.is_equal_approx(Vector2(100.0, 0.0)):
 		failures.append("PlayerMovement should normalize oversized input")
 
+	var diagonal := PlayerMovement.next_velocity(
+		Vector2.ZERO, Vector2(1.0, 1.0), 100.0, 1000.0, 80.0, 1.0
+	)
+	if not is_equal_approx(diagonal.length(), 100.0):
+		failures.append("Diagonal movement should not be faster than cardinal movement")
+
 	var decelerated := PlayerMovement.next_velocity(
 		Vector2(100.0, 0.0), Vector2.ZERO, 100.0, 50.0, 40.0, 1.0
 	)
 	if not decelerated.is_equal_approx(Vector2(60.0, 0.0)):
 		failures.append("PlayerMovement should use deceleration when input stops")
+
+	if PlayerMovement.direction_name(Vector2.RIGHT) != &"e":
+		failures.append("Facing should resolve east")
+	if PlayerMovement.direction_name(Vector2(1.0, 1.0)) != &"se":
+		failures.append("Facing should resolve southeast")
+	if PlayerMovement.direction_name(Vector2(-1.0, -1.0)) != &"nw":
+		failures.append("Facing should resolve northwest")
+
+	var forward_score := PlayerMovement.interaction_score(
+		Vector2.ZERO, Vector2(20.0, 0.0), Vector2.RIGHT, 0.15
+	)
+	var rear_score := PlayerMovement.interaction_score(
+		Vector2.ZERO, Vector2(-10.0, 0.0), Vector2.RIGHT, 0.15
+	)
+	if not forward_score < INF:
+		failures.append("Interactables in front of the player should be selectable")
+	if rear_score != INF:
+		failures.append("Interactables behind the player should not steal interaction focus")
 
 	return failures
