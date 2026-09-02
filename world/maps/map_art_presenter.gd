@@ -8,9 +8,8 @@ const SIGN := "res://art/environment/props/sign.png"
 const PREPARATION_TABLE := "res://art/environment/cemetery/preparation_table.png"
 const GRAVE_FRESH := "res://art/environment/cemetery/grave_fresh.png"
 const GRAVE_WORN := "res://art/environment/cemetery/grave_worn.png"
-const PLAYER_WORKSHOP := (
-	"res://art/environment/cemetery/production/atlas/building_workshop_exterior.png"
-)
+const WORKSHOP_ATLAS := "res://art/environment/cemetery/production/atlas/"
+const PLAYER_WORKSHOP := WORKSHOP_ATLAS + "building_workshop_exterior.png"
 const VILLAGE_HOUSE := "res://art/environment/buildings/village_house.png"
 const TREE := "res://art/environment/props/tree.png"
 const ROCK := "res://art/environment/props/rock.png"
