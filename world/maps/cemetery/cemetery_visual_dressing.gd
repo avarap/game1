@@ -25,7 +25,55 @@ const VILLAGE_ROUTE_REPLACED := [
 	Vector2i(25, 4),
 	Vector2i(24, 3),
 ]
+const VILLAGE_ROUTE_TILES := [
+	Vector2i(4, 1),
+	Vector2i(1, 1),
+	Vector2i(6, 1),
+	Vector2i(3, 1),
+	Vector2i(7, 1),
+	Vector2i(2, 1),
+	Vector2i(5, 1),
+	Vector2i(0, 1),
+	Vector2i(4, 1),
+	Vector2i(6, 1),
+	Vector2i(1, 1),
+	Vector2i(7, 1),
+	Vector2i(3, 1),
+	Vector2i(5, 1),
+	Vector2i(2, 1),
+	Vector2i(6, 1),
+	Vector2i(4, 1),
+]
+const PATH_EDGE_CELLS := [
+	Vector2i(22, 17),
+	Vector2i(23, 17),
+	Vector2i(26, 17),
+	Vector2i(21, 18),
+	Vector2i(27, 18),
+	Vector2i(21, 19),
+	Vector2i(27, 19),
+	Vector2i(22, 20),
+	Vector2i(27, 20),
+	Vector2i(23, 21),
+	Vector2i(26, 21),
+]
+const PATH_EDGE_TILES := [
+	Vector2i(7, 1),
+	Vector2i(2, 1),
+	Vector2i(5, 1),
+	Vector2i(6, 1),
+	Vector2i(1, 1),
+	Vector2i(3, 1),
+	Vector2i(7, 1),
+	Vector2i(0, 1),
+	Vector2i(5, 1),
+	Vector2i(2, 1),
+	Vector2i(6, 1),
+]
 const PLAZA_CELLS := [
+	Vector2i(23, 17),
+	Vector2i(24, 17),
+	Vector2i(25, 17),
 	Vector2i(22, 18),
 	Vector2i(23, 18),
 	Vector2i(24, 18),
@@ -39,24 +87,49 @@ const PLAZA_CELLS := [
 	Vector2i(23, 20),
 	Vector2i(24, 20),
 	Vector2i(25, 20),
-	Vector2i(26, 20),
+	Vector2i(24, 21),
 ]
 const PLAZA_TILES := [
-	Vector2i(0, 2),
-	Vector2i(1, 2),
+	Vector2i(6, 2),
 	Vector2i(2, 2),
+	Vector2i(5, 2),
+	Vector2i(1, 2),
+	Vector2i(7, 2),
 	Vector2i(3, 2),
+	Vector2i(0, 2),
 	Vector2i(4, 2),
 	Vector2i(5, 2),
-	Vector2i(6, 2),
-	Vector2i(7, 2),
-	Vector2i(1, 2),
-	Vector2i(4, 2),
-	Vector2i(6, 2),
 	Vector2i(2, 2),
-	Vector2i(5, 2),
+	Vector2i(6, 2),
+	Vector2i(1, 2),
 	Vector2i(7, 2),
+	Vector2i(4, 2),
+	Vector2i(0, 2),
+	Vector2i(3, 2),
+	Vector2i(5, 2),
 ]
+const GROUND_BREAKUP_PATCHES := {
+	Vector2i(1, 0): [
+		Vector2i(7, 6), Vector2i(11, 9), Vector2i(14, 6), Vector2i(17, 11),
+		Vector2i(9, 16), Vector2i(13, 18), Vector2i(18, 15), Vector2i(20, 7),
+	],
+	Vector2i(3, 0): [
+		Vector2i(6, 11), Vector2i(10, 14), Vector2i(15, 4), Vector2i(19, 13),
+		Vector2i(28, 6), Vector2i(29, 9), Vector2i(27, 14), Vector2i(45, 10),
+	],
+	Vector2i(5, 0): [
+		Vector2i(31, 4), Vector2i(34, 6), Vector2i(38, 4), Vector2i(41, 7),
+		Vector2i(30, 12), Vector2i(43, 13), Vector2i(33, 18), Vector2i(42, 17),
+	],
+	Vector2i(6, 0): [
+		Vector2i(8, 24), Vector2i(12, 26), Vector2i(17, 25), Vector2i(20, 23),
+		Vector2i(28, 24), Vector2i(32, 26), Vector2i(38, 24), Vector2i(45, 27),
+	],
+	Vector2i(7, 0): [
+		Vector2i(5, 19), Vector2i(11, 21), Vector2i(16, 19), Vector2i(19, 26),
+		Vector2i(27, 21), Vector2i(35, 22), Vector2i(40, 25), Vector2i(47, 23),
+	],
+}
 const TREE_CELLS := [
 	Vector2i(5, 5),
 	Vector2i(8, 7),
@@ -70,6 +143,8 @@ const TREE_CELLS := [
 	Vector2i(8, 27),
 	Vector2i(12, 28),
 	Vector2i(17, 27),
+	Vector2i(21, 16),
+	Vector2i(27, 16),
 	Vector2i(43, 5),
 	Vector2i(46, 8),
 	Vector2i(45, 14),
@@ -82,6 +157,10 @@ const DRY_GRASS_CELLS := [
 	Vector2i(13, 20),
 	Vector2i(16, 21),
 	Vector2i(18, 23),
+	Vector2i(21, 17),
+	Vector2i(27, 17),
+	Vector2i(22, 21),
+	Vector2i(26, 22),
 	Vector2i(28, 8),
 	Vector2i(30, 10),
 	Vector2i(31, 17),
@@ -107,8 +186,10 @@ func _apply_dressing(map: Node) -> void:
 		return
 
 	_apply_terrain_tileset(ground, paths)
+	_breakup_ground_masses(ground)
 	_rework_village_route(paths)
 	_add_plaza_landmark(paths)
+	_add_path_edges(paths)
 
 	for index in range(TREE_CELLS.size()):
 		var cell: Vector2i = TREE_CELLS[index]
@@ -142,18 +223,27 @@ func _apply_terrain_tileset(ground: TileMapLayer, paths: TileMapLayer) -> void:
 	paths.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
+func _breakup_ground_masses(ground: TileMapLayer) -> void:
+	for tile: Vector2i in GROUND_BREAKUP_PATCHES:
+		for cell: Vector2i in GROUND_BREAKUP_PATCHES[tile]:
+			ground.set_cell(cell, TERRAIN_SOURCE, tile)
+
+
 func _rework_village_route(paths: TileMapLayer) -> void:
 	for y in range(3, 20):
 		paths.erase_cell(Vector2i(24, y))
 	for index in range(VILLAGE_ROUTE_REPLACED.size()):
-		var cell: Vector2i = VILLAGE_ROUTE_REPLACED[index]
-		var tile := Vector2i(index % 4, 1)
-		paths.set_cell(cell, TERRAIN_SOURCE, tile)
+		paths.set_cell(VILLAGE_ROUTE_REPLACED[index], TERRAIN_SOURCE, VILLAGE_ROUTE_TILES[index])
 
 
 func _add_plaza_landmark(paths: TileMapLayer) -> void:
 	for index in range(PLAZA_CELLS.size()):
 		paths.set_cell(PLAZA_CELLS[index], TERRAIN_SOURCE, PLAZA_TILES[index])
+
+
+func _add_path_edges(paths: TileMapLayer) -> void:
+	for index in range(PATH_EDGE_CELLS.size()):
+		paths.set_cell(PATH_EDGE_CELLS[index], TERRAIN_SOURCE, PATH_EDGE_TILES[index])
 
 
 func _dress_forest_resources(map: Node) -> void:
