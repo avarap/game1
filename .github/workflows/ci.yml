@@ -30,27 +30,7 @@ jobs:
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
 
       - name: Check formatting of all GDScript files
-        run: |
-          if find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat --check; then
-            exit 0
-          fi
-          find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat
-          git diff -- '*.gd'
-          mkdir -p artifacts/gdformat
-          git diff --name-only -- '*.gd' | while IFS= read -r file; do
-            mkdir -p "artifacts/gdformat/$(dirname "$file")"
-            cp "$file" "artifacts/gdformat/$file"
-          done
-          exit 1
-
-      - name: Upload formatted GDScript output
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: gdformat-output
-          path: artifacts/gdformat
-          if-no-files-found: ignore
-          retention-days: 2
+        run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat --check
 
   validate-and-test:
     runs-on: ubuntu-24.04
