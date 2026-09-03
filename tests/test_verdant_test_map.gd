@@ -105,11 +105,9 @@ static func _check_physics_and_interaction(map: Node2D, failures: Array[String])
 	if not player.test_move(player.global_transform, Vector2(-96, 0)):
 		failures.append("World boundary must prevent leaving the test map")
 	var harvest_tree := map.get_node("Objects/HarvestTree") as Node2D
-	player.position = harvest_tree.position + Vector2(0, 32)
-	var face_up := InputEventAction.new()
-	face_up.action = "move_up"
-	face_up.pressed = true
-	player._unhandled_input(face_up)
+	# The production controller starts facing down; position above the target instead
+	# of sending movement actions to _unhandled_input(), which only handles interaction.
+	player.position = harvest_tree.position + Vector2(0, -32)
 	await tree.physics_frame
 	await tree.physics_frame
 	var event := InputEventAction.new()
