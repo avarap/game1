@@ -115,7 +115,9 @@ static func _validate_organic_path_underlay(map: Node, failures: Array[String]) 
 		if child is Line2D and (child as Line2D).points.size() >= 4:
 			line_count += 1
 	if line_count < 3:
-		failures.append("Organic path underlay should define the three primary route silhouettes")
+		failures.append(
+			"Organic path underlay should define the three primary route silhouettes"
+		)
 
 
 static func _validate_grave_breakup(objects: TileMapLayer, failures: Array[String]) -> void:
@@ -126,7 +128,9 @@ static func _validate_grave_breakup(objects: TileMapLayer, failures: Array[Strin
 		if child is Sprite2D and child.name.begins_with("GraveVisual"):
 			grave_visuals += 1
 	if grave_visuals < 10:
-		failures.append("Cemetery graves should use sub-tile visual placement to break grid alignment")
+		failures.append(
+			"Cemetery graves should use sub-tile visual placement to break grid alignment"
+		)
 
 
 static func _atlas_coords(layer: TileMapLayer) -> Dictionary:
