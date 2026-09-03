@@ -17,7 +17,12 @@ const GRAVE_PIVOT := Vector2(16, 32)
 const SIGN_PIVOT := Vector2(16, 32)
 const TERRAIN_PIVOT := Vector2(16, 16)
 const CEMETERY_VISUAL_RECT := Rect2i(Vector2i(30, 5), Vector2i(14, 15))
-const TECHNICAL_LEGACY_REGION := Rect2(Vector2(128, 96), Vector2(32, 32))
+const TECHNICAL_LEGACY_CELLS: Array[Vector2i] = [
+	Vector2i(0, 3),
+	Vector2i(2, 3),
+	Vector2i(3, 3),
+	Vector2i(4, 3),
+]
 
 const GRAVE_FINISH_POSITIONS: Array[Vector2] = [
 	Vector2(1016, 236),
@@ -176,7 +181,8 @@ func _hide_technical_legacy_sprites(map: Node) -> void:
 		var atlas_texture := sprite.texture as AtlasTexture
 		if atlas_texture == null or atlas_texture.atlas != LEGACY_ATLAS_TEXTURE:
 			continue
-		if atlas_texture.region == TECHNICAL_LEGACY_REGION:
+		var atlas_cell := Vector2i(atlas_texture.region.position / 32.0)
+		if atlas_cell in TECHNICAL_LEGACY_CELLS:
 			sprite.visible = false
 
 
