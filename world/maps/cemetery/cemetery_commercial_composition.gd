@@ -30,19 +30,20 @@ const GRAVE_POSITIONS: Array[Vector2] = [
 	Vector2(1302, 522),
 ]
 const INNER_WALK_POINTS: Array[Vector2] = [
-	Vector2(1010, 568),
-	Vector2(1038, 527),
-	Vector2(1054, 480),
-	Vector2(1047, 432),
-	Vector2(1064, 382),
-	Vector2(1101, 349),
-	Vector2(1148, 336),
-	Vector2(1198, 345),
-	Vector2(1241, 370),
-	Vector2(1274, 410),
-	Vector2(1283, 454),
-	Vector2(1266, 500),
-	Vector2(1235, 535),
+	Vector2(1008, 573),
+	Vector2(1031, 548),
+	Vector2(1058, 525),
+	Vector2(1090, 508),
+	Vector2(1127, 491),
+	Vector2(1161, 467),
+	Vector2(1188, 438),
+	Vector2(1205, 403),
+	Vector2(1211, 367),
+	Vector2(1205, 332),
+	Vector2(1189, 303),
+	Vector2(1163, 280),
+	Vector2(1128, 264),
+	Vector2(1091, 258),
 ]
 const LOW_CLUSTER_POSITIONS: Array[Vector2] = [
 	Vector2(1028, 264),
@@ -62,6 +63,10 @@ const FRAME_TREE_POSITIONS: Array[Vector2] = [
 	Vector2(1348, 230),
 	Vector2(985, 612),
 	Vector2(1375, 638),
+]
+const FOREGROUND_TREE_POSITIONS: Array[Vector2] = [
+	Vector2(1082, 690),
+	Vector2(1428, 704),
 ]
 const FENCE_ANCHOR_CELLS: Array[Vector2i] = [
 	Vector2i(31, 5),
@@ -94,23 +99,13 @@ const RELOCATED_GRAVE_CELLS: Array[Vector2i] = [
 	Vector2i(41, 15),
 ]
 const FENCE_CLUSTER_POSITIONS: Array[Vector2] = [
-	Vector2(1010, 182),
-	Vector2(1061, 170),
-	Vector2(1118, 177),
-	Vector2(1182, 168),
-	Vector2(1267, 181),
-	Vector2(1326, 194),
-	Vector2(974, 252),
-	Vector2(966, 341),
-	Vector2(981, 454),
-	Vector2(1375, 287),
-	Vector2(1381, 381),
-	Vector2(1367, 492),
-	Vector2(1028, 620),
-	Vector2(1089, 607),
-	Vector2(1167, 625),
-	Vector2(1288, 611),
-	Vector2(1342, 624),
+	Vector2(1008, 184),
+	Vector2(1072, 171),
+	Vector2(1335, 197),
+	Vector2(970, 348),
+	Vector2(1374, 382),
+	Vector2(1084, 613),
+	Vector2(1341, 621),
 ]
 
 
@@ -125,7 +120,8 @@ func _apply_composition(map: Node) -> void:
 	var paths := map.get_node_or_null("paths") as TileMapLayer
 	var objects := map.get_node_or_null("objects_y_sorted") as TileMapLayer
 	var low := map.get_node_or_null("decoration_low") as TileMapLayer
-	if paths == null or objects == null or low == null:
+	var foreground := map.get_node_or_null("foreground_occlusion") as TileMapLayer
+	if paths == null or objects == null or low == null or foreground == null:
 		return
 
 	_soften_cemetery_grid(paths)
@@ -133,7 +129,7 @@ func _apply_composition(map: Node) -> void:
 	_add_inner_walk(map)
 	_recompose_graves(objects)
 	_recompose_landmark(objects)
-	_add_asymmetric_clusters(objects, low)
+	_add_asymmetric_clusters(objects, low, foreground)
 
 
 func _soften_cemetery_grid(paths: TileMapLayer) -> void:
@@ -167,8 +163,8 @@ func _add_inner_walk(map: Node) -> void:
 	walk.name = "CemeteryInnerWalk"
 	walk.z_index = -9
 	map.add_child(walk)
-	_add_path_line(walk, "Edge", 43.0, PATH_EDGE_COLOR)
-	_add_path_line(walk, "Fill", 27.0, PATH_FILL_COLOR)
+	_add_path_line(walk, "Edge", 35.0, PATH_EDGE_COLOR)
+	_add_path_line(walk, "Fill", 21.0, PATH_FILL_COLOR)
 
 
 func _add_path_line(parent: Node2D, suffix: String, width: float, color: Color) -> void:
@@ -194,12 +190,12 @@ func _recompose_landmark(objects: TileMapLayer) -> void:
 	var landmark := objects.get_node_or_null("CemeteryLandmark") as Node2D
 	if landmark == null:
 		return
-	_set_ground_position(landmark, "GateTreeLeft", Vector2(1148, 554), TREE_PIVOT)
-	_set_ground_position(landmark, "GateTreeRight", Vector2(1336, 563), TREE_PIVOT)
-	_set_ground_position(landmark, "MemorialLeft", Vector2(1203, 540), GRAVE_PIVOT)
-	_set_ground_position(landmark, "MemorialCenter", Vector2(1249, 512), GRAVE_PIVOT)
-	_set_ground_position(landmark, "MemorialRight", Vector2(1294, 543), GRAVE_PIVOT)
-	_set_ground_position(landmark, "CemeteryGateSign", Vector2(1248, 574), GRAVE_PIVOT)
+	_set_ground_position(landmark, "GateTreeLeft", Vector2(1178, 558), TREE_PIVOT)
+	_set_ground_position(landmark, "GateTreeRight", Vector2(1318, 566), TREE_PIVOT)
+	_set_ground_position(landmark, "MemorialLeft", Vector2(1215, 540), GRAVE_PIVOT)
+	_set_ground_position(landmark, "MemorialCenter", Vector2(1248, 508), GRAVE_PIVOT)
+	_set_ground_position(landmark, "MemorialRight", Vector2(1281, 542), GRAVE_PIVOT)
+	_set_ground_position(landmark, "CemeteryGateSign", Vector2(1248, 578), GRAVE_PIVOT)
 
 
 func _set_ground_position(
@@ -213,7 +209,11 @@ func _set_ground_position(
 		child.position = ground_position - pivot
 
 
-func _add_asymmetric_clusters(objects: TileMapLayer, low: TileMapLayer) -> void:
+func _add_asymmetric_clusters(
+	objects: TileMapLayer,
+	low: TileMapLayer,
+	foreground: TileMapLayer,
+) -> void:
 	if low.get_node_or_null("CommercialLowCluster00") == null:
 		for index: int in range(LOW_CLUSTER_POSITIONS.size()):
 			_add_sprite(
@@ -231,6 +231,15 @@ func _add_asymmetric_clusters(objects: TileMapLayer, low: TileMapLayer) -> void:
 				FRAME_TREE_POSITIONS[index],
 				TREE_PIVOT,
 				"CommercialFrameTree%02d" % index,
+			)
+	if foreground.get_node_or_null("CommercialForegroundTree00") == null:
+		for index: int in range(FOREGROUND_TREE_POSITIONS.size()):
+			_add_sprite(
+				foreground,
+				TREE_TEXTURE,
+				FOREGROUND_TREE_POSITIONS[index],
+				TREE_PIVOT,
+				"CommercialForegroundTree%02d" % index,
 			)
 	_add_memorial_cluster(objects)
 
