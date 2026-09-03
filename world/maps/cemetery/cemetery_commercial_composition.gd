@@ -77,18 +77,15 @@ func _apply_composition(map: Node) -> void:
 	if paths == null or objects == null or low == null:
 		return
 
-	_reduce_cemetery_grid(paths)
+	_soften_cemetery_grid(paths)
 	_add_inner_walk(map)
 	_recompose_graves(objects)
 	_recompose_landmark(objects)
 	_add_asymmetric_clusters(objects, low)
 
 
-func _reduce_cemetery_grid(paths: TileMapLayer) -> void:
-	for cell: Vector2i in paths.get_used_cells():
-		if cell.x >= 31 and cell.x <= 43 and cell.y >= 7 and cell.y <= 18:
-			paths.erase_cell(cell)
-	paths.modulate.a = 0.11
+func _soften_cemetery_grid(paths: TileMapLayer) -> void:
+	paths.modulate.a = 0.08
 
 
 func _add_inner_walk(map: Node) -> void:
