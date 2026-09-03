@@ -145,6 +145,7 @@ func _apply_finish() -> void:
 	if objects == null or low == null or foreground == null:
 		return
 	_clean_structural_noise(objects)
+	_clean_legacy_decor_tiles(low, foreground)
 	_finish_graves(objects)
 	_soften_inner_walk(map)
 	_add_micro_transitions(low)
@@ -158,6 +159,13 @@ func _clean_structural_noise(objects: TileMapLayer) -> void:
 	for cell: Vector2i in objects.get_used_cells():
 		if CEMETERY_VISUAL_RECT.has_point(cell):
 			objects.erase_cell(cell)
+
+
+func _clean_legacy_decor_tiles(low: TileMapLayer, foreground: TileMapLayer) -> void:
+	for cell: Vector2i in low.get_used_cells():
+		low.erase_cell(cell)
+	for cell: Vector2i in foreground.get_used_cells():
+		foreground.erase_cell(cell)
 
 
 func _finish_graves(objects: TileMapLayer) -> void:
