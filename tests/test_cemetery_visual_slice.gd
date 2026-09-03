@@ -32,6 +32,7 @@ static func run() -> Array[String]:
 	if path != null and path.get_used_cells().size() < 80:
 		failures.append("Primary cemetery path should be continuous and substantial")
 	_validate_terrain_sources(ground, path, objects, failures)
+	_validate_authored_ground_clustering(ground, failures)
 	_validate_authored_path_variation(path, failures)
 	for polygon in map.find_children("*", "Polygon2D", true, false):
 		if (polygon as Polygon2D).visible:
@@ -61,6 +62,31 @@ static func _validate_source_texture(
 	var source := tile_set.get_source(0) as TileSetAtlasSource
 	if source == null or source.texture == null or source.texture.resource_path != expected_path:
 		failures.append("Cemetery %s TileSet should use %s" % [label, expected_path])
+
+
+static func _validate_authored_ground_clustering(
+	ground: TileMapLayer, failures: Array[String]
+) -> void:
+	if ground == null:
+		return
+	var matches := 0
+	var neighbor_pairs := 0
+	for cell in ground.get_used_cells():
+		var atlas_coord := ground.get_cell_atlas_coords(cell)
+		for neighbor in [cell + Vector2i.RIGHT, cell + Vector2i.DOWN]:
+			if ground.get_cell_source_id(neighbor) < 0:
+				continue
+			neighbor_pairs += 1
+			if ground.get_cell_atlas_coords(neighbor) == atlas_coord:
+				matches += 1
+	if neighbor_pairs == 0:
+		failures.append("Cemetery ground should expose adjacent authored terrain cells")
+		return
+	var coherence := float(matches) / float(neighbor_pairs)
+	if coherence < 0.42:
+		failures.append(
+			"Ground variants should form authored terrain clusters instead of per-cell noise"
+		)
 
 
 static func _validate_authored_path_variation(path: TileMapLayer, failures: Array[String]) -> void:
