@@ -169,7 +169,7 @@ static func _validate_no_visible_technical_legacy_sprites(
 ) -> void:
 	for child in map.find_children("*", "Sprite2D", true, false):
 		var sprite := child as Sprite2D
-		if not sprite.visible:
+		if not sprite.is_visible_in_tree():
 			continue
 		var atlas_texture := sprite.texture as AtlasTexture
 		if atlas_texture == null or atlas_texture.atlas == null:
