@@ -34,6 +34,8 @@ static func run() -> Array[String]:
 	_validate_terrain_sources(ground, path, objects, failures)
 	_validate_authored_ground_clustering(ground, failures)
 	_validate_authored_path_variation(path, failures)
+	_validate_organic_path_underlay(map, failures)
+	_validate_grave_breakup(objects, failures)
 	for polygon in map.find_children("*", "Polygon2D", true, false):
 		if (polygon as Polygon2D).visible:
 			failures.append("Production cemetery should not expose placeholder Polygon2D")
@@ -101,6 +103,30 @@ static func _validate_authored_path_variation(path: TileMapLayer, failures: Arra
 			plaza_cells += 1
 	if plaza_cells < 10:
 		failures.append("Cemetery junction should expose a substantial authored plaza landmark")
+
+
+static func _validate_organic_path_underlay(map: Node, failures: Array[String]) -> void:
+	var underlay := map.get_node_or_null("OrganicPathUnderlay") as Node2D
+	if underlay == null:
+		failures.append("Cemetery paths should have a continuous organic underlay")
+		return
+	var line_count := 0
+	for child in underlay.get_children():
+		if child is Line2D and (child as Line2D).points.size() >= 4:
+			line_count += 1
+	if line_count < 3:
+		failures.append("Organic path underlay should define the three primary route silhouettes")
+
+
+static func _validate_grave_breakup(objects: TileMapLayer, failures: Array[String]) -> void:
+	if objects == null:
+		return
+	var grave_visuals := 0
+	for child in objects.get_children():
+		if child is Sprite2D and child.name.begins_with("GraveVisual"):
+			grave_visuals += 1
+	if grave_visuals < 10:
+		failures.append("Cemetery graves should use sub-tile visual placement to break grid alignment")
 
 
 static func _atlas_coords(layer: TileMapLayer) -> Dictionary:
