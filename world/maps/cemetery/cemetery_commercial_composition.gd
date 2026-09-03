@@ -13,56 +13,10 @@ const LEGACY_ATLAS_TEXTURE := preload(
 const TREE_PIVOT := Vector2(32, 84)
 const DRY_GRASS_PIVOT := Vector2(16, 28)
 const GRAVE_PIVOT := Vector2(16, 32)
-const FENCE_PIVOT := Vector2(16, 32)
 const TERRAIN_PIVOT := Vector2(16, 16)
 const PATH_EDGE_COLOR := Color8(67, 47, 31, 184)
 const PATH_FILL_COLOR := Color8(112, 81, 49, 210)
-const FENCE_TILE := Vector2i(4, 3)
 const CEMETERY_VISUAL_RECT := Rect2i(Vector2i(30, 5), Vector2i(14, 15))
-const STRUCTURAL_ANCHORS: Array[Vector2i] = [
-	Vector2i(31, 5),
-	Vector2i(36, 5),
-	Vector2i(42, 5),
-	Vector2i(30, 8),
-	Vector2i(30, 13),
-	Vector2i(43, 9),
-	Vector2i(43, 16),
-	Vector2i(32, 19),
-	Vector2i(42, 19),
-	Vector2i(33, 6),
-	Vector2i(40, 6),
-	Vector2i(31, 10),
-	Vector2i(42, 11),
-	Vector2i(31, 17),
-	Vector2i(34, 18),
-	Vector2i(41, 18),
-	Vector2i(34, 9),
-	Vector2i(40, 10),
-	Vector2i(33, 14),
-	Vector2i(41, 13),
-]
-const STRUCTURAL_TILES: Array[Vector2i] = [
-	Vector2i(4, 3),
-	Vector2i(2, 3),
-	Vector2i(4, 3),
-	Vector2i(1, 3),
-	Vector2i(4, 3),
-	Vector2i(3, 3),
-	Vector2i(4, 3),
-	Vector2i(2, 3),
-	Vector2i(4, 3),
-	Vector2i(0, 3),
-	Vector2i(3, 3),
-	Vector2i(1, 3),
-	Vector2i(2, 3),
-	Vector2i(4, 3),
-	Vector2i(0, 3),
-	Vector2i(3, 3),
-	Vector2i(1, 3),
-	Vector2i(2, 3),
-	Vector2i(0, 3),
-	Vector2i(4, 3),
-]
 const GRAVE_POSITIONS: Array[Vector2] = [
 	Vector2(1034, 245),
 	Vector2(1068, 230),
@@ -122,15 +76,6 @@ const FOREGROUND_GRASS_POSITIONS: Array[Vector2] = [
 	Vector2(1284, 688),
 	Vector2(1340, 651),
 	Vector2(1492, 697),
-]
-const FENCE_CLUSTER_POSITIONS: Array[Vector2] = [
-	Vector2(1001, 187),
-	Vector2(1082, 169),
-	Vector2(1340, 205),
-	Vector2(963, 343),
-	Vector2(1380, 377),
-	Vector2(1069, 616),
-	Vector2(1348, 626),
 ]
 const EDGE_GROUND_POSITIONS: Array[Vector2] = [
 	Vector2(1017, 559),
@@ -196,7 +141,7 @@ func _apply_composition(map: Node) -> void:
 		return
 
 	_soften_cemetery_grid(paths)
-	_reauthor_enclosure(objects)
+	_remove_technical_enclosure(objects)
 	_add_inner_walk(map)
 	_add_path_transitions(low)
 	_recompose_graves(objects)
@@ -208,22 +153,10 @@ func _soften_cemetery_grid(paths: TileMapLayer) -> void:
 	paths.modulate.a = 0.055
 
 
-func _reauthor_enclosure(objects: TileMapLayer) -> void:
+func _remove_technical_enclosure(objects: TileMapLayer) -> void:
 	for cell: Vector2i in objects.get_used_cells():
 		if CEMETERY_VISUAL_RECT.has_point(cell):
 			objects.erase_cell(cell)
-	for index: int in range(STRUCTURAL_ANCHORS.size()):
-		objects.set_cell(STRUCTURAL_ANCHORS[index], 0, STRUCTURAL_TILES[index])
-	if objects.get_node_or_null("CommercialFenceCluster00") != null:
-		return
-	for index: int in range(FENCE_CLUSTER_POSITIONS.size()):
-		_add_atlas_sprite(
-			objects,
-			FENCE_TILE,
-			FENCE_CLUSTER_POSITIONS[index],
-			"CommercialFenceCluster%02d" % index,
-			FENCE_PIVOT,
-		)
 
 
 func _add_inner_walk(map: Node) -> void:
