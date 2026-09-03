@@ -10,8 +10,10 @@ const LEGACY_ATLAS_TEXTURE := preload(
 const TREE_PIVOT := Vector2(32, 84)
 const DRY_GRASS_PIVOT := Vector2(16, 28)
 const GRAVE_PIVOT := Vector2(16, 32)
+const FENCE_PIVOT := Vector2(16, 32)
 const PATH_EDGE_COLOR := Color8(67, 47, 31, 194)
 const PATH_FILL_COLOR := Color8(112, 81, 49, 218)
+const FENCE_TILE := Vector2i(4, 3)
 const GRAVE_POSITIONS: Array[Vector2] = [
 	Vector2(1061, 232),
 	Vector2(1144, 204),
@@ -61,6 +63,44 @@ const FRAME_TREE_POSITIONS: Array[Vector2] = [
 	Vector2(985, 612),
 	Vector2(1375, 638),
 ]
+const FENCE_SAMPLE_CELLS: Array[Vector2i] = [
+	Vector2i(31, 5),
+	Vector2i(36, 5),
+	Vector2i(42, 5),
+	Vector2i(30, 8),
+	Vector2i(30, 13),
+	Vector2i(43, 9),
+	Vector2i(43, 16),
+	Vector2i(32, 19),
+	Vector2i(42, 19),
+]
+const RELOCATED_GRAVE_CELLS: Array[Vector2i] = [
+	Vector2i(32, 7),
+	Vector2i(37, 7),
+	Vector2i(41, 7),
+	Vector2i(32, 15),
+	Vector2i(37, 15),
+	Vector2i(41, 15),
+]
+const FENCE_CLUSTER_POSITIONS: Array[Vector2] = [
+	Vector2(1010, 182),
+	Vector2(1061, 170),
+	Vector2(1118, 177),
+	Vector2(1182, 168),
+	Vector2(1267, 181),
+	Vector2(1326, 194),
+	Vector2(974, 252),
+	Vector2(966, 341),
+	Vector2(981, 454),
+	Vector2(1375, 287),
+	Vector2(1381, 381),
+	Vector2(1367, 492),
+	Vector2(1028, 620),
+	Vector2(1089, 607),
+	Vector2(1167, 625),
+	Vector2(1288, 611),
+	Vector2(1342, 624),
+]
 
 
 func _ready() -> void:
@@ -78,6 +118,7 @@ func _apply_composition(map: Node) -> void:
 		return
 
 	_soften_cemetery_grid(paths)
+	_reauthor_enclosure(objects)
 	_add_inner_walk(map)
 	_recompose_graves(objects)
 	_recompose_landmark(objects)
@@ -86,6 +127,26 @@ func _apply_composition(map: Node) -> void:
 
 func _soften_cemetery_grid(paths: TileMapLayer) -> void:
 	paths.modulate.a = 0.08
+
+
+func _reauthor_enclosure(objects: TileMapLayer) -> void:
+	for cell: Vector2i in objects.get_used_cells():
+		if objects.get_cell_atlas_coords(cell) != FENCE_TILE:
+			continue
+		if cell not in FENCE_SAMPLE_CELLS:
+			objects.erase_cell(cell)
+	for cell: Vector2i in RELOCATED_GRAVE_CELLS:
+		objects.erase_cell(cell)
+	if objects.get_node_or_null("CommercialFenceCluster00") != null:
+		return
+	for index: int in range(FENCE_CLUSTER_POSITIONS.size()):
+		_add_atlas_sprite(
+			objects,
+			FENCE_TILE,
+			FENCE_CLUSTER_POSITIONS[index],
+			"CommercialFenceCluster%02d" % index,
+			FENCE_PIVOT,
+		)
 
 
 func _add_inner_walk(map: Node) -> void:
@@ -180,11 +241,12 @@ func _add_atlas_sprite(
 	atlas_cell: Vector2i,
 	ground_position: Vector2,
 	sprite_name: String,
+	pivot: Vector2 = GRAVE_PIVOT,
 ) -> void:
 	var texture := AtlasTexture.new()
 	texture.atlas = LEGACY_ATLAS_TEXTURE
 	texture.region = Rect2(atlas_cell * 32, Vector2i(32, 32))
-	_add_sprite(parent, texture, ground_position, GRAVE_PIVOT, sprite_name)
+	_add_sprite(parent, texture, ground_position, pivot, sprite_name)
 
 
 func _add_sprite(
