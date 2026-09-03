@@ -7,6 +7,12 @@ const TERRAIN_ATLAS := "res://art/environment/cemetery/production/atlas/terrain_
 const LEGACY_ATLAS := "res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png"
 const CEMETERY_VISUAL_RECT := Rect2i(Vector2i(30, 5), Vector2i(14, 15))
 const TECHNICAL_PLACEHOLDER_TILE := Vector2i(4, 3)
+const TECHNICAL_LEGACY_SPRITES: Array[Vector2i] = [
+	Vector2i(0, 3),
+	Vector2i(2, 3),
+	Vector2i(3, 3),
+	Vector2i(4, 3),
+]
 
 
 static func run() -> Array[String]:
@@ -39,6 +45,7 @@ static func run() -> Array[String]:
 	_validate_path_underlay(map, failures)
 	_validate_grave_breakup(objects, failures)
 	_validate_no_technical_placeholders(objects, failures)
+	_validate_no_visible_technical_legacy_sprites(map, failures)
 	for polygon in map.find_children("*", "Polygon2D", true, false):
 		if (polygon as Polygon2D).visible:
 			failures.append("Production cemetery should not expose placeholder Polygon2D")
@@ -154,6 +161,24 @@ static func _validate_no_technical_placeholders(
 			and objects.get_cell_atlas_coords(cell) == TECHNICAL_PLACEHOLDER_TILE
 		):
 			failures.append("Cemetery gameplay area must not expose technical placeholder tiles")
+			return
+
+
+static func _validate_no_visible_technical_legacy_sprites(
+	map: Node, failures: Array[String]
+) -> void:
+	for child in map.find_children("*", "Sprite2D", true, false):
+		var sprite := child as Sprite2D
+		if not sprite.visible:
+			continue
+		var atlas_texture := sprite.texture as AtlasTexture
+		if atlas_texture == null or atlas_texture.atlas == null:
+			continue
+		if atlas_texture.atlas.resource_path != LEGACY_ATLAS:
+			continue
+		var atlas_cell := Vector2i(atlas_texture.region.position / 32.0)
+		if atlas_cell in TECHNICAL_LEGACY_SPRITES:
+			failures.append("Cemetery must not render technical legacy footprint sprites")
 			return
 
 
