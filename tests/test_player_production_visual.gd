@@ -5,10 +5,25 @@ const ACTION_SHEET := "res://art/characters/player/player_actions_64x96.png"
 const DIRECTIONS := [&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"]
 const STATES := [&"idle", &"walk", &"run", &"interact"]
 const MINIMUM_FRAMES := {&"idle": 2, &"walk": 6, &"run": 6, &"interact": 4}
+const FRAME_SIZE := Vector2i(64, 96)
+const SHEET_SIZE := Vector2i(1152, 768)
+const MINIMUM_OPAQUE_PIXELS := 180
+const MINIMUM_SILHOUETTE_HEIGHT := 42
+const MINIMUM_SILHOUETTE_WIDTH := {
+	&"n": 18,
+	&"ne": 18,
+	&"e": 16,
+	&"se": 18,
+	&"s": 16,
+	&"sw": 18,
+	&"w": 16,
+	&"nw": 18,
+}
 
 
 static func run() -> Array[String]:
 	var failures: Array[String] = []
+	_check_action_sheet_content(failures)
 	var packed := load("res://player/player.tscn") as PackedScene
 	if packed == null:
 		failures.append("Production player scene should load")
@@ -40,6 +55,50 @@ static func run() -> Array[String]:
 
 	player.free()
 	return failures
+
+
+static func _check_action_sheet_content(failures: Array[String]) -> void:
+	var texture := load(ACTION_SHEET) as Texture2D
+	if texture == null:
+		failures.append("Authored player action sheet should load as image data")
+		return
+	var sheet := texture.get_image()
+	if sheet == null or sheet.is_empty():
+		failures.append("Authored player action sheet should expose image data")
+		return
+	if sheet.get_size() != SHEET_SIZE:
+		failures.append("Player action sheet should be a complete 18x8 atlas at 1152x768")
+		return
+
+	for direction_index in DIRECTIONS.size():
+		for column in 18:
+			var frame := sheet.get_region(
+				Rect2i(column * FRAME_SIZE.x, direction_index * FRAME_SIZE.y, 64, 96)
+			)
+			var bounds := frame.get_used_rect()
+			var frame_name := "%s column %d" % [DIRECTIONS[direction_index], column]
+			if (
+				bounds.size.x < MINIMUM_SILHOUETTE_WIDTH[DIRECTIONS[direction_index]]
+				or bounds.size.y < MINIMUM_SILHOUETTE_HEIGHT
+			):
+				failures.append("Player frame %s should have a readable silhouette" % frame_name)
+				continue
+
+			var opaque_pixels := 0
+			var has_partial_alpha := false
+			for y in FRAME_SIZE.y:
+				for x in FRAME_SIZE.x:
+					var alpha := frame.get_pixel(x, y).a
+					if alpha >= 1.0:
+						opaque_pixels += 1
+					elif alpha > 0.0:
+						has_partial_alpha = true
+			if opaque_pixels < MINIMUM_OPAQUE_PIXELS:
+				failures.append(
+					"Player frame %s should contain opaque authored pixels" % frame_name
+				)
+			if has_partial_alpha:
+				failures.append("Player frame %s should not contain softened alpha" % frame_name)
 
 
 static func _check_animation(
