@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://world/maps/cemetery/cemetery_map.gd" id="1_map"]
 [ext_resource type="Script" path="res://world/maps/cemetery/cemetery_navigation_region.gd" id="2_navigation"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://world/maps/cemetery/cemetery_visual_dressing.gd" id="8_dressing"]
 [ext_resource type="Script" path="res://world/maps/cemetery/cemetery_zoning.gd" id="9_zoning"]
 [ext_resource type="PackedScene" path="res://world/resources/tree_resource.tscn" id="10_tree_resource"]
+[ext_resource type="Script" path="res://world/maps/cemetery/cemetery_commercial_composition.gd" id="11_composition"]
 
 [sub_resource type="TileSet" id="TileSet_cemetery"]
 tile_size = Vector2i(32, 32)
@@ -185,3 +186,6 @@ script = ExtResource("9_zoning")
 
 [node name="AuthoredVisualDressing" type="Node" parent="."]
 script = ExtResource("8_dressing")
+
+[node name="CommercialCompositionPass" type="Node" parent="."]
+script = ExtResource("11_composition")
