@@ -19,6 +19,17 @@ const PATH_EDGE_COLOR := Color8(67, 47, 31, 184)
 const PATH_FILL_COLOR := Color8(112, 81, 49, 210)
 const FENCE_TILE := Vector2i(4, 3)
 const CEMETERY_VISUAL_RECT := Rect2i(Vector2i(30, 5), Vector2i(14, 15))
+const STRUCTURAL_ANCHORS: Array[Vector2i] = [
+	Vector2i(31, 5),
+	Vector2i(36, 5),
+	Vector2i(42, 5),
+	Vector2i(30, 8),
+	Vector2i(30, 13),
+	Vector2i(43, 9),
+	Vector2i(43, 16),
+	Vector2i(32, 19),
+	Vector2i(42, 19),
+]
 const GRAVE_POSITIONS: Array[Vector2] = [
 	Vector2(1034, 245),
 	Vector2(1068, 230),
@@ -168,6 +179,8 @@ func _reauthor_enclosure(objects: TileMapLayer) -> void:
 	for cell: Vector2i in objects.get_used_cells():
 		if CEMETERY_VISUAL_RECT.has_point(cell):
 			objects.erase_cell(cell)
+	for cell: Vector2i in STRUCTURAL_ANCHORS:
+		objects.set_cell(cell, 0, FENCE_TILE)
 	if objects.get_node_or_null("CommercialFenceCluster00") != null:
 		return
 	for index: int in range(FENCE_CLUSTER_POSITIONS.size()):
