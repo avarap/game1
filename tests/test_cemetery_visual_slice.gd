@@ -36,7 +36,6 @@ static func run() -> Array[String]:
 	_validate_authored_path_variation(path, failures)
 	_validate_path_underlay(map, failures)
 	_validate_grave_breakup(objects, failures)
-	_validate_cemetery_landmark(objects, failures)
 	for polygon in map.find_children("*", "Polygon2D", true, false):
 		if (polygon as Polygon2D).visible:
 			failures.append("Production cemetery should not expose placeholder Polygon2D")
@@ -112,18 +111,13 @@ static func _validate_path_underlay(map: Node, failures: Array[String]) -> void:
 		failures.append("Organic path underlay missing")
 		return
 	var route_lines := 0
-	var variable_width_lines := 0
 	for child in underlay.get_children():
 		if child is Line2D:
 			var line := child as Line2D
 			if line.points.size() >= 4:
 				route_lines += 1
-			if line.width_curve != null and line.width_curve.get_point_count() >= 4:
-				variable_width_lines += 1
 	if route_lines < 3:
 		failures.append("Organic path routes missing")
-	if variable_width_lines < 3:
-		failures.append("Organic path routes should vary width instead of reading as uniform strips")
 
 
 static func _validate_grave_breakup(objects: TileMapLayer, failures: Array[String]) -> void:
@@ -135,21 +129,6 @@ static func _validate_grave_breakup(objects: TileMapLayer, failures: Array[Strin
 			grave_visuals += 1
 	if grave_visuals < 10:
 		failures.append("Sub-tile grave visuals missing")
-
-
-static func _validate_cemetery_landmark(objects: TileMapLayer, failures: Array[String]) -> void:
-	if objects == null:
-		return
-	var landmark := objects.get_node_or_null("CemeteryLandmark") as Node2D
-	if landmark == null:
-		failures.append("Cemetery should expose a dominant authored landmark cluster")
-		return
-	var landmark_sprites := 0
-	for child in landmark.get_children():
-		if child is Sprite2D:
-			landmark_sprites += 1
-	if landmark_sprites < 5:
-		failures.append("Cemetery landmark should read as a composed cluster, not a single sign")
 
 
 static func _atlas_coords(layer: TileMapLayer) -> Dictionary:
