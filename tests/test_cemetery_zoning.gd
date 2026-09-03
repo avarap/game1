@@ -89,14 +89,20 @@ static func _check_grave_aisles(
 		if objects.get_cell_source_id(cell) != -1:
 			failures.append("Grave aisle should remain visually open at %s" % cell)
 
-	var grave_cells := 0
+	var grave_count := 0
 	for cell in objects.get_used_cells():
 		if not CEMETERY_RECT.has_point(cell):
 			continue
 		var atlas := objects.get_cell_atlas_coords(cell)
 		if atlas.y == 3 and atlas.x >= 0 and atlas.x <= 3:
-			grave_cells += 1
-	if grave_cells < 12:
+			grave_count += 1
+	for child in objects.get_children():
+		if child is not Sprite2D or not child.name.begins_with("GraveVisual"):
+			continue
+		var grave_cell := objects.local_to_map((child as Sprite2D).position)
+		if CEMETERY_RECT.has_point(grave_cell):
+			grave_count += 1
+	if grave_count < 12:
 		failures.append("Fenced cemetery should retain multiple grave clusters around its aisles")
 
 
