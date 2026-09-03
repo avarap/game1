@@ -10,9 +10,11 @@ Objetivo: un vertical slice original, jugable y con calidad visual de videojuego
 - Skill de proceso: `.agents/skills/orchestrating-game-production/SKILL.md`.
 - Estado operativo: `DEV_MEMORY.md`.
 - Plan: `ROADMAP.md`.
-- Arquitectura/spec: `MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
-- Diseño: `GAME_DESIGN.md`.
-- Dirección visual: `ART_DIRECTION.md`.
+- Arquitectura/spec: `docs/design/MASTER_SPEC_RPG_Godot4_Graveyard_Inspired.md`.
+- Diseño: `docs/design/GAME_DESIGN.md`.
+- Dirección visual: `docs/art/ART_DIRECTION.md`.
+- Índice documental: `docs/README.md`.
+- Lecciones de producción: `docs/production/LESSONS_LEARNED.md`.
 
 ## Estado
 
