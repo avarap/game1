@@ -109,51 +109,45 @@ const PLAZA_TILES: Array[Vector2i] = [
 	Vector2i(5, 2),
 	Vector2i(4, 2),
 ]
-const MAIN_PATH_POINTS := PackedVector2Array(
-	[
-		Vector2(360, 760),
-		Vector2(470, 742),
-		Vector2(565, 708),
-		Vector2(650, 670),
-		Vector2(735, 635),
-		Vector2(820, 612),
-		Vector2(910, 606),
-		Vector2(1000, 620),
-		Vector2(1090, 655),
-		Vector2(1190, 694),
-		Vector2(1320, 710),
-		Vector2(1490, 702),
-	]
-)
-const VILLAGE_PATH_POINTS := PackedVector2Array(
-	[
-		Vector2(780, 625),
-		Vector2(758, 565),
-		Vector2(782, 505),
-		Vector2(748, 444),
-		Vector2(772, 382),
-		Vector2(748, 315),
-		Vector2(778, 246),
-		Vector2(768, 112),
-	]
-)
-const CEMETERY_PATH_POINTS := PackedVector2Array(
-	[
-		Vector2(985, 616),
-		Vector2(994, 535),
-		Vector2(1042, 462),
-		Vector2(1125, 405),
-		Vector2(1220, 383),
-		Vector2(1310, 410),
-		Vector2(1374, 470),
-		Vector2(1390, 548),
-		Vector2(1350, 615),
-		Vector2(1260, 655),
-		Vector2(1160, 666),
-		Vector2(1060, 642),
-		Vector2(985, 616),
-	]
-)
+const MAIN_PATH_POINTS: Array[Vector2] = [
+	Vector2(360, 760),
+	Vector2(470, 742),
+	Vector2(565, 708),
+	Vector2(650, 670),
+	Vector2(735, 635),
+	Vector2(820, 612),
+	Vector2(910, 606),
+	Vector2(1000, 620),
+	Vector2(1090, 655),
+	Vector2(1190, 694),
+	Vector2(1320, 710),
+	Vector2(1490, 702),
+]
+const VILLAGE_PATH_POINTS: Array[Vector2] = [
+	Vector2(780, 625),
+	Vector2(758, 565),
+	Vector2(782, 505),
+	Vector2(748, 444),
+	Vector2(772, 382),
+	Vector2(748, 315),
+	Vector2(778, 246),
+	Vector2(768, 112),
+]
+const CEMETERY_PATH_POINTS: Array[Vector2] = [
+	Vector2(985, 616),
+	Vector2(994, 535),
+	Vector2(1042, 462),
+	Vector2(1125, 405),
+	Vector2(1220, 383),
+	Vector2(1310, 410),
+	Vector2(1374, 470),
+	Vector2(1390, 548),
+	Vector2(1350, 615),
+	Vector2(1260, 655),
+	Vector2(1160, 666),
+	Vector2(1060, 642),
+	Vector2(985, 616),
+]
 const GRAVE_CELLS: Array[Vector2i] = [
 	Vector2i(33, 7),
 	Vector2i(36, 6),
@@ -351,13 +345,14 @@ func _add_organic_path_underlay(map: Node) -> void:
 func _add_route_lines(
 	parent: Node2D,
 	route_name: String,
-	points: PackedVector2Array,
+	points: Array[Vector2],
 	border_width: float,
 	fill_width: float,
 ) -> void:
+	var packed_points := PackedVector2Array(points)
 	var border := Line2D.new()
 	border.name = "%sBorder" % route_name
-	border.points = points
+	border.points = packed_points
 	border.width = border_width
 	border.default_color = PATH_BORDER_COLOR
 	border.antialiased = false
@@ -365,7 +360,7 @@ func _add_route_lines(
 
 	var fill := Line2D.new()
 	fill.name = "%sFill" % route_name
-	fill.points = points
+	fill.points = packed_points
 	fill.width = fill_width
 	fill.default_color = PATH_FILL_COLOR
 	fill.antialiased = false
