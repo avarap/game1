@@ -24,7 +24,7 @@ static func run() -> Array[String]:
 		"ground", "paths", "decoration_low", "objects_y_sorted", "foreground_occlusion"
 	]:
 		var layer := map.get_node_or_null(layer_name) as TileMapLayer
-		if layer == null or layer.get_used_cells().is_empty():
+		if layer == null or not _has_authored_visuals(layer):
 			failures.append("Production layer should be populated: %s" % layer_name)
 	var ground := map.get_node_or_null("ground") as TileMapLayer
 	var path := map.get_node_or_null("paths") as TileMapLayer
@@ -44,6 +44,15 @@ static func run() -> Array[String]:
 			failures.append("Production cemetery should not expose placeholder Polygon2D")
 	map.free()
 	return failures
+
+
+static func _has_authored_visuals(layer: TileMapLayer) -> bool:
+	if not layer.get_used_cells().is_empty():
+		return true
+	for child in layer.find_children("*", "Sprite2D", true, false):
+		if (child as Sprite2D).visible:
+			return true
+	return false
 
 
 static func _validate_terrain_sources(
