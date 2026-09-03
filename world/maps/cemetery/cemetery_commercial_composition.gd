@@ -63,16 +63,27 @@ const FRAME_TREE_POSITIONS: Array[Vector2] = [
 	Vector2(985, 612),
 	Vector2(1375, 638),
 ]
-const FENCE_SAMPLE_CELLS: Array[Vector2i] = [
+const FENCE_ANCHOR_CELLS: Array[Vector2i] = [
 	Vector2i(31, 5),
+	Vector2i(32, 5),
 	Vector2i(36, 5),
+	Vector2i(37, 5),
 	Vector2i(42, 5),
 	Vector2i(30, 8),
+	Vector2i(30, 9),
 	Vector2i(30, 13),
+	Vector2i(30, 18),
+	Vector2i(43, 6),
 	Vector2i(43, 9),
+	Vector2i(43, 10),
 	Vector2i(43, 16),
+	Vector2i(43, 17),
 	Vector2i(32, 19),
+	Vector2i(33, 19),
+	Vector2i(36, 19),
+	Vector2i(40, 19),
 	Vector2i(42, 19),
+	Vector2i(43, 19),
 ]
 const RELOCATED_GRAVE_CELLS: Array[Vector2i] = [
 	Vector2i(32, 7),
@@ -133,7 +144,7 @@ func _reauthor_enclosure(objects: TileMapLayer) -> void:
 	for cell: Vector2i in objects.get_used_cells():
 		if objects.get_cell_atlas_coords(cell) != FENCE_TILE:
 			continue
-		if cell not in FENCE_SAMPLE_CELLS:
+		if cell not in FENCE_ANCHOR_CELLS:
 			objects.erase_cell(cell)
 	for cell: Vector2i in RELOCATED_GRAVE_CELLS:
 		objects.erase_cell(cell)
