@@ -179,7 +179,9 @@ func _hide_technical_legacy_sprites(map: Node) -> void:
 	for child in map.find_children("*", "Sprite2D", true, false):
 		var sprite := child as Sprite2D
 		var atlas_texture := sprite.texture as AtlasTexture
-		if atlas_texture == null or atlas_texture.atlas != LEGACY_ATLAS_TEXTURE:
+		if atlas_texture == null or atlas_texture.atlas == null:
+			continue
+		if atlas_texture.atlas.resource_path != LEGACY_ATLAS_TEXTURE.resource_path:
 			continue
 		var atlas_cell := Vector2i(atlas_texture.region.position / 32.0)
 		if atlas_cell in TECHNICAL_LEGACY_CELLS:
