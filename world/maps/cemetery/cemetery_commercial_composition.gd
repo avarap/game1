@@ -29,6 +29,39 @@ const STRUCTURAL_ANCHORS: Array[Vector2i] = [
 	Vector2i(43, 16),
 	Vector2i(32, 19),
 	Vector2i(42, 19),
+	Vector2i(33, 6),
+	Vector2i(40, 6),
+	Vector2i(31, 10),
+	Vector2i(42, 11),
+	Vector2i(31, 17),
+	Vector2i(34, 18),
+	Vector2i(41, 18),
+	Vector2i(34, 9),
+	Vector2i(40, 10),
+	Vector2i(33, 14),
+	Vector2i(41, 13),
+]
+const STRUCTURAL_TILES: Array[Vector2i] = [
+	Vector2i(4, 3),
+	Vector2i(2, 3),
+	Vector2i(4, 3),
+	Vector2i(1, 3),
+	Vector2i(4, 3),
+	Vector2i(3, 3),
+	Vector2i(4, 3),
+	Vector2i(2, 3),
+	Vector2i(4, 3),
+	Vector2i(0, 3),
+	Vector2i(3, 3),
+	Vector2i(1, 3),
+	Vector2i(2, 3),
+	Vector2i(4, 3),
+	Vector2i(0, 3),
+	Vector2i(3, 3),
+	Vector2i(1, 3),
+	Vector2i(2, 3),
+	Vector2i(0, 3),
+	Vector2i(4, 3),
 ]
 const GRAVE_POSITIONS: Array[Vector2] = [
 	Vector2(1034, 245),
@@ -179,8 +212,8 @@ func _reauthor_enclosure(objects: TileMapLayer) -> void:
 	for cell: Vector2i in objects.get_used_cells():
 		if CEMETERY_VISUAL_RECT.has_point(cell):
 			objects.erase_cell(cell)
-	for cell: Vector2i in STRUCTURAL_ANCHORS:
-		objects.set_cell(cell, 0, FENCE_TILE)
+	for index: int in range(STRUCTURAL_ANCHORS.size()):
+		objects.set_cell(STRUCTURAL_ANCHORS[index], 0, STRUCTURAL_TILES[index])
 	if objects.get_node_or_null("CommercialFenceCluster00") != null:
 		return
 	for index: int in range(FENCE_CLUSTER_POSITIONS.size()):
