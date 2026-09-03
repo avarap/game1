@@ -2,7 +2,6 @@ class_name CemeteryCommercialFinish
 extends Node
 
 const TREE_TEXTURE := preload("res://art/environment/props/tree.png")
-const DRY_GRASS_TEXTURE := preload("res://art/environment/cemetery/dry_grass.png")
 const GRAVE_WORN_TEXTURE := preload("res://art/environment/cemetery/grave_worn.png")
 const SIGN_TEXTURE := preload("res://art/environment/props/sign.png")
 const TERRAIN_ATLAS_TEXTURE := preload(
@@ -12,11 +11,17 @@ const LEGACY_ATLAS_TEXTURE := preload(
 	"res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png"
 )
 
+const DRY_GRASS_PATH := "res://art/environment/cemetery/dry_grass.png"
 const TREE_PIVOT := Vector2(32, 84)
-const DRY_GRASS_PIVOT := Vector2(16, 28)
 const GRAVE_PIVOT := Vector2(16, 32)
 const SIGN_PIVOT := Vector2(16, 32)
 const TERRAIN_PIVOT := Vector2(16, 16)
+const TECHNICAL_LEGACY_CELLS: Array[Vector2i] = [
+	Vector2i(0, 3),
+	Vector2i(2, 3),
+	Vector2i(3, 3),
+	Vector2i(4, 3),
+]
 
 const AUTHORED_GRAVE_POSITIONS: Array[Vector2] = [
 	Vector2(1042, 254),
@@ -69,32 +74,6 @@ const TRANSITION_FLIPS: Array[bool] = [
 	true,
 	false,
 ]
-const EDGE_GRASS_POSITIONS: Array[Vector2] = [
-	Vector2(1007, 555),
-	Vector2(1051, 522),
-	Vector2(1098, 486),
-	Vector2(1141, 451),
-	Vector2(1176, 401),
-	Vector2(1205, 365),
-	Vector2(1172, 315),
-	Vector2(1134, 281),
-	Vector2(1217, 421),
-	Vector2(1082, 534),
-]
-const LOW_DETAIL_POSITIONS: Array[Vector2] = [
-	Vector2(997, 289),
-	Vector2(1108, 311),
-	Vector2(1241, 202),
-	Vector2(1328, 306),
-	Vector2(1063, 430),
-	Vector2(1318, 481),
-]
-const FOREGROUND_GRASS: Array[Vector2] = [
-	Vector2(1062, 630),
-	Vector2(1124, 661),
-	Vector2(1302, 654),
-	Vector2(1388, 672),
-]
 
 
 func _ready() -> void:
@@ -116,8 +95,6 @@ func _apply_finish(map: Node) -> void:
 	_soften_inner_walk(map)
 	_add_authored_grave_clusters(objects)
 	_add_micro_transitions(low)
-	_add_edge_grass(low)
-	_add_low_detail(low)
 	_add_foreground_occlusion(foreground)
 	_stage_dominant_landmark(objects)
 
@@ -137,7 +114,8 @@ func _clean_legacy_decor_tiles(low: TileMapLayer, foreground: TileMapLayer) -> v
 func _hide_repeated_legacy_dressing(map: Node) -> void:
 	for child in map.find_children("*", "Sprite2D", true, false):
 		var sprite := child as Sprite2D
-		if sprite.name == "ArtVisual":
+		if sprite.texture != null and sprite.texture.resource_path == DRY_GRASS_PATH:
+			sprite.visible = false
 			continue
 		if sprite.name.begins_with("GraveVisual"):
 			sprite.visible = false
@@ -145,8 +123,14 @@ func _hide_repeated_legacy_dressing(map: Node) -> void:
 		var atlas_texture := sprite.texture as AtlasTexture
 		if atlas_texture == null or atlas_texture.atlas == null:
 			continue
-		if atlas_texture.atlas.resource_path == LEGACY_ATLAS_TEXTURE.resource_path:
-			sprite.visible = false
+		if atlas_texture.atlas.resource_path != LEGACY_ATLAS_TEXTURE.resource_path:
+			continue
+		var atlas_cell := Vector2i(atlas_texture.region.position / 32.0)
+		if sprite.name == "ArtVisual":
+			if atlas_cell in TECHNICAL_LEGACY_CELLS:
+				sprite.visible = false
+			continue
+		sprite.visible = false
 
 
 func _soften_inner_walk(map: Node) -> void:
@@ -208,46 +192,9 @@ func _add_micro_transitions(low: TileMapLayer) -> void:
 		)
 
 
-func _add_edge_grass(low: TileMapLayer) -> void:
-	if low.get_node_or_null("CommercialEdgeGrass00") != null:
-		return
-	for index: int in range(EDGE_GRASS_POSITIONS.size()):
-		_add_sprite(
-			low,
-			DRY_GRASS_TEXTURE,
-			EDGE_GRASS_POSITIONS[index],
-			DRY_GRASS_PIVOT,
-			"CommercialEdgeGrass%02d" % index,
-			index % 3 == 0,
-		)
-
-
-func _add_low_detail(low: TileMapLayer) -> void:
-	if low.get_node_or_null("CommercialFinishGrass00") != null:
-		return
-	for index: int in range(LOW_DETAIL_POSITIONS.size()):
-		_add_sprite(
-			low,
-			DRY_GRASS_TEXTURE,
-			LOW_DETAIL_POSITIONS[index],
-			DRY_GRASS_PIVOT,
-			"CommercialFinishGrass%02d" % index,
-			index % 3 == 1,
-		)
-
-
 func _add_foreground_occlusion(foreground: TileMapLayer) -> void:
-	if foreground.get_node_or_null("CommercialFinishForeground00") != null:
+	if foreground.get_node_or_null("CommercialFinishForegroundTreeWest") != null:
 		return
-	for index: int in range(FOREGROUND_GRASS.size()):
-		_add_sprite(
-			foreground,
-			DRY_GRASS_TEXTURE,
-			FOREGROUND_GRASS[index],
-			DRY_GRASS_PIVOT,
-			"CommercialFinishForeground%02d" % index,
-			index % 2 == 0,
-		)
 	_add_sprite(
 		foreground,
 		TREE_TEXTURE,
@@ -283,22 +230,6 @@ func _stage_dominant_landmark(objects: TileMapLayer) -> void:
 	_add_sprite(landmark, TREE_TEXTURE, Vector2(1331, 532), TREE_PIVOT, "CanopyEast", true)
 	_add_atlas_sprite(landmark, Vector2i(1, 3), Vector2(1251, 478), "MemorialHeart", false)
 	_add_sprite(landmark, SIGN_TEXTURE, Vector2(1252, 576), SIGN_PIVOT, "GateSign", false)
-	_add_sprite(
-		landmark,
-		DRY_GRASS_TEXTURE,
-		Vector2(1215, 548),
-		DRY_GRASS_PIVOT,
-		"LandmarkGrassWest",
-		false,
-	)
-	_add_sprite(
-		landmark,
-		DRY_GRASS_TEXTURE,
-		Vector2(1289, 555),
-		DRY_GRASS_PIVOT,
-		"LandmarkGrassEast",
-		true,
-	)
 
 
 func _add_atlas_sprite(
