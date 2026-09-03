@@ -18,9 +18,7 @@ const GROUND_BASE := Vector2i(0, 0)
 const PATH_BASE := Vector2i(0, 1)
 const PATH_BORDER_COLOR := Color8(62, 43, 30, 164)
 const PATH_FILL_COLOR := Color8(111, 79, 48, 198)
-const PATH_DETAIL_ALPHA := 0.12
-const GATE_SHADOW_COLOR := Color8(47, 32, 24, 255)
-const GATE_WOOD_COLOR := Color8(92, 61, 38, 255)
+const PATH_DETAIL_ALPHA := 0.16
 const VILLAGE_ROUTE: Array[Vector2i] = [
 	Vector2i(24, 19),
 	Vector2i(24, 18),
@@ -192,19 +190,19 @@ const GRAVE_TILES: Array[Vector2i] = [
 	Vector2i(3, 3),
 ]
 const GRAVE_OFFSETS: Array[Vector2] = [
-	Vector2(-19, 9),
-	Vector2(13, -13),
-	Vector2(20, 7),
-	Vector2(-16, -11),
-	Vector2(18, 12),
-	Vector2(-21, 3),
-	Vector2(10, -15),
-	Vector2(19, 13),
-	Vector2(-17, 7),
-	Vector2(14, -10),
-	Vector2(-20, 14),
-	Vector2(11, -14),
-	Vector2(18, 6),
+	Vector2(-14, 7),
+	Vector2(9, -9),
+	Vector2(15, 5),
+	Vector2(-11, -8),
+	Vector2(13, 9),
+	Vector2(-15, 2),
+	Vector2(7, -11),
+	Vector2(14, 10),
+	Vector2(-12, 5),
+	Vector2(10, -7),
+	Vector2(-15, 11),
+	Vector2(8, -10),
+	Vector2(13, 4),
 ]
 const TREE_CELLS: Array[Vector2i] = [
 	Vector2i(5, 5),
@@ -292,17 +290,6 @@ const CEMETERY_ACCENT_POSITIONS: Array[Vector2] = [
 	Vector2(1070, 455),
 	Vector2(1160, 472),
 	Vector2(1268, 449),
-]
-const FOREGROUND_ACCENT_POSITIONS: Array[Vector2] = [
-	Vector2(617, 548),
-	Vector2(681, 565),
-	Vector2(756, 543),
-	Vector2(838, 571),
-	Vector2(930, 548),
-	Vector2(1017, 569),
-	Vector2(1110, 546),
-	Vector2(1191, 565),
-	Vector2(1247, 536),
 ]
 
 
@@ -393,10 +380,6 @@ func _add_route_lines(
 	border.width = border_width
 	border.width_curve = width_profile
 	border.default_color = PATH_BORDER_COLOR
-	border.joint_mode = Line2D.LINE_JOINT_ROUND
-	border.begin_cap_mode = Line2D.LINE_CAP_ROUND
-	border.end_cap_mode = Line2D.LINE_CAP_ROUND
-	border.round_precision = 5
 	border.antialiased = false
 	parent.add_child(border)
 
@@ -406,10 +389,6 @@ func _add_route_lines(
 	fill.width = fill_width
 	fill.width_curve = width_profile
 	fill.default_color = PATH_FILL_COLOR
-	fill.joint_mode = Line2D.LINE_JOINT_ROUND
-	fill.begin_cap_mode = Line2D.LINE_CAP_ROUND
-	fill.end_cap_mode = Line2D.LINE_CAP_ROUND
-	fill.round_precision = 5
 	fill.antialiased = false
 	parent.add_child(fill)
 
@@ -499,7 +478,6 @@ func _add_cemetery_landmark(objects: TileMapLayer, low: TileMapLayer) -> void:
 	landmark.name = "CemeteryLandmark"
 	landmark.y_sort_enabled = true
 	objects.add_child(landmark)
-	_add_gate_arch(landmark)
 	_add_sprite(landmark, TREE_TEXTURE, Vector2(1203, 548), TREE_PIVOT, "GateTreeLeft")
 	_add_sprite(landmark, TREE_TEXTURE, Vector2(1322, 556), TREE_PIVOT, "GateTreeRight")
 	_add_atlas_sprite(landmark, Vector2i(2, 3), Vector2(1240, 548), "MemorialLeft")
@@ -515,58 +493,9 @@ func _add_cemetery_landmark(objects: TileMapLayer, low: TileMapLayer) -> void:
 			DRY_GRASS_PIVOT,
 			"CemeteryAccent%02d" % index,
 		)
-	for index: int in range(FOREGROUND_ACCENT_POSITIONS.size()):
-		_add_sprite(
-			objects,
-			DRY_GRASS_TEXTURE,
-			FOREGROUND_ACCENT_POSITIONS[index],
-			DRY_GRASS_PIVOT,
-			"ForegroundAccent%02d" % index,
-		)
 
 	_add_sprite(objects, TREE_TEXTURE, Vector2(944, 695), TREE_PIVOT, "ForegroundFrameLeft")
 	_add_sprite(objects, TREE_TEXTURE, Vector2(1396, 682), TREE_PIVOT, "ForegroundFrameRight")
-
-
-func _add_gate_arch(parent: Node2D) -> void:
-	_add_gate_line(parent, "GateShadowLeft", [Vector2(1227, 568), Vector2(1227, 510)], 12.0, GATE_SHADOW_COLOR)
-	_add_gate_line(parent, "GateShadowRight", [Vector2(1311, 568), Vector2(1311, 510)], 12.0, GATE_SHADOW_COLOR)
-	_add_gate_line(
-		parent,
-		"GateShadowArch",
-		[Vector2(1227, 510), Vector2(1269, 486), Vector2(1311, 510)],
-		12.0,
-		GATE_SHADOW_COLOR,
-	)
-	_add_gate_line(parent, "GateWoodLeft", [Vector2(1227, 568), Vector2(1227, 510)], 7.0, GATE_WOOD_COLOR)
-	_add_gate_line(parent, "GateWoodRight", [Vector2(1311, 568), Vector2(1311, 510)], 7.0, GATE_WOOD_COLOR)
-	_add_gate_line(
-		parent,
-		"GateWoodArch",
-		[Vector2(1227, 510), Vector2(1269, 486), Vector2(1311, 510)],
-		7.0,
-		GATE_WOOD_COLOR,
-	)
-
-
-func _add_gate_line(
-	parent: Node2D,
-	line_name: String,
-	points: Array[Vector2],
-	width: float,
-	color: Color,
-) -> void:
-	var line := Line2D.new()
-	line.name = line_name
-	line.points = PackedVector2Array(points)
-	line.width = width
-	line.default_color = color
-	line.joint_mode = Line2D.LINE_JOINT_ROUND
-	line.begin_cap_mode = Line2D.LINE_CAP_ROUND
-	line.end_cap_mode = Line2D.LINE_CAP_ROUND
-	line.round_precision = 4
-	line.antialiased = false
-	parent.add_child(line)
 
 
 func _dress_forest_resources(map: Node) -> void:
