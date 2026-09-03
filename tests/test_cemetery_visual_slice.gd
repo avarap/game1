@@ -5,6 +5,8 @@ const MAP_PATH := "res://world/maps/cemetery/cemetery_map.tscn"
 const CATALOG_PATH := "res://art/environment/cemetery/production/data/cemetery_art_catalog.tres"
 const TERRAIN_ATLAS := "res://art/environment/cemetery/production/atlas/terrain_ground_paths_32.png"
 const LEGACY_ATLAS := "res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png"
+const CEMETERY_VISUAL_RECT := Rect2i(Vector2i(30, 5), Vector2i(14, 15))
+const TECHNICAL_PLACEHOLDER_TILE := Vector2i(4, 3)
 
 
 static func run() -> Array[String]:
@@ -36,6 +38,7 @@ static func run() -> Array[String]:
 	_validate_authored_path_variation(path, failures)
 	_validate_path_underlay(map, failures)
 	_validate_grave_breakup(objects, failures)
+	_validate_no_technical_placeholders(objects, failures)
 	for polygon in map.find_children("*", "Polygon2D", true, false):
 		if (polygon as Polygon2D).visible:
 			failures.append("Production cemetery should not expose placeholder Polygon2D")
@@ -129,6 +132,20 @@ static func _validate_grave_breakup(objects: TileMapLayer, failures: Array[Strin
 			grave_visuals += 1
 	if grave_visuals < 10:
 		failures.append("Sub-tile grave visuals missing")
+
+
+static func _validate_no_technical_placeholders(
+	objects: TileMapLayer, failures: Array[String]
+) -> void:
+	if objects == null:
+		return
+	for cell in objects.get_used_cells():
+		if (
+			CEMETERY_VISUAL_RECT.has_point(cell)
+			and objects.get_cell_atlas_coords(cell) == TECHNICAL_PLACEHOLDER_TILE
+		):
+			failures.append("Cemetery gameplay area must not expose technical placeholder tiles")
+			return
 
 
 static func _atlas_coords(layer: TileMapLayer) -> Dictionary:
