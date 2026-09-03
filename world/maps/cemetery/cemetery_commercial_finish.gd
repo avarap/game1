@@ -17,30 +17,7 @@ const GRAVE_PIVOT := Vector2(16, 32)
 const SIGN_PIVOT := Vector2(16, 32)
 const TERRAIN_PIVOT := Vector2(16, 16)
 const CEMETERY_VISUAL_RECT := Rect2i(Vector2i(30, 5), Vector2i(14, 15))
-const SUBTLE_STRUCTURE_TILE := Vector2i(4, 3)
 
-const STRUCTURAL_FINISH_CELLS: Array[Vector2i] = [
-	Vector2i(30, 5),
-	Vector2i(33, 5),
-	Vector2i(39, 5),
-	Vector2i(42, 6),
-	Vector2i(30, 8),
-	Vector2i(31, 11),
-	Vector2i(30, 15),
-	Vector2i(32, 18),
-	Vector2i(43, 8),
-	Vector2i(42, 11),
-	Vector2i(43, 15),
-	Vector2i(41, 18),
-	Vector2i(34, 7),
-	Vector2i(38, 8),
-	Vector2i(33, 13),
-	Vector2i(40, 14),
-	Vector2i(35, 17),
-	Vector2i(39, 17),
-	Vector2i(36, 10),
-	Vector2i(41, 6),
-]
 const GRAVE_FINISH_POSITIONS: Array[Vector2] = [
 	Vector2(1016, 236),
 	Vector2(1052, 214),
@@ -181,8 +158,6 @@ func _clean_structural_noise(objects: TileMapLayer) -> void:
 	for cell: Vector2i in objects.get_used_cells():
 		if CEMETERY_VISUAL_RECT.has_point(cell):
 			objects.erase_cell(cell)
-	for cell: Vector2i in STRUCTURAL_FINISH_CELLS:
-		objects.set_cell(cell, 0, SUBTLE_STRUCTURE_TILE)
 
 
 func _finish_graves(objects: TileMapLayer) -> void:
@@ -301,8 +276,6 @@ func _stage_dominant_landmark(objects: TileMapLayer) -> void:
 	_add_sprite(landmark, TREE_TEXTURE, Vector2(1314, 526), TREE_PIVOT, "CanopyEast", true)
 	_add_sprite(landmark, SIGN_TEXTURE, Vector2(1251, 574), SIGN_PIVOT, "GateSign", false)
 	_add_atlas_sprite(landmark, Vector2i(1, 3), Vector2(1250, 493), "MemorialHeart", false)
-	_add_atlas_sprite(landmark, Vector2i(4, 3), Vector2(1218, 538), "MarkerWest", false)
-	_add_atlas_sprite(landmark, Vector2i(4, 3), Vector2(1285, 542), "MarkerEast", true)
 	_add_sprite(
 		landmark,
 		DRY_GRASS_TEXTURE,
