@@ -77,14 +77,100 @@ const PLAZA_CELLS := [
 	Vector2i(24, 21),
 ]
 const GROUND_BREAKUP_PATCHES := {
-	Vector2i(1, 0): [Vector2i(7, 6), Vector2i(11, 9), Vector2i(14, 6), Vector2i(17, 11), Vector2i(9, 16), Vector2i(13, 18), Vector2i(18, 15), Vector2i(20, 7)],
-	Vector2i(3, 0): [Vector2i(6, 11), Vector2i(10, 14), Vector2i(15, 4), Vector2i(19, 13), Vector2i(28, 6), Vector2i(29, 9), Vector2i(27, 14), Vector2i(45, 10)],
-	Vector2i(5, 0): [Vector2i(31, 4), Vector2i(34, 6), Vector2i(38, 4), Vector2i(41, 7), Vector2i(30, 12), Vector2i(43, 13), Vector2i(33, 18), Vector2i(42, 17)],
-	Vector2i(6, 0): [Vector2i(8, 24), Vector2i(12, 26), Vector2i(17, 25), Vector2i(20, 23), Vector2i(28, 24), Vector2i(32, 26), Vector2i(38, 24), Vector2i(45, 27)],
-	Vector2i(7, 0): [Vector2i(5, 19), Vector2i(11, 21), Vector2i(16, 19), Vector2i(19, 26), Vector2i(27, 21), Vector2i(35, 22), Vector2i(40, 25), Vector2i(47, 23)],
+	Vector2i(1, 0):
+	[
+		Vector2i(7, 6),
+		Vector2i(11, 9),
+		Vector2i(14, 6),
+		Vector2i(17, 11),
+		Vector2i(9, 16),
+		Vector2i(13, 18),
+		Vector2i(18, 15),
+		Vector2i(20, 7),
+	],
+	Vector2i(3, 0):
+	[
+		Vector2i(6, 11),
+		Vector2i(10, 14),
+		Vector2i(15, 4),
+		Vector2i(19, 13),
+		Vector2i(28, 6),
+		Vector2i(29, 9),
+		Vector2i(27, 14),
+		Vector2i(45, 10),
+	],
+	Vector2i(5, 0):
+	[
+		Vector2i(31, 4),
+		Vector2i(34, 6),
+		Vector2i(38, 4),
+		Vector2i(41, 7),
+		Vector2i(30, 12),
+		Vector2i(43, 13),
+		Vector2i(33, 18),
+		Vector2i(42, 17),
+	],
+	Vector2i(6, 0):
+	[
+		Vector2i(8, 24),
+		Vector2i(12, 26),
+		Vector2i(17, 25),
+		Vector2i(20, 23),
+		Vector2i(28, 24),
+		Vector2i(32, 26),
+		Vector2i(38, 24),
+		Vector2i(45, 27),
+	],
+	Vector2i(7, 0):
+	[
+		Vector2i(5, 19),
+		Vector2i(11, 21),
+		Vector2i(16, 19),
+		Vector2i(19, 26),
+		Vector2i(27, 21),
+		Vector2i(35, 22),
+		Vector2i(40, 25),
+		Vector2i(47, 23),
+	],
 }
-const TREE_CELLS := [Vector2i(5, 5), Vector2i(8, 7), Vector2i(12, 5), Vector2i(15, 8), Vector2i(5, 13), Vector2i(8, 17), Vector2i(12, 15), Vector2i(16, 12), Vector2i(5, 24), Vector2i(8, 27), Vector2i(12, 28), Vector2i(17, 27), Vector2i(21, 16), Vector2i(27, 16), Vector2i(43, 5), Vector2i(46, 8), Vector2i(45, 14), Vector2i(46, 27)]
-const DRY_GRASS_CELLS := [Vector2i(6, 20), Vector2i(8, 21), Vector2i(10, 20), Vector2i(13, 20), Vector2i(16, 21), Vector2i(18, 23), Vector2i(21, 17), Vector2i(27, 17), Vector2i(22, 21), Vector2i(26, 22), Vector2i(28, 8), Vector2i(30, 10), Vector2i(31, 17), Vector2i(42, 18), Vector2i(44, 20), Vector2i(45, 25)]
+const TREE_CELLS := [
+	Vector2i(5, 5),
+	Vector2i(8, 7),
+	Vector2i(12, 5),
+	Vector2i(15, 8),
+	Vector2i(5, 13),
+	Vector2i(8, 17),
+	Vector2i(12, 15),
+	Vector2i(16, 12),
+	Vector2i(5, 24),
+	Vector2i(8, 27),
+	Vector2i(12, 28),
+	Vector2i(17, 27),
+	Vector2i(21, 16),
+	Vector2i(27, 16),
+	Vector2i(43, 5),
+	Vector2i(46, 8),
+	Vector2i(45, 14),
+	Vector2i(46, 27),
+]
+const DRY_GRASS_CELLS := [
+	Vector2i(6, 20),
+	Vector2i(8, 21),
+	Vector2i(10, 20),
+	Vector2i(13, 20),
+	Vector2i(16, 21),
+	Vector2i(18, 23),
+	Vector2i(21, 17),
+	Vector2i(27, 17),
+	Vector2i(22, 21),
+	Vector2i(26, 22),
+	Vector2i(28, 8),
+	Vector2i(30, 10),
+	Vector2i(31, 17),
+	Vector2i(42, 18),
+	Vector2i(44, 20),
+	Vector2i(45, 25),
+]
 
 
 func _ready() -> void:
@@ -111,11 +197,23 @@ func _apply_dressing(map: Node) -> void:
 	for index in range(TREE_CELLS.size()):
 		var cell: Vector2i = TREE_CELLS[index]
 		objects.erase_cell(cell)
-		_add_sprite(objects, TREE_TEXTURE, objects.map_to_local(cell), TREE_PIVOT, "TreeVisual%02d" % index)
+		_add_sprite(
+			objects,
+			TREE_TEXTURE,
+			objects.map_to_local(cell),
+			TREE_PIVOT,
+			"TreeVisual%02d" % index,
+		)
 
 	for index in range(DRY_GRASS_CELLS.size()):
 		var cell: Vector2i = DRY_GRASS_CELLS[index]
-		_add_sprite(low, DRY_GRASS_TEXTURE, low.map_to_local(cell), DRY_GRASS_PIVOT, "DryGrassVisual%02d" % index)
+		_add_sprite(
+			low,
+			DRY_GRASS_TEXTURE,
+			low.map_to_local(cell),
+			DRY_GRASS_PIVOT,
+			"DryGrassVisual%02d" % index,
+		)
 
 	_dress_forest_resources(map)
 
@@ -155,7 +253,12 @@ func _breakup_ground_masses(ground: TileMapLayer) -> void:
 
 
 func _paint_ground_cluster(ground: TileMapLayer, center: Vector2i, tile: Vector2i) -> void:
-	var offsets: Array[Vector2i] = [Vector2i.ZERO, Vector2i.RIGHT, Vector2i.DOWN, Vector2i(-1, 0)]
+	var offsets: Array[Vector2i] = [
+		Vector2i.ZERO,
+		Vector2i.RIGHT,
+		Vector2i.DOWN,
+		Vector2i(-1, 0),
+	]
 	var selector: int = abs((center.x * 31) ^ (center.y * 17))
 	if selector % 2 == 0:
 		offsets.append(Vector2i(0, -1))
@@ -206,14 +309,20 @@ func _dress_forest_resources(map: Node) -> void:
 			continue
 		var sprite := Sprite2D.new()
 		sprite.name = "ArtVisual"
-		sprite.texture = TREE_TEXTURE
-		sprite.centered = false
-		sprite.position = -TREE_PIVOT
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		resource.add_child(sprite)
+	sprite.texture = TREE_TEXTURE
+	sprite.centered = false
+	sprite.position = -TREE_PIVOT
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	resource.add_child(sprite)
 
 
-func _add_sprite(parent: Node2D, texture: Texture2D, ground_position: Vector2, pivot: Vector2, sprite_name: String) -> void:
+func _add_sprite(
+	parent: Node2D,
+	texture: Texture2D,
+	ground_position: Vector2,
+	pivot: Vector2,
+	sprite_name: String,
+) -> void:
 	var sprite := Sprite2D.new()
 	sprite.name = sprite_name
 	sprite.texture = texture
