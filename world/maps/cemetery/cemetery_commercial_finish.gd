@@ -138,13 +138,13 @@ const FOREGROUND_GRASS: Array[Vector2] = [
 
 
 func _ready() -> void:
-	call_deferred("_apply_finish")
-
-
-func _apply_finish() -> void:
 	var map := get_parent()
 	if map == null:
 		return
+	map.ready.connect(_apply_finish.bind(map), CONNECT_ONE_SHOT)
+
+
+func _apply_finish(map: Node) -> void:
 	var objects := map.get_node_or_null("objects_y_sorted") as TileMapLayer
 	var low := map.get_node_or_null("decoration_low") as TileMapLayer
 	var foreground := map.get_node_or_null("foreground_occlusion") as TileMapLayer
