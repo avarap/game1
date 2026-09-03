@@ -17,22 +17,13 @@ const DRY_GRASS_PIVOT := Vector2(16, 28)
 const GRAVE_PIVOT := Vector2(16, 32)
 const SIGN_PIVOT := Vector2(16, 32)
 const TERRAIN_PIVOT := Vector2(16, 16)
-const TECHNICAL_LEGACY_CELLS: Array[Vector2i] = [
-	Vector2i(0, 3),
-	Vector2i(2, 3),
-	Vector2i(3, 3),
-	Vector2i(4, 3),
-]
 
 const AUTHORED_GRAVE_POSITIONS: Array[Vector2] = [
-	Vector2(1030, 244),
-	Vector2(1084, 219),
-	Vector2(1121, 268),
-	Vector2(1272, 232),
-	Vector2(1324, 276),
-	Vector2(1049, 382),
-	Vector2(1278, 414),
-	Vector2(1337, 448),
+	Vector2(1042, 254),
+	Vector2(1096, 226),
+	Vector2(1283, 272),
+	Vector2(1328, 316),
+	Vector2(1064, 404),
 ]
 const AUTHORED_GRAVE_FLIPS: Array[bool] = [
 	false,
@@ -40,19 +31,13 @@ const AUTHORED_GRAVE_FLIPS: Array[bool] = [
 	false,
 	true,
 	false,
-	true,
-	false,
-	true,
 ]
 const AUTHORED_GRAVE_USES_MEMORIAL: Array[bool] = [
 	false,
 	true,
-	false,
-	false,
 	true,
 	false,
 	true,
-	false,
 ]
 const TRANSITION_POSITIONS: Array[Vector2] = [
 	Vector2(1020, 566),
@@ -152,16 +137,15 @@ func _clean_legacy_decor_tiles(low: TileMapLayer, foreground: TileMapLayer) -> v
 func _hide_repeated_legacy_dressing(map: Node) -> void:
 	for child in map.find_children("*", "Sprite2D", true, false):
 		var sprite := child as Sprite2D
+		if sprite.name == "ArtVisual":
+			continue
 		if sprite.name.begins_with("GraveVisual"):
 			sprite.visible = false
 			continue
 		var atlas_texture := sprite.texture as AtlasTexture
 		if atlas_texture == null or atlas_texture.atlas == null:
 			continue
-		if atlas_texture.atlas.resource_path != LEGACY_ATLAS_TEXTURE.resource_path:
-			continue
-		var atlas_cell := Vector2i(atlas_texture.region.position / 32.0)
-		if atlas_cell in TECHNICAL_LEGACY_CELLS:
+		if atlas_texture.atlas.resource_path == LEGACY_ATLAS_TEXTURE.resource_path:
 			sprite.visible = false
 
 
@@ -172,9 +156,9 @@ func _soften_inner_walk(map: Node) -> void:
 	var edge := walk.get_node_or_null("InnerWalkEdge") as Line2D
 	var fill := walk.get_node_or_null("InnerWalkFill") as Line2D
 	if edge != null:
-		edge.modulate.a = 0.34
+		edge.modulate.a = 0.24
 	if fill != null:
-		fill.modulate.a = 0.68
+		fill.modulate.a = 0.56
 
 
 func _add_authored_grave_clusters(objects: TileMapLayer) -> void:
@@ -220,7 +204,7 @@ func _add_micro_transitions(low: TileMapLayer) -> void:
 			TRANSITION_POSITIONS[index],
 			"FinishTransition%02d" % index,
 			TRANSITION_FLIPS[index],
-			0.42,
+			0.36,
 		)
 
 
@@ -295,14 +279,14 @@ func _stage_dominant_landmark(objects: TileMapLayer) -> void:
 	landmark.name = "CommercialFinishLandmark"
 	landmark.y_sort_enabled = true
 	objects.add_child(landmark)
-	_add_sprite(landmark, TREE_TEXTURE, Vector2(1177, 522), TREE_PIVOT, "CanopyWest", false)
-	_add_sprite(landmark, TREE_TEXTURE, Vector2(1324, 529), TREE_PIVOT, "CanopyEast", true)
-	_add_atlas_sprite(landmark, Vector2i(1, 3), Vector2(1251, 486), "MemorialHeart", false)
+	_add_sprite(landmark, TREE_TEXTURE, Vector2(1172, 526), TREE_PIVOT, "CanopyWest", false)
+	_add_sprite(landmark, TREE_TEXTURE, Vector2(1331, 532), TREE_PIVOT, "CanopyEast", true)
+	_add_atlas_sprite(landmark, Vector2i(1, 3), Vector2(1251, 478), "MemorialHeart", false)
 	_add_sprite(landmark, SIGN_TEXTURE, Vector2(1252, 576), SIGN_PIVOT, "GateSign", false)
 	_add_sprite(
 		landmark,
 		DRY_GRASS_TEXTURE,
-		Vector2(1218, 548),
+		Vector2(1215, 548),
 		DRY_GRASS_PIVOT,
 		"LandmarkGrassWest",
 		false,
@@ -310,7 +294,7 @@ func _stage_dominant_landmark(objects: TileMapLayer) -> void:
 	_add_sprite(
 		landmark,
 		DRY_GRASS_TEXTURE,
-		Vector2(1284, 555),
+		Vector2(1289, 555),
 		DRY_GRASS_PIVOT,
 		"LandmarkGrassEast",
 		true,
