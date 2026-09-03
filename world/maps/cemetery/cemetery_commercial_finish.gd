@@ -3,6 +3,7 @@ extends Node
 
 const TREE_TEXTURE := preload("res://art/environment/props/tree.png")
 const DRY_GRASS_TEXTURE := preload("res://art/environment/cemetery/dry_grass.png")
+const GRAVE_WORN_TEXTURE := preload("res://art/environment/cemetery/grave_worn.png")
 const SIGN_TEXTURE := preload("res://art/environment/props/sign.png")
 const TERRAIN_ATLAS_TEXTURE := preload(
 	"res://art/environment/cemetery/production/atlas/terrain_ground_paths_32.png"
@@ -23,28 +24,18 @@ const TECHNICAL_LEGACY_CELLS: Array[Vector2i] = [
 	Vector2i(4, 3),
 ]
 
-const GRAVE_FINISH_POSITIONS: Array[Vector2] = [
-	Vector2(1016, 236),
-	Vector2(1052, 214),
-	Vector2(1102, 251),
-	Vector2(1260, 223),
-	Vector2(1307, 204),
-	Vector2(1342, 251),
-	Vector2(1277, 285),
-	Vector2(1000, 352),
-	Vector2(1044, 384),
-	Vector2(1093, 345),
-	Vector2(1307, 385),
-	Vector2(1346, 430),
-	Vector2(1248, 450),
+const AUTHORED_GRAVE_POSITIONS: Array[Vector2] = [
+	Vector2(1030, 244),
+	Vector2(1084, 219),
+	Vector2(1121, 268),
+	Vector2(1272, 232),
+	Vector2(1324, 276),
+	Vector2(1049, 382),
+	Vector2(1278, 414),
+	Vector2(1337, 448),
 ]
-const GRAVE_FLIPS: Array[bool] = [
+const AUTHORED_GRAVE_FLIPS: Array[bool] = [
 	false,
-	true,
-	false,
-	true,
-	false,
-	true,
 	true,
 	false,
 	true,
@@ -52,20 +43,26 @@ const GRAVE_FLIPS: Array[bool] = [
 	true,
 	false,
 	true,
+]
+const AUTHORED_GRAVE_USES_MEMORIAL: Array[bool] = [
+	false,
+	true,
+	false,
+	false,
+	true,
+	false,
+	true,
+	false,
 ]
 const TRANSITION_POSITIONS: Array[Vector2] = [
-	Vector2(1018, 568),
-	Vector2(1044, 541),
-	Vector2(1071, 520),
-	Vector2(1106, 499),
-	Vector2(1138, 472),
-	Vector2(1162, 438),
-	Vector2(1185, 409),
-	Vector2(1204, 376),
-	Vector2(1184, 345),
-	Vector2(1197, 316),
-	Vector2(1168, 292),
-	Vector2(1129, 273),
+	Vector2(1020, 566),
+	Vector2(1069, 518),
+	Vector2(1111, 493),
+	Vector2(1158, 441),
+	Vector2(1192, 390),
+	Vector2(1184, 337),
+	Vector2(1163, 294),
+	Vector2(1122, 274),
 ]
 const TRANSITION_TILES: Array[Vector2i] = [
 	Vector2i(6, 0),
@@ -75,10 +72,6 @@ const TRANSITION_TILES: Array[Vector2i] = [
 	Vector2i(2, 0),
 	Vector2i(6, 1),
 	Vector2i(5, 0),
-	Vector2i(2, 1),
-	Vector2i(7, 1),
-	Vector2i(3, 0),
-	Vector2i(5, 1),
 	Vector2i(1, 0),
 ]
 const TRANSITION_FLIPS: Array[bool] = [
@@ -90,49 +83,32 @@ const TRANSITION_FLIPS: Array[bool] = [
 	false,
 	true,
 	false,
-	true,
-	true,
-	false,
-	false,
 ]
 const EDGE_GRASS_POSITIONS: Array[Vector2] = [
-	Vector2(1005, 557),
-	Vector2(1038, 529),
-	Vector2(1066, 505),
-	Vector2(1099, 486),
-	Vector2(1126, 459),
-	Vector2(1149, 426),
-	Vector2(1172, 395),
-	Vector2(1189, 365),
-	Vector2(1170, 335),
-	Vector2(1186, 307),
-	Vector2(1155, 286),
-	Vector2(1121, 269),
-	Vector2(1030, 581),
-	Vector2(1074, 531),
-	Vector2(1111, 510),
-	Vector2(1155, 478),
-	Vector2(1189, 432),
-	Vector2(1217, 397),
+	Vector2(1007, 555),
+	Vector2(1051, 522),
+	Vector2(1098, 486),
+	Vector2(1141, 451),
+	Vector2(1176, 401),
+	Vector2(1205, 365),
+	Vector2(1172, 315),
+	Vector2(1134, 281),
+	Vector2(1217, 421),
+	Vector2(1082, 534),
 ]
 const LOW_DETAIL_POSITIONS: Array[Vector2] = [
-	Vector2(991, 269),
-	Vector2(1078, 199),
-	Vector2(1115, 302),
-	Vector2(1244, 193),
-	Vector2(1301, 277),
-	Vector2(1351, 311),
-	Vector2(981, 389),
-	Vector2(1068, 424),
-	Vector2(1234, 432),
-	Vector2(1324, 474),
+	Vector2(997, 289),
+	Vector2(1108, 311),
+	Vector2(1241, 202),
+	Vector2(1328, 306),
+	Vector2(1063, 430),
+	Vector2(1318, 481),
 ]
 const FOREGROUND_GRASS: Array[Vector2] = [
-	Vector2(1058, 627),
-	Vector2(1110, 658),
-	Vector2(1288, 650),
-	Vector2(1349, 616),
-	Vector2(1394, 676),
+	Vector2(1062, 630),
+	Vector2(1124, 661),
+	Vector2(1302, 654),
+	Vector2(1388, 672),
 ]
 
 
@@ -151,9 +127,9 @@ func _apply_finish(map: Node) -> void:
 		return
 	_clean_structural_noise(objects)
 	_clean_legacy_decor_tiles(low, foreground)
-	_hide_technical_legacy_sprites(map)
-	_finish_graves(objects)
+	_hide_repeated_legacy_dressing(map)
 	_soften_inner_walk(map)
+	_add_authored_grave_clusters(objects)
 	_add_micro_transitions(low)
 	_add_edge_grass(low)
 	_add_low_detail(low)
@@ -173,9 +149,12 @@ func _clean_legacy_decor_tiles(low: TileMapLayer, foreground: TileMapLayer) -> v
 		foreground.erase_cell(cell)
 
 
-func _hide_technical_legacy_sprites(map: Node) -> void:
+func _hide_repeated_legacy_dressing(map: Node) -> void:
 	for child in map.find_children("*", "Sprite2D", true, false):
 		var sprite := child as Sprite2D
+		if sprite.name.begins_with("GraveVisual"):
+			sprite.visible = false
+			continue
 		var atlas_texture := sprite.texture as AtlasTexture
 		if atlas_texture == null or atlas_texture.atlas == null:
 			continue
@@ -186,15 +165,6 @@ func _hide_technical_legacy_sprites(map: Node) -> void:
 			sprite.visible = false
 
 
-func _finish_graves(objects: TileMapLayer) -> void:
-	for index: int in range(GRAVE_FINISH_POSITIONS.size()):
-		var grave := objects.get_node_or_null("GraveVisual%02d" % index) as Sprite2D
-		if grave == null:
-			continue
-		grave.position = GRAVE_FINISH_POSITIONS[index] - GRAVE_PIVOT
-		grave.flip_h = GRAVE_FLIPS[index]
-
-
 func _soften_inner_walk(map: Node) -> void:
 	var walk := map.get_node_or_null("CemeteryInnerWalk") as Node2D
 	if walk == null:
@@ -202,9 +172,36 @@ func _soften_inner_walk(map: Node) -> void:
 	var edge := walk.get_node_or_null("InnerWalkEdge") as Line2D
 	var fill := walk.get_node_or_null("InnerWalkFill") as Line2D
 	if edge != null:
-		edge.modulate.a = 0.42
+		edge.modulate.a = 0.34
 	if fill != null:
-		fill.modulate.a = 0.76
+		fill.modulate.a = 0.68
+
+
+func _add_authored_grave_clusters(objects: TileMapLayer) -> void:
+	if objects.get_node_or_null("CommercialAuthoredGraves") != null:
+		return
+	var graves := Node2D.new()
+	graves.name = "CommercialAuthoredGraves"
+	graves.y_sort_enabled = true
+	objects.add_child(graves)
+	for index: int in range(AUTHORED_GRAVE_POSITIONS.size()):
+		if AUTHORED_GRAVE_USES_MEMORIAL[index]:
+			_add_atlas_sprite(
+				graves,
+				Vector2i(1, 3),
+				AUTHORED_GRAVE_POSITIONS[index],
+				"AuthoredMemorial%02d" % index,
+				AUTHORED_GRAVE_FLIPS[index],
+			)
+		else:
+			_add_sprite(
+				graves,
+				GRAVE_WORN_TEXTURE,
+				AUTHORED_GRAVE_POSITIONS[index],
+				GRAVE_PIVOT,
+				"AuthoredWornGrave%02d" % index,
+				AUTHORED_GRAVE_FLIPS[index],
+			)
 
 
 func _add_micro_transitions(low: TileMapLayer) -> void:
@@ -223,7 +220,7 @@ func _add_micro_transitions(low: TileMapLayer) -> void:
 			TRANSITION_POSITIONS[index],
 			"FinishTransition%02d" % index,
 			TRANSITION_FLIPS[index],
-			0.48,
+			0.42,
 		)
 
 
@@ -270,7 +267,7 @@ func _add_foreground_occlusion(foreground: TileMapLayer) -> void:
 	_add_sprite(
 		foreground,
 		TREE_TEXTURE,
-		Vector2(990, 684),
+		Vector2(986, 686),
 		TREE_PIVOT,
 		"CommercialFinishForegroundTreeWest",
 		false,
@@ -278,7 +275,7 @@ func _add_foreground_occlusion(foreground: TileMapLayer) -> void:
 	_add_sprite(
 		foreground,
 		TREE_TEXTURE,
-		Vector2(1402, 690),
+		Vector2(1408, 694),
 		TREE_PIVOT,
 		"CommercialFinishForegroundTreeEast",
 		true,
@@ -298,14 +295,14 @@ func _stage_dominant_landmark(objects: TileMapLayer) -> void:
 	landmark.name = "CommercialFinishLandmark"
 	landmark.y_sort_enabled = true
 	objects.add_child(landmark)
-	_add_sprite(landmark, TREE_TEXTURE, Vector2(1188, 523), TREE_PIVOT, "CanopyWest", false)
-	_add_sprite(landmark, TREE_TEXTURE, Vector2(1314, 526), TREE_PIVOT, "CanopyEast", true)
-	_add_sprite(landmark, SIGN_TEXTURE, Vector2(1251, 574), SIGN_PIVOT, "GateSign", false)
-	_add_atlas_sprite(landmark, Vector2i(1, 3), Vector2(1250, 493), "MemorialHeart", false)
+	_add_sprite(landmark, TREE_TEXTURE, Vector2(1177, 522), TREE_PIVOT, "CanopyWest", false)
+	_add_sprite(landmark, TREE_TEXTURE, Vector2(1324, 529), TREE_PIVOT, "CanopyEast", true)
+	_add_atlas_sprite(landmark, Vector2i(1, 3), Vector2(1251, 486), "MemorialHeart", false)
+	_add_sprite(landmark, SIGN_TEXTURE, Vector2(1252, 576), SIGN_PIVOT, "GateSign", false)
 	_add_sprite(
 		landmark,
 		DRY_GRASS_TEXTURE,
-		Vector2(1234, 549),
+		Vector2(1218, 548),
 		DRY_GRASS_PIVOT,
 		"LandmarkGrassWest",
 		false,
@@ -313,7 +310,7 @@ func _stage_dominant_landmark(objects: TileMapLayer) -> void:
 	_add_sprite(
 		landmark,
 		DRY_GRASS_TEXTURE,
-		Vector2(1271, 553),
+		Vector2(1284, 555),
 		DRY_GRASS_PIVOT,
 		"LandmarkGrassEast",
 		true,
