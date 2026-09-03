@@ -16,9 +16,9 @@ const GRAVE_PIVOT := Vector2(16, 32)
 const SIGN_PIVOT := Vector2(16, 32)
 const GROUND_BASE := Vector2i(0, 0)
 const PATH_BASE := Vector2i(0, 1)
-const PATH_BORDER_COLOR := Color8(62, 43, 30, 170)
-const PATH_FILL_COLOR := Color8(111, 79, 48, 205)
-const PATH_DETAIL_ALPHA := 0.3
+const PATH_BORDER_COLOR := Color8(62, 43, 30, 164)
+const PATH_FILL_COLOR := Color8(111, 79, 48, 198)
+const PATH_DETAIL_ALPHA := 0.16
 const VILLAGE_ROUTE: Array[Vector2i] = [
 	Vector2i(24, 19),
 	Vector2i(24, 18),
@@ -112,37 +112,52 @@ const PLAZA_TILES: Array[Vector2i] = [
 	Vector2i(4, 2),
 ]
 const MAIN_PATH_POINTS: Array[Vector2] = [
-	Vector2(360, 760),
-	Vector2(470, 742),
-	Vector2(565, 708),
-	Vector2(650, 670),
-	Vector2(735, 635),
-	Vector2(820, 612),
-	Vector2(910, 606),
-	Vector2(1000, 620),
-	Vector2(1090, 655),
-	Vector2(1190, 694),
-	Vector2(1320, 710),
-	Vector2(1490, 702),
+	Vector2(352, 766),
+	Vector2(430, 755),
+	Vector2(492, 731),
+	Vector2(548, 704),
+	Vector2(612, 684),
+	Vector2(676, 650),
+	Vector2(742, 627),
+	Vector2(808, 614),
+	Vector2(874, 607),
+	Vector2(936, 613),
+	Vector2(998, 629),
+	Vector2(1057, 651),
+	Vector2(1124, 682),
+	Vector2(1196, 701),
+	Vector2(1271, 713),
+	Vector2(1353, 707),
+	Vector2(1432, 698),
+	Vector2(1502, 706),
 ]
 const VILLAGE_PATH_POINTS: Array[Vector2] = [
-	Vector2(780, 625),
-	Vector2(758, 565),
-	Vector2(782, 505),
-	Vector2(748, 444),
-	Vector2(772, 382),
-	Vector2(748, 315),
-	Vector2(778, 246),
-	Vector2(768, 112),
+	Vector2(793, 633),
+	Vector2(773, 591),
+	Vector2(764, 547),
+	Vector2(777, 511),
+	Vector2(767, 469),
+	Vector2(749, 430),
+	Vector2(756, 390),
+	Vector2(774, 350),
+	Vector2(765, 306),
+	Vector2(749, 267),
+	Vector2(759, 226),
+	Vector2(779, 183),
+	Vector2(774, 139),
+	Vector2(767, 105),
 ]
 const CEMETERY_PATH_POINTS: Array[Vector2] = [
-	Vector2(980, 620),
-	Vector2(1030, 590),
-	Vector2(1084, 566),
-	Vector2(1142, 548),
-	Vector2(1205, 544),
-	Vector2(1260, 557),
-	Vector2(1308, 584),
+	Vector2(976, 630),
+	Vector2(1014, 608),
+	Vector2(1056, 584),
+	Vector2(1097, 569),
+	Vector2(1138, 557),
+	Vector2(1177, 549),
+	Vector2(1218, 551),
+	Vector2(1256, 559),
+	Vector2(1290, 575),
+	Vector2(1318, 596),
 ]
 const GRAVE_CELLS: Array[Vector2i] = [
 	Vector2i(33, 7),
@@ -175,19 +190,19 @@ const GRAVE_TILES: Array[Vector2i] = [
 	Vector2i(3, 3),
 ]
 const GRAVE_OFFSETS: Array[Vector2] = [
-	Vector2(-7, 4),
-	Vector2(6, -5),
-	Vector2(10, 3),
-	Vector2(-5, -6),
-	Vector2(8, 5),
-	Vector2(-9, 1),
-	Vector2(4, -7),
-	Vector2(11, 6),
-	Vector2(-6, 3),
-	Vector2(7, -4),
-	Vector2(-10, 7),
-	Vector2(5, -6),
-	Vector2(9, 2),
+	Vector2(-14, 7),
+	Vector2(9, -9),
+	Vector2(15, 5),
+	Vector2(-11, -8),
+	Vector2(13, 9),
+	Vector2(-15, 2),
+	Vector2(7, -11),
+	Vector2(14, 10),
+	Vector2(-12, 5),
+	Vector2(10, -7),
+	Vector2(-15, 11),
+	Vector2(8, -10),
+	Vector2(13, 4),
 ]
 const TREE_CELLS: Array[Vector2i] = [
 	Vector2i(5, 5),
@@ -265,6 +280,17 @@ const DRY_GRASS_OFFSETS: Array[Vector2] = [
 	Vector2(-11, 4),
 	Vector2(6, 6),
 ]
+const CEMETERY_ACCENT_POSITIONS: Array[Vector2] = [
+	Vector2(1038, 272),
+	Vector2(1086, 307),
+	Vector2(1137, 246),
+	Vector2(1181, 322),
+	Vector2(1234, 284),
+	Vector2(1287, 342),
+	Vector2(1070, 455),
+	Vector2(1160, 472),
+	Vector2(1268, 449),
+]
 
 
 func _ready() -> void:
@@ -288,6 +314,7 @@ func _apply_dressing(map: Node) -> void:
 	_add_plaza_landmark(paths)
 	_dress_static_props(objects, low)
 	_dress_graves(objects)
+	_add_cemetery_landmark(objects, low)
 	_dress_forest_resources(map)
 
 
@@ -333,9 +360,9 @@ func _add_organic_path_underlay(map: Node) -> void:
 	underlay.name = "OrganicPathUnderlay"
 	underlay.z_index = -10
 	map.add_child(underlay)
-	_add_route_lines(underlay, "Main", MAIN_PATH_POINTS, 50.0, 34.0)
-	_add_route_lines(underlay, "Village", VILLAGE_PATH_POINTS, 44.0, 30.0)
-	_add_route_lines(underlay, "Cemetery", CEMETERY_PATH_POINTS, 40.0, 26.0)
+	_add_route_lines(underlay, "Main", MAIN_PATH_POINTS, 52.0, 34.0)
+	_add_route_lines(underlay, "Village", VILLAGE_PATH_POINTS, 46.0, 29.0)
+	_add_route_lines(underlay, "Cemetery", CEMETERY_PATH_POINTS, 43.0, 27.0)
 
 
 func _add_route_lines(
@@ -346,10 +373,12 @@ func _add_route_lines(
 	fill_width: float,
 ) -> void:
 	var packed_points := PackedVector2Array(points)
+	var width_profile := _make_width_profile(route_name)
 	var border := Line2D.new()
 	border.name = "%sBorder" % route_name
 	border.points = packed_points
 	border.width = border_width
+	border.width_curve = width_profile
 	border.default_color = PATH_BORDER_COLOR
 	border.antialiased = false
 	parent.add_child(border)
@@ -358,9 +387,28 @@ func _add_route_lines(
 	fill.name = "%sFill" % route_name
 	fill.points = packed_points
 	fill.width = fill_width
+	fill.width_curve = width_profile
 	fill.default_color = PATH_FILL_COLOR
 	fill.antialiased = false
 	parent.add_child(fill)
+
+
+func _make_width_profile(route_name: String) -> Curve:
+	var profile := Curve.new()
+	profile.min_value = 0.68
+	profile.max_value = 1.18
+	profile.add_point(Vector2(0.0, 0.78))
+	if route_name == "Village":
+		profile.add_point(Vector2(0.24, 1.05))
+		profile.add_point(Vector2(0.51, 0.74))
+		profile.add_point(Vector2(0.76, 1.12))
+	else:
+		profile.add_point(Vector2(0.20, 0.94))
+		profile.add_point(Vector2(0.43, 1.12))
+		profile.add_point(Vector2(0.67, 0.76))
+	profile.add_point(Vector2(0.86, 1.03))
+	profile.add_point(Vector2(1.0, 0.82))
+	return profile
 
 
 func _rework_village_route(paths: TileMapLayer) -> void:
@@ -421,6 +469,33 @@ func _dress_graves(objects: TileMapLayer) -> void:
 			objects.map_to_local(cell) + GRAVE_OFFSETS[index],
 			"GraveVisual%02d" % index,
 		)
+
+
+func _add_cemetery_landmark(objects: TileMapLayer, low: TileMapLayer) -> void:
+	if objects.get_node_or_null("CemeteryLandmark") != null:
+		return
+	var landmark := Node2D.new()
+	landmark.name = "CemeteryLandmark"
+	landmark.y_sort_enabled = true
+	objects.add_child(landmark)
+	_add_sprite(landmark, TREE_TEXTURE, Vector2(1203, 548), TREE_PIVOT, "GateTreeLeft")
+	_add_sprite(landmark, TREE_TEXTURE, Vector2(1322, 556), TREE_PIVOT, "GateTreeRight")
+	_add_atlas_sprite(landmark, Vector2i(2, 3), Vector2(1240, 548), "MemorialLeft")
+	_add_atlas_sprite(landmark, Vector2i(1, 3), Vector2(1277, 535), "MemorialCenter")
+	_add_atlas_sprite(landmark, Vector2i(3, 3), Vector2(1307, 553), "MemorialRight")
+	_add_sprite(landmark, SIGN_TEXTURE, Vector2(1272, 575), SIGN_PIVOT, "CemeteryGateSign")
+
+	for index: int in range(CEMETERY_ACCENT_POSITIONS.size()):
+		_add_sprite(
+			low,
+			DRY_GRASS_TEXTURE,
+			CEMETERY_ACCENT_POSITIONS[index],
+			DRY_GRASS_PIVOT,
+			"CemeteryAccent%02d" % index,
+		)
+
+	_add_sprite(objects, TREE_TEXTURE, Vector2(944, 695), TREE_PIVOT, "ForegroundFrameLeft")
+	_add_sprite(objects, TREE_TEXTURE, Vector2(1396, 682), TREE_PIVOT, "ForegroundFrameRight")
 
 
 func _dress_forest_resources(map: Node) -> void:
