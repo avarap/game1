@@ -4,6 +4,7 @@ extends Node
 const CemeteryTerrainTileset := preload("res://world/maps/cemetery/cemetery_terrain_tileset.gd")
 const TREE_TEXTURE := preload("res://art/environment/props/tree.png")
 const DRY_GRASS_TEXTURE := preload("res://art/environment/cemetery/dry_grass.png")
+const SIGN_TEXTURE := preload("res://art/environment/props/sign.png")
 const LEGACY_ATLAS_TEXTURE := preload(
 	"res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png"
 )
@@ -12,11 +13,12 @@ const TERRAIN_SOURCE := 0
 const TREE_PIVOT := Vector2(32, 84)
 const DRY_GRASS_PIVOT := Vector2(16, 28)
 const GRAVE_PIVOT := Vector2(16, 32)
+const SIGN_PIVOT := Vector2(16, 32)
 const GROUND_BASE := Vector2i(0, 0)
 const PATH_BASE := Vector2i(0, 1)
-const PATH_BORDER_COLOR := Color8(68, 45, 29)
-const PATH_FILL_COLOR := Color8(113, 72, 41)
-const PATH_DETAIL_ALPHA := 0.58
+const PATH_BORDER_COLOR := Color8(62, 43, 30, 170)
+const PATH_FILL_COLOR := Color8(111, 79, 48, 205)
+const PATH_DETAIL_ALPHA := 0.3
 const VILLAGE_ROUTE: Array[Vector2i] = [
 	Vector2i(24, 19),
 	Vector2i(24, 18),
@@ -134,19 +136,13 @@ const VILLAGE_PATH_POINTS: Array[Vector2] = [
 	Vector2(768, 112),
 ]
 const CEMETERY_PATH_POINTS: Array[Vector2] = [
-	Vector2(985, 616),
-	Vector2(994, 535),
-	Vector2(1042, 462),
-	Vector2(1125, 405),
-	Vector2(1220, 383),
-	Vector2(1310, 410),
-	Vector2(1374, 470),
-	Vector2(1390, 548),
-	Vector2(1350, 615),
-	Vector2(1260, 655),
-	Vector2(1160, 666),
-	Vector2(1060, 642),
-	Vector2(985, 616),
+	Vector2(980, 620),
+	Vector2(1030, 590),
+	Vector2(1084, 566),
+	Vector2(1142, 548),
+	Vector2(1205, 544),
+	Vector2(1260, 557),
+	Vector2(1308, 584),
 ]
 const GRAVE_CELLS: Array[Vector2i] = [
 	Vector2i(33, 7),
@@ -337,9 +333,9 @@ func _add_organic_path_underlay(map: Node) -> void:
 	underlay.name = "OrganicPathUnderlay"
 	underlay.z_index = -10
 	map.add_child(underlay)
-	_add_route_lines(underlay, "Main", MAIN_PATH_POINTS, 86.0, 58.0)
-	_add_route_lines(underlay, "Village", VILLAGE_PATH_POINTS, 76.0, 50.0)
-	_add_route_lines(underlay, "Cemetery", CEMETERY_PATH_POINTS, 80.0, 52.0)
+	_add_route_lines(underlay, "Main", MAIN_PATH_POINTS, 50.0, 34.0)
+	_add_route_lines(underlay, "Village", VILLAGE_PATH_POINTS, 44.0, 30.0)
+	_add_route_lines(underlay, "Cemetery", CEMETERY_PATH_POINTS, 40.0, 26.0)
 
 
 func _add_route_lines(
@@ -405,6 +401,14 @@ func _dress_static_props(objects: TileMapLayer, low: TileMapLayer) -> void:
 			DRY_GRASS_PIVOT,
 			"DryGrassVisual%02d" % index,
 		)
+
+	_add_sprite(
+		objects,
+		SIGN_TEXTURE,
+		Vector2(842, 602),
+		SIGN_PIVOT,
+		"PlazaLandmarkSign",
+	)
 
 
 func _dress_graves(objects: TileMapLayer) -> void:
