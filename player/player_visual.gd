@@ -1,7 +1,7 @@
 class_name PlayerVisual
 extends AnimatedSprite2D
 
-const ACTION_SHEET := preload("res://art/characters/player/player_actions_64x96.svg")
+const ACTION_SHEET := preload("res://art/characters/player/player_actions_64x96.png")
 const DIRECTIONS: Array[StringName] = [&"n", &"ne", &"e", &"se", &"s", &"sw", &"w", &"nw"]
 const FRAME_SIZE := Vector2i(64, 96)
 const STATE_LAYOUT := {
