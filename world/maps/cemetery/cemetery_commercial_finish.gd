@@ -17,116 +17,44 @@ const GRAVE_PIVOT := Vector2(16, 32)
 const SIGN_PIVOT := Vector2(16, 32)
 const TERRAIN_PIVOT := Vector2(16, 16)
 const CEMETERY_VISUAL_RECT := Rect2i(Vector2i(30, 5), Vector2i(14, 15))
+const TECHNICAL_LEGACY_REGION := Rect2(Vector2(128, 96), Vector2(32, 32))
 
 const GRAVE_FINISH_POSITIONS: Array[Vector2] = [
-	Vector2(1016, 236),
-	Vector2(1052, 214),
-	Vector2(1102, 251),
-	Vector2(1260, 223),
-	Vector2(1307, 204),
-	Vector2(1342, 251),
-	Vector2(1277, 285),
-	Vector2(1000, 352),
-	Vector2(1044, 384),
-	Vector2(1093, 345),
-	Vector2(1307, 385),
-	Vector2(1346, 430),
+	Vector2(1016, 236), Vector2(1052, 214), Vector2(1102, 251), Vector2(1260, 223),
+	Vector2(1307, 204), Vector2(1342, 251), Vector2(1277, 285), Vector2(1000, 352),
+	Vector2(1044, 384), Vector2(1093, 345), Vector2(1307, 385), Vector2(1346, 430),
 	Vector2(1248, 450),
 ]
 const GRAVE_FLIPS: Array[bool] = [
-	false,
-	true,
-	false,
-	true,
-	false,
-	true,
-	true,
-	false,
-	true,
-	false,
-	true,
-	false,
-	true,
+	false, true, false, true, false, true, true, false, true, false, true, false, true,
 ]
 const TRANSITION_POSITIONS: Array[Vector2] = [
-	Vector2(1018, 568),
-	Vector2(1044, 541),
-	Vector2(1071, 520),
-	Vector2(1106, 499),
-	Vector2(1138, 472),
-	Vector2(1162, 438),
-	Vector2(1185, 409),
-	Vector2(1204, 376),
-	Vector2(1184, 345),
-	Vector2(1197, 316),
-	Vector2(1168, 292),
-	Vector2(1129, 273),
+	Vector2(1018, 568), Vector2(1044, 541), Vector2(1071, 520), Vector2(1106, 499),
+	Vector2(1138, 472), Vector2(1162, 438), Vector2(1185, 409), Vector2(1204, 376),
+	Vector2(1184, 345), Vector2(1197, 316), Vector2(1168, 292), Vector2(1129, 273),
 ]
 const TRANSITION_TILES: Array[Vector2i] = [
-	Vector2i(6, 0),
-	Vector2i(1, 1),
-	Vector2i(7, 0),
-	Vector2i(4, 1),
-	Vector2i(2, 0),
-	Vector2i(6, 1),
-	Vector2i(5, 0),
-	Vector2i(2, 1),
-	Vector2i(7, 1),
-	Vector2i(3, 0),
-	Vector2i(5, 1),
-	Vector2i(1, 0),
+	Vector2i(6, 0), Vector2i(1, 1), Vector2i(7, 0), Vector2i(4, 1),
+	Vector2i(2, 0), Vector2i(6, 1), Vector2i(5, 0), Vector2i(2, 1),
+	Vector2i(7, 1), Vector2i(3, 0), Vector2i(5, 1), Vector2i(1, 0),
 ]
 const TRANSITION_FLIPS: Array[bool] = [
-	false,
-	true,
-	true,
-	false,
-	true,
-	false,
-	true,
-	false,
-	true,
-	true,
-	false,
-	false,
+	false, true, true, false, true, false, true, false, true, true, false, false,
 ]
 const EDGE_GRASS_POSITIONS: Array[Vector2] = [
-	Vector2(1005, 557),
-	Vector2(1038, 529),
-	Vector2(1066, 505),
-	Vector2(1099, 486),
-	Vector2(1126, 459),
-	Vector2(1149, 426),
-	Vector2(1172, 395),
-	Vector2(1189, 365),
-	Vector2(1170, 335),
-	Vector2(1186, 307),
-	Vector2(1155, 286),
-	Vector2(1121, 269),
-	Vector2(1030, 581),
-	Vector2(1074, 531),
-	Vector2(1111, 510),
-	Vector2(1155, 478),
-	Vector2(1189, 432),
-	Vector2(1217, 397),
+	Vector2(1005, 557), Vector2(1038, 529), Vector2(1066, 505), Vector2(1099, 486),
+	Vector2(1126, 459), Vector2(1149, 426), Vector2(1172, 395), Vector2(1189, 365),
+	Vector2(1170, 335), Vector2(1186, 307), Vector2(1155, 286), Vector2(1121, 269),
+	Vector2(1030, 581), Vector2(1074, 531), Vector2(1111, 510), Vector2(1155, 478),
+	Vector2(1189, 432), Vector2(1217, 397),
 ]
 const LOW_DETAIL_POSITIONS: Array[Vector2] = [
-	Vector2(991, 269),
-	Vector2(1078, 199),
-	Vector2(1115, 302),
-	Vector2(1244, 193),
-	Vector2(1301, 277),
-	Vector2(1351, 311),
-	Vector2(981, 389),
-	Vector2(1068, 424),
-	Vector2(1234, 432),
-	Vector2(1324, 474),
+	Vector2(991, 269), Vector2(1078, 199), Vector2(1115, 302), Vector2(1244, 193),
+	Vector2(1301, 277), Vector2(1351, 311), Vector2(981, 389), Vector2(1068, 424),
+	Vector2(1234, 432), Vector2(1324, 474),
 ]
 const FOREGROUND_GRASS: Array[Vector2] = [
-	Vector2(1058, 627),
-	Vector2(1110, 658),
-	Vector2(1288, 650),
-	Vector2(1349, 616),
+	Vector2(1058, 627), Vector2(1110, 658), Vector2(1288, 650), Vector2(1349, 616),
 	Vector2(1394, 676),
 ]
 
@@ -146,6 +74,7 @@ func _apply_finish() -> void:
 		return
 	_clean_structural_noise(objects)
 	_clean_legacy_decor_tiles(low, foreground)
+	_hide_technical_legacy_sprites(map)
 	_finish_graves(objects)
 	_soften_inner_walk(map)
 	_add_micro_transitions(low)
@@ -166,6 +95,16 @@ func _clean_legacy_decor_tiles(low: TileMapLayer, foreground: TileMapLayer) -> v
 		low.erase_cell(cell)
 	for cell: Vector2i in foreground.get_used_cells():
 		foreground.erase_cell(cell)
+
+
+func _hide_technical_legacy_sprites(map: Node) -> void:
+	for child in map.find_children("*", "Sprite2D", true, false):
+		var sprite := child as Sprite2D
+		var atlas_texture := sprite.texture as AtlasTexture
+		if atlas_texture == null or atlas_texture.atlas != LEGACY_ATLAS_TEXTURE:
+			continue
+		if atlas_texture.region == TECHNICAL_LEGACY_REGION:
+			sprite.visible = false
 
 
 func _finish_graves(objects: TileMapLayer) -> void:
@@ -214,12 +153,8 @@ func _add_edge_grass(low: TileMapLayer) -> void:
 		return
 	for index: int in range(EDGE_GRASS_POSITIONS.size()):
 		_add_sprite(
-			low,
-			DRY_GRASS_TEXTURE,
-			EDGE_GRASS_POSITIONS[index],
-			DRY_GRASS_PIVOT,
-			"CommercialEdgeGrass%02d" % index,
-			index % 3 == 0,
+			low, DRY_GRASS_TEXTURE, EDGE_GRASS_POSITIONS[index], DRY_GRASS_PIVOT,
+			"CommercialEdgeGrass%02d" % index, index % 3 == 0
 		)
 
 
@@ -228,12 +163,8 @@ func _add_low_detail(low: TileMapLayer) -> void:
 		return
 	for index: int in range(LOW_DETAIL_POSITIONS.size()):
 		_add_sprite(
-			low,
-			DRY_GRASS_TEXTURE,
-			LOW_DETAIL_POSITIONS[index],
-			DRY_GRASS_PIVOT,
-			"CommercialFinishGrass%02d" % index,
-			index % 3 == 1,
+			low, DRY_GRASS_TEXTURE, LOW_DETAIL_POSITIONS[index], DRY_GRASS_PIVOT,
+			"CommercialFinishGrass%02d" % index, index % 3 == 1
 		)
 
 
@@ -242,28 +173,16 @@ func _add_foreground_occlusion(foreground: TileMapLayer) -> void:
 		return
 	for index: int in range(FOREGROUND_GRASS.size()):
 		_add_sprite(
-			foreground,
-			DRY_GRASS_TEXTURE,
-			FOREGROUND_GRASS[index],
-			DRY_GRASS_PIVOT,
-			"CommercialFinishForeground%02d" % index,
-			index % 2 == 0,
+			foreground, DRY_GRASS_TEXTURE, FOREGROUND_GRASS[index], DRY_GRASS_PIVOT,
+			"CommercialFinishForeground%02d" % index, index % 2 == 0
 		)
 	_add_sprite(
-		foreground,
-		TREE_TEXTURE,
-		Vector2(990, 684),
-		TREE_PIVOT,
-		"CommercialFinishForegroundTreeWest",
-		false,
+		foreground, TREE_TEXTURE, Vector2(990, 684), TREE_PIVOT,
+		"CommercialFinishForegroundTreeWest", false
 	)
 	_add_sprite(
-		foreground,
-		TREE_TEXTURE,
-		Vector2(1402, 690),
-		TREE_PIVOT,
-		"CommercialFinishForegroundTreeEast",
-		true,
+		foreground, TREE_TEXTURE, Vector2(1402, 690), TREE_PIVOT,
+		"CommercialFinishForegroundTreeEast", true
 	)
 
 
@@ -285,29 +204,18 @@ func _stage_dominant_landmark(objects: TileMapLayer) -> void:
 	_add_sprite(landmark, SIGN_TEXTURE, Vector2(1251, 574), SIGN_PIVOT, "GateSign", false)
 	_add_atlas_sprite(landmark, Vector2i(1, 3), Vector2(1250, 493), "MemorialHeart", false)
 	_add_sprite(
-		landmark,
-		DRY_GRASS_TEXTURE,
-		Vector2(1234, 549),
-		DRY_GRASS_PIVOT,
-		"LandmarkGrassWest",
-		false,
+		landmark, DRY_GRASS_TEXTURE, Vector2(1234, 549), DRY_GRASS_PIVOT,
+		"LandmarkGrassWest", false
 	)
 	_add_sprite(
-		landmark,
-		DRY_GRASS_TEXTURE,
-		Vector2(1271, 553),
-		DRY_GRASS_PIVOT,
-		"LandmarkGrassEast",
-		true,
+		landmark, DRY_GRASS_TEXTURE, Vector2(1271, 553), DRY_GRASS_PIVOT,
+		"LandmarkGrassEast", true
 	)
 
 
 func _add_atlas_sprite(
-	parent: Node2D,
-	atlas_cell: Vector2i,
-	ground_position: Vector2,
-	sprite_name: String,
-	flip_h: bool,
+	parent: Node2D, atlas_cell: Vector2i, ground_position: Vector2,
+	sprite_name: String, flip_h: bool
 ) -> void:
 	var texture := AtlasTexture.new()
 	texture.atlas = LEGACY_ATLAS_TEXTURE
@@ -316,12 +224,8 @@ func _add_atlas_sprite(
 
 
 func _add_terrain_sprite(
-	parent: Node2D,
-	atlas_cell: Vector2i,
-	ground_position: Vector2,
-	sprite_name: String,
-	flip_h: bool,
-	alpha: float,
+	parent: Node2D, atlas_cell: Vector2i, ground_position: Vector2,
+	sprite_name: String, flip_h: bool, alpha: float
 ) -> void:
 	var texture := AtlasTexture.new()
 	texture.atlas = TERRAIN_ATLAS_TEXTURE
@@ -338,12 +242,8 @@ func _add_terrain_sprite(
 
 
 func _add_sprite(
-	parent: Node2D,
-	texture: Texture2D,
-	ground_position: Vector2,
-	pivot: Vector2,
-	sprite_name: String,
-	flip_h: bool,
+	parent: Node2D, texture: Texture2D, ground_position: Vector2,
+	pivot: Vector2, sprite_name: String, flip_h: bool
 ) -> void:
 	var sprite := Sprite2D.new()
 	sprite.name = sprite_name
