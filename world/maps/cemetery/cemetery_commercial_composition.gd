@@ -3,6 +3,9 @@ extends Node
 
 const TREE_TEXTURE := preload("res://art/environment/props/tree.png")
 const DRY_GRASS_TEXTURE := preload("res://art/environment/cemetery/dry_grass.png")
+const TERRAIN_ATLAS_TEXTURE := preload(
+	"res://art/environment/cemetery/production/atlas/terrain_ground_paths_32.png"
+)
 const LEGACY_ATLAS_TEXTURE := preload(
 	"res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png"
 )
@@ -11,62 +14,70 @@ const TREE_PIVOT := Vector2(32, 84)
 const DRY_GRASS_PIVOT := Vector2(16, 28)
 const GRAVE_PIVOT := Vector2(16, 32)
 const FENCE_PIVOT := Vector2(16, 32)
-const PATH_EDGE_COLOR := Color8(67, 47, 31, 194)
-const PATH_FILL_COLOR := Color8(112, 81, 49, 218)
+const TERRAIN_PIVOT := Vector2(16, 16)
+const PATH_EDGE_COLOR := Color8(67, 47, 31, 184)
+const PATH_FILL_COLOR := Color8(112, 81, 49, 210)
 const FENCE_TILE := Vector2i(4, 3)
 const GRAVE_POSITIONS: Array[Vector2] = [
-	Vector2(1061, 232),
-	Vector2(1144, 204),
-	Vector2(1247, 238),
-	Vector2(1018, 319),
-	Vector2(1110, 301),
-	Vector2(1202, 337),
-	Vector2(1310, 307),
-	Vector2(1072, 406),
-	Vector2(1178, 438),
-	Vector2(1289, 401),
-	Vector2(1108, 510),
-	Vector2(1219, 487),
-	Vector2(1302, 522),
+	Vector2(1034, 245),
+	Vector2(1068, 230),
+	Vector2(1109, 258),
+	Vector2(1266, 236),
+	Vector2(1304, 218),
+	Vector2(1332, 258),
+	Vector2(1289, 286),
+	Vector2(1015, 354),
+	Vector2(1051, 377),
+	Vector2(1096, 349),
+	Vector2(1299, 390),
+	Vector2(1334, 418),
+	Vector2(1260, 438),
 ]
 const INNER_WALK_POINTS: Array[Vector2] = [
-	Vector2(1008, 573),
-	Vector2(1031, 548),
-	Vector2(1058, 525),
-	Vector2(1090, 508),
-	Vector2(1127, 491),
-	Vector2(1161, 467),
-	Vector2(1188, 438),
-	Vector2(1205, 403),
-	Vector2(1211, 367),
-	Vector2(1205, 332),
-	Vector2(1189, 303),
-	Vector2(1163, 280),
-	Vector2(1128, 264),
-	Vector2(1091, 258),
+	Vector2(1007, 575),
+	Vector2(1032, 554),
+	Vector2(1054, 529),
+	Vector2(1085, 512),
+	Vector2(1117, 494),
+	Vector2(1143, 463),
+	Vector2(1169, 431),
+	Vector2(1188, 397),
+	Vector2(1197, 362),
+	Vector2(1192, 329),
+	Vector2(1177, 302),
+	Vector2(1150, 280),
+	Vector2(1116, 267),
 ]
 const LOW_CLUSTER_POSITIONS: Array[Vector2] = [
-	Vector2(1028, 264),
-	Vector2(1092, 248),
-	Vector2(1160, 271),
-	Vector2(1268, 266),
-	Vector2(1001, 371),
-	Vector2(1131, 394),
-	Vector2(1230, 423),
-	Vector2(1324, 388),
-	Vector2(1041, 474),
-	Vector2(1165, 523),
-	Vector2(1280, 493),
+	Vector2(1011, 272),
+	Vector2(1052, 207),
+	Vector2(1119, 286),
+	Vector2(1260, 202),
+	Vector2(1321, 295),
+	Vector2(985, 333),
+	Vector2(1074, 408),
+	Vector2(1241, 416),
+	Vector2(1345, 444),
+	Vector2(1027, 493),
+	Vector2(1161, 533),
+	Vector2(1310, 507),
 ]
 const FRAME_TREE_POSITIONS: Array[Vector2] = [
-	Vector2(972, 204),
-	Vector2(1348, 230),
-	Vector2(985, 612),
-	Vector2(1375, 638),
+	Vector2(968, 210),
+	Vector2(1352, 239),
+	Vector2(984, 606),
+	Vector2(1381, 624),
 ]
 const FOREGROUND_TREE_POSITIONS: Array[Vector2] = [
-	Vector2(1082, 690),
-	Vector2(1428, 704),
+	Vector2(1037, 677),
+	Vector2(1378, 664),
+	Vector2(1458, 724),
+]
+const FOREGROUND_GRASS_POSITIONS: Array[Vector2] = [
+	Vector2(1118, 676),
+	Vector2(1284, 688),
+	Vector2(1340, 651),
+	Vector2(1492, 697),
 ]
 const FENCE_ANCHOR_CELLS: Array[Vector2i] = [
 	Vector2i(31, 5),
@@ -99,13 +110,59 @@ const RELOCATED_GRAVE_CELLS: Array[Vector2i] = [
 	Vector2i(41, 15),
 ]
 const FENCE_CLUSTER_POSITIONS: Array[Vector2] = [
-	Vector2(1008, 184),
-	Vector2(1072, 171),
-	Vector2(1335, 197),
-	Vector2(970, 348),
-	Vector2(1374, 382),
-	Vector2(1084, 613),
-	Vector2(1341, 621),
+	Vector2(1001, 187),
+	Vector2(1082, 169),
+	Vector2(1340, 205),
+	Vector2(963, 343),
+	Vector2(1380, 377),
+	Vector2(1069, 616),
+	Vector2(1348, 626),
+]
+const EDGE_GROUND_POSITIONS: Array[Vector2] = [
+	Vector2(1017, 559),
+	Vector2(1042, 536),
+	Vector2(1074, 503),
+	Vector2(1122, 478),
+	Vector2(1149, 441),
+	Vector2(1178, 408),
+	Vector2(1210, 372),
+	Vector2(1170, 337),
+	Vector2(1204, 311),
+	Vector2(1141, 294),
+]
+const EDGE_GROUND_TILES: Array[Vector2i] = [
+	Vector2i(6, 0),
+	Vector2i(2, 0),
+	Vector2i(7, 0),
+	Vector2i(3, 0),
+	Vector2i(5, 0),
+	Vector2i(1, 0),
+	Vector2i(6, 0),
+	Vector2i(4, 0),
+	Vector2i(2, 0),
+	Vector2i(7, 0),
+]
+const EDGE_PATH_POSITIONS: Array[Vector2] = [
+	Vector2(1029, 571),
+	Vector2(1065, 520),
+	Vector2(1101, 500),
+	Vector2(1134, 468),
+	Vector2(1160, 422),
+	Vector2(1201, 392),
+	Vector2(1178, 349),
+	Vector2(1205, 323),
+	Vector2(1161, 289),
+]
+const EDGE_PATH_TILES: Array[Vector2i] = [
+	Vector2i(7, 1),
+	Vector2i(3, 1),
+	Vector2i(5, 1),
+	Vector2i(1, 1),
+	Vector2i(6, 1),
+	Vector2i(2, 1),
+	Vector2i(4, 1),
+	Vector2i(7, 1),
+	Vector2i(3, 1),
 ]
 
 
@@ -127,13 +184,14 @@ func _apply_composition(map: Node) -> void:
 	_soften_cemetery_grid(paths)
 	_reauthor_enclosure(objects)
 	_add_inner_walk(map)
+	_add_path_transitions(low)
 	_recompose_graves(objects)
 	_recompose_landmark(objects)
 	_add_asymmetric_clusters(objects, low, foreground)
 
 
 func _soften_cemetery_grid(paths: TileMapLayer) -> void:
-	paths.modulate.a = 0.08
+	paths.modulate.a = 0.055
 
 
 func _reauthor_enclosure(objects: TileMapLayer) -> void:
@@ -163,8 +221,8 @@ func _add_inner_walk(map: Node) -> void:
 	walk.name = "CemeteryInnerWalk"
 	walk.z_index = -9
 	map.add_child(walk)
-	_add_path_line(walk, "Edge", 35.0, PATH_EDGE_COLOR)
-	_add_path_line(walk, "Fill", 21.0, PATH_FILL_COLOR)
+	_add_path_line(walk, "Edge", 33.0, PATH_EDGE_COLOR)
+	_add_path_line(walk, "Fill", 19.0, PATH_FILL_COLOR)
 
 
 func _add_path_line(parent: Node2D, suffix: String, width: float, color: Color) -> void:
@@ -172,9 +230,48 @@ func _add_path_line(parent: Node2D, suffix: String, width: float, color: Color) 
 	line.name = "InnerWalk%s" % suffix
 	line.points = PackedVector2Array(INNER_WALK_POINTS)
 	line.width = width
+	line.width_curve = _inner_walk_width_profile()
 	line.default_color = color
 	line.antialiased = false
 	parent.add_child(line)
+
+
+func _inner_walk_width_profile() -> Curve:
+	var profile := Curve.new()
+	profile.min_value = 0.66
+	profile.max_value = 1.16
+	profile.add_point(Vector2(0.0, 0.76))
+	profile.add_point(Vector2(0.17, 1.08))
+	profile.add_point(Vector2(0.34, 0.71))
+	profile.add_point(Vector2(0.53, 1.13))
+	profile.add_point(Vector2(0.69, 0.79))
+	profile.add_point(Vector2(0.86, 1.04))
+	profile.add_point(Vector2(1.0, 0.72))
+	return profile
+
+
+func _add_path_transitions(low: TileMapLayer) -> void:
+	if low.get_node_or_null("CommercialPathTransitions") != null:
+		return
+	var transitions := Node2D.new()
+	transitions.name = "CommercialPathTransitions"
+	low.add_child(transitions)
+	for index: int in range(EDGE_GROUND_POSITIONS.size()):
+		_add_terrain_atlas_sprite(
+			transitions,
+			EDGE_GROUND_TILES[index],
+			EDGE_GROUND_POSITIONS[index],
+			"GroundErosion%02d" % index,
+			0.90,
+		)
+	for index: int in range(EDGE_PATH_POSITIONS.size()):
+		_add_terrain_atlas_sprite(
+			transitions,
+			EDGE_PATH_TILES[index],
+			EDGE_PATH_POSITIONS[index],
+			"PathShoulder%02d" % index,
+			0.74,
+		)
 
 
 func _recompose_graves(objects: TileMapLayer) -> void:
@@ -190,12 +287,12 @@ func _recompose_landmark(objects: TileMapLayer) -> void:
 	var landmark := objects.get_node_or_null("CemeteryLandmark") as Node2D
 	if landmark == null:
 		return
-	_set_ground_position(landmark, "GateTreeLeft", Vector2(1178, 558), TREE_PIVOT)
-	_set_ground_position(landmark, "GateTreeRight", Vector2(1318, 566), TREE_PIVOT)
-	_set_ground_position(landmark, "MemorialLeft", Vector2(1215, 540), GRAVE_PIVOT)
-	_set_ground_position(landmark, "MemorialCenter", Vector2(1248, 508), GRAVE_PIVOT)
-	_set_ground_position(landmark, "MemorialRight", Vector2(1281, 542), GRAVE_PIVOT)
-	_set_ground_position(landmark, "CemeteryGateSign", Vector2(1248, 578), GRAVE_PIVOT)
+	_set_ground_position(landmark, "GateTreeLeft", Vector2(1171, 560), TREE_PIVOT)
+	_set_ground_position(landmark, "GateTreeRight", Vector2(1327, 568), TREE_PIVOT)
+	_set_ground_position(landmark, "MemorialLeft", Vector2(1214, 532), GRAVE_PIVOT)
+	_set_ground_position(landmark, "MemorialCenter", Vector2(1249, 492), GRAVE_PIVOT)
+	_set_ground_position(landmark, "MemorialRight", Vector2(1288, 535), GRAVE_PIVOT)
+	_set_ground_position(landmark, "CemeteryGateSign", Vector2(1249, 574), GRAVE_PIVOT)
 
 
 func _set_ground_position(
@@ -241,6 +338,15 @@ func _add_asymmetric_clusters(
 				TREE_PIVOT,
 				"CommercialForegroundTree%02d" % index,
 			)
+	if foreground.get_node_or_null("CommercialForegroundGrass00") == null:
+		for index: int in range(FOREGROUND_GRASS_POSITIONS.size()):
+			_add_sprite(
+				foreground,
+				DRY_GRASS_TEXTURE,
+				FOREGROUND_GRASS_POSITIONS[index],
+				DRY_GRASS_PIVOT,
+				"CommercialForegroundGrass%02d" % index,
+			)
 	_add_memorial_cluster(objects)
 
 
@@ -251,9 +357,9 @@ func _add_memorial_cluster(objects: TileMapLayer) -> void:
 	cluster.name = "CommercialMemorialCluster"
 	cluster.y_sort_enabled = true
 	objects.add_child(cluster)
-	_add_atlas_sprite(cluster, Vector2i(2, 3), Vector2(1187, 284), "MemorialWest")
-	_add_atlas_sprite(cluster, Vector2i(1, 3), Vector2(1222, 268), "MemorialHeart")
-	_add_atlas_sprite(cluster, Vector2i(3, 3), Vector2(1254, 291), "MemorialEast")
+	_add_atlas_sprite(cluster, Vector2i(2, 3), Vector2(1206, 506), "MemorialWest")
+	_add_atlas_sprite(cluster, Vector2i(1, 3), Vector2(1248, 470), "MemorialHeart")
+	_add_atlas_sprite(cluster, Vector2i(3, 3), Vector2(1294, 511), "MemorialEast")
 
 
 func _add_atlas_sprite(
@@ -267,6 +373,26 @@ func _add_atlas_sprite(
 	texture.atlas = LEGACY_ATLAS_TEXTURE
 	texture.region = Rect2(atlas_cell * 32, Vector2i(32, 32))
 	_add_sprite(parent, texture, ground_position, pivot, sprite_name)
+
+
+func _add_terrain_atlas_sprite(
+	parent: Node2D,
+	atlas_cell: Vector2i,
+	ground_position: Vector2,
+	sprite_name: String,
+	alpha: float,
+) -> void:
+	var texture := AtlasTexture.new()
+	texture.atlas = TERRAIN_ATLAS_TEXTURE
+	texture.region = Rect2(atlas_cell * 32, Vector2i(32, 32))
+	var sprite := Sprite2D.new()
+	sprite.name = sprite_name
+	sprite.texture = texture
+	sprite.centered = false
+	sprite.position = ground_position - TERRAIN_PIVOT
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	sprite.modulate.a = alpha
+	parent.add_child(sprite)
 
 
 func _add_sprite(
