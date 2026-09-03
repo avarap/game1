@@ -16,7 +16,6 @@ const DRY_GRASS_PIVOT := Vector2(16, 28)
 const GRAVE_PIVOT := Vector2(16, 32)
 const SIGN_PIVOT := Vector2(16, 32)
 const TERRAIN_PIVOT := Vector2(16, 16)
-const CEMETERY_VISUAL_RECT := Rect2i(Vector2i(30, 5), Vector2i(14, 15))
 const TECHNICAL_LEGACY_CELLS: Array[Vector2i] = [
 	Vector2i(0, 3),
 	Vector2i(2, 3),
@@ -164,8 +163,7 @@ func _apply_finish(map: Node) -> void:
 
 func _clean_structural_noise(objects: TileMapLayer) -> void:
 	for cell: Vector2i in objects.get_used_cells():
-		if CEMETERY_VISUAL_RECT.has_point(cell):
-			objects.erase_cell(cell)
+		objects.erase_cell(cell)
 
 
 func _clean_legacy_decor_tiles(low: TileMapLayer, foreground: TileMapLayer) -> void:
