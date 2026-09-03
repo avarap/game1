@@ -18,6 +18,7 @@ const TERRAIN_PIVOT := Vector2(16, 16)
 const PATH_EDGE_COLOR := Color8(67, 47, 31, 184)
 const PATH_FILL_COLOR := Color8(112, 81, 49, 210)
 const FENCE_TILE := Vector2i(4, 3)
+const CEMETERY_VISUAL_RECT := Rect2i(Vector2i(30, 5), Vector2i(14, 15))
 const GRAVE_POSITIONS: Array[Vector2] = [
 	Vector2(1034, 245),
 	Vector2(1068, 230),
@@ -65,7 +66,6 @@ const LOW_CLUSTER_POSITIONS: Array[Vector2] = [
 const FRAME_TREE_POSITIONS: Array[Vector2] = [
 	Vector2(968, 210),
 	Vector2(1352, 239),
-	Vector2(984, 606),
 	Vector2(1381, 624),
 ]
 const FOREGROUND_TREE_POSITIONS: Array[Vector2] = [
@@ -78,36 +78,6 @@ const FOREGROUND_GRASS_POSITIONS: Array[Vector2] = [
 	Vector2(1284, 688),
 	Vector2(1340, 651),
 	Vector2(1492, 697),
-]
-const FENCE_ANCHOR_CELLS: Array[Vector2i] = [
-	Vector2i(31, 5),
-	Vector2i(32, 5),
-	Vector2i(36, 5),
-	Vector2i(37, 5),
-	Vector2i(42, 5),
-	Vector2i(30, 8),
-	Vector2i(30, 9),
-	Vector2i(30, 13),
-	Vector2i(30, 18),
-	Vector2i(43, 6),
-	Vector2i(43, 9),
-	Vector2i(43, 10),
-	Vector2i(43, 16),
-	Vector2i(43, 17),
-	Vector2i(32, 19),
-	Vector2i(33, 19),
-	Vector2i(36, 19),
-	Vector2i(40, 19),
-	Vector2i(42, 19),
-	Vector2i(43, 19),
-]
-const RELOCATED_GRAVE_CELLS: Array[Vector2i] = [
-	Vector2i(32, 7),
-	Vector2i(37, 7),
-	Vector2i(41, 7),
-	Vector2i(32, 15),
-	Vector2i(37, 15),
-	Vector2i(41, 15),
 ]
 const FENCE_CLUSTER_POSITIONS: Array[Vector2] = [
 	Vector2(1001, 187),
@@ -196,12 +166,8 @@ func _soften_cemetery_grid(paths: TileMapLayer) -> void:
 
 func _reauthor_enclosure(objects: TileMapLayer) -> void:
 	for cell: Vector2i in objects.get_used_cells():
-		if objects.get_cell_atlas_coords(cell) != FENCE_TILE:
-			continue
-		if cell not in FENCE_ANCHOR_CELLS:
+		if CEMETERY_VISUAL_RECT.has_point(cell):
 			objects.erase_cell(cell)
-	for cell: Vector2i in RELOCATED_GRAVE_CELLS:
-		objects.erase_cell(cell)
 	if objects.get_node_or_null("CommercialFenceCluster00") != null:
 		return
 	for index: int in range(FENCE_CLUSTER_POSITIONS.size()):
@@ -221,8 +187,8 @@ func _add_inner_walk(map: Node) -> void:
 	walk.name = "CemeteryInnerWalk"
 	walk.z_index = -9
 	map.add_child(walk)
-	_add_path_line(walk, "Edge", 33.0, PATH_EDGE_COLOR)
-	_add_path_line(walk, "Fill", 19.0, PATH_FILL_COLOR)
+	_add_path_line(walk, "Edge", 27.0, PATH_EDGE_COLOR)
+	_add_path_line(walk, "Fill", 15.0, PATH_FILL_COLOR)
 
 
 func _add_path_line(parent: Node2D, suffix: String, width: float, color: Color) -> void:
@@ -357,6 +323,7 @@ func _add_memorial_cluster(objects: TileMapLayer) -> void:
 	cluster.name = "CommercialMemorialCluster"
 	cluster.y_sort_enabled = true
 	objects.add_child(cluster)
+	_add_sprite(cluster, TREE_TEXTURE, Vector2(1249, 462), TREE_PIVOT, "MemorialCanopy")
 	_add_atlas_sprite(cluster, Vector2i(2, 3), Vector2(1206, 506), "MemorialWest")
 	_add_atlas_sprite(cluster, Vector2i(1, 3), Vector2(1248, 470), "MemorialHeart")
 	_add_atlas_sprite(cluster, Vector2i(3, 3), Vector2(1294, 511), "MemorialEast")
