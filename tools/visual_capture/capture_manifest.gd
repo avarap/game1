@@ -22,6 +22,7 @@ const PLAYER_ACTION_FRAMES := {
 	&"run": 3,
 	&"interact": 2,
 }
+const PLAYER_ACTION_STATES: Array[StringName] = [&"walk", &"run", &"interact"]
 const WORLD_IDS: Array[StringName] = [
 	&"cemetery_day",
 	&"cemetery_night",
@@ -51,7 +52,7 @@ static func capture_specs() -> Array[Dictionary]:
 	var specs: Array[Dictionary] = []
 	for direction in DIRECTIONS:
 		specs.append(_character_spec(&"player", direction, &"idle", 0))
-	for state in PLAYER_ACTION_FRAMES:
+	for state in PLAYER_ACTION_STATES:
 		for direction in DIRECTIONS:
 			specs.append(_character_spec(&"player", direction, state, PLAYER_ACTION_FRAMES[state]))
 	for direction in DIRECTIONS:

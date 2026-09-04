@@ -8,7 +8,7 @@ const STATE_LAYOUT := {
 	&"idle": {"column": 0, "count": 2, "speed": 2.0, "loop": true},
 	&"walk": {"column": 2, "count": 6, "speed": 10.0, "loop": true},
 	&"run": {"column": 8, "count": 6, "speed": 12.0, "loop": true},
-	&"interact": {"column": 14, "count": 4, "speed": 10.0, "loop": false},
+	&"interact": {"column": 14, "count": 4, "speed": 24.0, "loop": false},
 }
 
 var _facing := &"s"

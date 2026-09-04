@@ -7,8 +7,11 @@ const STATES := [&"idle", &"walk", &"run", &"interact"]
 const MINIMUM_FRAMES := {&"idle": 2, &"walk": 6, &"run": 6, &"interact": 4}
 const FRAME_SIZE := Vector2i(64, 96)
 const SHEET_SIZE := Vector2i(1152, 768)
+const EXPECTED_SHEET_SHA256 := "59839543fa0c074898fb4e3b137676729d638784adb769e66990146537193824"
 const MINIMUM_OPAQUE_PIXELS := 180
 const MINIMUM_SILHOUETTE_HEIGHT := 42
+const MINIMUM_OPPOSITE_VIEW_DIFFERENCE_PIXELS := 64
+const OPPOSITE_DIRECTION_ROWS := [[1, 7], [2, 6], [3, 5]]
 const MINIMUM_SILHOUETTE_WIDTH := {
 	&"n": 18,
 	&"ne": 18,
@@ -16,8 +19,8 @@ const MINIMUM_SILHOUETTE_WIDTH := {
 	&"se": 18,
 	&"s": 16,
 	&"sw": 18,
-	&"w": 16,
-	&"nw": 18,
+	&"w": 14,
+	&"nw": 14,
 }
 
 
@@ -51,13 +54,58 @@ static func run() -> Array[String]:
 	for direction: StringName in DIRECTIONS:
 		for state: StringName in STATES:
 			_check_animation(body, state, direction, failures)
-		_check_distinct_action_frames(body, direction, failures)
+	await _check_live_interaction_pose(player, body, failures)
 
 	player.free()
 	return failures
 
 
+static func _check_live_interaction_pose(
+	player: PlayerController, body: AnimatedSprite2D, failures: Array[String]
+) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var target := Interactable.new()
+	target.collision_layer = 2
+	target.collision_mask = 0
+	target.position = player.position + Vector2(0, 20)
+	var target_collider := CollisionShape2D.new()
+	var target_shape := CircleShape2D.new()
+	target_shape.radius = 4.0
+	target_collider.shape = target_shape
+	target.add_child(target_collider)
+	tree.root.add_child(target)
+	player.set_physics_process(false)
+	await tree.physics_frame
+	await tree.physics_frame
+
+	var event := InputEventAction.new()
+	event.action = &"interact"
+	event.pressed = true
+	player._unhandled_input(event)
+	var animation := &"interact_s"
+	if body.animation != animation:
+		failures.append("A real interaction should enter the authored interact_s animation")
+		target.free()
+		return
+
+	var final_frame := body.sprite_frames.get_frame_count(animation) - 1
+	var animation_speed := body.sprite_frames.get_animation_speed(animation)
+	var animation_duration := float(final_frame + 1) / animation_speed
+	if animation_duration > player.interaction_pose_duration:
+		failures.append("All authored interact frames should fit inside the movement lock")
+	var sample_time := float(final_frame) / animation_speed + 0.01
+	await tree.create_timer(sample_time).timeout
+	player._physics_process(sample_time)
+	if body.animation != animation:
+		failures.append("Interaction visuals should remain active through the movement lock")
+	elif body.frame != final_frame:
+		failures.append("The final authored interact frame should be visible during gameplay")
+	target.free()
+
+
 static func _check_action_sheet_content(failures: Array[String]) -> void:
+	if FileAccess.get_sha256(ACTION_SHEET) != EXPECTED_SHEET_SHA256:
+		failures.append("Player action sheet pixels should match the approved authored baseline")
 	var texture := load(ACTION_SHEET) as Texture2D
 	if texture == null:
 		failures.append("Authored player action sheet should load as image data")
@@ -100,6 +148,64 @@ static func _check_action_sheet_content(failures: Array[String]) -> void:
 			if has_partial_alpha:
 				failures.append("Player frame %s should not contain softened alpha" % frame_name)
 
+	_check_authored_opposite_views(sheet, failures)
+	_check_distinct_state_pixels(sheet, failures)
+
+
+static func _check_authored_opposite_views(sheet: Image, failures: Array[String]) -> void:
+	for row_pair in OPPOSITE_DIRECTION_ROWS:
+		var right_row := int(row_pair[0])
+		var left_row := int(row_pair[1])
+		for column in 18:
+			var right_frame := sheet.get_region(
+				Rect2i(column * FRAME_SIZE.x, right_row * FRAME_SIZE.y, 64, 96)
+			)
+			right_frame.flip_x()
+			var left_frame := sheet.get_region(
+				Rect2i(column * FRAME_SIZE.x, left_row * FRAME_SIZE.y, 64, 96)
+			)
+			var different_pixels := 0
+			for y in FRAME_SIZE.y:
+				for x in FRAME_SIZE.x:
+					if right_frame.get_pixel(x, y) != left_frame.get_pixel(x, y):
+						different_pixels += 1
+			if different_pixels < MINIMUM_OPPOSITE_VIEW_DIFFERENCE_PIXELS:
+				failures.append(
+					(
+						"Player %s/%s column %d should use independently authored pixels"
+						% [DIRECTIONS[right_row], DIRECTIONS[left_row], column]
+					)
+				)
+
+
+static func _check_distinct_state_pixels(sheet: Image, failures: Array[String]) -> void:
+	for direction_index in DIRECTIONS.size():
+		for frame_index in 6:
+			var walk_frame := sheet.get_region(
+				Rect2i((2 + frame_index) * FRAME_SIZE.x, direction_index * FRAME_SIZE.y, 64, 96)
+			)
+			var run_frame := sheet.get_region(
+				Rect2i((8 + frame_index) * FRAME_SIZE.x, direction_index * FRAME_SIZE.y, 64, 96)
+			)
+			if walk_frame.get_data() == run_frame.get_data():
+				failures.append(
+					"Run %s frame %d should not duplicate walk pixels"
+					% [DIRECTIONS[direction_index], frame_index]
+				)
+
+		var idle_frame := sheet.get_region(
+			Rect2i(0, direction_index * FRAME_SIZE.y, 64, 96)
+		)
+		for interact_column in range(15, 18):
+			var interact_frame := sheet.get_region(
+				Rect2i(interact_column * FRAME_SIZE.x, direction_index * FRAME_SIZE.y, 64, 96)
+			)
+			if idle_frame.get_data() == interact_frame.get_data():
+				failures.append(
+					"Interact %s column %d should not duplicate idle pixels"
+					% [DIRECTIONS[direction_index], interact_column]
+				)
+
 
 static func _check_animation(
 	body: AnimatedSprite2D, state: StringName, direction: StringName, failures: Array[String]
@@ -132,28 +238,3 @@ static func _check_animation(
 			return
 
 
-static func _check_distinct_action_frames(
-	body: AnimatedSprite2D, direction: StringName, failures: Array[String]
-) -> void:
-	var walk_name := StringName("walk_%s" % direction)
-	var run_name := StringName("run_%s" % direction)
-	var idle_name := StringName("idle_%s" % direction)
-	var interact_name := StringName("interact_%s" % direction)
-	if (
-		not body.sprite_frames.has_animation(run_name)
-		or not body.sprite_frames.has_animation(walk_name)
-	):
-		return
-	if (
-		not body.sprite_frames.has_animation(interact_name)
-		or not body.sprite_frames.has_animation(idle_name)
-	):
-		return
-	var walk_frame := body.sprite_frames.get_frame_texture(walk_name, 0) as AtlasTexture
-	var run_frame := body.sprite_frames.get_frame_texture(run_name, 0) as AtlasTexture
-	var idle_frame := body.sprite_frames.get_frame_texture(idle_name, 0) as AtlasTexture
-	var interact_frame := body.sprite_frames.get_frame_texture(interact_name, 1) as AtlasTexture
-	if walk_frame != null and run_frame != null and walk_frame.region == run_frame.region:
-		failures.append("Run %s must not reuse the walk atlas region" % direction)
-	if idle_frame != null and interact_frame != null and idle_frame.region == interact_frame.region:
-		failures.append("Interact %s must not reuse the idle atlas region" % direction)
