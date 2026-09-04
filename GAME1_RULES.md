@@ -18,6 +18,25 @@ Canonical identity is the branch, not a historical PR number.
 
 Do not create parallel implementation branches for these domains. At most one open implementation/remediation PR may exist per domain.
 
+### Branch-creation enforcement
+
+Branch governance is executable, not advisory. `tools/governance/branch_policy.json` and `tools/governance/check_branches.py` mirror the canonical identities above and are enforced by CI.
+
+Before any worker or automation creates a branch:
+
+1. fetch/prune remote refs;
+2. identify the owning domain;
+3. resolve its canonical branch from this file/policy;
+4. if the canonical branch exists, continue it instead of creating another branch;
+5. if the canonical branch does not exist, create exactly the approved canonical identity;
+6. never invent `-v2`, `-v3`, `-retry`, `-new` or equivalent replacement suffixes;
+7. never create a second managed MAP, PLAYER or INTEGRATION branch while another canonical branch is active;
+8. if the user explicitly dismisses/replaces a worker, follow the dismissal rule: the replacement branch must be a newly approved canonical identity from clean `main`, and the policy must be updated atomically with that change.
+
+Historical stale refs that cannot yet be physically deleted must be listed explicitly as `cleanup_debt` in the policy. This is a temporary allowlist only: it prevents old known debt from blocking CI while any new duplicate still fails immediately. Do not add new branches to `cleanup_debt` merely to make CI green.
+
+Physical cleanup is complete only after the remote refs are deleted. `tools/governance/delete_cleanup_debt.sh` may be used from a credentialed Git environment; it refuses to delete any configured debt branch that is not already merged into `origin/main`.
+
 ### Premature-merge remediation rule
 
 If a domain PR was merged before acceptance:
