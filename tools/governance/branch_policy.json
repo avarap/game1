@@ -20,6 +20,7 @@
     "feat/cemetery-art-commercial-pass1",
     "feature/isoverse-test-map",
     "feature/main-map-rebuild",
+    "fix/branch-governance-enforcement",
     "gameplay/player-commercial-movement"
   ]
 }
