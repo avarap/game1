@@ -1,0 +1,25 @@
+{
+  "canonical": {
+    "MAP": "feat/main-map-rebuild-commercial-pass",
+    "PLAYER": "character/player-controller-polish-20260902",
+    "INTEGRATION": "automation/supervisor-player-map-integration"
+  },
+  "managed_patterns": {
+    "MAP": "^(?:feat|feature|automation)/main-map(?:-|$)",
+    "PLAYER": "^(?:character/player|automation/main-character|gameplay/player-commercial)(?:-|$)",
+    "INTEGRATION": "^automation/supervisor-player-map-integration$"
+  },
+  "forbidden_retry_suffix": "(?:-v\\d+|-retry(?:-\\d+)?|-new(?:-\\d+)?)$",
+  "cleanup_debt": [
+    "auto/visual-env-pass1-cemetery-composition",
+    "automation/main-character-pass-20260902",
+    "automation/main-map-rebuild",
+    "docs/reorganize-production-knowledge",
+    "docs/reorganize-production-knowledge-v2",
+    "docs/reorganize-production-knowledge-v3",
+    "feat/cemetery-art-commercial-pass1",
+    "feature/isoverse-test-map",
+    "feature/main-map-rebuild",
+    "gameplay/player-commercial-movement"
+  ]
+}
