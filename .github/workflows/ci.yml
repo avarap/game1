@@ -7,6 +7,27 @@ on:
     branches: [main]
 
 jobs:
+  branch-governance:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run branch governance unit tests
+        run: python tests/test_branch_governance.py
+
+      - name: Enforce canonical branch policy
+        env:
+          CANDIDATE_BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: python tools/governance/check_branches.py --candidate "$CANDIDATE_BRANCH"
+
   gdscript-quality:
     runs-on: ubuntu-24.04
     steps:
