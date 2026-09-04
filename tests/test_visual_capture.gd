@@ -6,6 +6,21 @@ const RUNNER_PATH := "res://tools/visual_capture/capture_runner.gd"
 const SHELL_PATH := "res://tools/visual_capture/run_capture.sh"
 const EXPECTED_SIZE := Vector2i(1280, 720)
 const EXPECTED_ZOOM := Vector2(1.5, 1.5)
+const PLAYER_DIRECTIONS: Array[StringName] = [
+	&"n",
+	&"ne",
+	&"e",
+	&"se",
+	&"s",
+	&"sw",
+	&"w",
+	&"nw",
+]
+const PLAYER_ACTION_FRAMES := {
+	&"walk": 2,
+	&"run": 3,
+	&"interact": 2,
+}
 const REQUIRED_IDS: Array[StringName] = [
 	&"player_n",
 	&"player_ne",
@@ -92,6 +107,38 @@ static func _check_specs(specs: Array, failures: Array[String]) -> void:
 	for required_id in REQUIRED_IDS:
 		if not by_id.has(required_id):
 			failures.append("Visual capture manifest missing required view %s" % required_id)
+
+	_check_player_action_specs(by_id, failures)
+
+
+static func _check_player_action_specs(by_id: Dictionary, failures: Array[String]) -> void:
+	for direction in PLAYER_DIRECTIONS:
+		var idle_id := StringName("player_%s" % direction)
+		if by_id.has(idle_id):
+			_check_player_pose_spec(by_id[idle_id], &"idle", direction, 0, failures)
+
+		for state in PLAYER_ACTION_FRAMES:
+			var capture_id := StringName("player_%s_%s" % [state, direction])
+			if not by_id.has(capture_id):
+				failures.append("Visual capture manifest missing player pose %s" % capture_id)
+				continue
+			_check_player_pose_spec(
+				by_id[capture_id], state, direction, PLAYER_ACTION_FRAMES[state], failures
+			)
+
+
+static func _check_player_pose_spec(
+	spec: Dictionary, state: StringName, direction: StringName, frame: int, failures: Array[String]
+) -> void:
+	var capture_id := StringName(str(spec.get("id", "")))
+	if StringName(spec.get("actor", &"")) != &"player":
+		failures.append("%s should capture the production player" % capture_id)
+	if StringName(spec.get("state", &"")) != state:
+		failures.append("%s should capture the %s state" % [capture_id, state])
+	if StringName(spec.get("direction", &"")) != direction:
+		failures.append("%s should capture the %s direction" % [capture_id, direction])
+	if int(spec.get("frame", -1)) != frame:
+		failures.append("%s should pin authored frame %d" % [capture_id, frame])
 
 
 static func _check_real_player_camera(failures: Array[String]) -> void:
