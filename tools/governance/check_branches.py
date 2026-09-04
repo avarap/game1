@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate remote branch governance for game1."""
+"""Validate branch governance for game1."""
 
 from __future__ import annotations
 
@@ -86,6 +86,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--remote", default="origin")
     parser.add_argument(
+        "--candidate",
+        action="append",
+        default=[],
+        help="Additional branch name to validate, e.g. the current PR head branch.",
+    )
+    parser.add_argument(
         "--strict-cleanup",
         action="store_true",
         help="Fail while any configured historical cleanup-debt branch still exists.",
@@ -94,13 +100,15 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         branches = list_remote_branches(args.remote)
+        branches.extend(branch for branch in args.candidate if branch)
         policy = load_policy()
     except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as exc:
         print(f"branch-governance: unable to inspect policy/remote: {exc}", file=sys.stderr)
         return 2
 
+    unique_branches = sorted(set(branches))
     errors, warnings = evaluate(
-        branches, policy, strict_cleanup=args.strict_cleanup
+        unique_branches, policy, strict_cleanup=args.strict_cleanup
     )
 
     for warning in warnings:
@@ -113,7 +121,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     print(
-        f"branch-governance: PASS ({len(branches)} remote branches, "
+        f"branch-governance: PASS ({len(unique_branches)} branches inspected, "
         f"{len(warnings)} cleanup warning(s))"
     )
     return 0
