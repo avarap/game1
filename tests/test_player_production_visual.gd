@@ -189,21 +189,23 @@ static func _check_distinct_state_pixels(sheet: Image, failures: Array[String]) 
 			)
 			if walk_frame.get_data() == run_frame.get_data():
 				failures.append(
-					"Run %s frame %d should not duplicate walk pixels"
-					% [DIRECTIONS[direction_index], frame_index]
+					(
+						"Run %s frame %d should not duplicate walk pixels"
+						% [DIRECTIONS[direction_index], frame_index]
+					)
 				)
 
-		var idle_frame := sheet.get_region(
-			Rect2i(0, direction_index * FRAME_SIZE.y, 64, 96)
-		)
+		var idle_frame := sheet.get_region(Rect2i(0, direction_index * FRAME_SIZE.y, 64, 96))
 		for interact_column in range(15, 18):
 			var interact_frame := sheet.get_region(
 				Rect2i(interact_column * FRAME_SIZE.x, direction_index * FRAME_SIZE.y, 64, 96)
 			)
 			if idle_frame.get_data() == interact_frame.get_data():
 				failures.append(
-					"Interact %s column %d should not duplicate idle pixels"
-					% [DIRECTIONS[direction_index], interact_column]
+					(
+						"Interact %s column %d should not duplicate idle pixels"
+						% [DIRECTIONS[direction_index], interact_column]
+					)
 				)
 
 
@@ -236,5 +238,3 @@ static func _check_animation(
 				"Player animation %s must come from the authored action sheet" % animation
 			)
 			return
-
-
