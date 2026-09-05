@@ -64,8 +64,10 @@ static func run() -> Array[String]:
 						and body.sprite_frames.has_animation(walk_name)
 						and body.sprite_frames.get_frame_count(run_name) > 0
 						and body.sprite_frames.get_frame_count(walk_name) > 0
-						and body.sprite_frames.get_frame_texture(run_name, 0)
-						== body.sprite_frames.get_frame_texture(walk_name, 0)
+						and (
+							body.sprite_frames.get_frame_texture(run_name, 0)
+							== body.sprite_frames.get_frame_texture(walk_name, 0)
+						)
 					):
 						failures.append("%s must not reuse walk frames" % run_name)
 					if (
@@ -73,21 +75,27 @@ static func run() -> Array[String]:
 						and body.sprite_frames.has_animation(idle_name)
 						and body.sprite_frames.get_frame_count(interact_name) > 1
 						and body.sprite_frames.get_frame_count(idle_name) > 0
-						and body.sprite_frames.get_frame_texture(interact_name, 1)
-						== body.sprite_frames.get_frame_texture(idle_name, 0)
+						and (
+							body.sprite_frames.get_frame_texture(interact_name, 1)
+							== body.sprite_frames.get_frame_texture(idle_name, 0)
+						)
 					):
 						failures.append("%s reach frame must not reuse idle" % interact_name)
 			if body.position != Vector2(0, 0):
 				failures.append("Player visual pivot should remain at the feet/origin")
 			if not body.has_method("set_locomotion_state"):
-				failures.append("Player visual should expose idle/walk/run/interact locomotion state")
+				failures.append(
+					"Player visual should expose idle/walk/run/interact locomotion state"
+				)
 			else:
 				body.call("set_locomotion_state", &"run", Vector2.DOWN)
 				if body.animation != &"run_s":
 					failures.append("Run state should play a dedicated directional run animation")
 				body.call("set_locomotion_state", &"interact", Vector2.DOWN)
 				if body.animation != &"interact_s":
-					failures.append("Interact state should play a dedicated directional interaction animation")
+					failures.append(
+						"Interact state should play a dedicated directional interaction animation"
+					)
 
 		var interaction_area := player.get_node_or_null("InteractionArea")
 		if not interaction_area is Area2D:
@@ -112,10 +120,7 @@ static func run() -> Array[String]:
 		else:
 			if not camera.position_smoothing_enabled:
 				failures.append("Camera2D smoothing should be enabled")
-			if (
-				camera.limit_right <= camera.limit_left
-				or camera.limit_bottom <= camera.limit_top
-			):
+			if camera.limit_right <= camera.limit_left or camera.limit_bottom <= camera.limit_top:
 				failures.append("Camera2D should have valid map limits")
 
 	player.free()

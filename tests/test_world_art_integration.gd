@@ -10,13 +10,17 @@ const MAP_PATHS := [
 	"res://world/maps/interiors/village_building.tscn",
 ]
 const EXTERIOR_ATLAS := "res://art/environment/tilesets/cemetery_ground_tileset.png"
-const CEMETERY_ATLAS := "res://art/environment/cemetery/production/atlas/tileset_cemetery_32.png"
+const CEMETERY_ATLAS_DIR := "res://art/environment/cemetery/production/atlas/"
+const CEMETERY_TERRAIN_ATLAS := CEMETERY_ATLAS_DIR + "cemetery_terrain_hand_authored_32.png"
 
 
 static func run() -> Array[String]:
 	var failures: Array[String] = []
 	if not ResourceLoader.exists(EXTERIOR_ATLAS):
 		failures.append("Exterior atlas should exist for map integration")
+		return failures
+	if not ResourceLoader.exists(CEMETERY_TERRAIN_ATLAS):
+		failures.append("Dedicated cemetery terrain atlas should exist for map integration")
 		return failures
 
 	for map_path in MAP_PATHS:
@@ -46,7 +50,9 @@ static func _validate_map(map_path: String, failures: Array[String]) -> void:
 		var source := ground.tile_set.get_source(0) as TileSetAtlasSource
 		if source == null or source.texture == null:
 			failures.append("Map should expose atlas-backed tiles: %s" % map_path)
-		var expected_atlas := CEMETERY_ATLAS if map_path.contains("cemetery") else EXTERIOR_ATLAS
+		var expected_atlas := (
+			CEMETERY_TERRAIN_ATLAS if map_path.contains("cemetery") else EXTERIOR_ATLAS
+		)
 		if (
 			source != null
 			and source.texture != null
