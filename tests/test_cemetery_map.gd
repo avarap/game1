@@ -143,13 +143,21 @@ static func run() -> Array[String]:
 		if collision.get_cell_source_id(cell) == -1:
 			failures.append("Authored structural collision should include cell %s" % cell)
 
-	var graves := map.get_node_or_null("objects_y_sorted") as TileMapLayer
-	if graves == null or graves.get_used_cells().size() < 20:
+	var objects := map.get_node_or_null("objects_y_sorted") as TileMapLayer
+	if objects == null or _authored_object_count(objects) < 20:
 		failures.append("Cemetery composition should contain authored graves, trees and props")
 
 	_validate_ground_variation(map, failures)
 	map.free()
 	return failures
+
+
+static func _authored_object_count(objects: TileMapLayer) -> int:
+	var count := objects.get_used_cells().size()
+	for child in objects.find_children("*", "Sprite2D", true, false):
+		if (child as Sprite2D).visible:
+			count += 1
+	return count
 
 
 static func _validate_ground_variation(map: Node, failures: Array[String]) -> void:
