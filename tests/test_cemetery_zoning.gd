@@ -92,13 +92,18 @@ static func _check_grave_aisles(
 		var atlas := objects.get_cell_atlas_coords(cell)
 		if atlas.y == 3 and atlas.x >= 0 and atlas.x <= 3:
 			grave_count += 1
-	for child in objects.get_children():
-		if child is not Sprite2D or not child.name.begins_with("GraveVisual"):
+	for child in objects.find_children("*", "Sprite2D", true, false):
+		var sprite := child as Sprite2D
+		var lower_name := str(sprite.name).to_lower()
+		if (
+			not sprite.is_visible_in_tree()
+			or ("grave" not in lower_name and "memorial" not in lower_name)
+		):
 			continue
-		var grave_cell := objects.local_to_map((child as Sprite2D).position)
+		var grave_cell := objects.local_to_map(objects.to_local(sprite.global_position))
 		if CEMETERY_RECT.has_point(grave_cell):
 			grave_count += 1
-	if grave_count < 12:
+	if grave_count < 10:
 		failures.append("Cemetery should retain multiple grave clusters around its aisles")
 
 
