@@ -12,23 +12,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Install GDScript quality tools
         run: python -m pip install --quiet "gdtoolkit>=4.3,<5"
-
       - name: Discover GDScript files
         run: |
           find . -type f -name '*.gd' -not -path './.git/*' -print | sort
           echo "GDScript files: $(find . -type f -name '*.gd' -not -path './.git/*' | wc -l)"
-
       - name: Lint all GDScript files
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdlint
-
       - name: Check formatting of all GDScript files
         run: find . -type f -name '*.gd' -not -path './.git/*' -print0 | sort -z | xargs -0 gdformat --check
 
@@ -39,13 +34,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Import and validate project
         run: godot --headless --path . --editor --quit
-
       - name: Run main-scene smoke test
         run: godot --headless --path . --quit-after 3
-
       - name: Run bootstrap tests
         run: timeout 30s godot --headless --path . --script res://tests/run_tests.gd
 
@@ -56,42 +48,68 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install virtual display
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends \
-            xvfb \
-            libxcursor1 \
-            libfontconfig1 \
-            libxi6 \
-            libxinerama1
-
+          apt-get install -y --no-install-recommends xvfb libxcursor1 libfontconfig1 libxi6 libxinerama1
       - name: Import project for capture
         run: godot --headless --path . --editor --quit
-
       - name: Capture real cemetery views at 1280x720
         env:
           VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           mkdir -p artifacts/visual_capture
-          xvfb-run -a -s "-screen 0 1280x720x24" \
-            godot --path . \
-            --rendering-method gl_compatibility \
-            --display-driver x11 \
-            --script res://tools/visual_capture/capture_runner.gd \
-            -- --output=artifacts/visual_capture
+          xvfb-run -a -s "-screen 0 1280x720x24" godot --path . --rendering-method gl_compatibility --display-driver x11 --script res://tools/visual_capture/capture_runner.gd -- --output=artifacts/visual_capture
           test -s artifacts/visual_capture/cemetery_workshop.png
           test -s artifacts/visual_capture/cemetery_plaza.png
           test -s artifacts/visual_capture/cemetery_overview.png
           test -s artifacts/visual_capture/cemetery_graves.png
           test -s artifacts/visual_capture/cemetery_forest_path.png
-
       - name: Upload visual captures
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cemetery-visual-captures
           path: artifacts/visual_capture
+          if-no-files-found: error
+          retention-days: 14
+
+  gameplay-video:
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install recorder and virtual display
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ffmpeg xvfb libxcursor1 libfontconfig1 libxi6 libxinerama1
+      - name: Import project for gameplay
+        run: godot --headless --path . --editor --quit
+      - name: Record real gameplay at 1280x720
+        run: |
+          mkdir -p artifacts/gameplay_video
+          Xvfb :99 -screen 0 1280x720x24 -ac &
+          XVFB_PID=$!
+          export DISPLAY=:99
+          sleep 2
+          ffmpeg -y -f x11grab -video_size 1280x720 -framerate 30 -i :99 -c:v libx264 -preset veryfast -pix_fmt yuv420p artifacts/gameplay_video/gameplay.mp4 &
+          FFMPEG_PID=$!
+          set +e
+          godot --path . --rendering-method gl_compatibility --display-driver x11 --script res://tools/gameplay_capture/gameplay_video_runner.gd
+          GAME_EXIT=$?
+          set -e
+          kill -INT $FFMPEG_PID || true
+          wait $FFMPEG_PID || true
+          kill $XVFB_PID || true
+          test $GAME_EXIT -eq 0
+          test -s artifacts/gameplay_video/gameplay.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 artifacts/gameplay_video/gameplay.mp4 | grep -qx '1280x720'
+      - name: Upload gameplay video
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-video
+          path: artifacts/gameplay_video/gameplay.mp4
           if-no-files-found: error
           retention-days: 14
