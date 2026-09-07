@@ -75,6 +75,8 @@ func _check_real_interaction(chest: StorageChest) -> void:
 	var feedback := chest.get_node("FeedbackLabel") as Label
 	if feedback.text != "Cofre conectado":
 		_test_failures.append("Capture tap must execute the real chest's interaction effect")
+	if not feedback.is_visible_in_tree():
+		_test_failures.append("Chest interaction feedback must be visible in the real map")
 	if Input.is_action_pressed("interact"):
 		_test_failures.append("Capture tap must release the interaction action")
 

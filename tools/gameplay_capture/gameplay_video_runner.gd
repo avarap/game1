@@ -45,7 +45,11 @@ func _run() -> void:
 	await _hold_action("move_down", 0.2)
 	await _tap_action("interact")
 	var feedback := chest.get_node("FeedbackLabel") as Label
-	if _verified_interactions != 1 or feedback.text != "Cofre conectado":
+	if (
+		_verified_interactions != 1
+		or feedback.text != "Cofre conectado"
+		or not feedback.is_visible_in_tree()
+	):
 		push_error("Gameplay capture did not complete its real chest interaction")
 		quit(1)
 		return
@@ -68,6 +72,7 @@ func _run() -> void:
 		"verified_interactions": _verified_interactions,
 		"interaction_target": "StorageChest",
 		"interaction_effect": feedback.text,
+		"interaction_feedback_visible": feedback.is_visible_in_tree(),
 	}
 	print("[GAMEPLAY_VIDEO] evidence %s" % JSON.stringify(evidence))
 	if _walk_distance < 100.0 or _run_distance < 100.0 or _verified_interactions < 1:
