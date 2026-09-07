@@ -16,6 +16,7 @@ Objetivo: un vertical slice original, jugable y con calidad visual de videojuego
 
 ## Estado
 
+- Checkpoint de la prueba conjunta #147: [gameplay y continuación, 7 de septiembre](docs/production/PLAYTEST_2026-09-07.md).
 - Fases 0–7: completadas.
 - Fase 8 — Polish: activa.
 - Runtime/CI objetivo: Godot 4.7.2.

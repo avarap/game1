@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -34,12 +36,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Import and validate project
         run: godot --headless --path . --editor --quit
       - name: Run main-scene smoke test
         run: godot --headless --path . --quit-after 3
       - name: Run bootstrap tests
         run: timeout 30s godot --headless --path . --script res://tests/run_tests.gd
+      - name: Verify real capture input and timing at 30 FPS
+        run: timeout 20s godot --headless --fixed-fps 30 --path . --script res://tests/test_gameplay_capture_runtime.gd
+      - name: Verify integrated gameplay route
+        env:
+          VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: timeout 30s godot --headless --fixed-fps 60 --path . --script res://tools/gameplay_capture/gameplay_video_runner.gd
 
   visual-capture:
     runs-on: ubuntu-24.04
@@ -48,6 +58,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Install virtual display
         run: |
           apt-get update
@@ -81,6 +93,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Install recorder and virtual display
         run: |
           apt-get update
@@ -88,6 +102,8 @@ jobs:
       - name: Import project for gameplay
         run: godot --headless --path . --editor --quit
       - name: Record real gameplay at 1280x720
+        env:
+          VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           mkdir -p artifacts/gameplay_video
           Xvfb :99 -screen 0 1280x720x24 -ac &
@@ -97,19 +113,21 @@ jobs:
           ffmpeg -y -f x11grab -video_size 1280x720 -framerate 30 -i :99 -c:v libx264 -preset veryfast -pix_fmt yuv420p artifacts/gameplay_video/gameplay.mp4 &
           FFMPEG_PID=$!
           set +e
-          godot --path . --rendering-method gl_compatibility --display-driver x11 --script res://tools/gameplay_capture/gameplay_video_runner.gd
+          timeout 120s godot --path . --rendering-method gl_compatibility --display-driver x11 --script res://tools/gameplay_capture/gameplay_video_runner.gd > artifacts/gameplay_video/gameplay.log 2>&1
           GAME_EXIT=$?
           set -e
           kill -INT $FFMPEG_PID || true
           wait $FFMPEG_PID || true
           kill $XVFB_PID || true
+          cat artifacts/gameplay_video/gameplay.log
           test $GAME_EXIT -eq 0
           test -s artifacts/gameplay_video/gameplay.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 artifacts/gameplay_video/gameplay.mp4 | grep -qx '1280x720'
       - name: Upload gameplay video
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gameplay-video
-          path: artifacts/gameplay_video/gameplay.mp4
+          path: artifacts/gameplay_video
           if-no-files-found: error
           retention-days: 14
