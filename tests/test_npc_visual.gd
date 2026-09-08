@@ -12,6 +12,7 @@ const REQUIRED_DIRECTIONS: Array[StringName] = [
 	&"nw",
 ]
 const ALDREN_ATLAS_SOURCE := "res://art/characters/npcs/brother_aldren_idle_walk_64x96.png"
+const PLAYER_SCENE := "res://player/player.tscn"
 
 
 static func run() -> Array[String]:
@@ -54,6 +55,7 @@ static func run() -> Array[String]:
 					failures.append("Brother Aldren %s is not native 64x96" % animation)
 	if visual.offset != Vector2(0, -48):
 		failures.append("Brother Aldren should keep a feet-centered 64x96 pivot")
+	_compare_player_scale(visual, failures)
 	var shadow := aldren.get_node_or_null("ContactShadow") as Sprite2D
 	if shadow == null:
 		failures.append("Brother Aldren should own a contact-shadow node")
@@ -71,3 +73,49 @@ static func run() -> Array[String]:
 		failures.append("Brother Aldren dialogue interaction should remain present")
 	aldren.free()
 	return failures
+
+
+static func _compare_player_scale(aldren_visual: AnimatedSprite2D, failures: Array[String]) -> void:
+	var player_scene := load(PLAYER_SCENE) as PackedScene
+	if player_scene == null:
+		failures.append("Player scene should load for NPC scale comparison")
+		return
+	var player := player_scene.instantiate() as CharacterBody2D
+	if player == null:
+		failures.append("Player should instantiate for NPC scale comparison")
+		return
+	var body := player.get_node_or_null("Body") as AnimatedSprite2D
+	if body == null:
+		failures.append("Player Body should exist for NPC scale comparison")
+		player.free()
+		return
+	if body.has_method("_build_production_animations"):
+		body.call("_build_production_animations")
+	var player_texture := body.sprite_frames.get_frame_texture(&"idle_s", 0)
+	var aldren_texture := aldren_visual.sprite_frames.get_frame_texture(&"idle_s", 0)
+	var player_bounds := _visible_bounds(player_texture)
+	var aldren_bounds := _visible_bounds(aldren_texture)
+	if player_bounds.size == Vector2i.ZERO or aldren_bounds.size == Vector2i.ZERO:
+		failures.append("Player and Brother Aldren idle_s frames should contain visible pixels")
+		player.free()
+		return
+	if absi(player_bounds.size.y - aldren_bounds.size.y) > 4:
+		failures.append(
+			"Brother Aldren body height should match Player within 4 px (%d vs %d)"
+			% [aldren_bounds.size.y, player_bounds.size.y]
+		)
+	if absi(player_bounds.end.y - aldren_bounds.end.y) > 2:
+		failures.append(
+			"Brother Aldren feet line should match Player within 2 px (%d vs %d)"
+			% [aldren_bounds.end.y, player_bounds.end.y]
+		)
+	player.free()
+
+
+static func _visible_bounds(texture: Texture2D) -> Rect2i:
+	if texture == null:
+		return Rect2i()
+	var image := texture.get_image()
+	if image == null or image.is_empty():
+		return Rect2i()
+	return image.get_used_rect()
