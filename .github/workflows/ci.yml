@@ -50,6 +50,10 @@ jobs:
         env:
           VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: timeout 30s godot --headless --fixed-fps 60 --path . --script res://tools/gameplay_capture/gameplay_video_runner.gd
+      - name: Verify real zone travel and save reload
+        env:
+          VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: timeout 20s godot --headless --fixed-fps 30 --path . --script res://tests/test_zone_save_runtime.gd
 
   visual-capture:
     runs-on: ubuntu-24.04
@@ -88,6 +92,14 @@ jobs:
 
   gameplay-video:
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - artifact: gameplay-video
+            script: res://tools/gameplay_capture/gameplay_video_runner.gd
+          - artifact: zone-save-video
+            script: res://tests/test_zone_save_runtime.gd
     container:
       image: barichello/godot-ci:4.7.2
     steps:
@@ -104,6 +116,7 @@ jobs:
       - name: Record real gameplay at 1280x720
         env:
           VISUAL_CAPTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CAPTURE_SCRIPT: ${{ matrix.script }}
         run: |
           mkdir -p artifacts/gameplay_video
           Xvfb :99 -screen 0 1280x720x24 -ac &
@@ -113,7 +126,7 @@ jobs:
           ffmpeg -y -f x11grab -video_size 1280x720 -framerate 30 -i :99 -c:v libx264 -preset veryfast -pix_fmt yuv420p artifacts/gameplay_video/gameplay.mp4 &
           FFMPEG_PID=$!
           set +e
-          timeout 120s godot --path . --rendering-method gl_compatibility --display-driver x11 --script res://tools/gameplay_capture/gameplay_video_runner.gd > artifacts/gameplay_video/gameplay.log 2>&1
+          timeout 120s godot --path . --rendering-method gl_compatibility --display-driver x11 --script "$CAPTURE_SCRIPT" > artifacts/gameplay_video/gameplay.log 2>&1
           GAME_EXIT=$?
           set -e
           kill -INT $FFMPEG_PID || true
@@ -127,7 +140,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: gameplay-video
+          name: ${{ matrix.artifact }}
           path: artifacts/gameplay_video
           if-no-files-found: error
           retention-days: 14
