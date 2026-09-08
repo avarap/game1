@@ -8,15 +8,11 @@ Rendering: nearest filtering
 Perspective: orthographic 3/4
 
 Read before modifying visual content:
-- `docs/art/ART_DIRECTION.md`
-- `docs/architecture/ARCHITECTURE.md`
-- `docs/design/GAME_DESIGN.md`
-- `ROADMAP.md`
-- `DEV_MEMORY.md`
-
-Production/orchestration authority:
-- `GAME1_RULES.md`
-- `.agents/skills/orchestrating-game-production/SKILL.md`
+- ART_DIRECTION.md
+- ARCHITECTURE.md
+- GAME_DESIGN.md
+- ROADMAP.md
+- DEV_MEMORY.md
 
 ## Global rules
 

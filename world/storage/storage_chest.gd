@@ -24,3 +24,5 @@ func _on_interact(_actor: Node) -> void:
 	var label := get_node_or_null("FeedbackLabel") as Label
 	if label != null:
 		label.text = "Cofre conectado"
+		label.z_index = 1
+		label.show()
