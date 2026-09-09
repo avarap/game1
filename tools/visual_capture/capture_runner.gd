@@ -93,6 +93,11 @@ func _capture_spec(spec: Dictionary, output_path: String) -> Dictionary:
 		"size": [viewport.size.x, viewport.size.y],
 		"camera_zoom": _vector_to_array(Vector2(spec.get("camera_zoom", Vector2.ONE))),
 	}
+	if kind == &"character":
+		result["actor"] = str(spec.get("actor", ""))
+		result["state"] = str(spec.get("state", "idle"))
+		result["direction"] = str(spec.get("direction", "s"))
+		result["frame"] = int(spec.get("frame", 0))
 	viewport.queue_free()
 	await process_frame
 	return result
@@ -115,7 +120,12 @@ func _build_character_capture(viewport: SubViewport, spec: Dictionary) -> void:
 	actor.position = Vector2(spec.get("actor_position", Vector2.ZERO))
 	actor.process_mode = Node.PROCESS_MODE_DISABLED
 	stage.add_child(actor)
-	_set_idle_direction(actor, StringName(spec.get("direction", &"s")))
+	_set_animation_pose(
+		actor,
+		StringName(spec.get("state", &"idle")),
+		StringName(spec.get("direction", &"s")),
+		int(spec.get("frame", 0))
+	)
 
 	if StringName(spec.get("actor", &"")) == &"player":
 		_configure_camera(actor, spec)
@@ -192,17 +202,29 @@ func _configure_camera(actor: Node, spec: Dictionary) -> void:
 	camera.enabled = true
 
 
-func _set_idle_direction(actor: Node, direction: StringName) -> void:
+func _set_animation_pose(
+	actor: Node, state: StringName, direction: StringName, frame_index: int
+) -> void:
 	var body := _character_visual(actor)
 	if body == null:
 		_failures.append("Character animated visual missing")
 		return
-	var animation := StringName("idle_%s" % direction)
+	var animation := StringName("%s_%s" % [state, direction])
 	if body.sprite_frames == null or not body.sprite_frames.has_animation(animation):
 		_failures.append("Missing character animation %s" % animation)
 		return
+	var frame_count := body.sprite_frames.get_frame_count(animation)
+	if frame_index < 0 or frame_index >= frame_count:
+		_failures.append(
+			(
+				"Invalid frame %d for character animation %s (%d frames)"
+				% [frame_index, animation, frame_count]
+			)
+		)
+		return
 	body.play(animation)
 	body.pause()
+	body.frame = frame_index
 
 
 func _character_visual(actor: Node) -> AnimatedSprite2D:

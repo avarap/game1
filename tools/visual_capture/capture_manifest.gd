@@ -17,6 +17,12 @@ const DIRECTIONS: Array[StringName] = [
 	&"w",
 	&"nw",
 ]
+const PLAYER_ACTION_FRAMES := {
+	&"walk": 2,
+	&"run": 3,
+	&"interact": 2,
+}
+const PLAYER_ACTION_STATES: Array[StringName] = [&"walk", &"run", &"interact"]
 const WORLD_IDS: Array[StringName] = [
 	&"cemetery_day",
 	&"cemetery_night",
@@ -45,7 +51,10 @@ const UI_STATES := {
 static func capture_specs() -> Array[Dictionary]:
 	var specs: Array[Dictionary] = []
 	for direction in DIRECTIONS:
-		specs.append(_character_spec(&"player", direction))
+		specs.append(_character_spec(&"player", direction, &"idle", 0))
+	for state in PLAYER_ACTION_STATES:
+		for direction in DIRECTIONS:
+			specs.append(_character_spec(&"player", direction, state, PLAYER_ACTION_FRAMES[state]))
 	for direction in DIRECTIONS:
 		specs.append(_character_spec(&"aldren", direction))
 	for capture_id in WORLD_IDS:
@@ -55,9 +64,13 @@ static func capture_specs() -> Array[Dictionary]:
 	return specs
 
 
-static func _character_spec(actor: StringName, direction: StringName) -> Dictionary:
-	var capture_id := StringName("%s_%s" % [actor, direction])
+static func _character_spec(
+	actor: StringName, direction: StringName, state: StringName = &"idle", frame: int = 0
+) -> Dictionary:
 	var is_player := actor == &"player"
+	var capture_id := StringName("%s_%s" % [actor, direction])
+	if is_player and state != &"idle":
+		capture_id = StringName("player_%s_%s" % [state, direction])
 	var position := Vector2(480, 736) if is_player else Vector2(1184, 640)
 	return {
 		"id": capture_id,
@@ -66,6 +79,8 @@ static func _character_spec(actor: StringName, direction: StringName) -> Diction
 		"scene": PLAYER_SCENE if is_player else ALDREN_SCENE,
 		"context_scene": CEMETERY_SCENE,
 		"direction": direction,
+		"state": state,
+		"frame": frame,
 		"actor_position": position,
 		"camera_position": position,
 		"size": CAPTURE_SIZE,
