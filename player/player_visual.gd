@@ -36,7 +36,16 @@ func _apply_animation() -> void:
 		push_error("Missing authored player animation %s" % target)
 		return
 	if animation != target:
+		var preserve_step_phase := (
+			_locomotion_state in [&"walk", &"run"]
+			and String(animation).begins_with("%s_" % _locomotion_state)
+		)
+		var previous_frame := frame
+		var previous_progress := frame_progress
 		play(target)
+		if preserve_step_phase:
+			# Directional views share the same authored step cycle.
+			set_frame_and_progress(previous_frame, previous_progress)
 	speed_scale = 1.0
 
 

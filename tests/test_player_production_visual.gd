@@ -35,7 +35,7 @@ static func run() -> Array[String]:
 	var player := packed.instantiate()
 	var tree := Engine.get_main_loop() as SceneTree
 	tree.root.add_child(player)
-	var body := player.get_node_or_null("Body") as AnimatedSprite2D
+	var body := player.get_node_or_null("Body") as PlayerVisual
 	if body == null or body.sprite_frames == null:
 		failures.append("Production player should expose Body frames")
 		player.free()
@@ -54,10 +54,66 @@ static func run() -> Array[String]:
 	for direction: StringName in DIRECTIONS:
 		for state: StringName in STATES:
 			_check_animation(body, state, direction, failures)
+	_check_direction_changes_keep_step_phase(body, failures)
+	_check_action_changes_restart_animation(body, failures)
 	await _check_live_interaction_pose(player, body, failures)
 
 	player.free()
 	return failures
+
+
+static func _check_direction_changes_keep_step_phase(
+	body: PlayerVisual, failures: Array[String]
+) -> void:
+	var facing_vectors := [
+		Vector2.UP,
+		Vector2(1, -1),
+		Vector2.RIGHT,
+		Vector2(1, 1),
+		Vector2.DOWN,
+		Vector2(-1, 1),
+		Vector2.LEFT,
+		Vector2(-1, -1),
+	]
+	for state: StringName in [&"walk", &"run"]:
+		for phase: Vector2 in [Vector2(0, 0.75), Vector2(3, 0.375), Vector2(5, 0.875)]:
+			body.set_locomotion_state(state, Vector2.DOWN)
+			body.set_frame_and_progress(int(phase.x), phase.y)
+			for direction_index in facing_vectors.size():
+				body.set_locomotion_state(state, facing_vectors[direction_index])
+				var target := StringName("%s_%s" % [state, DIRECTIONS[direction_index]])
+				if body.animation != target:
+					failures.append("Turning should select the authored %s view" % target)
+				if body.frame != int(phase.x) or not is_equal_approx(body.frame_progress, phase.y):
+					failures.append(
+						(
+							"Turning to %s should keep step phase %s; got frame %d + %.3f"
+							% [target, phase, body.frame, body.frame_progress]
+						)
+					)
+				if not body.is_playing():
+					failures.append("Turning to %s should keep the animation playing" % target)
+
+
+static func _check_action_changes_restart_animation(
+	body: PlayerVisual, failures: Array[String]
+) -> void:
+	for transition in [
+		[&"walk", &"idle"],
+		[&"run", &"idle"],
+		[&"walk", &"interact"],
+		[&"run", &"interact"],
+		[&"idle", &"walk"],
+		[&"interact", &"run"],
+		[&"walk", &"run"],
+		[&"run", &"walk"],
+	]:
+		body.set_locomotion_state(transition[0], Vector2.DOWN)
+		body.set_frame_and_progress(1, 0.5)
+		body.set_locomotion_state(transition[1], Vector2.RIGHT)
+		var target := StringName("%s_e" % transition[1])
+		if body.animation != target or body.frame != 0 or not is_zero_approx(body.frame_progress):
+			failures.append("Changing action from %s to %s should restart the pose" % transition)
 
 
 static func _check_live_interaction_pose(
